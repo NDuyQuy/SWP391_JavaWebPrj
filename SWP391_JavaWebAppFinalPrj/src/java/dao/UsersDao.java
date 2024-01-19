@@ -17,7 +17,7 @@ public class UsersDao {
     private static final String CHECKLOGIN = "SELECT [fullname] FROM [users] WHERE [username]=? and [password]=?";
     private static final String REGISTER = "INSERT INTO [users](username,password,email,role,shop_reported_count) values (?,?,?,1,0)";
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
-    
+    private static final String RESETPASSWORD = "UPDATE [users] SET password = '123' WHERE username = ?";
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
         boolean checked = false;
@@ -64,8 +64,20 @@ public class UsersDao {
             e.printStackTrace();
         }
     }
+    public static void resetPassword(String username){
+        PreparedStatement ptm = null;
+        //reset users password into 123
+        //username is for detection
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(RESETPASSWORD);
+            ptm.setString(1, username);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static void main(String[] args) {
-        //System.out.println(UsersDao.checkLogin("Q", "0"));
-        //UsersDao.updateProfile("Q", "0123456789", "ABC Street", "Q");
+        UsersDao.resetPassword("Q");
     }
 }
