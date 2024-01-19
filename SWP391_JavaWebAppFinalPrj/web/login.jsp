@@ -73,7 +73,7 @@
                             <h3 class="text-center mb-60">Login From Here</h3>
                             <form>
                                 <label for="name">Email Address <span>**</span></label>
-                                <input id="name" type="text" placeholder="Enter Username or Email address..." />
+                                <input id="name" type="text" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" placeholder="Enter Username or Email address..." />
                                 <label for="pass">Password <span>**</span></label>
                                 <input id="pass" type="password" placeholder="Enter password..." />
                                 <div class="login-action mb-20 fix">
