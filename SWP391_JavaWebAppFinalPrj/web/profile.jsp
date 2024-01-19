@@ -160,7 +160,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>Phone number</td>
-                                                    <td><input type="text" size="40" name="phone" value="${user.phone}"></td>
+                                                    <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}" placeholder="xxxxxxxxxx"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Address</td>

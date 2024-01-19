@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:useBean id="error" scope="request" class="java.lang.String" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,7 +33,7 @@
         <link rel="stylesheet" href="css/default.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
-        
+
     </head>
     <body>
 
@@ -40,22 +41,24 @@
         <jsp:include page="header.jsp"></jsp:include>
         <!-- header end -->
         <main>
-            <!-- login Area Strat-->
+            <!-- login Area Start-->
             <section class="login-area pt-100 pb-100">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-8 offset-lg-2">
                             <div class="basic-login">
                                 <h3 class="text-center mb-60">Reset password</h3>
-                                <form action="#">
+                                <p class="text-center" style="color: red">${error}</p>
+                                <form action="cpass" method="post" onsubmit="return validateForm()">
                                     <label for="oPass">Enter Your Old Password<span>**</span></label>
-                                    <input name="oldpass" type="password" placeholder="Enter..." id="oPass" />
-                                    <label for="nPass">New Password<span>**</span></label>
-                                    <input name="newpass" type="password" placeholder="Enter..." id="nPass"/>
+                                    <input name="oldpass" type="password" placeholder="Enter..." id="oPass" required/>
+                                    <label for="nPass">Enter Your New Password<span>**</span></label>
+                                    <input name="newpass" type="password" placeholder="Enter..." id="nPass" required/>
                                     <label for="cpass">Confirm Password<span>**</span></label>
-                                    <input name="confirmpass" type="password" placeholder="Enter..." id="cPass"/>
+                                    <input name="confirmpass" type="password" placeholder="Enter..." id="cPass" required/>
                                     <div class="mt-10"></div>
-                                    <button class="btn theme-btn-2 w-100" type="submit">Change</button>
+                                    <input class="btn theme-btn-2 w-100" type="submit" value="Change Password">
+                                    <!-- <button  type="submit">Change password</button> -->
                                 </form>
                             </div>
                         </div>
@@ -102,5 +105,19 @@
         <script src="js/jquery.magnific-popup.min.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
+        <script>
+            function validateForm() {
+                var newPassword = document.getElementById('nPass').value;
+                var reenterPassword = document.getElementById('cPass').value;
+                if (newPassword !== reenterPassword) {
+                    alert('Passwords do not match. Please reenter your new password.');
+                    document.getElementById('cPass').focus();
+                    return false; // Prevent form submission
+                }else{
+                    return true;
+                }
+                // If the passwords match, the form will be submitted
+            }
+        </script>
     </body>
 </html>

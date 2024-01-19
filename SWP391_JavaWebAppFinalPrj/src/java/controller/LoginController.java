@@ -77,9 +77,10 @@ public class LoginController extends HttpServlet {
             String password = request.getParameter("password");
             if(UsersDao.checkLogin(username, password)){
                 // get full name, address, phone, email and role of the user
-                User u = UsersDao.getUserInfo(username);
+                User u = UsersDao.getUserInfoByUsername(username);
                 //set username for users
                 u.setUserName(username);
+                u.setPassword(password);
                 //add user into session scope
                 request.getSession().setAttribute("user", u);
                 int role = u.getRole();
@@ -97,7 +98,7 @@ public class LoginController extends HttpServlet {
                 url = "/login.jsp";
             }
         } catch (Exception e) {
-            
+            String msg = e.getMessage();
         }
         request.getRequestDispatcher(url).forward(request, response);
     }

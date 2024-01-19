@@ -5,12 +5,14 @@
  */
 package controller;
 
+import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.User;
 
 /**
  *
@@ -70,7 +72,21 @@ public class ChangePassController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        try {
+            User u = (User) request.getSession().getAttribute("user");
+            String oldPass = request.getParameter("oldpass");
+            String newPass = request.getParameter("newpass");
+            if(oldPass.equals(u.getPassword())){
+                UsersDao.changePassword(u.getUserName(),newPass);
+                u.setPassword(newPass);
+                request.getSession().setAttribute("user",u);
+                request.getRequestDispatcher("/profile.jsp").forward(request, response);
+            }else{
+                request.setAttribute("error", "Your old password is incorrect");
+                request.getRequestDispatcher("/changepassword.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+        }
     }
 
     /**

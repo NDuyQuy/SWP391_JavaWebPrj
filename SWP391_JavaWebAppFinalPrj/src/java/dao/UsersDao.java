@@ -19,6 +19,8 @@ public class UsersDao {
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
     private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE username = ?";
     private static final String GETUSERSINFO = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
+    private static final String GETUSERSINFOBYEMAIL = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [email] = ?";
+    private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
         boolean checked = false;
@@ -77,7 +79,7 @@ public class UsersDao {
             e.printStackTrace();
         }
     }
-    public static User getUserInfo(String username){
+    public static User getUserInfoByUsername(String username){
         PreparedStatement ptm = null;
         ResultSet rs = null;
         User user = null;
@@ -86,10 +88,16 @@ public class UsersDao {
             ptm.setString(1, username);
             rs = ptm.executeQuery();
             if (rs.next()) {
-                String fullname = rs.getString("fullname").trim();
-                String email = rs.getString("email").trim();
-                String phone = rs.getString("phone").trim();
-                String adress = rs.getString("address").trim();
+                //NOTE 
+                /*
+                FOR SOME FUCKING REASON, THE STRING WE GET WHEN RETURN WHAT EVER IT IS IT ALWAY HAVE 
+                A LONG SPACE LINE IN THE END OF STRING, SO I DECIDE TO USE TRIM TO REMOVE IT.
+                HOWEVER, IF THE STRING RETURN IS NULL THEN THE TRIM METHOD WILL CAUSE EXCEPTION SO I DO AS BELOW
+                */
+                String fullname = rs.getString("fullname")==null?null:rs.getString("fullname").trim();
+                String email = rs.getString("email")==null?null:rs.getString("email").trim();
+                String phone = rs.getString("phone")==null?null:rs.getString("phone").trim();
+                String adress = rs.getString("address")==null?null:rs.getString("address").trim();
                 int role = rs.getInt("role");
                 user = new User(fullname, email, phone, adress, role);
             }
@@ -98,7 +106,41 @@ public class UsersDao {
         }
         return user;
     }
+    public static User getUserInfoByEmail(String email){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        User user = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETUSERSINFO);
+            ptm.setString(1, email);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                String fullname = rs.getString("fullname")==null?null:rs.getString("fullname").trim();
+                String mail = rs.getString("email")==null?null:rs.getString("email").trim();
+                String phone = rs.getString("phone")==null?null:rs.getString("phone").trim();
+                String adress = rs.getString("address")==null?null:rs.getString("address").trim();
+                int role = rs.getInt("role");
+                user = new User(fullname, mail, phone, adress, role);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public static void changePassword(String username, String newpass){
+        PreparedStatement ptm = null;
+        //change user's password into newpass
+        //username is for detection
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(CHANGEPASSWORD);
+            ptm.setString(1, newpass);
+            ptm.setString(2, username);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
-        System.out.println(getUserInfo("Q"));
+        changePassword("J", "J010203");
     }
 }
