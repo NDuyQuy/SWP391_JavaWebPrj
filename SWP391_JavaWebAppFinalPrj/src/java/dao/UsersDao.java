@@ -8,7 +8,7 @@ package dao;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import model.User;
 /**
  *
  * @author ASUS
@@ -18,6 +18,7 @@ public class UsersDao {
     private static final String REGISTER = "INSERT INTO [users](username,password,email,role,shop_reported_count) values (?,?,?,1,0)";
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
     private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE username = ?";
+    private static final String GETUSERSINFO = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
         boolean checked = false;
@@ -76,8 +77,28 @@ public class UsersDao {
             e.printStackTrace();
         }
     }
-    
+    public static User getUserInfo(String username){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        User user = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETUSERSINFO);
+            ptm.setString(1, username);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                String fullname = rs.getString("fullname").trim();
+                String email = rs.getString("email").trim();
+                String phone = rs.getString("phone").trim();
+                String adress = rs.getString("address").trim();
+                int role = rs.getInt("role");
+                user = new User(fullname, email, phone, adress, role);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
     public static void main(String[] args) {
-        UsersDao.resetPassword("Q");
+        System.out.println(getUserInfo("Q"));
     }
 }

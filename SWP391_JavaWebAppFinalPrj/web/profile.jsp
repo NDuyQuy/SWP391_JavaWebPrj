@@ -5,6 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:useBean id="user" scope="session" class="model.User" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -106,7 +107,7 @@
                                     <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg">
                                 </div>
                                 <div class="widget-posts-body">
-                                    <h6 class="widget-posts-title">abc</h6>
+                                    <h6 class="widget-posts-title">${user.fullname}</h6>
                                     <div class="widget-posts-meta"><a href="profile.jsp"><i class="fa fa-edit"></i> Edit profile</a></div>
                                 </div>
                             </div>
@@ -115,7 +116,7 @@
                                     <dl>
                                         <dt><a href="#">My account</a></dt>
                                         <dd style="margin-top:10px;"><a href="profile.jsp">Profile</a></dd>
-                                        <dd><a href="#">Change password</a></dd>
+                                        <dd><a href="resetpassword.jsp">Change password</a></dd>
                                     </dl>
                                 </li>
                                 <li>
@@ -142,29 +143,28 @@
                                 </div>
                                 <div class="bottom">
                                     <div class="profile-table" style="font-size: 15px;">
-                                        <form>
+                                        <form action="profile" method="post">
                                             <table width="550" height="400">
                                                 <tr>
                                                     <td>Username</td>
-                                                    <td></td>
+                                                    <td name="uname" value="${user.userName}">${user.userName}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Name</td>
-                                                    <td><input type="text" size="40" name="" value=""></td>
+                                                    <td><input type="text" size="40" name="fname" value="${user.fullname}"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Email</td>
                                                     <td> 
-                                                        <a href="#" style="text-decoration: underline;">Change</a></td>
+                                                        <p name="email">${user.email}<a href="#" style="text-decoration: underline;">Change</a></p></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Phone number</td>
-                                                    <td> 
-                                                        <a href="#" style="text-decoration: underline;">Change</a></td>
+                                                    <td><input type="text" size="40" name="phone" value="${user.phone}"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Address</td>
-                                                    <td><input type="text" size="40" name="" value=""></td>
+                                                    <td><input type="text" size="40" name="addr" value="${user.address}"></td>
                                                 </tr>
                                                 <tr>
                                                     <td></td>

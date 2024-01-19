@@ -45,7 +45,6 @@
 
 
         <main>
-
         <!-- breadcrumb-area-start -->
         <section class="breadcrumb-area" data-background="img/bg/page-title.png">
             <div class="container">
@@ -71,11 +70,11 @@
                     <div class="col-lg-8 offset-lg-2">
                         <div class="basic-login">
                             <h3 class="text-center mb-60">Login From Here</h3>
-                            <form>
-                                <label for="name">Email Address <span>**</span></label>
-                                <input id="name" type="text" placeholder="Enter Username or Email address..." />
+                            <form method="post" action="login">
+                                <label for="name">UsersName|Password <span>**</span></label>
+                                <input id="name" type="text" placeholder="Enter Username or Email address..." name="username" />
                                 <label for="pass">Password <span>**</span></label>
-                                <input id="pass" type="password" placeholder="Enter password..." />
+                                <input id="pass" type="password" placeholder="Enter password..." name="password" />
                                 <div class="login-action mb-20 fix">
                                     <span class="log-rem f-left">
                                         <input id="remember" type="checkbox" />
