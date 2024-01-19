@@ -1,32 +1,11 @@
-.social-white-google-png {
-    background-size: 722.2222222222222% 638.8888888888889%;
-    background-position: 83.92857142857143% 5.154639175257732%;
-}
-.social-white-background {
-    background-image: url(https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/7b95007f3377150730bbb5d1ddb477d6.png);
+.widget{
+    background: #fff;
 }
 
-._1a550J {
-    width: 22px;
-    height: 22px;
-}
-._1a550J, .Bq4Bra {
-    flex-shrink: 0;
+.profile-table table td:nth-child(1) {
+    text-align: right;
 }
 
-.Bq4Bra, .lyJbNT {
-    align-items: center;
-    display: flex;
-    justify-content: center;
+.profile-table table td:nth-child(2){
+    padding-left: 30px;
 }
-
-.Bq4Bra{
-    width:36px;
-    height:36px;
-    border-radius:1px
-}
-
-._1a550J{
-    opacity:.26
-}
-

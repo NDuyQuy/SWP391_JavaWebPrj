@@ -37,7 +37,7 @@
                             <div class="category-menu">
                                 <h4>Seller Centre</h4>
                                 <ul>
-                                    <li><a href="#"><i class="flaticon-employee"></i> Start selling</a></li>
+                                    <li><a href="#"><i class="fi fi--rr-dollar"></i> Start selling</a></li>
                                 </ul>
                                 <h4>Category</h4>
                                 <ul>
@@ -200,12 +200,34 @@
                                     </li>
                                     <li class="login-btn">
                                         <c:if test="${sessionScope.acc == null}">
-                                    <a href="login.jsp"><i class="far fa-user"></i></a>
-                                    </c:if>
-                                    <c:if test="${sessionScope.acc != null}">
-                                        <a href="profile.jsp"><i class="far fa-user"></i></a>
-                                    </c:if>
-                                        
+                                            <a href="login.jsp"><i class="far fa-user"></i></a>
+                                            <ul class="submenu">
+                                                
+                                                <li >
+                                                    <a href="login.jsp">Login</a>
+                                                </li>
+                                                <li>
+                                                    <a href="register.jsp">Register</a>
+                                                </li>
+
+                                            </ul>
+                                        </c:if>
+                                        <c:if test="${sessionScope.acc != null}">
+                                            <a href="profile.jsp"><i class="far fa-user"></i></a>
+                                            <ul class="submenu">
+                                                <li  style="font-size: 20px;">Hi, <b>${sessionScope.acc.userName}</b>!</li>
+                                                <li>
+                                                    <a href="profile.jsp">My Account</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">My Purchase</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">Logout</a>
+                                                </li>
+                                            </ul>
+                                        </c:if>
+
                                     </li>
                                     <li class="d-shop-cart"><a href="#"><i class="flaticon-shopping-cart"></i> <span class="cart-count">3</span></a>
                                         <ul class="minicart">
@@ -302,5 +324,21 @@
                 </div>
             </div>
         </header>
+
+        <!-- Fullscreen search -->
+        <div class="search-wrap">
+            <div class="search-inner">
+                <i class="fas fa-times search-close" id="search-close"></i>
+                <div class="search-cell">
+                    <form method="get">
+                        <div class="search-field-holder">
+                            <input type="search" class="main-search-input" placeholder="Search Entire Store...">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> <!-- end fullscreen search -->
+
+        
     </body>
 </html>
