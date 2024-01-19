@@ -17,7 +17,7 @@ public class UsersDao {
     private static final String CHECKLOGIN = "SELECT [fullname] FROM [users] WHERE [username]=? and [password]=?";
     private static final String REGISTER = "INSERT INTO [users](username,password,email,role,shop_reported_count) values (?,?,?,1,0)";
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
-    private static final String RESETPASSWORD = "UPDATE [users] SET password = '123' WHERE username = ?";
+    private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE username = ?";
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
         boolean checked = false;
