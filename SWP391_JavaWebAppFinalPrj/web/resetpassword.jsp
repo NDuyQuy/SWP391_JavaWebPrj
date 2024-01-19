@@ -48,7 +48,7 @@
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
                         <div class="basic-login">
-                            <h3 class="text-center mb-60">Reset password</h3>
+                            <h3 class="text-center mb-60">Verify Your E-mail</h3>
                             <form action="#">
                                 <label for="email-id">Email Address <span>**</span></label>
                                 <input id="email-id" type="text" placeholder="Enter Email address..." />
