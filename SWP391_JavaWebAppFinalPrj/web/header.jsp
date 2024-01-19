@@ -31,7 +31,7 @@
                                 <span class="bar3"></span>
                             </div>
                             <div class="logo">
-                                <a href="Home"><img src="img2/coco.png" style="height:60px; width:300px;" alt=""></a>
+                                <a href="Home"><img src="img/logo/coco.png" style="height:60px; width:300px;" alt=""></a>
                             </div>
 
                             <div class="category-menu">
