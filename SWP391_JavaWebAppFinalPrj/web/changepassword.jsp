@@ -39,10 +39,7 @@
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
         <!-- header end -->
-
-
         <main>
-
             <!-- login Area Strat-->
             <section class="login-area pt-100 pb-100">
                 <div class="container">
@@ -51,10 +48,12 @@
                             <div class="basic-login">
                                 <h3 class="text-center mb-60">Reset password</h3>
                                 <form action="#">
-                                    <label for="password">New Password<span>**</span></label>
-                                    <input name="pswd1" type="password" placeholder="Enter..." />
-                                    <label for="password">Confirm Password<span>**</span></label>
-                                    <input name="pswd2" type="password" placeholder="Enter..." />
+                                    <label for="oPass">Enter Your Old Password<span>**</span></label>
+                                    <input name="oldpass" type="password" placeholder="Enter..." id="oPass" />
+                                    <label for="nPass">New Password<span>**</span></label>
+                                    <input name="newpass" type="password" placeholder="Enter..." id="nPass"/>
+                                    <label for="cpass">Confirm Password<span>**</span></label>
+                                    <input name="confirmpass" type="password" placeholder="Enter..." id="cPass"/>
                                     <div class="mt-10"></div>
                                     <button class="btn theme-btn-2 w-100" type="submit">Change</button>
                                 </form>
