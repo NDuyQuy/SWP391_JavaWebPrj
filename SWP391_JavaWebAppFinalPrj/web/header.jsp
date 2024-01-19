@@ -24,20 +24,20 @@
             <div id="header-sticky" class="header-area box-90">
                 <div class="container-fluid">
                     <div class="row align-items-center">
-                        <div class="col-xl-2 col-lg-6 col-md-6 col-7 col-sm-5 d-flex align-items-center pos-relative">
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-7 col-sm-5 d-flex align-items-center pos-relative">
                             <div class="basic-bar cat-toggle">
                                 <span class="bar1"></span>
                                 <span class="bar2"></span>
                                 <span class="bar3"></span>
                             </div>
                             <div class="logo">
-                                <a href="Home"><img src="img/logo/logo.png" alt=""></a>
+                                <a href="Home"><img src="img/logo/coco.png" style="height:60px; width:300px;" alt=""></a>
                             </div>
 
                             <div class="category-menu">
                                 <h4>Seller Centre</h4>
                                 <ul>
-                                    <li><a href="#"><i class="fi fi--rr-dollar"></i> Start selling</a></li>
+                                    <li><a href="#"><i class="flaticon-employee"></i> Start selling</a></li>
                                 </ul>
                                 <h4>Category</h4>
                                 <ul>
@@ -51,7 +51,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-xl-8 col-lg-6 col-md-8 col-8 d-none d-xl-block">
+                        <div class="col-xl-6 col-lg-6 col-md-8 col-8 d-none d-xl-block">
                             <div class="main-menu text-center">
                                 <nav id="mobile-menu">
                                     <ul>

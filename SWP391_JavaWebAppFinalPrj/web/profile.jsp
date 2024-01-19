@@ -116,7 +116,7 @@
                                     <dl>
                                         <dt><a href="#">My account</a></dt>
                                         <dd style="margin-top:10px;"><a href="profile.jsp">Profile</a></dd>
-                                        <dd><a href="resetpassword.jsp">Change password</a></dd>
+                                        <dd><a href="changepassword.jsp">Change password</a></dd>
                                     </dl>
                                 </li>
                                 <li>

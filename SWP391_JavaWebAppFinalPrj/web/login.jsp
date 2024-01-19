@@ -71,7 +71,7 @@
                         <div class="basic-login">
                             <h3 class="text-center mb-60">Login From Here</h3>
                             <form method="post" action="login">
-                                <label for="name">UsersName|Password <span>**</span></label>
+                                <label for="name">Username|Email <span>**</span></label>
                                 <input id="name" type="text" placeholder="Enter Username or Email address..." name="username" />
                                 <label for="pass">Password <span>**</span></label>
                                 <input id="pass" type="password" placeholder="Enter password..." name="password" />

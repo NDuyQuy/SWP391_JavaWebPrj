@@ -48,14 +48,10 @@
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
                         <div class="basic-login">
-                            <h3 class="text-center mb-60">Reset password</h3>
-                            <form action="cpass" method="post">
-                                <label for="old-pass">Enter old password <span>**</span></label>
-                                <input id="old-pass" type="password" placeholder="Enter Email address..." />
-                                <label for="new-pass">Enter new password <span>**</span></label>
-                                <input id="new-pass" type="password" placeholder="Enter Email address..." />
-                                <label for="r-new-pass">ReEnter your new password <span>**</span></label>
-                                <input id="r-new-pass" type="password" placeholder="Enter Email address..." />
+                            <h3 class="text-center mb-60">Verify Your E-mail</h3>
+                            <form action="#">
+                                <label for="email-id">Email Address <span>**</span></label>
+                                <input id="email-id" type="text" placeholder="Enter Email address..." />
                                 <div class="mt-10"></div>
                                 <button class="btn theme-btn-2 w-100">Change password</button>
                             </form>
