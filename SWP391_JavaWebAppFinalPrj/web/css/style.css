@@ -577,17 +577,19 @@ label {
 
 .basic-bar {
 
-	height: 60px;
+	height: 40px;
 
-	width: 60px;
+	width: 40px;
 
 	background: #fe4536;
+        
+        position: absolute;
 
 	border-radius: 50%;
 
 	margin-right: 50px;
 
-	padding: 14px 0;
+	padding: 5px 0;
 
 	cursor: pointer;
 
@@ -854,7 +856,7 @@ label {
 
 	color: #10111e;
 
-	font-size: 12px;
+	font-size: 15px;
 
 	display: block;
 
@@ -1131,7 +1133,7 @@ label {
 }
 
 .logo {
-
+        margin-left: 50px;
 	transition: .3s;
 
 }
