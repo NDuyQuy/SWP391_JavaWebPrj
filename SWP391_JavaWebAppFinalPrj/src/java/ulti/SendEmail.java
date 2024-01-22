@@ -69,13 +69,21 @@ public class SendEmail {
 
 class Program {
     public static void main (String args[]) {
-        final String from = "hungdgde170372@fpt.edu.vn";
-        final String pass = "lkymlhaoddfjydlr";
+        final String from = ""; //email which use to sent
+        final String pass = ""; //app password
         
-        String to = "quyndde170660@fpt.edu.vn";
+        /*
+        How to get app password:
+        -Go to gmail account setting
+        -Turn on 2-step verification
+        -Search "App passwords" in setting
+        -Type a name and DONE
+        */
+        
+        String to = ""; //email which receive mail
         MailContent mc = new MailContent();
         SendEmail ve = new SendEmail();
-        String content = mc.resetPassword("444444");
+        String content = mc.resetPassword("444444"); //the code must be generate random (gonna do it later)
         ve.sendEmail(from, to, pass, content);
     }
 }
