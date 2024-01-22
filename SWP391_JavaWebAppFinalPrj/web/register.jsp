@@ -71,11 +71,11 @@
                             <h3 class="text-center mb-60">Signup From Here</h3>
                             <form method="post"action="register">
                                 <label for="name">Username <span>**</span></label>
-                                <input id="name" type="text" placeholder="Enter Username..." name="username"/>
+                                <input id="name" type="text" placeholder="Enter Username..." name="username" required/>
                                 <label for="email-id">Email Address <span>**</span></label>
-                                <input id="email-id" type="email" placeholder="Enter Email address..." name="email"/>
+                                <input id="email-id" type="email" placeholder="Enter Email address..." name="email"required/>
                                 <label for="pass">Password <span>**</span></label>
-                                <input id="pass" type="password" placeholder="Enter password..." name="password"/>
+                                <input id="pass" type="password" placeholder="Enter password..." name="password"required/>
                                 <div class="mt-10"></div>
                                 <button class="btn theme-btn-2 w-100">Register Now</button>
                                 <div class="or-divide"><span>or</span></div>
