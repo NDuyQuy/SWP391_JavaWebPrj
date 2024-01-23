@@ -20,6 +20,10 @@
         <servlet-name>ChangePassController</servlet-name>
         <servlet-class>controller.ChangePassController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GoogleLoginServlet</servlet-name>
+        <servlet-class>controller.Authenciation.GoogleLogin.GoogleLoginServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -39,6 +43,10 @@
     <servlet-mapping>
         <servlet-name>ChangePassController</servlet-name>
         <url-pattern>/cpass</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GoogleLoginServlet</servlet-name>
+        <url-pattern>/GoogleLoginServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
