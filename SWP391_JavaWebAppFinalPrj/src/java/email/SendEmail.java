@@ -113,6 +113,7 @@ public class SendEmail {
                 + "        <p>Please use this code to complete the password reset. Note that the code will expire 30 minutes after the time of this email.</p>\n"
                 + "        <p>If you did not request this password reset, please contact our support team immediately.</p>\n"
                 + "        <p>Thank you for your attention to this matter.</p>\n"
+                + "        <p>!!IMPORTANT.IF YOU SUCCESS. The password of your account will be 123456. So please change it ASAP</p>\n"
                 + "        <p>Sincerely,</p>\n"
                 + "        <p><b>CO.Handmade Support Team</b></p>\n"
                 + "    </body>\n"
