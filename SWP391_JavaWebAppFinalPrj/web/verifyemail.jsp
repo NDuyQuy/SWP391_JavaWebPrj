@@ -50,11 +50,11 @@
                         <div class="basic-login">
                             <h3 class="text-center mb-60">Verify Your E-mail</h3>
                             <p style="color: red">${requestScope.error}</p>
-                            <form action="verifyemail" method="get">
-                                <label for="email-id">Email Address <span>**</span></label>
-                                <input id="email-id" type="email" placeholder="Enter Email address..." name="email" required/>
+                            <form action="verifyemail" method="post">
+                                <label for="email-id">Enter Your Verify Code <span>**</span></label>
+                                <input id="email-id" type="text" placeholder="Enter Verify code..." name="verify" required/>
                                 <div class="mt-10"></div>
-                                <button class="btn theme-btn-2 w-100">Change password</button>
+                                <button class="btn theme-btn-2 w-100">Verify</button>
                             </form>
                         </div>
                     </div>

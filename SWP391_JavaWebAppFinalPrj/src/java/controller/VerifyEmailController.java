@@ -5,19 +5,20 @@
  */
 package controller;
 
+import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import email.SendEmail;
 import model.*;
-import dao.*;
 /**
  *
  * @author ASUS
  */
-public class LoginController extends HttpServlet {
+public class VerifyEmailController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +37,10 @@ public class LoginController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginController</title>");            
+            out.println("<title>Servlet VerifyEmailController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet VerifyEmailController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,7 +58,24 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String email = request.getParameter("email");
+        User u = UsersDao.getUserInfoByEmail(email);
+        //CHECK IF USERS ENTER EMAIL THAT NOT THE EMAIL REGISTER
+        if(u==null){
+            request.setAttribute("error", "Your Email Is Not Correct");
+            request.getRequestDispatcher("/forgotpassword.jsp").forward(request, response);
+            return;
+        }
+        request.getSession().setAttribute("user",u);
+        String verifyCode = SendEmail.generateRandomNumber(6);
+        //PURPOSE 1 = FORGOT EMAIL CONTENT, 2 = REGISTER EMAIL CONTENT
+        SendEmail.sendEmail(email, verifyCode, (byte)1);
+        //CURENTTIME RETURN TIME IN MILISECOND, + 30 MIN IN MILISECOND -> EXPIRED TIME
+        long expiredTime = System.currentTimeMillis()+(30*60*1000);
+        VerifyCode code = new VerifyCode(verifyCode, expiredTime);
+        //STORE CODE IN SESSION
+        request.getSession().setAttribute("verifyCode", code);
+        request.getRequestDispatcher("/verifyemail.jsp").forward(request, response);
     }
 
     /**
@@ -71,36 +89,20 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String url = "";
-        String username = "", password="";
-        try {
-            username = request.getParameter("username");
-            password = request.getParameter("password");
-            if(UsersDao.checkLogin(username, password)){
-                // get full name, address, phone, email and role of the user
-                User u = UsersDao.getUserInfoByUsername(username);
-                //set username for users
-                u.setUserName(username);
-                //u.setPassword(password);
-                //add user into session scope
-                request.getSession().setAttribute("user", u);
-                int role = u.getRole();
-                //switch the url 
-                switch (role) {
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                }
-                url = "/home.jsp";
-            }else{
+        String verifyCode = request.getParameter("verify");
+        VerifyCode realCode = (VerifyCode) request.getSession().getAttribute("verifyCode");
+        String url = "/verifyemail.jsp";
+        if(verifyCode.equals(realCode.getCode())){
+            long currentTime = System.currentTimeMillis();
+            if(currentTime>=realCode.getExpiredTime()) request.setAttribute("error", "Your VerifyCode Is Expired");
+            else
+            {
+                User u = (User) request.getSession().getAttribute("user");
+                UsersDao.resetPassword(u.getEmail());
                 url = "/login.jsp";
             }
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            String haha = "hahahaah";
+        }else{
+            request.setAttribute("error", "Your VerifyCode Is Not Correct");
         }
         request.getRequestDispatcher(url).forward(request, response);
     }

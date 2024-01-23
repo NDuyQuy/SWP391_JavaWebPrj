@@ -20,6 +20,14 @@
         <servlet-name>ChangePassController</servlet-name>
         <servlet-class>controller.ChangePassController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LogOutController</servlet-name>
+        <servlet-class>controller.LogOutController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerifyEmailController</servlet-name>
+        <servlet-class>controller.VerifyEmailController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -39,6 +47,14 @@
     <servlet-mapping>
         <servlet-name>ChangePassController</servlet-name>
         <url-pattern>/cpass</url-pattern>
+    </servlet-mapping>
+     <servlet-mapping>
+        <servlet-name>LogOutController</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerifyEmailController</servlet-name>
+        <url-pattern>/verifyemail</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

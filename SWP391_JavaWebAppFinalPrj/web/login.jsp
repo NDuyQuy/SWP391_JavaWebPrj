@@ -81,7 +81,7 @@
                                         <label for="remember">Remember me!</label>
                                     </span>
                                     <span class="forgot-login f-right">
-                                        <a href="resetpassword.jsp">Forgot password?</a>
+                                        <a href="forgotpassword.jsp">Forgot password?</a>
                                     </span>
                                 </div>
                                 <button class="btn theme-btn-2 w-100">Login Now</button>

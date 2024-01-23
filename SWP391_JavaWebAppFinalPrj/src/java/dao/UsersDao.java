@@ -17,8 +17,8 @@ public class UsersDao {
     private static final String CHECKLOGIN = "SELECT [fullname] FROM [users] WHERE [username]=? and [password]=?";
     private static final String REGISTER = "INSERT INTO [users](username,password,email,role,shop_reported_count) values (?,?,?,1,0)";
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
-    private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE username = ?";
-    private static final String GETUSERSINFO = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
+    private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE email = ?";
+    private static final String GETUSERSINFOBYUSERNAME = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
     private static final String GETUSERSINFOBYEMAIL = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
     public static boolean checkLogin(String username, String password) {
@@ -67,13 +67,13 @@ public class UsersDao {
             e.printStackTrace();
         }
     }
-    public static void resetPassword(String username){
+    public static void resetPassword(String email){
         PreparedStatement ptm = null;
         //reset users password into 123
         //username is for detection
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(RESETPASSWORD);
-            ptm.setString(1, username);
+            ptm.setString(1, email);
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class UsersDao {
         ResultSet rs = null;
         User user = null;
         try (Connection con = SQLConnection.getConnection()) {
-            ptm = con.prepareStatement(GETUSERSINFO);
+            ptm = con.prepareStatement(GETUSERSINFOBYUSERNAME);
             ptm.setString(1, username);
             rs = ptm.executeQuery();
             if (rs.next()) {
@@ -111,7 +111,7 @@ public class UsersDao {
         ResultSet rs = null;
         User user = null;
         try (Connection con = SQLConnection.getConnection()) {
-            ptm = con.prepareStatement(GETUSERSINFO);
+            ptm = con.prepareStatement(GETUSERSINFOBYEMAIL);
             ptm.setString(1, email);
             rs = ptm.executeQuery();
             if (rs.next()) {
@@ -141,6 +141,6 @@ public class UsersDao {
         }
     }
     public static void main(String[] args) {
-        changePassword("J", "J010203");
+        System.out.println(getUserInfoByUsername("J"));
     }
 }
