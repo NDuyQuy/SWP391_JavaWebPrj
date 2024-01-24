@@ -72,15 +72,16 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "";
+        String username = "", password="";
         try {
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
+            username = request.getParameter("username");
+            password = request.getParameter("password");
             if(UsersDao.checkLogin(username, password)){
                 // get full name, address, phone, email and role of the user
                 User u = UsersDao.getUserInfoByUsername(username);
                 //set username for users
                 u.setUserName(username);
-                u.setPassword(password);
+                //u.setPassword(password);
                 //add user into session scope
                 request.getSession().setAttribute("user", u);
                 int role = u.getRole();
@@ -99,6 +100,7 @@ public class LoginController extends HttpServlet {
             }
         } catch (Exception e) {
             String msg = e.getMessage();
+            String haha = "hahahaah";
         }
         request.getRequestDispatcher(url).forward(request, response);
     }

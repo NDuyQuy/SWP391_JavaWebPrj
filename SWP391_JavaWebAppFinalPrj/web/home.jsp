@@ -2904,7 +2904,7 @@
                                     </div>
                                     <div class="area-title white-color mb-50">
                                         <h2>Newsletter</h2>
-                                        <p>Subsribe here for get every single updates</p>
+                                        <p>Subscribe here for get every single updates</p>
                                     </div>
                                 </div>
                             </div>

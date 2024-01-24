@@ -49,9 +49,10 @@
                     <div class="col-lg-8 offset-lg-2">
                         <div class="basic-login">
                             <h3 class="text-center mb-60">Verify Your E-mail</h3>
-                            <form action="#">
+                            <p style="color: red">${requestScope.error}</p>
+                            <form action="verifyemail" method="get">
                                 <label for="email-id">Email Address <span>**</span></label>
-                                <input id="email-id" type="text" placeholder="Enter Email address..." />
+                                <input id="email-id" type="email" placeholder="Enter Email address..." name="email" required/>
                                 <div class="mt-10"></div>
                                 <button class="btn theme-btn-2 w-100">Change password</button>
                             </form>
