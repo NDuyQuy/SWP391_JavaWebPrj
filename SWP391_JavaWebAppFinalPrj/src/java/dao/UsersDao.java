@@ -206,7 +206,7 @@ public class UsersDao {
     }
     
     public static void main(String[] args) {
-        System.out.print(getUserInfoByEmail("tutien29042003@gmail.com"));
+        System.out.println(isGoogleUser("duyquy140903@gmail.com"));
     }
 
 }
