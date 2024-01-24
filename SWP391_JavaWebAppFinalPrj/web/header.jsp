@@ -215,7 +215,7 @@
                                         <c:if test="${sessionScope.user != null}">
                                             <a href="profile.jsp"><i class="far fa-user"></i></a>
                                             <ul class="submenu">
-                                                <li  style="font-size: 16px;">Hi, <b>${sessionScope.user.userName}</b>!</li>
+                                                <li  style="font-size: 16px;">Hi, <b>${sessionScope.user.fullname}</b>!</li>
                                                 <li>
                                                     <a href="profile.jsp">My Account</a>
                                                 </li>

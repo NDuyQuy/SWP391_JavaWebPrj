@@ -40,18 +40,36 @@ public class GoogleLoginServlet extends HttpServlet {
         // Lấy thông tin từ Google
         String email = userInfo.get("email").getAsString();
         String fullname = userInfo.get("name").getAsString();
+        if (!UsersDao.isGoogleUser(email)) {
+            // Nếu tài khoản chưa đăng nhập bằng Google, thực hiện lưu thông tin vào database
+            UsersDao.insertGoogleUser(email, fullname);
+        }
+        Boolean verify_email = userInfo.get("verified_email").getAsBoolean();
+        String url = "";
+        if (verify_email) {
+            User u = UsersDao.getUserInfoByEmail(email);
+            request.getSession().setAttribute("user", u);
+            int role = u.getRole();
+            //switch the url 
+            switch (role) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+            url = "/home.jsp";
+        } else {
+            url = "/login.jsp";
+        }
 
         // Tạo JsonObject mới chỉ chứa email và name
         JsonObject responseJson = new JsonObject();
         responseJson.addProperty("email", email);
         responseJson.addProperty("name", fullname);
+        request.getRequestDispatcher(url).forward(request, response);
 
-        if (!UsersDao.isGoogleUser(email)) {
-            // Nếu tài khoản chưa đăng nhập bằng Google, thực hiện lưu thông tin vào database
-            UsersDao.insertGoogleUser(email, fullname);
-        }
-        
-        response.sendRedirect(request.getContextPath() + "/Home");
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

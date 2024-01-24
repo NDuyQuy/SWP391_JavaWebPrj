@@ -174,7 +174,7 @@ public class UsersDao {
         ResultSet rs = null;
         User user = null;
         try (Connection con = SQLConnection.getConnection()) {
-            ptm = con.prepareStatement(GETUSERSINFO);
+            ptm = con.prepareStatement(GETUSERSINFOBYEMAIL);
             ptm.setString(1, email);
             rs = ptm.executeQuery();
             if (rs.next()) {
@@ -203,6 +203,10 @@ public class UsersDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void main(String[] args) {
+        System.out.print(getUserInfoByEmail("tutien29042003@gmail.com"));
     }
 
 }
