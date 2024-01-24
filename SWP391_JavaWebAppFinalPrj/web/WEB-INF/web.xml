@@ -21,12 +21,17 @@
         <servlet-class>controller.ChangePassController</servlet-class>
     </servlet>
     <servlet>
+<<<<<<< HEAD
         <servlet-name>LogOutController</servlet-name>
         <servlet-class>controller.LogOutController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>VerifyEmailController</servlet-name>
         <servlet-class>controller.VerifyEmailController</servlet-class>
+=======
+        <servlet-name>GoogleLoginServlet</servlet-name>
+        <servlet-class>controller.Authenciation.GoogleLogin.GoogleLoginServlet</servlet-class>
+>>>>>>> GoogleAuthen
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -48,6 +53,7 @@
         <servlet-name>ChangePassController</servlet-name>
         <url-pattern>/cpass</url-pattern>
     </servlet-mapping>
+<<<<<<< HEAD
      <servlet-mapping>
         <servlet-name>LogOutController</servlet-name>
         <url-pattern>/logout</url-pattern>
@@ -55,6 +61,11 @@
     <servlet-mapping>
         <servlet-name>VerifyEmailController</servlet-name>
         <url-pattern>/verifyemail</url-pattern>
+=======
+    <servlet-mapping>
+        <servlet-name>GoogleLoginServlet</servlet-name>
+        <url-pattern>/GoogleLoginServlet</url-pattern>
+>>>>>>> GoogleAuthen
     </servlet-mapping>
     <session-config>
         <session-timeout>
