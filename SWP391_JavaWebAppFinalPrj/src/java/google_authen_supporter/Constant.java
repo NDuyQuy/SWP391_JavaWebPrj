@@ -1,5 +1,5 @@
 
-package controller.Authenciation.GoogleLogin;
+package google_authen_supporter;
 
 public class Constant {
     public static String GOOGLE_CLIENT_ID = "499463704763-03misrvo3p2d4f08tsr3c430k921auk9.apps.googleusercontent.com";

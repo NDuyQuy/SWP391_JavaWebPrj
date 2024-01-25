@@ -69,13 +69,15 @@
                     <div class="col-lg-8 offset-lg-2">
                         <div class="basic-login">
                             <h3 class="text-center mb-60">Signup From Here</h3>
-                            <form method="post"action="register">
+                            <form method="get"action="register" onsubmit="return validateForm()">
                                 <label for="name">Username <span>**</span></label>
                                 <input id="name" type="text" placeholder="Enter Username..." name="username" required/>
                                 <label for="email-id">Email Address <span>**</span></label>
                                 <input id="email-id" type="email" placeholder="Enter Email address..." name="email"required/>
                                 <label for="pass">Password <span>**</span></label>
                                 <input id="pass" type="password" placeholder="Enter password..." name="password"required/>
+                                <label for="cpass">Confirm Password <span>**</span></label>
+                                <input id="cpass" type="password" placeholder="Enter confirm password..." name="password"required/>
                                 <div class="mt-10"></div>
                                 <button class="btn theme-btn-2 w-100">Register Now</button>
                                 <div class="or-divide"><span>or</span></div>
@@ -93,87 +95,7 @@
         </main>
 
         <!-- footer start -->
-        <footer class="footer-area pl-100 pr-100">
-            <div class="footer-area box-90 pt-100 pb-60" data-background="img/bg/footer.jpg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-5 col-lg-6 col-md-6 ">
-                            <div class="footer-widget mb-40 pr-70">
-                                <div class="footer-logo">
-                                    <a href="home.jsp"><img src="img/logo/footer-logo.png" alt=""></a>
-                                </div>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-                                    ut labore et dolore mag na
-                                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                                    ex ea commodo consequat.
-                                </p>
-                                <div class="footer-time d-flex mt-30">
-                                    <div class="time-icon">
-                                        <img src="img/icon/time.png" alt="">
-                                    </div>
-                                    <div class="time-text">
-                                        <span>Got Questions ? Call us 24/7!</span>
-                                        <h2>(0600) 874 548</h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-3">
-                            <div class="footer-widget mb-40">
-                                <h3>Social Media</h3>
-                                <ul class="footer-link">
-                                    <li><a href="#">Facebook</a></li>
-                                    <li><a href="#">Twitter</a></li>
-                                    <li><a href="#">Behance</a></li>
-                                    <li><a href="#"> Dribbble</a></li>
-                                    <li><a href="#">Linkedin</a></li>
-                                    <li><a href="#">Youtube</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-2 col-md-3 d-md-none d-xl-block">
-                            <div class="footer-widget pl-50 mb-40">
-                                <h3>Location</h3>
-                                <ul class="footer-link">
-                                    <li><a href="#">New York</a></li>
-                                    <li><a href="#">Tokyo</a></li>
-                                    <li><a href="#">Dhaka</a></li>
-                                    <li><a href="#">Chittagong</a></li>
-                                    <li><a href="#">China</a></li>
-                                    <li><a href="#">Japan</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-3">
-                            <div class="footer-widget mb-40">
-                                <h3>About</h3>
-                                <ul class="footer-link">
-                                    <li><a href="#">Terms & Conditions</a></li>
-                                    <li><a href="#"> Privacy Policy</a></li>
-                                    <li><a href="#">Contact Us</a></li>
-                                    <li><a href="#">FAQ</a></li>
-                                    <li><a href="#">Wholesale</a></li>
-                                    <li><a href="#">Direction</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright-area box-105">
-                <div class="container-fluid">
-                    <div class="pt-30 pb-30">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="copyright text-center">
-                                    <p>Copyright © 2019 <a href="#">BasicTheme</a>. All Rights Reserved</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <jsp:include page="footer.jsp"></jsp:include>
         <!-- footer end -->
 
         <!-- Fullscreen search -->
@@ -211,6 +133,20 @@
         <script src="js/jquery.magnific-popup.min.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
+        <script>
+            function validateForm() {
+                var newPassword = document.getElementById('pass').value;
+                var reenterPassword = document.getElementById('cpass').value;
+                if (newPassword !== reenterPassword) {
+                    alert('Passwords do not match. Please reenter your new password.');
+                    document.getElementById('cpass').focus();
+                    return false; // Prevent form submission
+                }else{
+                    return true;
+                }
+                // If the passwords match, the form will be submitted
+            }
+        </script>
     </body>
 
 <!-- Mirrored from wphix.com/template/vue/vue/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 21 Oct 2023 08:30:50 GMT -->

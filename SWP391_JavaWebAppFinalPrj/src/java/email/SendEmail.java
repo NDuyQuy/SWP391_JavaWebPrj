@@ -17,7 +17,7 @@ import java.util.Random;
 public class SendEmail {
 
     private static final String SENDER_EMAIL = "swp391c02rt02@gmail.com";
-    private static final String SENDER_APP_PASSWORD = "bois qexr dojs cidg";
+    private static final String SENDER_APP_PASSWORD = "oeid qulj bhpj cfeg";
 
     private static Session getAuthenticatedMailSession(String email, String password) {
         Properties properties = new Properties();
@@ -39,6 +39,7 @@ public class SendEmail {
     }
 
     public static void sendEmail(String to,String verifyCode, byte purpose) {
+        //PURPOSE = 1 -> FORGOT EMAIL, PURPOSE = 2 -> REGISTRATION
         // Get system properties
         MimeMessage msg = new MimeMessage(getAuthenticatedMailSession(SENDER_EMAIL, SENDER_APP_PASSWORD));
         try {
@@ -125,6 +126,9 @@ public class SendEmail {
             return "Password Reset Request for Your CO.Handmade Account";
         }
         return "Verify Your Email for CO.Handmade Account Registration";
+    }
+    public static void main(String[] args) {
+        sendEmail("duyquy140903@gmail.com", "1", (byte)2);
     }
 }
 

@@ -50,7 +50,7 @@
                         <div class="basic-login">
                             <h3 class="text-center mb-60">Verify Your E-mail</h3>
                             <p style="color: red">${requestScope.error}</p>
-                            <form action="verifyemail" method="post">
+                            <form action="register" method="post">
                                 <label for="email-id">Enter Your Verify Code <span>**</span></label>
                                 <input id="email-id" type="text" placeholder="Enter Verify code..." name="verify" required/>
                                 <div class="mt-10"></div>

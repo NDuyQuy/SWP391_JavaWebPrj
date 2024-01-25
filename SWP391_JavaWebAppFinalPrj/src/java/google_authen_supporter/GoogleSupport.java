@@ -1,4 +1,4 @@
-package controller.Authenciation.GoogleLogin;
+package google_authen_supporter;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

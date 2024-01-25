@@ -3,17 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.Authenciation.GoogleLogin;
+package controller;
 
 import com.google.gson.JsonObject;
+import google_authen_supporter.GoogleSupport;
 import dao.UsersDao;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.User;
+import password_supporter.PasswordManager;
 
 /**
  *
@@ -40,9 +41,9 @@ public class GoogleLoginServlet extends HttpServlet {
         // Lấy thông tin từ Google
         String email = userInfo.get("email").getAsString();
         String fullname = userInfo.get("name").getAsString();
-        if (!UsersDao.isGoogleUser(email)) {
+        if (UsersDao.getUserInfoByEmail(email)==null) {
             // Nếu tài khoản chưa đăng nhập bằng Google, thực hiện lưu thông tin vào database
-            UsersDao.insertGoogleUser(email, fullname);
+            UsersDao.register(email, PasswordManager.generateRandomPassword(10),email);
         }
         Boolean verify_email = userInfo.get("verified_email").getAsBoolean();
         String url = "";

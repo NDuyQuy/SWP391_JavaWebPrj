@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import dao.UsersDao;
+import email.SendEmail;
+import model.User;
+import model.VerifyCode;
+
 /**
  *
  * @author ASUS
@@ -35,7 +39,7 @@ public class RegisterController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RegisterController</title>");            
+            out.println("<title>Servlet RegisterController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet RegisterController at " + request.getContextPath() + "</h1>");
@@ -56,7 +60,20 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = "/verify_registration_email.jsp";
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        User u = new User(username, password, email);
+        //SEND EMAIL, SOTRE USERS DATA,VERIFY CODE DATA
+        request.getSession().setAttribute("registration", u);
+        String verifyCode = SendEmail.generateRandomNumber(6);
+        long expiredTime = System.currentTimeMillis() + 30*60*1000;
+        VerifyCode code = new VerifyCode(verifyCode, expiredTime);
+        request.getSession().setAttribute("verify", code);
+        SendEmail.sendEmail(email, verifyCode, (byte)2);
+        
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -70,15 +87,18 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String url = "";
+        String url = "/login.jsp";
         try {
-            String username = request.getParameter("username");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            UsersDao.register(username, password, email);
-            url = "/home.jsp";
+            VerifyCode realCode = (VerifyCode) request.getSession().getAttribute("verify");
+            String verifyCode = request.getParameter("verify");
+            long currentTime = System.currentTimeMillis();
+            if(verifyCode.equals(realCode.getCode())&&currentTime<=realCode.getExpiredTime()){
+                User u = (User) request.getSession().getAttribute("registration");
+                UsersDao.register(u.getUserName(), u.getPassword(), u.getEmail());
+            }
         } catch (Exception e) {
-            url="/register.jsp";
+            request.setAttribute("error", e.getMessage());
+            url = "/register.jsp";
         }
         request.getRequestDispatcher(url).forward(request, response);
     }

@@ -93,6 +93,12 @@ public class User {
         this.role = role;
     }
 
+    public User(String userName, String password, String email) {
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+    }
+    
     @Override
     public String toString() {
         return "User{" + "fullname=" + fullname + ", email=" + email + ", phone=" + phone + ", address=" + address + ", role=" + role + '}';
