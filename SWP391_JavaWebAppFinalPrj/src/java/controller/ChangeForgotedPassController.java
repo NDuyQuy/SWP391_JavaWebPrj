@@ -12,13 +12,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import email.SendEmail;
-import model.*;
+import model.User;
+
 /**
  *
  * @author ASUS
  */
-public class VerifyEmailController extends HttpServlet {
+public class ChangeForgotedPassController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,10 +37,10 @@ public class VerifyEmailController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet VerifyEmailController</title>");            
+            out.println("<title>Servlet ChangeForgotedPassController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet VerifyEmailController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ChangeForgotedPassController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,24 +58,10 @@ public class VerifyEmailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        User u = UsersDao.getUserInfoByEmail(email);
-        //CHECK IF USERS ENTER EMAIL THAT NOT THE EMAIL REGISTER
-        if(u==null){
-            request.setAttribute("error", "Your Email Is Not Correct");
-            request.getRequestDispatcher("/forgotpassword.jsp").forward(request, response);
-            return;
-        }
-        request.getSession().setAttribute("user",u);
-        String verifyCode = SendEmail.generateRandomNumber(6);
-        //PURPOSE 1 = FORGOT EMAIL CONTENT, 2 = REGISTER EMAIL CONTENT
-        SendEmail.sendEmail(email, verifyCode, (byte)1);
-        //CURENTTIME RETURN TIME IN MILISECOND, + 30 MIN IN MILISECOND -> EXPIRED TIME
-        long expiredTime = System.currentTimeMillis()+(30*60*1000);
-        VerifyCode code = new VerifyCode(verifyCode, expiredTime);
-        //STORE CODE IN SESSION
-        request.getSession().setAttribute("verifyCode", code);
-        request.getRequestDispatcher("/verifyemail.jsp").forward(request, response);
+        String pass = request.getParameter("pass");
+        User u = (User)request.getSession().getAttribute("user");
+        UsersDao.changePassword(u.getUserName(), pass);
+        request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
 
     /**
@@ -89,20 +75,7 @@ public class VerifyEmailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String verifyCode = request.getParameter("verify");
-        VerifyCode realCode = (VerifyCode) request.getSession().getAttribute("verifyCode");
-        String url = "/verifyemail.jsp";
-        if(verifyCode.equals(realCode.getCode())){
-            long currentTime = System.currentTimeMillis();
-            if(currentTime>=realCode.getExpiredTime()) request.setAttribute("error", "Your VerifyCode Is Expired");
-            else
-            {
-                url = "/changeforgotedpass.jsp";
-            }
-        }else{
-            request.setAttribute("error", "Your VerifyCode Is Not Correct");
-        }
-        request.getRequestDispatcher(url).forward(request, response);
+        processRequest(request, response);
     }
 
     /**

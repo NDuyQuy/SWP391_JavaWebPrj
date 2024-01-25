@@ -98,10 +98,10 @@ public class User {
         this.password = password;
         this.email = email;
     }
-    
+
     @Override
     public String toString() {
-        return "User{" + "fullname=" + fullname + ", email=" + email + ", phone=" + phone + ", address=" + address + ", role=" + role + '}';
+        return "User{" + "userName=" + userName + ", fullname=" + fullname + ", email=" + email + ", phone=" + phone + ", address=" + address + ", role=" + role + '}';
     }
     
 }

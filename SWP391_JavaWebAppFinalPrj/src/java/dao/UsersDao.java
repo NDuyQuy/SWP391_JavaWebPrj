@@ -19,7 +19,7 @@ public class UsersDao {
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
     private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE email = ?";
     private static final String GETUSERSINFOBYUSERNAME = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
-    private static final String GETUSERSINFOBYEMAIL = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [email] = ?";
+    private static final String GETUSERSINFOBYEMAIL = "SELECT [username],[fullname],[role],[address],[phone],[email] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
@@ -100,6 +100,7 @@ public class UsersDao {
                 String adress = rs.getString("address")==null?null:rs.getString("address").trim();
                 int role = rs.getInt("role");
                 user = new User(fullname, email, phone, adress, role);
+                user.setUserName(username);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,11 +117,12 @@ public class UsersDao {
             rs = ptm.executeQuery();
             if (rs.next()) {
                 String fullname = rs.getString("fullname")==null?null:rs.getString("fullname").trim();
-                String mail = rs.getString("email")==null?null:rs.getString("email").trim();
+                String username = rs.getString("username")==null?null:rs.getString("username").trim();
                 String phone = rs.getString("phone")==null?null:rs.getString("phone").trim();
                 String adress = rs.getString("address")==null?null:rs.getString("address").trim();
                 int role = rs.getInt("role");
-                user = new User(fullname, mail, phone, adress, role);
+                user = new User(fullname, email, phone, adress, role);
+                user.setUserName(username);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,6 +143,6 @@ public class UsersDao {
         }
     }
     public static void main(String[] args) {
-        System.out.println(getUserInfoByUsername("J"));
+        System.out.println(getUserInfoByEmail("duyquy140903@gmail.com"));
     }
 }
