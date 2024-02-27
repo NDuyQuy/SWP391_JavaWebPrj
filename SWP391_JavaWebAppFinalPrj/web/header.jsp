@@ -10,6 +10,38 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <style>
+            .autocomplete{
+                position: relative;
+                display: inline-block;
+            }
+
+            .autocomplete-items {
+                width: 460px;
+                position: absolute;
+                border: 1px solid #d4d4d4;
+                border-bottom: none;
+                border-top: none;
+                z-index: 99;
+                top: 100%;
+                left: 0;
+                right: 0;
+            }
+
+            .autocomplete-items div {
+                padding: 15px;
+                cursor: pointer;
+                background-color: #fff;
+            }
+            .autocomplete-items div:hover {
+                background-color: #e9e9e9;
+            }
+            .autocomplete-active {
+                background-color: #e9e9e9 !important;
+                color: #ffffff;
+            }
+
+        </style>
     </head>
     <body>
         <!-- preloader -->
@@ -21,182 +53,50 @@
         </div>
         <!-- preloader end  -->
         <header>
-            <div id="header-sticky" class="header-area box-90">
+            <div id="header-sticky" class="header-area box-90 pt-35 pb-35">
                 <div class="container-fluid">
                     <div class="row align-items-center">
-                        <div class="col-xl-4 col-lg-6 col-md-6 col-7 col-sm-5 d-flex align-items-center pos-relative">
+                        <div class="col-xl-5 col-lg-6 col-md-6 col-7 col-sm-5 d-flex align-items-center pos-relative">
                             <div class="basic-bar cat-toggle">
                                 <span class="bar1"></span>
                                 <span class="bar2"></span>
                                 <span class="bar3"></span>
                             </div>
                             <div class="logo">
-                                <a href="Home"><img src="img/logo/coco.png" style="height:60px; width:300px;" alt=""></a>
+                                <a href="Home"><img src="img/logo/coco.png" style="height:60px;width:300px;margin-left:20px" alt=""></a>
                             </div>
 
                             <div class="category-menu">
                                 <h4>Seller Centre</h4>
                                 <ul>
-                                    <li><a href="#"><i class="flaticon-employee"></i> Start selling</a></li>
+                                    <c:if test="${sessionScope.role != 2}">
+                                        <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
+                                        </c:if>
+                                        <c:if test="${sessionScope.role == 2}">
+                                        <li><a href="sellercentre.jsp"><i class="flaticon-employee"></i> Shop của tôi</a></li>
+                                        </c:if>
                                 </ul>
                                 <h4>Category</h4>
                                 <ul>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Table lamp</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Furniture</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Chair</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Men</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Women</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Cloth</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Trend</a></li>
+                                    <c:forEach var="cate" items="${sessionScope.main_category_list}">
+                                        <li><a href="product?cate=${cate.mCategoryID}"><i class="flaticon-shopping-cart-1"></i> ${cate.mCategoryName}</a></li>
+                                    </c:forEach>
+                                    
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-xl-6 col-lg-6 col-md-8 col-8 d-none d-xl-block">
-                            <div class="main-menu text-center">
-                                <nav id="mobile-menu">
-                                    <ul>
-                                        <li>
-                                            <a href="Home">Home</a>
-                                        </li>
-                                        <li class="mega-menu">
-                                            <a href="shop.html">Shop</a>
-                                            <ul class="submenu ">
-                                                <li>
-                                                    <a href="#">Category View</a>
-                                                    <ul class="submenu  level-1">
-                                                        <li>
-                                                            <a href="shop.html">Shop 2 Column</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-filter.html">Shop Filter Style</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-full.html">Shop Full</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-3-col.html">Shop 3 Column</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-list.html">List View</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Category View</a>
-                                                    <ul class="submenu">
-                                                        <li>
-                                                            <a href="shop-left-sidebar.html">Sidebar Left</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-sidebar-right.html">Sidebar Right</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="cart.html">Shopping Cart</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="checkout.html">Checkout</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="wishlist.html">My Wishlist</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Products Types</a>
-                                                    <ul class="submenu">
-                                                        <li>
-                                                            <a href="product-simple.html">Simple Product</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-variable.html">Variable Product</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-upcoming.html">Product Upcoming</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-up-thumb.html">Thumb Top Product</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-sidebar.html">Product Sidebar</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="shop-filter.html">Products </a>
-                                        </li>
-                                        <li>
-                                            <a href="blog.html">Blog</a>
-                                            <ul class="submenu">
-                                                <li>
-                                                    <a href="blog-2-col.html">Blog 2 Column</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-2-col-mas.html">Blog 2 Col Masonry</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-3-col.html">Blog 3 Column</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-3-col-mas.html">Blog 3 Col Masonry</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details.html">Blog Details</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-audio.html">Blog Details Audio</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-video.html">Blog Details Video</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-gallery.html">Blog Details Gallery</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-left-sidebar.html">Details Left Sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Pages</a>
-                                            <ul class="submenu">
-                                                <li>
-                                                    <a href="about.html">About Us</a>
-                                                </li>
-
-                                                <li>
-                                                    <a href="contact.html">Contact Us</a>
-                                                </li>
-                                                <li>
-                                                    <a href="login.jsp">Login</a>
-                                                </li>
-                                                <li>
-                                                    <a href="register.html">Register</a>
-                                                </li>
-                                                <li>
-                                                    <a href="cart.html">Shoping Cart</a>
-                                                </li>
-                                                <li>
-                                                    <a href="checkout.html">Checkout</a>
-                                                </li>
-                                                <li>
-                                                    <a href="wishlist.html">Wishlist</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="contact.html">Contact</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
+                        <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
                             <div class="header-right f-right">
                                 <ul>
                                     <li class="search-btn">
-                                        <a class="search-btn nav-search search-trigger" href="#"><i class="fas fa-search"></i></a>
+                                        <form autocomplete="off" action="SearchProduct" class="shop-search">
+                                            <div class="autocomplete" style="width: 500px;">
+                                                <input id="myInput" type="text" placeholder="Tìm kiếm..." style="width: 500px;height: 50px">
+                                            </div>
+                                            <button type="submit" style="height: 50px; width: 50px">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </form>
                                     </li>
                                     <li class="login-btn">
                                         <c:if test="${sessionScope.user == null}">
@@ -215,15 +115,15 @@
                                         <c:if test="${sessionScope.user != null}">
                                             <a href="profile.jsp"><i class="far fa-user"></i></a>
                                             <ul class="submenu">
-                                                <li  style="font-size: 16px;">Hi, <b>${sessionScope.user.fullname}</b>!</li>
+                                                <li  style="font-size: 16px;">Chào <b>${sessionScope.user.userName}</b>!</li>
                                                 <li>
-                                                    <a href="profile.jsp">My Account</a>
+                                                    <a href="profile.jsp">Tài khoản</a>
                                                 </li>
                                                 <li>
-                                                    <a href="#">My Purchase</a>
+                                                    <a href="#">Đơn mua</a>
                                                 </li>
                                                 <li>
-                                                    <a href="logout">Logout</a>
+                                                    <a href="logout">Đăng xuất</a>
                                                 </li>
                                             </ul>
                                         </c:if>
@@ -308,15 +208,8 @@
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <div class="total-price">
-                                                        <span class="f-left">Total:</span>
-                                                        <span class="f-right">$300.0</span>
-                                                    </div>
-                                                </li>
-                                                <li>
                                                     <div class="checkout-link">
-                                                        <a href="cart.html">Shopping Cart</a>
-                                                        <a class="red-color" href="checkout.html">Checkout</a>
+                                                        <a href="cart.html">Xem giỏ hàng</a>
                                                     </div>
                                                 </li>
                                             </ul>
@@ -333,20 +226,88 @@
             </div>
         </header>
 
-        <!-- Fullscreen search -->
-        <div class="search-wrap">
-            <div class="search-inner">
-                <i class="fas fa-times search-close" id="search-close"></i>
-                <div class="search-cell">
-                    <form method="get">
-                        <div class="search-field-holder">
-                            <input type="search" class="main-search-input" placeholder="Search Entire Store...">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> <!-- end fullscreen search -->
-
-        
+        <script>
+            var suggestion = ["túi xách", "cài áo", "bông tai", "khăn thêu", "áo sơ mi", "áo thun", "áo dài"];
+            function autocomplete(inp, arr) {
+                var currentFocus;
+                inp.addEventListener("input", function (e) {
+                    var a, s, b, i, val = this.value;
+                    closeAllLists();
+                    if (!val) {
+                        return false;
+                    }
+                    currentFocus = -1;
+                    a = document.createElement("DIV");
+                    a.setAttribute("id", this.id + "autocomplete-list");
+                    a.setAttribute("class", "autocomplete-items");
+                    this.parentNode.appendChild(a);
+                    s = document.createElement("DIV");
+                    s.innerHTML = "<span style='color: #fe4536;'> Tìm shop '" + val + "'<span>";
+                    s.addEventListener("click", function (e){
+                       location.href = "SearchShop?kw=" + val;
+                    });
+                    a.appendChild(s);
+                    for (i = 0; i < arr.length; i++) {
+                        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                            b = document.createElement("DIV");
+                            b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                            b.innerHTML += arr[i].substr(val.length);
+                            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                            b.addEventListener("click", function (e) {
+                                location.href = "SearchProduct?kw=" + this.getElementsByTagName("input")[0].value;
+                                closeAllLists();
+                            });
+                            a.appendChild(b);
+                        }
+                    }
+                });
+                inp.addEventListener("keydown", function (e) {
+                    var x = document.getElementById(this.id + "autocomplete-list");
+                    if (x)
+                        x = x.getElementsByTagName("div");
+                    if (e.keyCode == 40) {
+                        currentFocus++;
+                        addActive(x);
+                    } else if (e.keyCode == 38) {
+                        currentFocus--;
+                        addActive(x);
+                    } else if (e.keyCode == 13) {
+                        e.preventDefault();
+                        if (currentFocus > -1) {
+                            if (x)
+                                x[currentFocus].click();
+                        }
+                    }
+                });
+                function addActive(x) {
+                    if (!x)
+                        return false;
+                    removeActive(x);
+                    if (currentFocus >= x.length)
+                        currentFocus = 0;
+                    if (currentFocus < 0)
+                        currentFocus = (x.length - 1);
+                    x[currentFocus].classList.add("autocomplete-active");
+                }
+                function removeActive(x) {
+                    for (var i = 0; i < x.length; i++) {
+                        x[i].classList.remove("autocomplete-active");
+                    }
+                }
+                function closeAllLists(elmnt) {
+                    var x = document.getElementsByClassName("autocomplete-items");
+                    for (var i = 0; i < x.length; i++) {
+                        if (elmnt != x[i] && elmnt != inp) {
+                            x[i].parentNode.removeChild(x[i]);
+                        }
+                    }
+                }
+                document.addEventListener("click", function (e) {
+                    closeAllLists(e.target);
+                });
+            }
+            
+            autocomplete(document.getElementById("myInput"), suggestion);
+        </script>
     </body>
 </html>

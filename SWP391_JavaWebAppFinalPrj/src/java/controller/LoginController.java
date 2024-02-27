@@ -94,15 +94,15 @@ public class LoginController extends HttpServlet {
                     case 3:
                         break;
                 }
-                url = "/home.jsp";
+                response.sendRedirect("Home");
             }else{
-                url = "/login.jsp";
+                request.setAttribute("login_error", "Tên tài khoản của bạn hoặc Mật khẩu không đúng, vui lòng thử lại.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } catch (Exception e) {
             String msg = e.getMessage();
             String haha = "hahahaah";
         }
-        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**

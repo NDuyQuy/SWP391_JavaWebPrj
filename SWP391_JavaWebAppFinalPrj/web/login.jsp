@@ -70,6 +70,7 @@
                             <div class="col-lg-8 offset-lg-2">
                                 <div class="basic-login">
                                     <h3 class="text-center mb-60">Login From Here</h3>
+                                    <p style="color: red;">${requestScope.login_error}</p>
                                     <form method="post" action="login">
                                         <label for="name">Username|Email <span>**</span></label>
                                         <input id="name" type="text" placeholder="Enter Username or Email address..." name="username" />

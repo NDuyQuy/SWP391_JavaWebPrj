@@ -51,7 +51,7 @@
                 display: flex;
 
             }
-            
+
             .profile-avatar:nth-child{
                 padding-top: 40px;
             }
@@ -73,6 +73,19 @@
                 background-size: cover;
                 background-repeat: no-repeat;
                 cursor: pointer;
+            }
+
+            .sidebar-fixed{
+                position: fixed;
+                top: 0;
+                padding-top: 110px;
+                z-index: 1;
+                overflow: hidden;
+            }
+
+            .sidebar-bottom{
+                position: absolute;
+                bottom: 0;
             }
         </style>
     </head>
@@ -102,12 +115,13 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-3 col-lg-3">
-                            <div class="widget-title-box mb-30">
-                                <div class="widget-posts-image">
-                                    <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg">
-                                </div>
-                                <div class="widget-posts-body">
-                                    <h6 class="widget-posts-title">${user.fullname}</h6>
+                            <div id="fixed-sidebar" class="sidebar-fixed sidebar-bottom">
+                                <div class="widget-title-box mb-30">
+                                    <div class="widget-posts-image">
+                                        <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg">
+                                    </div>
+                                    <div class="widget-posts-body">
+                                        <h6 class="widget-posts-title">${user.fullname}</h6>
                                     <div class="widget-posts-meta"><a href="profile.jsp"><i class="fa fa-edit"></i> Edit profile</a></div>
                                 </div>
                             </div>
@@ -131,40 +145,115 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-xl-9 col-lg-9">
-                            <div class="widget">
+                    </div>
+                    <div class="col-xl-9 col-lg-9">
+                        <div class="widget">
+                            <div class="top" style="border-bottom: 1px solid #eaedff">
+                                <div class="widget-title" >
+                                    My profile
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    Manage and protect your account
+                                </div>
+                            </div>
+                            <div class="bottom">
+                                <div class="profile-table" style="font-size: 15px;">
+                                    <form action="profile" method="post">
+                                        <table width="550" height="400">
+                                            <tr>
+                                                <td>Username</td>
+                                                <td name="uname" value="${user.userName}">${user.userName}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Name</td>
+                                                <td><input type="text" size="40" name="fname" value="${user.fullname}"></td>
+                                            </tr>
+                                            <c:if test="user.role == 2">
+                                                <tr>
+                                                <td>CCCD/CMND</td>
+                                                <td> 
+                                                    <span name="email">${user.identityCard}</span></td>
+                                            </tr>
+                                            </c:if>
+                                            <tr>
+                                                <td>Email</td>
+                                                <td> 
+                                                    <span name="email">${user.email}<a href="#" style="text-decoration: underline;">Change</a></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Phone number</td>
+                                                <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}" placeholder="xxxxxxxxxx"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Address</td>
+                                                <td><input type="text" size="40" name="addr" value="${user.address}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td><button style="color: #fff;
+                                                            position: relative;
+                                                            overflow: visible;
+                                                            outline: 0;
+                                                            background: #ee4d2d;
+                                                            height: 40px;
+                                                            padding: 0 20px;
+                                                            min-width: 70px;
+                                                            max-width: 220px;
+                                                            border: 0;">Save</button></td>
+                                            </tr>
+                                        </table>
+                                    </form>
+                                </div>
+                                <div class="profile-avatar">
+                                    <div class="avatar">
+                                        <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
+                                            <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg">
+                                            <input type="file" accept=".jpg,.jpeg,.png" hidden="">
+                                        </span>
+                                        <button style="color: #000;
+                                                position: relative;
+                                                overflow: visible;
+                                                background: #fff;
+                                                height: 40px;
+                                                padding: 0 10px;
+                                                margin-bottom: 1.25rem;
+                                                min-width: 70px;
+                                                max-width: 220px;
+                                                border: 1px solid rgba(0,0,0,.8);" type="button">Select image</button>
+
+                                        <div class="des" style="color: rgba(0,0,0,.8);">
+                                            <div>
+                                                File size: maximum 1MB
+                                                <br>File extension: .JPG, .JPEG, .PNG
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <c:if test="${sessionScope.user.role == 2}">
+                            <div class="widget mt-30">
+                                <a id="shop-profile"></a>
                                 <div class="top" style="border-bottom: 1px solid #eaedff">
                                     <div class="widget-title" >
-                                        My profile
+                                        Xem Hồ sơ Shop
                                     </div>
                                     <div style="margin-bottom: 15px;">
-                                        Manage and protect your account
+                                        Cập nhật và quản lý hồ sơ Shop của bạn
                                     </div>
                                 </div>
                                 <div class="bottom">
                                     <div class="profile-table" style="font-size: 15px;">
-                                        <form action="profile" method="post">
+                                        <form action="shopprofile" method="post">
                                             <table width="550" height="400">
                                                 <tr>
-                                                    <td>Username</td>
-                                                    <td name="uname" value="${user.userName}">${user.userName}</td>
+                                                    <td>Tên Shop</td>
+                                                    <td><input type="text" size="40" name="sname" value=""></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Name</td>
-                                                    <td><input type="text" size="40" name="fname" value="${user.fullname}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Email</td>
-                                                    <td> 
-                                                        <p name="email">${user.email}<a href="#" style="text-decoration: underline;">Change</a></p></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Phone number</td>
-                                                    <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}" placeholder="xxxxxxxxxx"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Address</td>
-                                                    <td><input type="text" size="40" name="addr" value="${user.address}"></td>
+                                                    <td>Mô tả Shop</td>
+                                                    <td><textarea id="script" name="sdescr" rows="20" cols="40" style="height:100px;"></textarea></td>
                                                 </tr>
                                                 <tr>
                                                     <td></td>
@@ -210,10 +299,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </c:if>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
         <jsp:include page="footer.jsp"></jsp:include>
 
