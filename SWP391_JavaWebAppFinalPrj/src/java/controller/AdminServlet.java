@@ -47,13 +47,17 @@ public class AdminServlet extends HttpServlet {
             }
             else if (action.equals("AddCategory")) {
                 Continue = false;
-                String Name = request.getParameter("CName").toString();
+                String Name = request.getParameter("categoryName");
                 AdminDAO.Add_Main_Category(Name);
-                url = "AdminCategory.jsp";
+                url = "/AdminCategory.jsp";
             }
-            
-            
-            
+            else if(action.equals("EditCategory")){
+                Continue = false;
+                String Name = request.getParameter("categoryName");
+                int id = Integer.parseInt(request.getParameter("categoryId"));
+                AdminDAO.Update_Main_Category(id,Name);
+                url = "/AdminCategory.jsp";
+            }
         }
         catch (Exception e) {
             log("error at admin servlet: " + e.toString());

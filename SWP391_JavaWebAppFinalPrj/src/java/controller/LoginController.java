@@ -100,13 +100,11 @@ public class LoginController extends HttpServlet {
                     default:
                         url = "/home.jsp";
                 }
-                
             }else{
                 url = "/login.jsp";
             }
         } catch (Exception e) {
             String msg = e.getMessage();
-            String haha = "hahahaah";
         }
         request.getRequestDispatcher(url).forward(request, response);
     }

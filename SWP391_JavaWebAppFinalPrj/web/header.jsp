@@ -3,8 +3,9 @@
     Created on : Jan 17, 2024, 10:42:57 PM
     Author     : hien
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:useBean id="mcategories" scope="session" class="java.util.ArrayList" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,6 +42,12 @@
                                 </ul>
                                 <h4>Category</h4>
                                 <ul>
+                                    <c:forEach var="category" items="${mcategories}" begin="0" end="${mcategories.size()}">
+                                        <li><a href="#"><i class="flaticon-shopping-cart-1"></i> ${category.name}</a></li>
+                                    </c:forEach>
+                                </ul>
+                                <!-- 
+                                <ul>
                                     <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Table lamp</a></li>
                                     <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Furniture</a></li>
                                     <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Chair</a></li>
@@ -49,6 +56,7 @@
                                     <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Cloth</a></li>
                                     <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Trend</a></li>
                                 </ul>
+                                -->
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-8 col-8 d-none d-xl-block">
@@ -347,6 +355,6 @@
             </div>
         </div> <!-- end fullscreen search -->
 
-        
+
     </body>
 </html>

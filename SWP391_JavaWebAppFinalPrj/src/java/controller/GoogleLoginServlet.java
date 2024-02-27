@@ -7,7 +7,7 @@ package controller;
 
 import com.google.gson.JsonObject;
 import google_authen_supporter.GoogleSupport;
-import dao.UsersDao;
+import dao.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.User;
 import password_supporter.PasswordManager;
-
 /**
  *
  * @author LENOVO
@@ -54,13 +53,17 @@ public class GoogleLoginServlet extends HttpServlet {
             //switch the url 
             switch (role) {
                 case 1:
+                    url = "/home.jsp";
                     break;
                 case 2:
+                    url = "/home.jsp";
                     break;
                 case 3:
+                    request.getSession().setAttribute("Admin", 1);
+                    url = "/AdminMainpage.jsp";
                     break;
             }
-            url = "/home.jsp";
+            
         } else {
             url = "/login.jsp";
         }

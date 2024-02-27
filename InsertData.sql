@@ -14,3 +14,6 @@ insert into [orders]([customer_id],[shippingunit_id],[voucher_code],[total],[shi
 [status],[receiver_name],[receiver_phone],[receiver_adress],[order_date])
 values (1,1,0,0,'none','none','none','a','0123456789','A street',GETDATE())
 -- Done 13:54 27/02/2024
+--Demo insert data into shops which shop_id AKA user's id dont exist
+--insert into [shops](shop_id,CCCD) values (30,123456)
+--Demo finished 22:55 27/02/2024. Result Insert statement conflict.

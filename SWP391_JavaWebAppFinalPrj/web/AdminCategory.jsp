@@ -37,8 +37,8 @@
     </head>
     <body>
         <jsp:include page="header.jsp"></jsp:include>
-        
-        <main>
+
+            <main>
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
@@ -56,66 +56,119 @@
                 <!-- login Area Strat-->
                 <section class="login-area pt-100 pb-100">
                     <div class="container">
-                        <jsp:useBean id="CL" scope="session" class="java.util.ArrayList" />
-                        <div>
-                            <table class="table table-bordered">
-                                <thead>
+                    <jsp:useBean id="CL" scope="session" class="java.util.ArrayList" />
+                    <div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr> 
+                                    <th>Category ID</th> 
+                                    <th>Category Name</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody> 
+                                <c:forEach var="s" items="${sessionScope.CL}">
                                     <tr> 
-                                        <th>Category ID</th> 
-                                        <th>Category Name</th> 
+                                        <td><c:out value="${s.id}"/></td>
+                                        <td><c:out value="${s.name}"/></td>
+                                        <td>
+                                            <!-- Edit link with data-id attribute -->
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" data-id="${s.getId()}" onclick="openPopup('edit',${s.id})">Edit</a>
+                                        </td>
+                                        <td><a class="delete-link" style="color: red; cursor: pointer;">Delete</a></td>
                                     </tr>
-                                </thead>
-                                <tbody> 
-                                    <c:forEach var="s" items="${sessionScope.CL}">
-                                        <tr> 
-                                            <td><c:out value="${s.getId()}"/></td>
-                                            <td><c:out value="${s.getName()}"/></td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody> 
-                            </table>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddNew">
-                                Add New Category
-                            </button>
-                            <div class="modal" id="AddNew">
-                                <div class="modal-dialog modal-dialog-centered">
-                                  <div class="modal-content">
+                                </c:forEach>
 
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                      <h4 class="modal-title">New Category</h4>
-                                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
+                            </tbody> 
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="openPopup('add')">
+                        Add New Category
+                    </button>
+                    <!-- Add Category Popup -->
+                    <div class="modal" id="addPopup">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
 
-                                    <!-- Modal body -->
-                                    <div class="modal-body">
-                                        <form action="AdminServlet?Action=AddCategory" method="POST">
-                                            <div class="mb-3 mt-3">
-                                              <label for="name" class="form-label">Category Name:</label>
-                                              <input type="text" class="form-control" id="name" placeholder="Enter Category Name" name="name">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Add</button>
-                                        </form>
-                                    </div>
-                                    
-                                    <div class="modal-footer">
-                                        
-                                    </div>
-                                  </div>
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Add New Category</h4>
+                                    <button type="button" class="close" data-dismiss="modal" onclick="closePopup('add')">&times;</button>
                                 </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <form action="AdminServlet?Action=AddCategory" method="post">
+                                        <div class="form-group">
+                                            <label for="addCategoryName">Category Name:</label>
+                                            <input type="text" id="addCategoryName" name="categoryName" class="form-control" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Add</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closePopup('add')">Cancel</button>
+                                    </form>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                    
-                </section>
-                <!-- login Area End-->
+
+                    <!-- Edit Category Popup -->
+                    <div class="modal" id="editPopup">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Edit Category</h4>
+                                    <button type="button" class="close" data-dismiss="modal" onclick="closePopup('edit')">&times;</button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <form action="AdminServlet?Action=EditCategory" method="post">
+                                        <div class="form-group">
+                                            <label for="editCategoryName">Category Name:</label>
+                                            <input type="text" id="editCategoryName" name="categoryName" class="form-control" required>
+                                            <!-- Hidden input to store the category ID -->
+                                            <input type="hidden" name="categoryId" id="editCategoryId">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closePopup('edit')">Cancel</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
 
 
-            </main>
+            </section>
+            <!-- login Area End-->
+
+
+        </main>
 
         <jsp:include page="footer.jsp"></jsp:include>
-        
+        <!-- Bootstrap JS and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <!-- JavaScript to control the display of the popups -->
+        <script>
+            function openPopup(type, categoryId) {
+                if (type === 'edit') {
+                    // Set the category ID in the edit popup
+                    document.getElementById('editCategoryId').setAttribute('value', categoryId);
+                }
+
+                $('#' + type + 'Popup').modal('show');
+            }
+
+            function closePopup(type) {
+                $('#' + type + 'Popup').modal('hide');
+            }
+        </script>
+
     </body>
 </html>

@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.AdminDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -29,12 +30,12 @@ public class Home extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Home</title>");            
+            out.println("<title>Servlet Home</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet Home at " + request.getContextPath() + "</h1>");
@@ -55,6 +56,8 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        //GET MAIN CATEGORY LIST FOR THE DISPLAYING MENU AND ADD IT INTO SESSION
+        request.getSession().setAttribute("mcategories", AdminDAO.Get_Category_List());
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 

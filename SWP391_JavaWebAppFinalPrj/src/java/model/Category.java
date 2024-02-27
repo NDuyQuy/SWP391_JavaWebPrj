@@ -10,11 +10,14 @@ package model;
  */
 public class Category {
     private int id;
-    private String Name;
+    private String name;
+
+    public Category() {
+    }
     
     public Category(int id, String Name) {
         this.id = id;
-        this.Name = Name;
+        this.name = Name;
     }
 
     public int getId() {
@@ -26,12 +29,16 @@ public class Category {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String Name) {
-        this.Name = Name;
+        this.name = Name;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Category{" + "id=" + id + ", name=" + name + '}';
+    }
     
 }
