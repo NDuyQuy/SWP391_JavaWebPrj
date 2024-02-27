@@ -10,6 +10,20 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" media="all">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,900,900i&amp;subset=vietnamese" rel="stylesheet">
+        	<!-- CSS here -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/owl.carousel.min.css">
+        <link rel="stylesheet" href="css/animate.min.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/flaticon.css">
+        <link rel="stylesheet" href="css/meanmenu.css">
+        <link rel="stylesheet" href="css/slick.css">
+        <link rel="stylesheet" href="css/default.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/responsive.css">
         <style>
             .autocomplete{
                 position: relative;
@@ -67,19 +81,19 @@
                             </div>
 
                             <div class="category-menu">
-                                <h4>Seller Centre</h4>
-                                <ul>
-                                    <c:if test="${sessionScope.role != 2}">
+                                <h4>Kênh bán hàng</h4>
+                                <ul style="margin-bottom: 0;">
+                                    <c:if test="${user.role != 2}">
                                         <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
                                         </c:if>
-                                        <c:if test="${sessionScope.role == 2}">
-                                        <li><a href="sellercentre.jsp"><i class="flaticon-employee"></i> Shop của tôi</a></li>
+                                        <c:if test="${user.role == 2}">
+                                        <li><a href="SellerCentre"><i class="flaticon-employee"></i> Shop của tôi</a></li>
                                         </c:if>
                                 </ul>
-                                <h4>Category</h4>
+                                <h4>Danh mục</h4>
                                 <ul>
                                     <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                        <li><a href="product?cate=${cate.mCategoryID}"><i class="flaticon-shopping-cart-1"></i> ${cate.mCategoryName}</a></li>
+                                        <li><a href="SearchProduct?cate=${cate.categoryID}"><i class="flaticon-shopping-cart-1"></i> ${cate.categoryName}</a></li>
                                     </c:forEach>
                                     
                                 </ul>
@@ -91,7 +105,7 @@
                                     <li class="search-btn">
                                         <form autocomplete="off" action="SearchProduct" class="shop-search">
                                             <div class="autocomplete" style="width: 500px;">
-                                                <input id="myInput" type="text" placeholder="Tìm kiếm..." style="width: 500px;height: 50px">
+                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${sessionScope.kw}">
                                             </div>
                                             <button type="submit" style="height: 50px; width: 50px">
                                                 <i class="fa fa-search"></i>

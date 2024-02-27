@@ -180,7 +180,7 @@ button:focus,input:focus,input:focus,textarea,textarea:focus{outline: 0}
 
 h1, h2, h3, h4, h5, h6 {
 
-	font-family: 'Rubik', sans-serif;
+	font-family: "Open Sans","HelveticaNeue","Helvetica Neue",sans-serif;
 
 	font-weight: normal;
 
@@ -843,8 +843,6 @@ label {
 	margin: 0;
 
 	display: block;
-
-	border-bottom: 1px solid #b0c6c64d;
 
 }
 

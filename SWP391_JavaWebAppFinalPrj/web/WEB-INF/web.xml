@@ -36,6 +36,18 @@
         <servlet-name>ChangeForgotedPassController</servlet-name>
         <servlet-class>controller.ChangeForgotedPassController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SearchProductServlet</servlet-name>
+        <servlet-class>controller.SearchProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PriceFilterController</servlet-name>
+        <servlet-class>controller.PriceFilterController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProductDetailController</servlet-name>
+        <servlet-class>controller.ProductDetailController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -71,6 +83,18 @@
     <servlet-mapping>
         <servlet-name>ChangeForgotedPassController</servlet-name>
         <url-pattern>/cfPass</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchProductServlet</servlet-name>
+        <url-pattern>/SearchProduct</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PriceFilterController</servlet-name>
+        <url-pattern>/PriceFilter</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductDetailController</servlet-name>
+        <url-pattern>/ProductDetail</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

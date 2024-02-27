@@ -21,6 +21,7 @@ public class UsersDao {
     private static final String GETUSERSINFOBYUSERNAME = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
     private static final String GETUSERSINFOBYEMAIL = "SELECT [username],[fullname],[role],[address],[phone],[email] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
+    private static final String GETUSERBYID = "SELECT [username],[address] FROM [users] WHERE [id]=?";
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
         boolean checked = false;
@@ -142,7 +143,28 @@ public class UsersDao {
             e.printStackTrace();
         }
     }
+    
+    public static User getUserById(int id){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        User user = new User();
+        try(Connection con=SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETUSERBYID);
+            ptm.setInt(1, id);
+            rs = ptm.executeQuery();
+            if(rs.next()){
+                user.setUserID(id);
+                user.setUserName(rs.getString("username").trim());
+                user.setAddress(rs.getString("address")==null?null:rs.getString("address").trim());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
     public static void main(String[] args) {
         System.out.println(getUserInfoByEmail("duyquy140903@gmail.com"));
+        System.out.println(getUserById(23));
     }
 }

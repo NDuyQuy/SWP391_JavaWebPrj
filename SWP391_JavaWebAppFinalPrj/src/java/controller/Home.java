@@ -4,12 +4,16 @@
  */
 package controller;
 
+import dao.CategoryDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.MainCategory;
 
 /**
  *
@@ -55,6 +59,9 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        ArrayList<MainCategory> cate_list = CategoryDao.getMainCategories();
+        HttpSession session = request.getSession();
+        session.setAttribute("main_category_list", cate_list);
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
