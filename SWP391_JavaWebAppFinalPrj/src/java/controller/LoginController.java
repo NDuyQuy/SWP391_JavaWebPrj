@@ -88,13 +88,19 @@ public class LoginController extends HttpServlet {
                 //switch the url 
                 switch (role) {
                     case 1:
+                        url = "/home.jsp";
                         break;
                     case 2:
+                        url = "/home.jsp";
                         break;
                     case 3:
+                        request.getSession().setAttribute("Admin", 1);
+                        url = "/AdminMainpage.jsp";
                         break;
+                    default:
+                        url = "/home.jsp";
                 }
-                url = "/home.jsp";
+                
             }else{
                 url = "/login.jsp";
             }

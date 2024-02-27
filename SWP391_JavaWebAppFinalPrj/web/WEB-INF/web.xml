@@ -36,6 +36,10 @@
         <servlet-name>ChangeForgotedPassController</servlet-name>
         <servlet-class>controller.ChangeForgotedPassController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>controller.AdminServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -71,6 +75,10 @@
     <servlet-mapping>
         <servlet-name>ChangeForgotedPassController</servlet-name>
         <url-pattern>/cfPass</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/AdminServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
