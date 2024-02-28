@@ -75,7 +75,7 @@
                                         <td><c:out value="${s.mCate.categoryName}"/></td>
                                         <td>
                                             <!-- Edit link with data-id attribute -->
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" onclick="openPopup('edit',${s.categoryID})">Edit</a>
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" onclick="openPopup('edit',${s.categoryID},${s.mCate})">Edit</a>
                                         </td>
                                         <td><a class="delete-link" style="color: red; cursor: pointer;">Delete</a></td>
                                     </tr>
@@ -104,6 +104,11 @@
                                         <div class="form-group">
                                             <label for="addCategoryName">Category Name:</label>
                                             <input type="text" id="addCategoryName" name="categoryName" class="form-control" required>
+                                            <select class="form-control">
+                                                <c:forEach var="s" items="${sessionScope.main_category_list}">
+                                                    <option>${s.categoryName}</option>
+                                                </c:forEach>
+                                            </select>
                                         </div>
                                         <button type="submit" class="btn btn-success">Add</button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closePopup('add')">Cancel</button>
@@ -144,11 +149,9 @@
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closePopup('edit')">Cancel</button>
                                     </form>
                                 </div>
-
                             </div>
                         </div>
                     </div>
-
 
             </section>
             <!-- login Area End-->
@@ -163,7 +166,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <!-- JavaScript to control the display of the popups -->
         <script>
-            function openPopup(type, categoryId) {
+            function openPopup(type, categoryId,categoryName) {
                 if (type === 'edit') {
                     // Set the category ID in the edit popup
                     document.getElementById('editCategoryId').setAttribute('value', categoryId);

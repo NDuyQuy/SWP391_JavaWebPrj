@@ -15,7 +15,8 @@ import model.User;
  */
 public class UsersDao {
     private static final String CHECKLOGIN = "SELECT [fullname] FROM [users] WHERE [username]=? and [password]=?";
-    private static final String REGISTER = "INSERT INTO [users](username,password,email,role,shop_reported_count) values (?,?,?,1,0)";
+    private static final String CHECKLOGINBYEMAIL = "SELECT [fullname] FROM [users] WHERE [email]=? and [password]=?";
+    private static final String REGISTER = "INSERT INTO [users](username,password,email,role) values (?,?,?,1)";
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
     private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE email = ?";
     private static final String GETUSERSINFOBYUSERNAME = "SELECT [id], [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
@@ -30,6 +31,24 @@ public class UsersDao {
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CHECKLOGIN);
             ptm.setString(1, username);
+            ptm.setString(2, password);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                checked = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return checked;
+    }
+    public static boolean checkLoginByEmail(String email, String password){
+        //Login via email and password
+        boolean checked = false;
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(CHECKLOGIN);
+            ptm.setString(1, email);
             ptm.setString(2, password);
             rs = ptm.executeQuery();
             if (rs.next()) {
