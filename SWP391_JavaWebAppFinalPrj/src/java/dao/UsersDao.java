@@ -143,6 +143,6 @@ public class UsersDao {
         }
     }
     public static void main(String[] args) {
-        System.out.println(getUserInfoByEmail("duyquy140903@gmail.com"));
+        System.out.println(getUserInfoByEmail("swp391c02rt02@gmail.com"));
     }
 }

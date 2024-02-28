@@ -17,7 +17,7 @@ public class SQLConnection {
         // sign in driver
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         // url = jdbc:sqlserver:// (+ SERVER NAME) : (+PORT); databaseName="(+DATABASENAME)";
-        String url ="jdbc:sqlserver://localhost\\GHUNGMSSQLSERVER:1433;databaseName=SWP391_FinalPrjDB;encrypt=true;trustServerCertificate=true";
+        String url ="jdbc:sqlserver://localhost:1433;databaseName=SWP391_FinalPrjDB;encrypt=true;trustServerCertificate=true";
         //intergratedSecurity=true (if connect with SQL Server by Window Authentication)
         // 
         String user = "sa";String pass = "123456";

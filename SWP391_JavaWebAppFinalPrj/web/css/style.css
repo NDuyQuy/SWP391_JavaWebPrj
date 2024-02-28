@@ -577,9 +577,9 @@ label {
 
 .basic-bar {
 
-	height: 40px;
+	height: 50px;
 
-	width: 40px;
+	width: 50px;
 
 	background: #fe4536;
         
@@ -589,7 +589,7 @@ label {
 
 	margin-right: 50px;
 
-	padding: 5px 0;
+	padding: 10px 0;
 
 	cursor: pointer;
 
@@ -1130,6 +1130,19 @@ label {
 
 	transition: .3s;
 
+}
+
+.sidebar-fixed{
+    position: fixed;
+    top: 0;
+    padding-top: 110px;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.sidebar-bottom{
+    position: absolute;
+    bottom: 0;
 }
 
 .logo {
