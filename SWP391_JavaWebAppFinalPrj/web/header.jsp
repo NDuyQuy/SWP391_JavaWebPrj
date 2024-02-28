@@ -79,8 +79,8 @@
                                 </ul>
                                 <h4>Category</h4>
                                 <ul>
-                                    <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                        <li><a href="product?cate=${cate.mCategoryID}"><i class="flaticon-shopping-cart-1"></i> ${cate.mCategoryName}</a></li>
+                                    <c:forEach var="cate" items="${mcategories}">
+                                        <li><a href="product?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
                                     </c:forEach>
                                 </ul>
                             </div>
