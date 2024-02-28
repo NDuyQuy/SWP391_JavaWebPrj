@@ -88,20 +88,24 @@ public class LoginController extends HttpServlet {
                 //switch the url 
                 switch (role) {
                     case 1:
+                        url = "/home.jsp";
                         break;
                     case 2:
+                        url = "/home.jsp";
                         break;
                     case 3:
+                        request.getSession().setAttribute("Admin", 1);
+                        url = "/AdminMainpage.jsp";
                         break;
-                }
-                response.sendRedirect("Home");
+                    default:
+                        url = "/home.jsp";
+                } 
             }else{
                 request.setAttribute("login_error", "Tên tài khoản của bạn hoặc Mật khẩu không đúng, vui lòng thử lại.");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } catch (Exception e) {
             String msg = e.getMessage();
-            String haha = "hahahaah";
         }
     }
 
