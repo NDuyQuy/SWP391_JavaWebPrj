@@ -18,8 +18,8 @@ public class UsersDao {
     private static final String REGISTER = "INSERT INTO [users](username,password,email,role,shop_reported_count) values (?,?,?,1,0)";
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
     private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE email = ?";
-    private static final String GETUSERSINFOBYUSERNAME = "SELECT [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
-    private static final String GETUSERSINFOBYEMAIL = "SELECT [username],[fullname],[role],[address],[phone],[email] FROM [users] WHERE [email] = ?";
+    private static final String GETUSERSINFOBYUSERNAME = "SELECT [id], [fullname],[role],[address],[phone],[email] FROM [users] WHERE [username] = ?";
+    private static final String GETUSERSINFOBYEMAIL = "SELECT [id], [username],[fullname],[role],[address],[phone],[email] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
     private static final String GETUSERBYID = "SELECT [username],[address] FROM [users] WHERE [id]=?";
     public static boolean checkLogin(String username, String password) {
@@ -95,12 +95,14 @@ public class UsersDao {
                 A LONG SPACE LINE IN THE END OF STRING, SO I DECIDE TO USE TRIM TO REMOVE IT.
                 HOWEVER, IF THE STRING RETURN IS NULL THEN THE TRIM METHOD WILL CAUSE EXCEPTION SO I DO AS BELOW
                 */
+                int id = rs.getInt("id");
                 String fullname = rs.getString("fullname")==null?null:rs.getString("fullname").trim();
                 String email = rs.getString("email")==null?null:rs.getString("email").trim();
                 String phone = rs.getString("phone")==null?null:rs.getString("phone").trim();
                 String adress = rs.getString("address")==null?null:rs.getString("address").trim();
                 int role = rs.getInt("role");
                 user = new User(fullname, email, phone, adress, role);
+                user.setUserID(id);
                 user.setUserName(username);
             }
         } catch (Exception e) {
@@ -117,12 +119,14 @@ public class UsersDao {
             ptm.setString(1, email);
             rs = ptm.executeQuery();
             if (rs.next()) {
+                int id = rs.getInt(1);
                 String fullname = rs.getString("fullname")==null?null:rs.getString("fullname").trim();
                 String username = rs.getString("username")==null?null:rs.getString("username").trim();
                 String phone = rs.getString("phone")==null?null:rs.getString("phone").trim();
                 String adress = rs.getString("address")==null?null:rs.getString("address").trim();
                 int role = rs.getInt("role");
                 user = new User(fullname, email, phone, adress, role);
+                user.setUserID(id);
                 user.setUserName(username);
             }
         } catch (Exception e) {
@@ -164,7 +168,8 @@ public class UsersDao {
     }
     
     public static void main(String[] args) {
-        System.out.println(getUserInfoByEmail("duyquy140903@gmail.com"));
-        System.out.println(getUserById(23));
+        System.out.println(getUserInfoByUsername("A"));
+        //System.out.println(getUserById(23));
+        
     }
 }

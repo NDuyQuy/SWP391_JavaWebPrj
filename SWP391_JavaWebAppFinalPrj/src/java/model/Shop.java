@@ -72,4 +72,10 @@ public class Shop {
     public void setReportedAccount(int reportedAccount) {
         this.reportedAccount = reportedAccount;
     }
+
+    @Override
+    public String toString() {
+        return "Shop{" + "user=" + user + ", identityCard=" + identityCard + ", shopName=" + shopName + ", description=" + description + ", shopImg=" + shopImg + ", reportedAccount=" + reportedAccount + '}';
+    }
+    
 }

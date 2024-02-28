@@ -41,12 +41,20 @@
         <servlet-class>controller.SearchProductServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>controller.AdminServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>PriceFilterController</servlet-name>
         <servlet-class>controller.PriceFilterController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ProductDetailController</servlet-name>
         <servlet-class>controller.ProductDetailController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShopCategoryController</servlet-name>
+        <servlet-class>controller.seller.ShopCategoryController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -95,6 +103,14 @@
     <servlet-mapping>
         <servlet-name>ProductDetailController</servlet-name>
         <url-pattern>/ProductDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/AdminServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopCategoryController</servlet-name>
+        <url-pattern>/shopcategorycontroller</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

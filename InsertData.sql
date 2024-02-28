@@ -17,3 +17,6 @@ values (1,1,0,0,'none','none','none','a','0123456789','A street',GETDATE())
 --Demo insert data into shops which shop_id AKA user's id dont exist
 --insert into [shops](shop_id,CCCD) values (30,123456)
 --Demo finished 22:55 27/02/2024. Result Insert statement conflict.
+---
+
+INSERT INTO [shopcategory](maincate_id,shop_id,name)VALUES(1,23,'T-shirt'),(1,23,'Jean'),(1,23,'Dress')

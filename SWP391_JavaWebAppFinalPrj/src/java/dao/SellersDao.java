@@ -7,12 +7,14 @@ package dao;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import model.*;
 /**
  *
  * @author ASUS
  */
 public class SellersDao {
+    private static final String GETSHOPCATEGORIES = "SELECT s.[id], s.[name],m.[name] FROM [shopcategory] s inner join [maincategory] m on s.[maincate_id] = m.[id] WHERE [shop_id]=?";
     private static final String CREATESHOPCATEGORY ="INSERT INTO [shopcategory](maincate_id,shop_id,name)VALUE(?,?,?)";
     private static final String CREATEPRODUCT = "INSERT [products](mcate_id,description,created_date,name,price,"
             + "img,quantity) VALUE (?,?,GETDATE(),?,?,?,?)";
@@ -39,7 +41,34 @@ public class SellersDao {
         return shop;
     }
     
+    public static ArrayList<ShopCategory> getShopCategories(int shop_id){
+        ArrayList<ShopCategory> shopCategories = new ArrayList<>();
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Shop shop = null; MainCategory mc = null;
+        ShopCategory sc = null;
+        try(Connection con=SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETSHOPCATEGORIES);
+            ptm.setInt(1, shop_id);
+            shop = SellersDao.getShopById(shop_id);
+            rs = ptm.executeQuery();
+            while(rs.next()){
+                //GET SHOP CATEGORY ID 
+                int id = rs.getInt(1);
+                //GET SHOP CATEGORY NAME
+                String sname = rs.getString(2).trim();
+                //GET MAIN CATEGORY NAME
+                String mname = rs.getString(3).trim();
+                mc = new MainCategory();    mc.setCategoryName(mname);
+                sc = new ShopCategory(shop_id, mc, shop, sname);
+                shopCategories.add(sc);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return shopCategories;
+    }
     public static void main(String[] args) {
-        System.out.println(getShopById(23).getShopName());
+        getShopCategories(23).forEach(System.out::println);
     }
 }
