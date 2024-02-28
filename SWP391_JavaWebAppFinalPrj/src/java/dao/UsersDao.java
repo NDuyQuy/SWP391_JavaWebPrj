@@ -47,7 +47,7 @@ public class UsersDao {
         PreparedStatement ptm = null;
         ResultSet rs = null;
         try (Connection con = SQLConnection.getConnection()) {
-            ptm = con.prepareStatement(CHECKLOGIN);
+            ptm = con.prepareStatement(CHECKLOGINBYEMAIL);
             ptm.setString(1, email);
             ptm.setString(2, password);
             rs = ptm.executeQuery();
@@ -187,7 +187,7 @@ public class UsersDao {
     }
     
     public static void main(String[] args) {
-        System.out.println(getUserInfoByUsername("A"));
+        System.out.println(checkLoginByEmail("qa@gmail.com", "1"));
         //System.out.println(getUserById(23));
         
     }
