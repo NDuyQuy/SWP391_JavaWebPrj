@@ -11,13 +11,16 @@ package model;
 public class Category {
     private int id;
     private String name;
+    private String description;
 
+    
     public Category() {
     }
     
-    public Category(int id, String Name) {
+    public Category(int id, String Name, String Description) {
         this.id = id;
         this.name = Name;
+        this.description = Description;
     }
 
     public int getId() {
@@ -35,6 +38,15 @@ public class Category {
     public void setName(String Name) {
         this.name = Name;
     }
+    
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
     @Override
     public String toString() {

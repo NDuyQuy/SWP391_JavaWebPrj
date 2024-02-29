@@ -39,25 +39,47 @@ public class AdminServlet extends HttpServlet {
         boolean Continue = true;
         try {
             String action = request.getParameter("Action");
+            //Get Category List
             if (action.equals("ViewCategory")) {
                 ArrayList<Category> CategoryList = AdminDAO.Get_Category_List();
                 if (CategoryList != null) {
                     session.setAttribute("CL", CategoryList);
                 }
             }
+            //Add Category
             else if (action.equals("AddCategory")) {
                 Continue = false;
                 String Name = request.getParameter("categoryName");
-                AdminDAO.Add_Main_Category(Name);
+                String Description = request.getParameter("categoryDescription");
+                AdminDAO.Add_Main_Category(Name, Description);
                 url = "/AdminCategory.jsp";
             }
+            //Edit Category
             else if(action.equals("EditCategory")){
                 Continue = false;
                 String Name = request.getParameter("categoryName");
+                String Description = request.getParameter("categoryDescription");
                 int id = Integer.parseInt(request.getParameter("categoryId"));
-                AdminDAO.Update_Main_Category(id,Name);
+                AdminDAO.Update_Main_Category(id, Name, Description);
                 url = "/AdminCategory.jsp";
             }
+            //Delete Category
+            else if(action.equals("DeleteCategory")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("categoryId"));
+                AdminDAO.Delete_Main_Category(id);
+                url = "/AdminCategory.jsp";
+            }
+            else if(action.equals("ViewVoucher")) {
+                ArrayList<Voucher> VoucherList = AdminDAO.Get_Voucher_List();
+                if (VoucherList != null) {
+                    session.setAttribute("VL", VoucherList);
+                }
+            }
+            else if(action.equals("AddVoucher")) {
+                Continue = false;
+            }
+            
         }
         catch (Exception e) {
             log("error at admin servlet: " + e.toString());
