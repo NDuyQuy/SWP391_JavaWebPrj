@@ -68,6 +68,7 @@ public class SellersDao {
         }
         return shopCategories;
     }
+    
     public static void main(String[] args) {
         getShopCategories(23).forEach(System.out::println);
     }
