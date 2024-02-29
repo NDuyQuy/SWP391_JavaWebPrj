@@ -38,30 +38,29 @@
         <jsp:include page="header.jsp"></jsp:include>
 
             <main>
-                <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
                         <div class="row">
-                            <div class="col-xl-12">
-                                <div class="breadcrumb-text text-center">
-                                    <h1>Category Management</h1>
-                                </div>
+                            <div class="breadcrumb-text text-left">
+                                <h3>Mã giảm giá của shop</h3>
                             </div>
                         </div>
                     </div>
                 </section>
-                <!-- breadcrumb-area-end -->
-
-                <!-- login Area Strat-->
+                <section class="">
+                    
+                </section>
                 <section class="login-area pt-100 pb-100">
-                    <jsp:useBean id="shop_categories" scope="session" class="java.util.ArrayList" />
                     <div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr> 
-                                    <th>Category ID</th> 
-                                    <th>Tên Category</th>
-                                    <th>Thuộc ngành</th>
+                                    <th>ID</th> 
+                                    <th>Mã Voucher</th>
+                                    <th>Loại voucher</th>
+                                    <th>Giảm giá</th>
+                                    <th>Tổng lượt sử dụng tối đa</th>
+                                    <th>Đã dùng</th>
                                     <th>Sửa</th>
                                     <th>Xóa</th>
                                 </tr>
@@ -79,6 +78,9 @@
                                         <td>
                                             <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${s.categoryID})">Delete</a>
                                         </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 </c:forEach>
 
