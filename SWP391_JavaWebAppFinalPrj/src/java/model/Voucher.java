@@ -4,10 +4,142 @@
  */
 package model;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 /**
  *
  * @author DELL
  */
 public class Voucher {
+    private int id;
+    private String code;
+    private int discount;
+    private int discount_type; //1 for value; 2 for percent; -1 for error
+    private String discount_unit;
+    private Date start;
+    private Date end;
+    private int type; //1 for product vouchers; 2 for shop vouchers; 3 for main (category) vouchers; -1 for error
+    private int min;
+    private String description;
+    private int count;
+    ArrayList<Integer> ListApplied = new ArrayList<Integer>();
+
+    public Voucher(int id, String code, int discount, Date start, Date end, int type, int min, String description, int count) {
+        this.id = id;
+        this.code = code;
+        this.discount = discount;
+        setDiscount_type();
+        this.start = start;
+        this.end = end;
+        this.type = type;
+        this.min = min;
+        this.description = description;
+        this.count = count;
+    }
+    
+    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public ArrayList<Integer> getListApplied() {
+        return ListApplied;
+    }
+
+    public void setListApplied(ArrayList<Integer> ListApplied) {
+        this.ListApplied = ListApplied;
+    }
+
+    public int getDiscount_type() {
+        return discount_type;
+    }
+
+    public void setDiscount_type() {
+        String prefix = this.code.substring(0, 2);
+        switch(prefix) {
+            case "VA":
+                this.discount_type = 1; //Value
+                this.discount_unit = "VND";
+                break;
+            case "PC":
+                this.discount_type = 2; //Percent
+                this.discount_unit = "%";
+                break;
+            default:
+                this.discount_type = -1;
+                break;
+        }
+    }
+    
     
 }

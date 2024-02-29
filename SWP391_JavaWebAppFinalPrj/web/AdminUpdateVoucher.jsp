@@ -1,17 +1,18 @@
 <%-- 
-    Document   : AdminVoucher
-    Created on : Feb 27, 2024, 8:50:14 PM
+    Document   : AdminUpdateVoucher
+    Created on : Feb 29, 2024, 8:06:33 PM
     Author     : DELL
 --%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:include page="/AdminServlet?Action=ViewVoucher"/>
+<jsp:include page="/AdminServlet?Action=GetMainVoucher"/>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Co.Handmade Voucher Management</title>
+        <title>Co.Handmade Update Voucher</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -37,8 +38,8 @@
     </head>
     <body>
         <jsp:include page="header.jsp"></jsp:include>
-
-            <main>
+        
+        <main>
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
@@ -56,37 +57,61 @@
                 <!-- login Area Strat-->
                 <section class="login-area pt-100 pb-100">
                     <div class="container">
-                    <jsp:useBean id="VL" scope="session" class="java.util.ArrayList" />
-                    <div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr> 
-                                    <th>Voucher Code</th> 
-                                    <th>Create Date</th>
-                                    <th>Exp. Date</th>
-                                    <th>Discount Amount</th>
-                                    <th>Voucher Type</th>
-                                </tr>
-                            </thead>
-                            <tbody> 
-                                <c:forEach var="s" items="${sessionScope.VL}">
-                                    <tr> 
-                                        <td><c:out value="${s.code}"/></td>
-                                        <td><c:out value="${s.start}"/></td>
-                                        <td><c:out value="${s.end}"/></td>
-                                        <td><c:out value="${s.discount}"/><c:out value="${s.discount_unit}"/></td>
-                                        <td><c:out value="${s.type}"/></td>
-                                        <td>
-                                            <!-- Edit link with data-id attribute -->
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" href="AdminUpdateVoucher.jsp?id=<c:out value="${s.id}"/>">Edit</a>
-                                        </td>
-                                        <td><a class="delete-link" style="color: red; cursor: pointer;" data-id="${s.getId()}" onclick="openPopup('delete',${s.id})">Delete</a></td>
-                                    </tr>
-                                </c:forEach>
+                    
+                        <div>
+                            <form method="post" action="AdminServlet?Action=UpdateVoucher">
+                                <label for="code">Voucher Code<span>*</span>: </label>
+                                <input id="code" type="text" placeholder="Enter Voucher Code" name="vouchercode" required/>
+                                
+                                <label for="amount">Discount Amount<span>*</span>: </label>
+                                <input id="amount" type="number" name="amount" step="1000" required/>
+                                
+                                <label for="unit">Discount Unit<span>*</span>: </label>
+                                <select id="unit" name="unit" onchange="changeUnit()" required>
+                                    <option value="VND">VND</option>
+                                    <option value="Percent">%</option>
+                                </select>
+                                
+                                <label for="expdate">Exp. Date<span>*</span>: </label>
+                                <input id="expdate" type="datetime-local" name="expdate" required/>
+                                
+                                <label for="min">Min. Value of Bill<span>*</span>: </label>
+                                <input id="min" type="number" name="min" step="10000" required/>
+                                
+                                <label for="count">Use Times Remaining<span>*</span>: </label>
+                                <input id="count" type="number" name="count" step="1" required/>
+                                
+                                <label for="peracc">Use Times Per Account<span>*</span>: </label>
+                                <input id="peracc" type="number" name="peracc" step="1" required/>
+                                
+                                <label for="applied">Applied Category: </label>
+                                <button type="button" class="btn btn-outline-info btn-sm" name="applied">Add</button>
+                                <div>
+                                    <table class="table table-borderless">
+                                        <thead>
+                                            <tr> 
+                                                <th>Category ID</th> 
+                                                <th>Category Name</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody> 
+                                            <c:forEach var="s" items="${sessionScope.CL}">
+                                                <tr> 
+                                                    <td><c:out value="${s.id}"/></td>
+                                                    <td><c:out value="${s.name}"/></td>
+                                                    <td><a class="delete-link" style="color: red; cursor: pointer;" data-id="${s.getId()}" onclick="openPopup('delete',${s.id},'${s.name}','${s.description}')">Delete</a></td>
+                                                </tr>
+                                            </c:forEach>
 
-                            </tbody> 
-                        </table>
-                    </div>
+                                        </tbody> 
+                                    </table>
+                                </div>
+                                
+                                <div class="mt-10"></div>
+                                <button class="btn theme-btn-2 w-100">Register Now</button>
+                            </form>
+                        </div>
                     <a href="AdminUpdateVoucher.jsp?id=-1" class="btn btn-primary">
                         Add New Voucher
                     </a>
@@ -142,6 +167,20 @@
             function closePopup(type) {
                 $('#' + type + 'Popup').modal('hide');
             }
+            
+            function changeUnit() {
+                var u;
+                u = document.getElementById('unit').value;
+                if (u === 'VND') {
+                    document.getElementById('amount').value = 0;
+                    document.getElementById('amount').setAttribute("step", 1000);
+                }
+                if (u === 'Percent') {
+                    document.getElementById('amount').value = 0;
+                    document.getElementById('amount').setAttribute("step", 1);
+                }
+            }
         </script>
+        
     </body>
 </html>
