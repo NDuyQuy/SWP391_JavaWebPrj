@@ -60,6 +60,10 @@
         <servlet-name>VoucherController</servlet-name>
         <servlet-class>controller.seller.VoucherController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProductController</servlet-name>
+        <servlet-class>controller.seller.ProductController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -119,6 +123,10 @@
     <servlet-mapping>
         <servlet-name>VoucherController</servlet-name>
         <url-pattern>/sellersvouchercontroller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductController</servlet-name>
+        <url-pattern>/productcontroller</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

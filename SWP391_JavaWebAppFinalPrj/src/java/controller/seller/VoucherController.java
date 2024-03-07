@@ -8,6 +8,7 @@ package controller.seller;
 import dao.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +38,7 @@ public class VoucherController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet VoucherController</title>");            
+            out.println("<title>Servlet VoucherController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet VoucherController at " + request.getContextPath() + "</h1>");
@@ -58,10 +59,22 @@ public class VoucherController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id = ((User)request.getSession().getAttribute("user")).getUserID();
-        //Get the list of shop categories
-        request.getSession().setAttribute("vouchers", SellersDao.getShopCategories(id));
-        request.getRequestDispatcher("/shopcategory_management.jsp").forward(request, response);
+        String url = "/seller/seller_voucher_management.jsp";
+        int id = ((User) request.getSession().getAttribute("user")).getUserID();
+        String open = request.getParameter("open");
+        if (open != null) {
+            url = (open.equals("create")) ? "/seller/seller_createvoucher.jsp" : "/seller/seller_editvoucher.jsp";
+            try {
+                int voucher_id = Integer.parseInt(request.getParameter("v_id"));
+                Voucher v = SellersDao.getVoucherByID(voucher_id);
+                request.setAttribute("voucher", v);
+            } catch (Exception e) {
+            }
+        } else {
+            //Get the list of shop categories
+            request.getSession().setAttribute("vouchers", SellersDao.getShopVouchers(id));
+        }
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -75,7 +88,34 @@ public class VoucherController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = "/seller/seller_voucher_management.jsp";
+        int id = ((User) request.getSession().getAttribute("user")).getUserID();
+        String act = request.getParameter("act");
+        Voucher voucher = null;
+        try {
+            switch (act) {
+                case "create":
+                    voucher = getVoucher(request, response);
+                    voucher.setShop_id(id);
+                    SellersDao.createShopVoucher(voucher);
+                    break;
+                case "edit":
+                    voucher = getVoucher(request, response);
+                    voucher.setShop_id(id);
+                    SellersDao.editShopVoucher(voucher);
+                    break;
+                case "delete":
+                    int voucher_id = Integer.parseInt(request.getParameter("voucherId"));
+                    SellersDao.deleteVoucher(voucher_id);
+                    break;
+            }
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            String v = "";
+        }
+        //ReGet the list of shop categories
+        request.getSession().setAttribute("vouchers", SellersDao.getShopVouchers(id));
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -88,4 +128,27 @@ public class VoucherController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private Voucher getVoucher(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Voucher voucher = null;
+        try {
+            String voucher_id = request.getParameter("voucher_id");
+            int id = (voucher_id == null || voucher_id.isEmpty()) ? 0 : Integer.parseInt(voucher_id);
+            int type = Integer.parseInt(request.getParameter("voucher_type"));
+            String code = request.getParameter("voucher_code");
+            Date start_date = Date.valueOf(request.getParameter("start_date"));
+            Date expire_date = Date.valueOf(request.getParameter("expire_date"));
+            String promotion_type = request.getParameter("promotion_type");
+            code = promotion_type + code;
+            int discount_amount = Integer.parseInt(request.getParameter("discount_amount"));
+            int min_require = Integer.parseInt(request.getParameter("min_require"));
+            int use_count = Integer.parseInt(request.getParameter("use_count"));
+            String description = request.getParameter("description");
+            int product_applied = (request.getParameter("product_applied")!= null)?Integer.parseInt(request.getParameter("product_applied")): 1;
+            voucher = new Voucher(id, code, discount_amount, start_date, expire_date, type, min_require, description, type, product_applied, use_count);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return voucher;
+    }
 }

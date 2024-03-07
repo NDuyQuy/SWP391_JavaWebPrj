@@ -159,7 +159,7 @@ public class ProductDao {
         Product p = null;
         ArrayList<Product> product_by_shop = new ArrayList<>();
         try(Connection con = SQLConnection.getConnection()){
-            ptm = con.prepareStatement(GETPRODUCTBYMAINCATEID);
+            ptm = con.prepareStatement(GETPRODUCTSBYSHOP);
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             while(rs.next()){

@@ -1,0 +1,8 @@
+**/target/
+**/.checkstyle
+**/.settings/
+**/.classpath
+**/.project
+**/site-content/
+**/.DS_Store
+/commons-fileupload2.iml
