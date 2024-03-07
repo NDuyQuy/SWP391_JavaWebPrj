@@ -1,19 +1,25 @@
-<!doctype html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="model.CartItem" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="dao.UsersDao" %>
+<%@ page import="model.User" %>
+
 <html class="no-js" lang="zxx">
-    
-<!-- Mirrored from wphix.com/template/vue/vue/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 21 Oct 2023 08:30:39 GMT -->
-<head>
+
+
+    <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Vue - Clean Minimal eCommerce HTML Template</title>
+        <title> My Shopping Cart</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="manifest" href="site.html">
-		<link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
 
-		<!-- CSS here -->
+        <!-- CSS here -->
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/owl.carousel.min.css">
         <link rel="stylesheet" href="css/animate.min.css">
@@ -30,494 +36,187 @@
     </head>
     <body>
 
-
-        <!-- preloader -->
-        <div id="preloader">
-            <div class="preloader">
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-        <!-- preloader end  -->
+        <jsp:include page="header.jsp"></jsp:include>
 
 
 
-        <!-- header start -->
-        <header>
-            <div id="header-sticky" class="header-area box-90">
-                <div class="container-fluid">
-                    <div class="row align-items-center">
-                        <div class="col-xl-2 col-lg-6 col-md-6 col-7 col-sm-5 d-flex align-items-center pos-relative">
-                            <div class="basic-bar cat-toggle">
-                                <span class="bar1"></span>
-                                <span class="bar2"></span>
-                                <span class="bar3"></span>
-                            </div>
-                            <div class="logo">
-                                <a href="index.html"><img src="img/logo/logo.png" alt=""></a>
-                            </div>
+            <main>
 
-                            <div class="category-menu">
-                                <h4>Category</h4>
-                                <ul>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Table lamp</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Furniture</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Chair</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Men</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Women</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Cloth</a></li>
-                                    <li><a href="shop.html"><i class="flaticon-shopping-cart-1"></i> Trend</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-xl-8 col-lg-6 col-md-8 col-8 d-none d-xl-block">
-                            <div class="main-menu text-center">
-                                <nav id="mobile-menu">
-                                    <ul>
-                                        <li>
-                                            <a href="index.html">Home</a>
-                                            <ul class="submenu">
-                                                <li>
-                                                    <a href="index.html">Home Style 1</a>
-                                                </li>
-                                                <li>
-                                                    <a href="index-2.html">Home Style 2</a>
-                                                </li>
-                                                <li>
-                                                    <a href="index-3.html">Home Style 3</a>
-                                                </li>
-                                                <li>
-                                                    <a href="index-4.html">Home Style 4</a>
-                                                </li>
-                                                <li>
-                                                    <a href="index-5.html">Home Style 5</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="mega-menu">
-                                            <a href="shop.html">Shop</a>
-                                            <ul class="submenu ">
-                                                <li>
-                                                    <a href="#">Category View</a>
-                                                    <ul class="submenu  level-1">
-                                                        <li>
-                                                            <a href="shop.html">Shop 2 Column</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-filter.html">Shop Filter Style</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-full.html">Shop Full</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-3-col.html">Shop 3 Column</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-list.html">List View</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Category View</a>
-                                                    <ul class="submenu">
-                                                        <li>
-                                                            <a href="shop-left-sidebar.html">Sidebar Left</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="shop-sidebar-right.html">Sidebar Right</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="cart.html">Shopping Cart</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="checkout.html">Checkout</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="wishlist.html">My Wishlist</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Products Types</a>
-                                                    <ul class="submenu">
-                                                        <li>
-                                                            <a href="product-simple.html">Simple Product</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-variable.html">Variable Product</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-upcoming.html">Product Upcoming</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-up-thumb.html">Thumb Top Product</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="product-sidebar.html">Product Sidebar</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="shop-filter.html">Products </a>
-                                        </li>
-                                        <li>
-                                            <a href="blog.html">Blog</a>
-                                            <ul class="submenu">
-                                                <li>
-                                                    <a href="blog-2-col.html">Blog 2 Column</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-2-col-mas.html">Blog 2 Col Masonry</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-3-col.html">Blog 3 Column</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-3-col-mas.html">Blog 3 Col Masonry</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details.html">Blog Details</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-audio.html">Blog Details Audio</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-video.html">Blog Details Video</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-gallery.html">Blog Details Gallery</a>
-                                                </li>
-                                                <li>
-                                                    <a href="blog-details-left-sidebar.html">Details Left Sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Pages</a>
-                                            <ul class="submenu">
-                                                <li>
-                                                    <a href="about.html">About Us</a>
-                                                </li>
-
-                                                <li>
-                                                    <a href="contact.html">Contact Us</a>
-                                                </li>
-                                                <li>
-                                                    <a href="login.html">login</a>
-                                                </li>
-                                                <li>
-                                                    <a href="register.html">Register</a>
-                                                </li>
-                                                <li>
-                                                    <a href="cart.html">Shoping Cart</a>
-                                                </li>
-                                                <li>
-                                                    <a href="checkout.html">Checkout</a>
-                                                </li>
-                                                <li>
-                                                    <a href="wishlist.html">Wishlist</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="contact.html">Contact</a>
-                                        </li>
+                <!-- breadcrumb-area-start -->
+                <section class="breadcrumb-area" data-background="img/bg/page-title.png">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="breadcrumb-text text-center">
+                                    <h1>Shoping Cart</h1>
+                                    <ul class="breadcrumb-menu">
+                                        <li><a href="index.html">home</a></li>
+                                        <li><span>Cart</span></li>
                                     </ul>
-                                </nav>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
-                            <div class="header-right f-right">
-                                <ul>
-                                    <li class="search-btn">
-                                        <a class="search-btn nav-search search-trigger" href="#"><i
-                                                class="fas fa-search"></i></a>
-                                    </li>
-                                    <li class="login-btn"><a href="login.html"><i class="far fa-user"></i></a></li>
-                                    <li class="d-shop-cart"><a href="#"><i class="flaticon-shopping-cart"></i> <span
-                                                class="cart-count">3</span></a>
-                                        <ul class="minicart">
-                                            <li>
-                                                <div class="cart-img">
-                                                    <a href="product-details.html">
-                                                        <img src="img/product/pro1.jpg" alt="" />
-                                                    </a>
-                                                </div>
-                                                <div class="cart-content">
-                                                    <h3>
-                                                        <a href="product-details.html">Black & White Shoes</a>
-                                                    </h3>
-                                                    <div class="cart-price">
-                                                        <span class="new">$ 229.9</span>
-                                                        <span>
-                                                            <del>$239.9</del>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="del-icon">
-                                                    <a href="#">
-                                                        <i class="far fa-trash-alt"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="cart-img">
-                                                    <a href="product-details.html">
-                                                        <img src="img/product/pro2.jpg" alt="" />
-                                                    </a>
-                                                </div>
-                                                <div class="cart-content">
-                                                    <h3>
-                                                        <a href="product-details.html">Black & White Shoes</a>
-                                                    </h3>
-                                                    <div class="cart-price">
-                                                        <span class="new">$ 229.9</span>
-                                                        <span>
-                                                            <del>$239.9</del>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="del-icon">
-                                                    <a href="#">
-                                                        <i class="far fa-trash-alt"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="cart-img">
-                                                    <a href="product-details.html">
-                                                        <img src="img/product/pro3.jpg" alt="" />
-                                                    </a>
-                                                </div>
-                                                <div class="cart-content">
-                                                    <h3>
-                                                        <a href="product-details.html">Black & White Shoes</a>
-                                                    </h3>
-                                                    <div class="cart-price">
-                                                        <span class="new">$ 229.9</span>
-                                                        <span>
-                                                            <del>$239.9</del>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="del-icon">
-                                                    <a href="#">
-                                                        <i class="far fa-trash-alt"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="total-price">
-                                                    <span class="f-left">Total:</span>
-                                                    <span class="f-right">$300.0</span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="checkout-link">
-                                                    <a href="cart.html">Shopping Cart</a>
-                                                    <a class="red-color" href="checkout.html">Checkout</a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-12 d-xl-none">
-                            <div class="mobile-menu"></div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </header>
-        <!-- header end -->
+                </section>
+                <!-- breadcrumb-area-end -->
+
+                <section class="cart-area pt-100 pb-100">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <form action="UpdateQuantityServlet" method="post">
+                                    <div class="table-content table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="product-checkbox"></th>
+                                                    <th class="product-thumbnail">Images</th>
+                                                    <th class="cart-product-name">Product</th>
+                                                    <th class="product-price">Unit Price</th>
+                                                    <th class="product-quantity">Quantity</th>
+                                                    <th class="product-subtotal">Total</th>
+                                                    <th class="product-remove">Remove</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <jsp:useBean id="cartGroup" class="java.util.HashMap" scope="request" />
+
+                                            <c:forEach var="entry" items="${cartGroup}">
+                                                <tr>
+                                                    <!-- < <td>${entry.key}</td> -->
+                                                    <td colspan="7" class="shop-name">${entry.key}</td>
+                                                </tr>
+
+                                                <c:set var="totalPrice" value="0" /> 
+                                                <!-- Iterate over the ArrayList values for the current key -->
+                                                <c:forEach var="value" items="${entry.value}">
+                                                    <tr>
+                                                        <!-- Display the values in each row -->
+                                                        <td class="product-checkbox">
+                                                            <input type="checkbox" class="itemCheckbox" />
+                                                        </td>
+                                                        <td class="product-thumbnail">
+                                                            <a href="#"><img src="${value.product.productImg}" alt=""></a>
+                                                        </td>
+                                                        <td class="product-name">
+                                                            <a href="#">${value.product.productName}</a>
+                                                        </td>
+                                                        <td class="product-price">
+                                                            <span class="amount">${value.product.price}</span>
+                                                        </td>
+                                                        <td class="product-quantity">
+                                                            <!--
+                                                            <input type="hidden" name="productId" value="${value.product.productID}">
+                                                            <button type="submit" name="action" value="decrease">-</button>
+                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="0">
+                                                            <button type="submit" name="action" value="increase">+</button>
+                                                            -->
+                                                            <buton<a href="UpdateQuantityServlet?id=${value.product.productID}&action=increase">+</a>
+                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="0">
+                                                <buton><a href="UpdateQuantityServlet?id=${value.product.productID}&action=decrease">-</a></buton>
+                                                        </td>
+                                                        <td class="product-subtotal">
+                                                            <span class="amount">${value.product.price * value.quantity}</span>
+                                                        </td>
+                                                        <td class="product-remove">
+                                                            <button type="submit"><a href="UpdateQuantityServlet?id=${value.product.productID}&action=remove">X</a></button>
+                                                        </td>
+
+                                                    </tr>
+                                                </c:forEach>
+                                                <c:set var="totalPrice" value="${totalPrice + (cartItem.product.price * cartItem.quantity)}" />
+                                            </c:forEach>
 
 
-        <main>
 
-        <!-- breadcrumb-area-start -->
-        <section class="breadcrumb-area" data-background="img/bg/page-title.png">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="breadcrumb-text text-center">
-                            <h1>Shoping Cart</h1>
-                            <ul class="breadcrumb-menu">
-                                <li><a href="index.html">home</a></li>
-                                <li><span>Cart</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- breadcrumb-area-end -->
+                                            <!--
+                                            <c:forEach var="cartItem" items="${requestScope.cartItems}">
+                                                <tr>
+                                                    <td colspan="7" class="shop-name">${cartItem.shop.shopName}</td>
+                                                </tr>
+                                                <tr>
 
-        <!-- Cart Area Strat-->
-        <section class="cart-area pt-100 pb-100">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="#">
-                            <div class="table-content table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th class="product-thumbnail">Images</th>
-                                            <th class="cart-product-name">Product</th>
-                                            <th class="product-price">Unit Price</th>
-                                            <th class="product-quantity">Quantity</th>
-                                            <th class="product-subtotal">Total</th>
-                                            <th class="product-remove">Remove</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="product-thumbnail"><a href="#"><img src="img/product/pro1.jpg"
-                                                        alt=""></a></td>
-                                            <td class="product-name"><a href="#">Bakix Furniture</a></td>
-                                            <td class="product-price"><span class="amount">$130.00</span></td>
-                                            <td class="product-quantity">
-                                                <div class="cart-plus-minus"><input type="text" value="1" /></div>
-                                            </td>
-                                            <td class="product-subtotal"><span class="amount">$130.00</span></td>
-                                            <td class="product-remove"><a href="#"><i class="fa fa-times"></i></a></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="product-thumbnail"><a href="#"><img src="img/product/pro2.jpg"
-                                                        alt=""></a></td>
-                                            <td class="product-name"><a href="#">Sujon Chair Set</a></td>
-                                            <td class="product-price"><span class="amount">$120.50</span></td>
-                                            <td class="product-quantity">
-                                                <div class="cart-plus-minus"><input type="text" value="1" /></div>
-                                            </td>
-                                            <td class="product-subtotal"><span class="amount">$120.50</span></td>
-                                            <td class="product-remove"><a href="#"><i class="fa fa-times"></i></a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="coupon-all">
-                                        <div class="coupon">
-                                            <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Coupon code"
-                                                type="text">
-                                            <button class="btn theme-btn-2" name="apply_coupon" type="submit">Apply coupon</button>
-                                        </div>
-                                        <div class="coupon2">
-                                            <input class="btn theme-btn" name="update_cart" value="Update cart" type="submit">
+                                                    <td class="product-checkbox">
+                                                        <input type="checkbox" class="itemCheckbox" />
+                                                    </td>
+                                                    <td class="product-thumbnail">
+                                                        <a href="#"><img src="${cartItem.product.productImg}" alt=""></a>
+                                                    </td>
+                                                    <td class="product-name">
+                                                        <a href="#">${cartItem.product.productName}</a>
+                                                    </td>
+                                                    <td class="product-price">
+                                                        <span class="amount">${cartItem.product.price}</span>
+                                                    </td>
+                                                    <td class="product-quantity">
+                                                        <input type="hidden" name="productId" value="${cartItem.product.productID}">
+                                                        <button type="submit" name="action" value="decrease">-</button>
+                                                        <input type="number" name="quantity" value="${cartItem.quantity}" min="0">
+                                                        <button type="submit" name="action" value="increase">+</button>
+                                                    </td>
+                                                    <td class="product-subtotal">
+                                                        <span class="amount">${cartItem.product.price * cartItem.quantity}</span>
+                                                    </td>
+                                                    <td class="product-remove">
+                                                        <button type="submit" name="action" value="remove">X</button>
+                                                    </td>
+                                                </tr>
+                                                <c:set var="totalPrice" value="${totalPrice + (cartItem.product.price * cartItem.quantity)}" />
+                                            </c:forEach>
+                                            -->
+                                        </tbody>
+
+                                        <script>
+                                            function updateTotal() {
+                                                var total = 0;
+                                                var checkboxes = document.getElementsByClassName('itemCheckbox');
+
+                                                for (var i = 0; i < checkboxes.length; i++) {
+                                                    if (checkboxes[i].checked) {
+                                                        var row = checkboxes[i].closest('tr');
+                                                        var subtotal = parseFloat(row.querySelector('.product-subtotal .amount').innerText);
+                                                        total += subtotal;
+                                                    }
+                                                }
+
+                                                document.getElementById('totalPrice').innerText = total.toFixed(2);
+                                            }
+
+                                            // Gọi hàm khi trang được tải   
+                                            window.onload = updateTotal;
+
+                                            // Gán hàm cho sự kiện click của checkbox
+                                            var checkboxes = document.getElementsByClassName('itemCheckbox');
+                                            for (var i = 0; i < checkboxes.length; i++) {
+                                                checkboxes[i].addEventListener('click', updateTotal);
+                                            }
+                                        </script>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 ml-auto">
+                                        <div class="cart-page-total">
+                                            <h2>Cart totals</h2>
+                                            <ul class="mb-20">
+
+                                                <li>Total <span id="totalPrice">0.00</span></li>
+                                            </ul>
+                                            <a class="btn theme-btn" href="#">Proceed to checkout</a>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5 ml-auto">
-                                    <div class="cart-page-total">
-                                        <h2>Cart totals</h2>
-                                        <ul class="mb-20">
-                                            <li>Subtotal <span>$250.00</span></li>
-                                            <li>Total <span>$250.00</span></li>
-                                        </ul>
-                                        <a class="btn theme-btn" href="#">Proceed to checkout</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Cart Area End-->
+                            </form>
 
+                        </div>
+                    </div>
+                   
+                </div>
+            </section>
+            <!-- Cart Area End-->
 
         </main>
 
-        <!-- footer start -->
-        <footer class="footer-area pl-100 pr-100">
-            <div class="footer-area box-90 pt-100 pb-60" data-background="img/bg/footer.jpg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-5 col-lg-6 col-md-6 ">
-                            <div class="footer-widget mb-40 pr-70">
-                                <div class="footer-logo">
-                                    <a href="index.html"><img src="img/logo/footer-logo.png" alt=""></a>
-                                </div>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-                                    ut labore et dolore mag na
-                                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                                    ex ea commodo consequat.
-                                </p>
-                                <div class="footer-time d-flex mt-30">
-                                    <div class="time-icon">
-                                        <img src="img/icon/time.png" alt="">
-                                    </div>
-                                    <div class="time-text">
-                                        <span>Got Questions ? Call us 24/7!</span>
-                                        <h2>(0600) 874 548</h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-3">
-                            <div class="footer-widget mb-40">
-                                <h3>Social Media</h3>
-                                <ul class="footer-link">
-                                    <li><a href="#">Facebook</a></li>
-                                    <li><a href="#">Twitter</a></li>
-                                    <li><a href="#">Behance</a></li>
-                                    <li><a href="#"> Dribbble</a></li>
-                                    <li><a href="#">Linkedin</a></li>
-                                    <li><a href="#">Youtube</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-2 col-md-3 d-md-none d-xl-block">
-                            <div class="footer-widget pl-50 mb-40">
-                                <h3>Location</h3>
-                                <ul class="footer-link">
-                                    <li><a href="#">New York</a></li>
-                                    <li><a href="#">Tokyo</a></li>
-                                    <li><a href="#">Dhaka</a></li>
-                                    <li><a href="#">Chittagong</a></li>
-                                    <li><a href="#">China</a></li>
-                                    <li><a href="#">Japan</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-3">
-                            <div class="footer-widget mb-40">
-                                <h3>About</h3>
-                                <ul class="footer-link">
-                                    <li><a href="#">Terms & Conditions</a></li>
-                                    <li><a href="#"> Privacy Policy</a></li>
-                                    <li><a href="#">Contact Us</a></li>
-                                    <li><a href="#">FAQ</a></li>
-                                    <li><a href="#">Wholesale</a></li>
-                                    <li><a href="#">Direction</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright-area box-105">
-                <div class="container-fluid">
-                    <div class="pt-30 pb-30">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="copyright text-center">
-                                    <p>Copyright � 2019 <a href="#">BasicTheme</a>. All Rights Reserved</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- footer end -->
+        <jsp:include page="footer.jsp"></jsp:include>
 
         <!-- Fullscreen search -->
         <div class="search-wrap">
@@ -537,7 +236,7 @@
 
 
 
-		<!-- JS here -->
+        <!-- JS here -->
         <script src="js/vendor/jquery-1.12.4.min.js"></script>
         <script src="js/jquery-ui.js"></script>
         <script src="js/popper.min.js"></script>
@@ -554,7 +253,8 @@
         <script src="js/jquery.magnific-popup.min.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
+
     </body>
 
-<!-- Mirrored from wphix.com/template/vue/vue/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 21 Oct 2023 08:30:39 GMT -->
+    <!-- Mirrored from wphix.com/template/vue/vue/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 21 Oct 2023 08:30:39 GMT -->
 </html>

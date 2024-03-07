@@ -101,7 +101,7 @@ public class LoginController extends HttpServlet {
             }
         } catch (Exception e) {
             String msg = e.getMessage();
-            String haha = "hahahaah";
+       
         }
     }
 

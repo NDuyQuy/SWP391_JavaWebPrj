@@ -12,6 +12,9 @@ public class MainCategory {
     private int categoryID;
     private String categoryName;
 
+    public MainCategory() {
+    }
+
     public MainCategory(int categoryID, String categoryName) {
         this.categoryID = categoryID;
         this.categoryName = categoryName;

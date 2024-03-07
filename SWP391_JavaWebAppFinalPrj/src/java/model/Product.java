@@ -24,6 +24,7 @@ public class Product {
 
     public Product() {
     }
+    
 
     public Product(int productID, Shop shop, MainCategory mCate, ShopCategory sCate, String description, LocalDate createdDate, String productName, float price, String productImg, int quantity) {
         this.productID = productID;
