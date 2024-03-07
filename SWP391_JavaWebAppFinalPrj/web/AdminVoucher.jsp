@@ -106,7 +106,7 @@
                                 <!-- Modal Body -->
                                 <div class="modal-body">
                                     <form action="AdminServlet?Action=DeleteVoucher" method="post">
-                                        <input type="hidden" name="categoryId" id="deleteCategoryId">
+                                        <input type="hidden" name="VoucherId" id="deleteVoucherId">
                                         <button type="submit" class="btn btn-primary">Delete</button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closePopup('delete')">Cancel</button>
                                     </form>

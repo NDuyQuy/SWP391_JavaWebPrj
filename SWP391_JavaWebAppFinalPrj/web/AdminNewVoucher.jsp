@@ -1,18 +1,17 @@
 <%-- 
-    Document   : AdminUpdateVoucher
-    Created on : Feb 29, 2024, 8:06:33 PM
+    Document   : AdminNewVoucher
+    Created on : Mar 4, 2024, 3:41:58 PM
     Author     : DELL
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:include page="/AdminServlet?Action=GetMainVoucher"/>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Co.Handmade Update Voucher</title>
+        <title>Co.Handmade Add New Voucher</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -38,7 +37,7 @@
     </head>
     <body>
         <jsp:include page="header.jsp"></jsp:include>
-        <c:set var="V" value="${sessionScope.Vch}" />
+        
         <main>
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
@@ -54,39 +53,40 @@
                 </section>
                 <!-- breadcrumb-area-end -->
 
-                <!-- login Area Strat-->
+                <!--  Area Strat-->
                 <section class="login-area pt-100 pb-100">
                     <div class="container">
                     
                         <div>
-                            <form method="post" action="AdminServlet?Action=UpdateVoucher">
+                            <form method="post" action="AdminServlet?Action=AddNewVoucher">
                                 <label for="code">Voucher Code<span>*</span>: </label>
-                                <input id="code" type="text" placeholder="Enter Voucher Code" name="vouchercode" value="${V.getCode()}" required/>
+                                <input id="code" type="text" placeholder="Enter Voucher Code" name="vouchercode" required/>
                                 
                                 <label for="amount">Discount Amount<span>*</span>: </label>
-                                <input id="amount" type="number" name="amount" step="1000" value="${V.getDiscount()}" required/>
+                                <input id="amount" type="number" name="amount" step="1000" required/>
                                 
                                 <label for="unit">Discount Unit<span>*</span>: </label>
                                 <select id="unit" name="unit" onchange="changeUnit()" required>
                                     <option value="VND">VND</option>
                                     <option value="Percent">%</option>
                                 </select>
-                                <input type="hidden" name="setUnit" id="setUnit" value="${V.getDiscount_type()}">
+                                
                                 
                                 <label for="expdate">Exp. Date<span>*</span>: </label>
-                                <input id="expdate" type="datetime-local" name="expdate" value="${V.getEnd()}" required/>
+                                <input id="expdate" type="datetime-local" name="expdate" required/>
                                 
                                 <label for="min">Min. Value of Bill<span>*</span>: </label>
-                                <input id="min" type="number" name="min" step="10000" value="${V.getMin()}" required/>
+                                <input id="min" type="number" name="min" step="10000" required/>
                                 
                                 <label for="count">Use Times Remaining<span>*</span>: </label>
-                                <input id="count" type="number" name="count" step="1" value="${V.getCount()}" required/>
+                                <input id="count" type="number" name="count" step="1" required/>
+                                
                                 
                                 <label for="addDescription">Description<span>*</span>: </label>
-                                <textarea class="form-control" rows="4" id="addDescription" name="description" placeholder="Enter Description">${V.getDescription()}</textarea>
+                                <textarea class="form-control" rows="4" id="addDescription" name="description" placeholder="Enter Description"></textarea>
                                 
                                 
-                                <input type="hidden" name="voucherId" id="voucherId" value="${V.id}">
+                                <input type="hidden" name="categoryId" id="listCategoryId">
                                 
                                 <div class="mt-10"></div>
                                 <button class="btn theme-btn-2 w-100">Update</button>
@@ -129,6 +129,7 @@
                 }
             }
         </script>
+        
         
     </body>
 </html>

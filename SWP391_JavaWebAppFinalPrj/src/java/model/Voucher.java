@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -17,15 +18,15 @@ public class Voucher {
     private int discount;
     private int discount_type; //1 for value; 2 for percent; -1 for error
     private String discount_unit;
-    private Date start;
-    private Date end;
-    private int type; //1 for product vouchers; 2 for shop vouchers; 3 for main (category) vouchers; -1 for error
+    private Timestamp start;
+    private Timestamp end;
+    private int type; //1 for product vouchers; 2 for shop vouchers; 0 for main (category) vouchers; -1 for error
     private int min;
     private String description;
     private int count;
     ArrayList<Integer> ListApplied = new ArrayList<Integer>();
 
-    public Voucher(int id, String code, int discount, Date start, Date end, int type, int min, String description, int count) {
+    public Voucher(int id, String code, int discount, Timestamp start, Timestamp end, int type, int min, String description, int count) {
         this.id = id;
         this.code = code;
         this.discount = discount;
@@ -64,19 +65,19 @@ public class Voucher {
         this.discount = discount;
     }
 
-    public Date getStart() {
+    public Timestamp getStart() {
         return start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(Timestamp start) {
         this.start = start;
     }
 
-    public Date getEnd() {
+    public Timestamp getEnd() {
         return end;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(Timestamp end) {
         this.end = end;
     }
 
