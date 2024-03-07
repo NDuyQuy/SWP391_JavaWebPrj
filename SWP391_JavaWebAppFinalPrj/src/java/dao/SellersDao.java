@@ -7,6 +7,7 @@ package dao;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import model.*;
 /**
@@ -22,11 +23,12 @@ public class SellersDao {
     private static final String CREATESHOPCATEGORY ="INSERT INTO [shopcategory](maincate_id,shop_id,name)VALUES(?,?,?)";
     private static final String EDITSHOPCATEGORY = "UPDATE [shopcategory] SET [name] = ?, [maincate_id]=? WHERE [id] = ?";
     private static final String DELETESHOPCATEGORY = "DELETE [shopcategory] WHERE [id]=?";
+    
     //PRODUCTS RELATED SQL STATEMENT
-    private static final String CREATEPRODUCT = "INSERT [products](mcate_id,description,created_date,name,price,"
-            + "img,quantity) VALUES (?,?,GETDATE(),?,?,?,?)";
+    private static final String CREATEPRODUCT = "INSERT [products](shop_id,mcate_id,description,created_date,name,price,"
+            + "img,quantity) VALUES (?,?,?,GETDATE(),?,?,?,?)";
     private static final String EDITPRODUCT = "UPDATE [products] SET  [mcate_id]=?, [description]=?, [name]=?, [price]=?, "
-            + "[img]=?,quantity=? WHERE [product_id]=?";
+            + "[img]=?, quantity=? WHERE [product_id]=?";
     private static final String DELETEPRODUCT = "DELETE [products] WHERE [product_id] = ?";
     
     //SHOP VOUCHERS RELATED SQL STATEMENT
@@ -229,18 +231,58 @@ public class SellersDao {
     public static ArrayList<Product> getShopProducts(int shop_id) {
         return ProductDao.getProductsByShop(shop_id);
     }
-    
-    public static void createShopProducts(Product product){
-        
+    public static Product getProductById(int product_id){
+        return ProductDao.getProductById(product_id);
+    }
+    public static void createShopProducts(Product product, int shop_id){
+        PreparedStatement ptm = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(CREATEPRODUCT);
+            ptm.setInt(1, shop_id);
+            ptm.setInt(2, product.getmCate().getCategoryID());
+            ptm.setString(3, product.getDescription());
+            ptm.setString(4, product.getProductName());
+            ptm.setInt(5, (int)product.getPrice());
+            ptm.setString(6, product.getProductImg());
+            ptm.setInt(7, product.getQuantity());
+            ptm.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     public static void editShopProducts(Product product){
-        
+        PreparedStatement ptm = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(EDITPRODUCT);
+            ptm.setInt(1, product.getmCate().getCategoryID());
+            ptm.setString(2, product.getDescription());
+            ptm.setString(3, product.getProductName());
+            ptm.setInt(4, (int)product.getPrice());
+            ptm.setString(5, product.getProductImg());
+            ptm.setInt(6, product.getQuantity());
+            ptm.setInt(7, product.getProductID());
+            ptm.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     public static void deleteShopProducts(int product_id){
-        
+        PreparedStatement ptm = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(DELETEPRODUCT);
+            ptm.setInt(1, product_id);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public static void main(String[] args) {
-        System.out.println(getVoucherByID(6));
+        System.out.println(getProductById(6));
+        Product product = new Product(5, null, new MainCategory(1, "bruh"), null, "Meme nong hoi vua thoi vua an", LocalDate.MAX, "Meme", 100000, "img\\seller\\23\\062e45a2-a459-48c9-bbbd-1be2379e455d", 9);
+        
+        //createShopProducts(product, 23);
+        //editShopProducts(product);
+        //getShopProducts(23).forEach(System.out::println);
         /*Date start_date = new Date(2024, 3, 1);
         Date expired_date = new Date(2024, 3, 2);
         Voucher voucher = new Voucher(6, "Mv03", 2, start_date, expired_date, 3, 1, "none", 23, 1, 10);

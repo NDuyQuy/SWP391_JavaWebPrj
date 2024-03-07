@@ -21,6 +21,10 @@ import javax.servlet.http.Part;
 import model.User;
 import javax.servlet.annotation.MultipartConfig;
 import java.util.Collection;
+import java.util.stream.Stream;
+import model.MainCategory;
+import model.Product;
+import model.Shop;
 /**
  *
  * @author ASUS
@@ -73,6 +77,17 @@ public class ProductController extends HttpServlet {
             if (open.equals("create")) {
                 url = "seller/addnew_product.jsp";
                 response.sendRedirect(url);
+            }else{
+                url = "seller/edit_product.jsp";
+                int product_id = Integer.parseInt(request.getParameter("p_id"));
+                Product p = SellersDao.getProductById(product_id);
+                String realPath = request.getServletContext().getRealPath(p.getProductImg());
+                //request.setAttribute("product", p);
+                Stream<Path> ps = Files.list(Paths.get(realPath));
+                
+                ps.forEach(System.out::println);
+                //response.sendRedirect(url);
+                request.getRequestDispatcher(url).forward(request, response);
             }
         } else {
             //Get the list of shop categories
@@ -94,7 +109,43 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
         String url = "/seller/shopproduct_management.jsp";
         int user_id = ((User) request.getSession().getAttribute("user")).getUserID();
-        /* STORE IMG FIRST*/
+        String act = request.getParameter("act");
+        String uploadPath = null ;
+        String serverContextPath = request.getServletContext().getRealPath("");
+        if (act!=null) {
+            switch(act){
+                case "create":
+                    uploadPath = getNewDir(user_id);
+                    uploadImageFile(request, uploadPath);
+                    Product p = getProduct(request);
+                    p.setProductImg(uploadPath.replace(serverContextPath, ""));
+                    SellersDao.createShopProducts(p, user_id);
+                    break;
+                case "edit":
+                    
+                    break;
+                case "delete":
+                    int product_id = Integer.parseInt(request.getParameter("productID"));
+                    SellersDao.deleteShopProducts(product_id);
+                    break;
+                default:    break;
+            }
+        }
+        
+        
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+    
+    private String getNewDir(int user_id) throws IOException{
         // Generate a unique product ID using UUID
         String productId = UUID.randomUUID().toString();
         // Create the directory structure if it doesn't exist
@@ -108,6 +159,9 @@ public class ProductController extends HttpServlet {
         }
         // IF DIR EXISTS = OUT LOOP -> CREATE NEW DIR
         Files.createDirectories(Paths.get(uploadPath));
+        return uploadPath;
+    }
+    private void uploadImageFile(HttpServletRequest request, String uploadPath) throws IOException, ServletException{
         // Process file uploads
         Collection<Part> parts = request.getParts();
         for (Part part : parts) {
@@ -121,24 +175,11 @@ public class ProductController extends HttpServlet {
                 boolean isExists = Files.exists(Paths.get(finalPath));
                 if(!isExists){
                     // STORE IMG FAIL 
-                    // DO SOMETHING ABC
+                    // DO SOMETHING IF NEED
                 }
             }
         }
-        response.getWriter().println("Your files are uploaded!");
-        //MultipartRequest mr = new MultipartRequest(request, uploadPath);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
     private String extractFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] items = contentDisp.split(";");
@@ -148,5 +189,18 @@ public class ProductController extends HttpServlet {
             }
         }
         return "";
+    }
+    private Product getProduct(HttpServletRequest request) throws ServletException{
+        Product product = null;
+        try {
+            String name = request.getParameter("productName");
+            String description = request.getParameter("description");
+            int mcate_id = Integer.parseInt(request.getParameter("category"));
+            int price = Integer.parseInt(request.getParameter("price"));
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            product = new Product(new MainCategory(mcate_id, ""), description, name, price, quantity);
+        } catch (Exception e) {
+        }
+        return product;
     }
 }

@@ -68,7 +68,7 @@
                             <tr> 
                                 <td><c:out value="${p.productName}"/></td>
                                 <td><c:out value="${p.quantity}"/></td>
-                                <td><c:out value="${p.price}"/></td>
+                                <td><c:out value="${p.price.intValue()}"/></td>
                                 <td><c:out value="${p.mCate.categoryName}"/></td>
                                 <td>
                                     <a href="productcontroller?open=edit&p_id=${p.productID}" class="edit-link" style="color: blue; cursor: pointer;">Edit</a>
@@ -96,7 +96,7 @@
                         <button type="button" class="close" data-dismiss="modal" onclick="closePopup('delete')">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <form action="sellersvouchercontroller" method="post">
+                        <form action="productcontroller" method="post">
                             <div class="form-group">
                                 <input type="hidden" name="act" value ="delete">
                                 <p class="form-control">Do you sure you want to delete this product?</p>

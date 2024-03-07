@@ -30,6 +30,7 @@
                         <div class="col-md-6">
                             <h3 class="text-center mb-4">Thêm sản phẩm</h3>
                             <form action="../productcontroller" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="act" value="create">
                                 <div class="form-group">
                                     <label for="productName">Tên sản phẩm:</label>
                                     <input type="text" class="form-control" id="productName" name="productName" required>

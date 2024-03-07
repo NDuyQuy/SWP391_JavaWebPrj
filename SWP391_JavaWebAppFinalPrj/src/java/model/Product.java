@@ -25,6 +25,14 @@ public class Product {
     public Product() {
     }
 
+    public Product(MainCategory mCate, String description, String productName, float price, int quantity) {
+        this.mCate = mCate;
+        this.description = description;
+        this.productName = productName;
+        this.price = price;
+        this.quantity = quantity;
+    }
+    
     public Product(int productID, Shop shop, MainCategory mCate, ShopCategory sCate, String description, LocalDate createdDate, String productName, float price, String productImg, int quantity) {
         this.productID = productID;
         this.shop = shop;
@@ -117,4 +125,10 @@ public class Product {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" + "productID=" + productID + ", description=" + description + ", createdDate=" + createdDate + ", productName=" + productName + ", price=" + price + ", productImg=" + productImg + ", quantity=" + quantity + '}';
+    }
+    
 }
