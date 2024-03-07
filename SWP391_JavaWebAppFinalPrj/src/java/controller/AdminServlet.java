@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.*;
 import dao.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.servlet.http.HttpSession;
 /**
@@ -76,8 +79,71 @@ public class AdminServlet extends HttpServlet {
                     session.setAttribute("VL", VoucherList);
                 }
             }
-            else if(action.equals("AddVoucher")) {
+            else if(action.equals("AddNewVoucher")) {
                 Continue = false;
+                String code = request.getParameter("vouchercode");
+                int discount = Integer.parseInt(request.getParameter("amount"));
+                String unit = request.getParameter("unit");
+                if (unit.equals("VND")) code = "VA" + code;
+                else if (unit.equals("Percent")) code = "PC" + code;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                Timestamp start = new Timestamp(System.currentTimeMillis()); //current time
+                Timestamp end = Timestamp.valueOf(LocalDateTime.parse(request.getParameter("expdate").replace("T", " "), formatter));
+                int type = 0;
+                int min = Integer.parseInt(request.getParameter("min"));
+                int count = Integer.parseInt(request.getParameter("count"));
+                String description = request.getParameter("description");
+                Voucher v = new Voucher(-1, code, discount, start, end, type, min, description, count);
+                AdminDAO.Add_New_Voucher(v);
+                url = "/AdminVoucher.jsp";
+            }
+            else if(action.equals("GetMainVoucher")) {
+                int voucherId = Integer.parseInt(request.getParameter("id"));
+                Voucher v = AdminDAO.Get_Voucher(voucherId);
+                if (v != null) {
+                    String code = v.getCode();
+                    code = code.substring(2);
+                    v.setCode(code);
+                    session.setAttribute("Vch", v);
+                }
+                
+            }
+            else if(action.equals("EditVoucher")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("voucherId"));
+                String code = request.getParameter("vouchercode");
+                int discount = Integer.parseInt(request.getParameter("amount"));
+                String unit = request.getParameter("unit");
+                if (unit.equals("VND")) code = "VA" + code;
+                else if (unit.equals("Percent")) code = "PC" + code;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                Timestamp end = Timestamp.valueOf(LocalDateTime.parse(request.getParameter("expdate").replace("T", " "), formatter));
+                int type = 0;
+                int min = Integer.parseInt(request.getParameter("min"));
+                int count = Integer.parseInt(request.getParameter("count"));
+                String description = request.getParameter("description");
+                Voucher v = new Voucher(id, code, discount, null, end, type, min, description, count);
+                AdminDAO.Add_New_Voucher(v);
+                url = "/AdminVoucher.jsp";
+            }
+            else if(action.equals("DeleteVoucher")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("deleteVoucherId"));
+                AdminDAO.Delete_Voucher(id);
+                url = "/AdminVoucher.jsp";
+            }
+            else if(action.equals("ViewRefund")) {
+                ArrayList<RefundRequest> RefundList = AdminDAO.Get_Refund_List();
+                if (RefundList != null) {
+                    session.setAttribute("RL", RefundList);
+                }
+            }
+            else if(action.equals("EditRefund")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("requestId"));
+                String status = request.getParameter("status");
+                AdminDAO.Update_Refund(status, id);
+                url = "/AdminRefund.jsp";
             }
             
         }
