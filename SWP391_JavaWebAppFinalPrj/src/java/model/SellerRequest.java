@@ -11,24 +11,46 @@ import java.sql.Timestamp;
  * @author DELL
  */
 public class SellerRequest {
+    private int id;
     private int userId;
     private String userName;
     private String Fullname;
     private String shopName;
+    private String CCCD;
     private Timestamp createDate; //Create Account Date
     private Timestamp requestDate;
 
-    public SellerRequest(int userId, String userName, String Fullname, String shopName, Timestamp createDate, Timestamp requestDate) {
+    public SellerRequest() {
+    }
+
+    public SellerRequest(int id, int userId, String userName, String Fullname, String shopName, String CCCD, Timestamp createDate, Timestamp requestDate) {
+        this.id = id;
         this.userId = userId;
         this.userName = userName;
         this.Fullname = Fullname;
         this.shopName = shopName;
+        this.CCCD = CCCD;
         this.createDate = createDate;
         this.requestDate = requestDate;
     }
 
-    public SellerRequest() {
+    public String getCCCD() {
+        return CCCD;
     }
+
+    public void setCCCD(String CCCD) {
+        this.CCCD = CCCD;
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
 
     public int getUserId() {
         return userId;

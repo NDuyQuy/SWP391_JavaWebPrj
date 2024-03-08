@@ -8,15 +8,18 @@ import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Calendar;
 import model.Category;
 import model.RefundRequest;
+import model.ReportedUser;
+import model.SellerRequest;
 import model.Voucher;
 /**
  *
  * @author DELL
  */
 public class AdminDAO {
-    //MAIN CATEGORY RELATED SQL STATEMENT
+    //SQL STATEMENT
     private static final String GETCATEGORYLIST = "SELECT [id], [name], [description] FROM [dbo].[maincategory]";
 
     private static final String ADDCATEGORYLIST = "INSERT INTO [dbo].[maincategory]([name], [description]) values (?, ?)";
@@ -33,8 +36,6 @@ public class AdminDAO {
     
     private static final String GETAPPLIEDLIST_SHOP = "SELECT [shop_id] FROM [dbo].[shopvoucherdetail] WHERE [voucher_id] = ?";
     
-    private static final String GETAPPLIEDLIST_MAIN = "SELECT [category_id] FROM [dbo].[mainvoucherdetail] WHERE [voucher_id] = ?";
-    
     private static final String ADDVOUCHER = "INSERT INTO [dbo].[vouchers]([code], [discount_amount], [start_date], [expire_date], [type], [min_require], [description], [use_count]) values (?, ?, ?, ?, ?, ?, ?, ?)";
     
     private static final String UPDATEVOUCHER = "UPDATE [dbo].[vouchers] SET [code] = ?, [discount_amount] = ?, [expire_date] = ?, [min_require] = ?, [description] = ?, [use_count] = ? WHERE [voucher_id] = ?";
@@ -47,7 +48,27 @@ public class AdminDAO {
     
     private static final String UPDATEREFUND = "UPDATE [dbo].[refundsnreturns] SET [status] = ? WHERE [id] = ?";
     
+    private static final String GETBANLIST = "SELECT [id], [user_id], [reporter_id], [date], [reason], [detail] FROM [dbo].[reportedusers] ORDER BY [id] DESC";
     
+    private static final String GETBANDETAIL = "SELECT [username], [email], [status], [bantime], [report_count] FROM [dbo].[users] WHERE [id] = ?";
+    
+    private static final String GETSHOPDETAIL = "SELECT [shop_name], [shop_reported_count] FROM [dbo].[shops] WHERE [shop_id] = ?";
+    
+    private static final String UPDATEBAN = "UPDATE [dbo].[users] SET [status] = ?, [bantime] = ? WHERE [id] = ?";
+    
+    private static final String GETAPPROVELIST = "SELECT [id], [user_id], [request_date], [shopname], [CCCD] FROM [dbo].[sellerrequest] ORDER BY [id] DESC";
+    
+    private static final String GETAPPROVEREQUEST = "SELECT [id], [user_id], [request_date], [shopname], [CCCD] FROM [dbo].[sellerrequest] WHERE [user_id] = ?";
+    
+    private static final String GETAPPROVEDETAIL = "SELECT [id], [username], [fullname], [createdate] FROM [dbo].[users] WHERE [id] = ?";
+    
+    private static final String DOAPPROVESELLER = "UPDATE [dbo].[users] SET [role] = ? WHERE [id] = ?";
+    
+    private static final String CREATESHOP = "INSERT INTO [dbo].[shops]([shop_id], [shop_name], [CCCD], [shop_reported_count]) values (?, ?, ?, ?)";
+    
+    private static final String DELETEAPPROVEREQUEST = "DELETE [dbo].[sellerrequest] WHERE [user_id] = ?";
+    
+    private static final String SENDNOTIFICATION = "INSERT INTO [dbo].[notifications]([userid], [detail], [status], [createdate]) values (?, ?, ?, ?)";
     
     public static ArrayList<Category> Get_Category_List() {
         ArrayList<Category> result = new ArrayList<Category>();
@@ -81,6 +102,7 @@ public class AdminDAO {
             e.printStackTrace();
         }
     }
+    
     public static void Update_Main_Category(int id, String Name, String Description) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
@@ -93,6 +115,7 @@ public class AdminDAO {
             e.printStackTrace();
         }
     }
+    
     public static void Delete_Main_Category(int id) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
@@ -173,10 +196,6 @@ public class AdminDAO {
                 command = GETAPPLIEDLIST_SHOP;
                 column = "shop_id";
                 break;
-            case 3:
-                command = GETAPPLIEDLIST_MAIN;
-                column = "category_id";
-                break;
             default:
                 return v;
         }
@@ -198,8 +217,6 @@ public class AdminDAO {
         }
         return v;
     }
-    
-    
     
     public static void Add_New_Voucher(Voucher v) {
         PreparedStatement ptm = null;
@@ -319,9 +336,202 @@ public class AdminDAO {
         }
     }
     
+    public static ArrayList<ReportedUser> Get_Report_List() {
+        ArrayList<ReportedUser> result = new ArrayList<ReportedUser>();
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETBANLIST);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int userId = rs.getInt("user_id");
+                int reporterId = rs.getInt("reporter_id");
+                Timestamp date = rs.getTimestamp("date");
+                String reason = rs.getString("reason").trim();
+                String detail = rs.getString("detail").trim();
+                ReportedUser r = new ReportedUser(id, null, null, null, null, null, -1, date, reason, detail);
+                r = Get_Report_Detail(r, userId, reporterId);
+                result.add(r);                
+            }
+            SQLConnection.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     
+    public static ReportedUser Get_Report_Detail(ReportedUser r, int userId, int reporterId) {
+        ReportedUser result = r;
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETBANDETAIL);
+            ptm.setInt(1, userId);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                Timestamp bantime = rs.getTimestamp("bantime");
+                String username = rs.getString("username").trim();
+                String email = rs.getString("email").trim();
+                String status = new String();
+                switch(rs.getInt("status")) {
+                    case 1:
+                        status = "Active";
+                        break;
+                    case 2:
+                        status = "Reported";
+                        break;
+                    case 3:
+                        status = "Ban (Temporary)";
+                        break;
+                    case -1:
+                        status = "Ban (Unlimited)";
+                        break;
+                }
+                result.setBantime(bantime);
+                result.setUserName(username);
+                result.setEmail(email);
+                result.setStatus(status);
+            }
+            rs = null;
+            ptm = con.prepareStatement(GETBANDETAIL);
+            ptm.setInt(1, reporterId);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                String username = rs.getString("username").trim();
+                result.setReportBy(username);
+            }
+            rs = null;
+            ptm = con.prepareStatement(GETSHOPDETAIL);
+            ptm.setInt(1, userId);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                String shopname = rs.getString("shop_name").trim();
+                int count = rs.getInt("shop_reported_count");
+                result.setCount(count);
+                result.setShopname(shopname);
+            }
+            SQLConnection.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     
+    public static void Apply_Ban(int id, int status, int bandays) {
+        PreparedStatement ptm = null;
+        Timestamp bantime = new Timestamp(System.currentTimeMillis());
+        try (Connection con = SQLConnection.getConnection()) {
+            bantime = addDays(bantime, bandays);
+            ptm = con.prepareStatement(UPDATEBAN);
+            ptm.setInt(1, status);
+            ptm.setTimestamp(2, bantime);
+            ptm.setInt(3, id);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
+    public static Timestamp addDays(Timestamp date, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);// w ww.  j ava  2  s  .co m
+        cal.add(Calendar.DATE, days); //minus number would decrement the days
+        return new Timestamp(cal.getTime().getTime());
+    }
+    
+    public static ArrayList<SellerRequest> Get_Approve_List() {
+        ArrayList<SellerRequest> result = new ArrayList<SellerRequest>();
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETAPPROVELIST);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int userId = rs.getInt("user_id");
+                Timestamp date = rs.getTimestamp("request_date");
+                String shopname = rs.getString("shopname").trim();
+                String CCCD = rs.getString("CCCD").trim();
+                SellerRequest r = new SellerRequest(id, userId, null, null, shopname, CCCD, null, date);
+                r = Get_Approve_Detail(r, userId);
+                result.add(r);                
+            }
+            SQLConnection.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public static SellerRequest Get_Approve_Detail(SellerRequest r, int userId) {
+        SellerRequest result = r;
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETAPPROVEDETAIL);
+            ptm.setInt(1, userId);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                Timestamp date = rs.getTimestamp("createdate");
+                String username = rs.getString("username").trim();
+                String fullname = rs.getString("fullname").trim();
+                result.setCreateDate(date);
+                result.setFullname(fullname);
+                result.setUserName(username);
+            }
+            SQLConnection.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public static void Approve_Seller(int id, boolean accept) {
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            if (accept) {
+                String CCCD = new String();
+                String shopname = new String();
+                ptm = con.prepareStatement(GETAPPROVEREQUEST);
+                ptm.setInt(1, id);
+                rs = ptm.executeQuery();
+                if (rs.next()) {
+                    CCCD = rs.getString("CCCD");
+                    shopname = rs.getString("shopname");
+                }
+                ptm = con.prepareStatement(DOAPPROVESELLER);
+                ptm.setInt(1, id);
+                ptm.executeUpdate();
+                ptm = con.prepareStatement(CREATESHOP);
+                ptm.setInt(1, id);
+                ptm.setString(2, CCCD);
+                ptm.setString(3, shopname);
+                ptm.executeUpdate();
+            }
+            ptm = con.prepareStatement(DELETEAPPROVEREQUEST);
+            ptm.setInt(1, id);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void Send_Notification(int toUser, String detail) {
+        PreparedStatement ptm = null;
+        Timestamp createtime = new Timestamp(System.currentTimeMillis());
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(SENDNOTIFICATION);
+            ptm.setInt(1, toUser);
+            ptm.setString(2, detail);
+            ptm.setInt(3, 0);
+            ptm.setTimestamp(4, createtime);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     public static void main(String[] args) {
         Update_Main_Category(3, "houseware", "");

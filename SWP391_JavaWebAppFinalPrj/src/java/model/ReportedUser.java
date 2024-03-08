@@ -19,6 +19,7 @@ public class ReportedUser {
     private String reportBy;
     private int count;
     private Timestamp date;
+    private Timestamp bantime;
     private String reason;
     private String detail;
     
@@ -103,6 +104,16 @@ public class ReportedUser {
     public void setDetail(String detail) {
         this.detail = detail;
     }
+
+    public Timestamp getBantime() {
+        return bantime;
+    }
+
+    public void setBantime(Timestamp bantime) {
+        this.bantime = bantime;
+    }
+    
+    
 
     public ReportedUser() {
     }

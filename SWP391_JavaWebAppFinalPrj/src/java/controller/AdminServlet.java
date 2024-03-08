@@ -145,6 +145,39 @@ public class AdminServlet extends HttpServlet {
                 AdminDAO.Update_Refund(status, id);
                 url = "/AdminRefund.jsp";
             }
+            else if(action.equals("ViewBan")) {
+                ArrayList<ReportedUser> BanList = AdminDAO.Get_Report_List();
+                if (BanList != null) {
+                    session.setAttribute("BL", BanList);
+                }
+            }
+            else if(action.equals("ApplyBan")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("userId"));
+                String banAction = request.getParameter("banAction");
+                int bandays = 0, status = 0;
+                if (banAction.equals("0")) {
+                    status = 1;
+                    bandays = 0;
+                }
+                else if (banAction.equals("7")) {
+                    status = 3;
+                    bandays = 7;
+                }
+                else if (banAction.equals("14")) {
+                    status = 3;
+                    bandays = 14;
+                }
+                else if (banAction.equals("30")) {
+                    status = 3;
+                    bandays = 30;
+                }
+                else if (banAction.equals("999999")) {
+                    status = -1;
+                    bandays = 0;
+                }
+                AdminDAO.Apply_Ban(id, status, bandays);
+            }
             
         }
         catch (Exception e) {
