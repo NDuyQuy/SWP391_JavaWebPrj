@@ -85,7 +85,8 @@ public class User {
     public User() {
     }
     
-    public User(String fullname, String email, String phone, String address, int role) {
+    public User(int id, String fullname, String email, String phone, String address, int role) {
+        this.userID = id;
         this.fullname = fullname;
         this.email = email;
         this.phone = phone;
@@ -97,6 +98,14 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.email = email;
+    }
+
+    public User(String fullname, String email, String phone, String address, int role) {
+        this.fullname = fullname;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.role = role;
     }
 
     @Override

@@ -144,7 +144,7 @@
 
                                     </li>
                                     <li class="d-shop-cart">
-                                        <a href="#">
+                                        <a href="Cart">
                                             <i class="flaticon-shopping-cart"></i>
                                             <c:if test="${sessionScope.user.role == 1}">
                                                 <span class="cart-count">3</span>
@@ -223,7 +223,7 @@
                                                 </li>
                                                 <li>
                                                     <div class="checkout-link">
-                                                        <a href="cart.html">Xem giỏ hàng</a>
+                                                        <a href="Cart">Xem giỏ hàng</a>
                                                     </div>
                                                 </li>
                                             </ul>

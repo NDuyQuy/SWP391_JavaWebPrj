@@ -64,6 +64,13 @@
         <servlet-name>ProductController</servlet-name>
         <servlet-class>controller.seller.ProductController</servlet-class>
     </servlet>
+        <servlet-name>Cart</servlet-name>
+        <servlet-class>controller.Cart</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateQuantityServlet</servlet-name>
+        <servlet-class>controller.UpdateQuantityServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -127,6 +134,13 @@
     <servlet-mapping>
         <servlet-name>ProductController</servlet-name>
         <url-pattern>/productcontroller</url-pattern>
+    </servlet-mapping>
+        <servlet-name>Cart</servlet-name>
+        <url-pattern>/Cart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateQuantityServlet</servlet-name>
+        <url-pattern>/UpdateQuantityServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
