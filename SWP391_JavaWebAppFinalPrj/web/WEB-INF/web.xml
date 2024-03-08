@@ -64,6 +64,7 @@
         <servlet-name>ProductController</servlet-name>
         <servlet-class>controller.seller.ProductController</servlet-class>
     </servlet>
+    <servlet>
         <servlet-name>Cart</servlet-name>
         <servlet-class>controller.Cart</servlet-class>
     </servlet>
@@ -135,6 +136,7 @@
         <servlet-name>ProductController</servlet-name>
         <url-pattern>/productcontroller</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Cart</servlet-name>
         <url-pattern>/Cart</url-pattern>
     </servlet-mapping>
