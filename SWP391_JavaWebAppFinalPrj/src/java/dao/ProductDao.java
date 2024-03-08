@@ -3,18 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import model.Product;
+
 /**
  *
  * @author hien
  */
 public class ProductDao {
-   private static final String GETALLPRODUCTS = "Select [product_id],[shop_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products]";
+    private static final String GETALLPRODUCTS = "Select [product_id],[shop_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products]";
     private static final String GETHIGHESTPRICE = "Select top(1) [product_id],[price] from [products] order by price desc";
     private static final String GETPRODUCTBYPRICE = "Select [product_id],[shop_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [price] >= ? and [price] <= ?";
     private static final String GETPRODUCTBYMAINCATEID = "Select [product_id],[shop_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [mcate_id] = ?";
@@ -157,7 +159,7 @@ public class ProductDao {
         Product p = null;
         ArrayList<Product> product_by_shop = new ArrayList<>();
         try(Connection con = SQLConnection.getConnection()){
-            ptm = con.prepareStatement(GETPRODUCTBYMAINCATEID);
+            ptm = con.prepareStatement(GETPRODUCTSBYSHOP);
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             while(rs.next()){

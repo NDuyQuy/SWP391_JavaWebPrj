@@ -37,8 +37,8 @@
     <body>
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
-        <!-- header end -->
-        <!-- breadcrumb-area-start -->
+            <!-- header end -->
+            <!-- breadcrumb-area-start -->
             <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                 <div class="container">
                     <div class="row">
@@ -55,42 +55,42 @@
                 </div>
             </section>
             <!-- breadcrumb-area-end -->
-        <section class="login-area pt-100 pb-100">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
-                        <div class="basic-login">
-                            <h3 class="text-center mb-60 pb-15" style="border-bottom: 1px solid #e5e5e5;">Register to become a Seller</h3>
-                            <form method="post" action="becomeseller">
-                                <table width="550" height="300">
-                                            <tr>
-                                                <td><span style="color:red;">**</span>Tên shop</td>
-                                                <td colspan="2"><input type="text" size="40" name="sname" value="" maxlength="30" required=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td><span style="color:red;">**</span>CCCD/CMND</td>
-                                                <td><input type="text" size="40" name="semail" value="${sessionScope.user.email}" disabled=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td><span style="color:red;">**</span>Địa chỉ lấy hàng</td>
-                                                <td><input type="text" size="40" name="fullname" placeholder="Họ và tên" value="" required=""></td>
-                                                <td><input type="text" size="40" name="phone" placeholder="Số điện thoại" value="" required=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td colspan="2"><input type="text" size="40" name="saddr" placeholder="Địa chỉ lấy hàng" value="" required=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td colspan="2"><button class="btn theme-btn-2 w-100">Send request</button></td>
-                                            </tr>
-                                        </table>
-                            </form>
+            <section class="login-area pt-100 pb-100">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <div class="basic-login">
+                                <h3 class="text-center mb-60 pb-15" style="border-bottom: 1px solid #e5e5e5;">Đăng ký trở thành Seller</h3>
+                                <form method="post" action="becomeseller">
+                                    <table width="550" height="300">
+                                        <tr>
+                                            <td><span style="color:red;">**</span>Tên shop</td>
+                                            <td colspan="2"><input type="text" size="40" name="sname" placeholder="Tên của shop" value="" maxlength="30" required=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span style="color:red;">**</span>CCCD/CMND</td>
+                                            <td colspan="2"><input type="text" size="40" name="cccd" placeholder="Số CCCD/CMND" value="" required=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span style="color:red;">**</span>Địa chỉ lấy hàng</td>
+                                            <td><input type="text" size="40" name="fullname" placeholder="Họ và tên" value="" required=""></td>
+                                            <td><input type="tel" size="40" name="phone" placeholder="Số điện thoại" value="" required=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td colspan="2"><input type="text" size="40" name="saddr" placeholder="Địa chỉ lấy hàng" value="" required=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td colspan="2"><button class="btn theme-btn-2 w-100" style="font-family: 'Montserrat', sans-serif;">Gửi yêu cầu</button></td>
+                                        </tr>
+                                    </table>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
         <jsp:include page="footer.jsp"></jsp:include>
     </body>
 </html>

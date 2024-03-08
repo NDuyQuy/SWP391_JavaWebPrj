@@ -17,13 +17,20 @@ public class SQLConnection {
         // sign in driver
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         // url = jdbc:sqlserver:// (+ SERVER NAME) : (+PORT); databaseName="(+DATABASENAME)";
-        String url ="jdbc:sqlserver://localhost:1433;databaseName=SWP391_FinalPrjDB;";
+        String url ="jdbc:sqlserver://localhost:1433;databaseName=SWP391_FinalPrjDB;encrypt=true;trustServerCertificate=true";
         //intergratedSecurity=true (if connect with SQL Server by Window Authentication)
         // 
         String user = "sa";String pass = "123456";
         con = DriverManager.getConnection(url, user, pass);
         return con;
     }
+    
+    public static void closeConnection(Connection conn) throws Exception {
+        if (conn != null) {
+            conn.close();
+        }
+    }
+    
     public static void main(String[] args) {
         try {
             Connection con = getConnection();

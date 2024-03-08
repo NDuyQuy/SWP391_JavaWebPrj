@@ -1,0 +1,180 @@
+~~
+~~ Licensed to the Apache Software Foundation (ASF) under one or more
+~~ contributor license agreements.  See the NOTICE file distributed with
+~~ this work for additional information regarding copyright ownership.
+~~ The ASF licenses this file to You under the Apache License, Version 2.0
+~~ (the "License"); you may not use this file except in compliance with
+~~ the License.  You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+~~
+		---------
+		Migrating
+		---------
+
+Migrating
+
+   This document provides advice for migration between versions of Commons FileUpload, and between versions
+   of the underlying Servlet API.
+
+* Migrating to Commons FileUpload 2
+
+   Commons FileUpload 2 breaks binary and source compatibility with version 1.
+
+   To use version 2, you must to update your projects as follows:
+
+   [[1]] Use Java 8 or above.
+   
+   [[2]] Add one or more these dependencies with the <<<groupId>>> <<org.apache.commons>>, and set the <<<artifactId>>> to:
+   
+        [[A]] <<commons-fileupload2-jakarta-serverl5>> to use Jakarta Servlets 5.
+        
+        [[B]] <<commons-fileupload2-jakarta-serverl6>> to use Jakarta Servlets 6.
+        
+        [[C]] <<commons-fileupload2-javax>> to use Javax Servlets.
+
+        [[D]] <<commons-fileupload2-portlet>> to use Javax Portlets.
+        
+        [[E]] All of the above automatically depends on <<commons-fileupload2-core>>.
+
+   [[3]] The dependency version is <<${project.version}>>
+
+   [[4]] Change your imports from the root <<org.apache.commons.fileupload>> to <<org.apache.commons.fileupload2>>.
+   
+   For example, change:
+
++-------------------------------------------
+   import org.apache.commons.fileupload.servlet.ServletFileUpload;
++-------------------------------------------
+
+      to:
+
++-------------------------------------------
+   import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
++-------------------------------------------
+
+      or:
+
++-------------------------------------------
+   import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
++-------------------------------------------
+
+      or:
+
++-------------------------------------------
+   import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
++-------------------------------------------
+
+  [[4]] Change some catch clauses, for example:
+
++-------------------------------------------
+    try {
+        //  Parse a FileUpload request here.
+    } catch (IOException e) {
+        // Handle the IOException
+    } catch (FileUploadException e) {
+        // Handle the FileUploadException
+    }
++------------------------------------------- 
+
+    In FileUpload 2, this is invalid because <<<FileUploadException>>> is a
+    subclass of <<<IOException>>>. To address this, switch the catch order,
+    and handle the <<<FileUploadException>>> in the first catch, and the <<<IOException>>>
+    in the second.
+
+* Migrating to Jakarta Servlet API, Version 5, or later.
+
+  Most existing projects Commons FileUpload 1 are based on the Javax Servlet API version
+  2 or later. In Jakarta EE 9, this is replaced with the Jakarta Servlet API version 5.
+  
+  User code should now import the <<jakarta.servlet>> package instead of
+  the <<javax.servlet>> package.
+
+  For applications using Commons FileUpload, this means, that you need to
+
+  [[1]] Upgrade Commons FileUpload to version 2, or later.
+
+  [[2]] Replace the classes from <<org.apache.commons.fileupload.servlet>> to either
+        <<org.apache.commons.fileupload2.jakarta>> or <<org.apache.commons.fileupload2.javax>>.
+ 
+*------------------------------------------------------------- *------------------------------------------------------------------------------*
+| <<Version 1 Name>>                                           | <<Version 2 Jakarta Servlet 5 Name>>                                         |
+*------------------------------------------------------------- *------------------------------------------------------------------------------*
+| org.apache.commons.fileupload.servlet.ServletFileUpload      | org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload     |
+*------------------------------------------------------------- *------------------------------------------------------------------------------*
+| org.apache.commons.fileupload.servlet.ServletRequestContext  | org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletRequestContext |
+*--------------------------------------------------------------*------------------------------------------------------------------------------*
+| org.apache.commons.fileupload2.servlet.FileCleanerCleanup    | org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileCleaner    |
+*--------------------------------------------------------------*------------------------------------------------------------------------------*
+
+*------------------------------------------------------------- *------------------------------------------------------------------------------*
+| <<Version 1 Name>>                                           | <<Version 2 Jakarta Servlet 6 Name>>                                         |
+*------------------------------------------------------------- *------------------------------------------------------------------------------*
+| org.apache.commons.fileupload.servlet.ServletFileUpload      | org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload     |
+*------------------------------------------------------------- *------------------------------------------------------------------------------*
+| org.apache.commons.fileupload.servlet.ServletRequestContext  | org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletRequestContext |
+*--------------------------------------------------------------*------------------------------------------------------------------------------*
+| org.apache.commons.fileupload2.servlet.FileCleanerCleanup    | org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileCleaner    |
+*--------------------------------------------------------------*------------------------------------------------------------------------------*
+
+*------------------------------------------------------------- *---------------------------------------------------------------------*
+| <<Version 1 Name>>                                           | <<Version 2 Javax  Name>>                                           |
+*------------------------------------------------------------- *---------------------------------------------------------------------*
+| org.apache.commons.fileupload.servlet.ServletFileUpload      | org.apache.commons.fileupload2.javax.JavaxServletFileUpload         |
+*------------------------------------------------------------- *---------------------------------------------------------------------*
+| org.apache.commons.fileupload.servlet.ServletRequestContext  | org.apache.commons.fileupload2.javax.JavaxServletRequestContext     |
+*--------------------------------------------------------------*---------------------------------------------------------------------*
+| org.apache.commons.fileupload2.servlet.FileCleanerCleanup    | org.apache.commons.fileupload2.javax.JavaxServletFileCleaner        |
+*--------------------------------------------------------------*---------------------------------------------------------------------*
+
+* Example
+
+  The following example demonstrates, how to use Commons FileUpload with the Jakarta Servlet API, version 6:
+
++-------------------------------------------
+    import java.io.IOException;
+    import java.util.List;
+
+    import org.apache.commons.fileupload2.FileItem;
+    import org.apache.commons.fileupload2.FileItemFactory;
+    import org.apache.commons.fileupload2.FileUpload;
+    import org.apache.commons.fileupload2.FileUploadException;
+    import org.apache.commons.fileupload2.DiskFileItemFactory;
+    import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
+    import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletRequestContext;
+
+    import jakarta.servlet.ServletException;
+    import jakarta.servlet.http.HttpServlet;
+    import jakarta.servlet.http.HttpServletRequest;
+    import jakarta.servlet.http.HttpServletResponse;
+
+    public class SampleServlet extends HttpServlet {
+	    private static final long serialVersionUID = 2;
+
+	    @Override
+	    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		    if (JakartaServletFileUpload.isMultipartContent(req)) {
+			    final DiskFileItemFactory fileItemfactory = new DiskFileItemFactory();
+			    final JakartaServletFileUpload fileUpload = new JakartaServletFileUpload(fileItemfactory);
+			    final List<FileItem> items;
+			    try {
+				    items = fileUpload.parseRequest(new JavaxServletRequestContext(req));
+			    } catch (FileUploadException e) {
+			        throw new ServletException(e);
+     			}
+     			// Process the uploaded file items here...
+		    }
+	    }
+	 }
+
++-------------------------------------------
+
+* Using Commons FileUpload 2 as a JPMS Module
+
+  The library provides <<META-INF/versions/module-info.class>> that defines the required modules and exported packages.

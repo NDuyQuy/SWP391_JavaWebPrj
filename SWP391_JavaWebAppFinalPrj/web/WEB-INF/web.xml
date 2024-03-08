@@ -37,20 +37,32 @@
         <servlet-class>controller.ChangeForgotedPassController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Cart</servlet-name>
-        <servlet-class>controller.Cart</servlet-class>
+        <servlet-name>SearchProductServlet</servlet-name>
+        <servlet-class>controller.SearchProductServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UpdateQuantityServlet</servlet-name>
-        <servlet-class>controller.UpdateQuantityServlet</servlet-class>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>controller.AdminServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Checkout</servlet-name>
-        <servlet-class>controller.Checkout</servlet-class>
+        <servlet-name>PriceFilterController</servlet-name>
+        <servlet-class>controller.PriceFilterController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AddToCart</servlet-name>
-        <servlet-class>controller.AddToCart</servlet-class>
+        <servlet-name>ProductDetailController</servlet-name>
+        <servlet-class>controller.ProductDetailController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShopCategoryController</servlet-name>
+        <servlet-class>controller.seller.ShopCategoryController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VoucherController</servlet-name>
+        <servlet-class>controller.seller.VoucherController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProductController</servlet-name>
+        <servlet-class>controller.seller.ProductController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -89,20 +101,32 @@
         <url-pattern>/cfPass</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Cart</servlet-name>
-        <url-pattern>/Cart</url-pattern>
+        <servlet-name>SearchProductServlet</servlet-name>
+        <url-pattern>/SearchProduct</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UpdateQuantityServlet</servlet-name>
-        <url-pattern>/UpdateQuantityServlet</url-pattern>
+        <servlet-name>PriceFilterController</servlet-name>
+        <url-pattern>/PriceFilter</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Checkout</servlet-name>
-        <url-pattern>/Checkout</url-pattern>
+        <servlet-name>ProductDetailController</servlet-name>
+        <url-pattern>/ProductDetail</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AddToCart</servlet-name>
-        <url-pattern>/AddToCart</url-pattern>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/AdminServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopCategoryController</servlet-name>
+        <url-pattern>/shopcategorycontroller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VoucherController</servlet-name>
+        <url-pattern>/sellersvouchercontroller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductController</servlet-name>
+        <url-pattern>/productcontroller</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

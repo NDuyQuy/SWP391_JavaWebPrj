@@ -55,4 +55,11 @@ public class ShopCategory {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
+
+    @Override
+    public String toString() {
+        return "ShopCategory{" + "categoryID=" + categoryID + ", categoryName=" + categoryName + ", mCate=" + mCate + ", shop=" + shop + '}';
+    }
+    
+    
 }
