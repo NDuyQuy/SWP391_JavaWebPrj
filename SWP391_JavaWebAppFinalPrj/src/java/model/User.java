@@ -85,8 +85,7 @@ public class User {
     public User() {
     }
     
-    public User(int id, String fullname, String email, String phone, String address, int role) {
-        this.userID = id;
+    public User(String fullname, String email, String phone, String address, int role) {
         this.fullname = fullname;
         this.email = email;
         this.phone = phone;
@@ -102,7 +101,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "userName=" + userName + ", fullname=" + fullname + ", email=" + email + ", phone=" + phone + ", address=" + address + ", role=" + role + '}';
+        return "User{" + "userID=" + userID + ", userName=" + userName + ", password=" + password + ", fullname=" + fullname + ", email=" + email + ", phone=" + phone + ", address=" + address + ", role=" + role + '}';
     }
-    
 }
