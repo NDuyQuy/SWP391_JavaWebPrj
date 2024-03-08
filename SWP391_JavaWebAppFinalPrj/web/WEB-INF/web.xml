@@ -44,7 +44,14 @@
         <servlet-name>UpdateQuantityServlet</servlet-name>
         <servlet-class>controller.UpdateQuantityServlet</servlet-class>
     </servlet>
-    
+    <servlet>
+        <servlet-name>Checkout</servlet-name>
+        <servlet-class>controller.Checkout</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddToCart</servlet-name>
+        <servlet-class>controller.AddToCart</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -89,7 +96,14 @@
         <servlet-name>UpdateQuantityServlet</servlet-name>
         <url-pattern>/UpdateQuantityServlet</url-pattern>
     </servlet-mapping>
-    
+    <servlet-mapping>
+        <servlet-name>Checkout</servlet-name>
+        <url-pattern>/Checkout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddToCart</servlet-name>
+        <url-pattern>/AddToCart</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

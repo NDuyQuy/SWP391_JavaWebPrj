@@ -129,41 +129,7 @@
 
 
 
-                                            <!--
-                                            <c:forEach var="cartItem" items="${requestScope.cartItems}">
-                                                <tr>
-                                                    <td colspan="7" class="shop-name">${cartItem.shop.shopName}</td>
-                                                </tr>
-                                                <tr>
-
-                                                    <td class="product-checkbox">
-                                                        <input type="checkbox" class="itemCheckbox" />
-                                                    </td>
-                                                    <td class="product-thumbnail">
-                                                        <a href="#"><img src="${cartItem.product.productImg}" alt=""></a>
-                                                    </td>
-                                                    <td class="product-name">
-                                                        <a href="#">${cartItem.product.productName}</a>
-                                                    </td>
-                                                    <td class="product-price">
-                                                        <span class="amount">${cartItem.product.price}</span>
-                                                    </td>
-                                                    <td class="product-quantity">
-                                                        <input type="hidden" name="productId" value="${cartItem.product.productID}">
-                                                        <button type="submit" name="action" value="decrease">-</button>
-                                                        <input type="number" name="quantity" value="${cartItem.quantity}" min="0">
-                                                        <button type="submit" name="action" value="increase">+</button>
-                                                    </td>
-                                                    <td class="product-subtotal">
-                                                        <span class="amount">${cartItem.product.price * cartItem.quantity}</span>
-                                                    </td>
-                                                    <td class="product-remove">
-                                                        <button type="submit" name="action" value="remove">X</button>
-                                                    </td>
-                                                </tr>
-                                                <c:set var="totalPrice" value="${totalPrice + (cartItem.product.price * cartItem.quantity)}" />
-                                            </c:forEach>
-                                            -->
+                                         
                                         </tbody>
 
                                         <script>

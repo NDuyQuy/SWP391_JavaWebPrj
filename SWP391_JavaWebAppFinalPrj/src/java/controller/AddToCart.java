@@ -7,28 +7,19 @@ package controller;
 
 import dao.CartDao;
 import dao.CartDaoImpl;
-import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.CartItem;
 import model.User;
 
 /**
  *
  * @author LENOVO
  */
-public class Cart extends HttpServlet {
+public class AddToCart extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,18 +33,13 @@ public class Cart extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Cart</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet Cart at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        int productId = Integer.parseInt(request.getParameter("id"));
+         User user = (User) request.getSession().getAttribute("user");
+
+        CartDao cartDao = new CartDaoImpl();
+        cartDao.addToCart(user.getUserID(), productId, 1);
+        
+        response.sendRedirect("Home");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -68,22 +54,7 @@ public class Cart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        User user = (User) request.getSession().getAttribute("user");
-
-        if (user != null) {
-            List<CartItem> cartItems = CartDaoImpl.getCartItems(user.getUserID());
-            Map<String, List<CartItem>> groupedByShop = cartItems.stream()
-                    .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShopName()));
-            request.setAttribute("cartItems", cartItems);
-            request.setAttribute("cartGroup", groupedByShop);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cart.jsp");
-            dispatcher.forward(request, response);
-        } else {
-
-            response.sendRedirect("login.jsp");
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -97,7 +68,7 @@ public class Cart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
+        processRequest(request, response);
     }
 
     /**

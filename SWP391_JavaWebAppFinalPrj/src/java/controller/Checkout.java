@@ -7,28 +7,26 @@ package controller;
 
 import dao.CartDao;
 import dao.CartDaoImpl;
-import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.CartItem;
+import model.Order;
+import model.OrderDetail;
 import model.User;
 
 /**
  *
  * @author LENOVO
  */
-public class Cart extends HttpServlet {
+public class Checkout extends HttpServlet {
+private final CartDao cartDao = new CartDaoImpl();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,10 +45,10 @@ public class Cart extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Cart</title>");
+            out.println("<title>Servlet Checkout</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Cart at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Checkout at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -68,22 +66,7 @@ public class Cart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        User user = (User) request.getSession().getAttribute("user");
-
-        if (user != null) {
-            List<CartItem> cartItems = CartDaoImpl.getCartItems(user.getUserID());
-            Map<String, List<CartItem>> groupedByShop = cartItems.stream()
-                    .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShopName()));
-            request.setAttribute("cartItems", cartItems);
-            request.setAttribute("cartGroup", groupedByShop);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cart.jsp");
-            dispatcher.forward(request, response);
-        } else {
-
-            response.sendRedirect("login.jsp");
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -97,9 +80,34 @@ public class Cart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
-    }
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
+        // Lấy danh sách sản phẩm đã chọn từ giỏ hàng
+        List<CartItem> selectedItems = cartDao.getCheckedItems(user.getUserID());
+
+        // Tạo đơn hàng mới
+        Order order = createOrder(user, selectedItems);
+
+        // Lưu đơn hàng vào database (hoặc bạn có thể chuyển nó đến một service để xử lý)
+        // orderService.saveOrder(order);
+
+        // Hiển thị đơn hàng trên trang checkout
+        session.setAttribute("checkoutOrder", order);
+        response.sendRedirect("checkout.jsp");
+    }
+private Order createOrder(User user, List<CartItem> selectedItems) {
+        // Tạo đơn hàng mới
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderDate(LocalDate.now());
+        // Thêm các sản phẩm đã chọn vào đơn hàng
+        for (CartItem cartItem : selectedItems) {
+            OrderDetail orderDetail = new OrderDetail(order, cartItem.getProduct(), cartItem.getQuantity());
+            order.addOrderDetail(orderDetail);
+        }
+        return order;
+    }
     /**
      * Returns a short description of the servlet.
      *
