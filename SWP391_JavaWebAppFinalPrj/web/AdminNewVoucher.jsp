@@ -86,10 +86,8 @@
                                 <textarea class="form-control" rows="4" id="addDescription" name="description" placeholder="Enter Description"></textarea>
                                 
                                 
-                                <input type="hidden" name="categoryId" id="listCategoryId">
-                                
                                 <div class="mt-10"></div>
-                                <button class="btn theme-btn-2 w-100">Update</button>
+                                <button type="submit" class="btn theme-btn-2 w-100">Update</button>
                             </form>
                         </div>
                     

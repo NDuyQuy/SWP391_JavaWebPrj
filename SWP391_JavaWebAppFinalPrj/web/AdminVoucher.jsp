@@ -74,7 +74,7 @@
                                         <td><c:out value="${s.code}"/></td>
                                         <td><c:out value="${s.start}"/></td>
                                         <td><c:out value="${s.end}"/></td>
-                                        <td><c:out value="${s.discount}"/><c:out value="${s.discount_unit}"/></td>
+                                        <td><c:out value="${s.discount}"/> <c:out value="${s.discount_unit}"/></td>
                                         <td><c:out value="${s.type}"/></td>
                                         <td>
                                             <!-- Edit link with data-id attribute -->
@@ -87,7 +87,7 @@
                             </tbody> 
                         </table>
                     </div>
-                    <a href="AdminUpdateVoucher.jsp?id=-1" class="btn btn-primary">
+                    <a href="AdminNewVoucher.jsp" class="btn btn-primary">
                         Add New Voucher
                     </a>
                     
@@ -134,7 +134,7 @@
                 
                 if (type === 'delete') {
                     // Set the category ID in the delete popup
-                    document.getElementById('deleteCategoryId').setAttribute('value', voucherId);
+                    document.getElementById('deleteVoucherId').setAttribute('value', voucherId);
                 }
                 $('#' + type + 'Popup').modal('show');
             }

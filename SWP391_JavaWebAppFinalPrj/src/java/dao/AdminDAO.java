@@ -50,7 +50,7 @@ public class AdminDAO {
     
     private static final String GETBANLIST = "SELECT [id], [user_id], [reporter_id], [date], [reason], [detail] FROM [dbo].[reportedusers] ORDER BY [id] DESC";
     
-    private static final String GETBANDETAIL = "SELECT [username], [email], [status], [bantime], [report_count] FROM [dbo].[users] WHERE [id] = ?";
+    private static final String GETBANDETAIL = "SELECT [username], [email], [status], [bantime] FROM [dbo].[users] WHERE [id] = ?";
     
     private static final String GETSHOPDETAIL = "SELECT [shop_name], [shop_reported_count] FROM [dbo].[shops] WHERE [shop_id] = ?";
     
@@ -69,6 +69,21 @@ public class AdminDAO {
     private static final String DELETEAPPROVEREQUEST = "DELETE [dbo].[sellerrequest] WHERE [user_id] = ?";
     
     private static final String SENDNOTIFICATION = "INSERT INTO [dbo].[notifications]([userid], [detail], [status], [createdate]) values (?, ?, ?, ?)";
+    
+    //NOTIFICATION SAMPLE
+    
+    private static final String ACCEPTSELLERREQUEST = "Yêu cầu trở thành Seller của bạn đã được chấp thuận. Hãy cập nhật thêm một số thông tin cho shop của bạn.";
+    
+    private static final String DECLINESELLERREQUEST = "Yêu cầu trở thành Seller của bạn đã bị từ chối. Vui lòng kiểm tra lại thông tin trước khi gửi lại yêu cầu.";
+    
+    private static final String ACCEPTREFUNDREQUEST = "Yêu cầu trả hàng/hoàn tiền cho đơn hàng [1] đã được chấp nhận...";
+    
+    private static final String DECLINEREFUNDREQUEST = "Yêu cầu trả hàng/hoàn tiền cho đơn hàng [1] đã bị từ chối.";
+    
+    private static final String APPLYBANSTATUS = "Tài khoản của bạn đã bị hạn chế chức năng bán hàng vì vi phạm quy định của Co. Handmade.\nLý do: [1]\nThời gian hiệu lực: [2]";
+    
+    private static final String REMOVEBANSTATUS = "Các hạn chế đối với tài khoản của bạn đã được gỡ bỏ. Vui lòng xem lại và tuân thủ các quy định, điều khoản và chính sách của Co. Handmade để tránh những hình phạt đối với tài khoản.";
+    
     
     public static ArrayList<Category> Get_Category_List() {
         ArrayList<Category> result = new ArrayList<Category>();
@@ -321,10 +336,14 @@ public class AdminDAO {
     
     public static void Update_Refund(String Status, int id) {
         PreparedStatement ptm = null;
+        String notification = "";
         try (Connection con = SQLConnection.getConnection()) {
             int status = -1;
             if (Status.equals("Waiting")) status = 0;
-            else if (Status.equals("Accept")) status = 1;
+            else if (Status.equals("Accept")) {
+                status = 1;
+                notification = ACCEPTREFUNDREQUEST;
+            }
             else if (Status.equals("Decline")) status = 2;
             
             ptm = con.prepareStatement(UPDATEREFUND);
@@ -350,7 +369,7 @@ public class AdminDAO {
                 Timestamp date = rs.getTimestamp("date");
                 String reason = rs.getString("reason").trim();
                 String detail = rs.getString("detail").trim();
-                ReportedUser r = new ReportedUser(id, null, null, null, null, null, -1, date, reason, detail);
+                ReportedUser r = new ReportedUser(id, userId, null, null, null, null, null, -1, date, null, reason, detail);
                 r = Get_Report_Detail(r, userId, reporterId);
                 result.add(r);                
             }
@@ -375,16 +394,16 @@ public class AdminDAO {
                 String email = rs.getString("email").trim();
                 String status = new String();
                 switch(rs.getInt("status")) {
-                    case 1:
+                    case -1:
                         status = "Active";
                         break;
-                    case 2:
+                    case 1:
                         status = "Reported";
                         break;
-                    case 3:
+                    case 2:
                         status = "Ban (Temporary)";
                         break;
-                    case -1:
+                    case 3:
                         status = "Ban (Unlimited)";
                         break;
                 }

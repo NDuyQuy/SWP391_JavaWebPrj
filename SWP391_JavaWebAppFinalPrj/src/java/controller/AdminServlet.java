@@ -123,12 +123,12 @@ public class AdminServlet extends HttpServlet {
                 int count = Integer.parseInt(request.getParameter("count"));
                 String description = request.getParameter("description");
                 Voucher v = new Voucher(id, code, discount, null, end, type, min, description, count);
-                AdminDAO.Add_New_Voucher(v);
+                AdminDAO.Update_Voucher(v);
                 url = "/AdminVoucher.jsp";
             }
             else if(action.equals("DeleteVoucher")) {
                 Continue = false;
-                int id = Integer.parseInt(request.getParameter("deleteVoucherId"));
+                int id = Integer.parseInt(request.getParameter("VoucherId"));
                 AdminDAO.Delete_Voucher(id);
                 url = "/AdminVoucher.jsp";
             }
@@ -157,27 +157,34 @@ public class AdminServlet extends HttpServlet {
                 String banAction = request.getParameter("banAction");
                 int bandays = 0, status = 0;
                 if (banAction.equals("0")) {
-                    status = 1;
-                    bandays = 0;
-                }
-                else if (banAction.equals("7")) {
-                    status = 3;
-                    bandays = 7;
-                }
-                else if (banAction.equals("14")) {
-                    status = 3;
-                    bandays = 14;
-                }
-                else if (banAction.equals("30")) {
-                    status = 3;
-                    bandays = 30;
-                }
-                else if (banAction.equals("999999")) {
                     status = -1;
                     bandays = 0;
                 }
+                else if (banAction.equals("7")) {
+                    status = 2;
+                    bandays = 7;
+                }
+                else if (banAction.equals("14")) {
+                    status = 2;
+                    bandays = 14;
+                }
+                else if (banAction.equals("30")) {
+                    status = 2;
+                    bandays = 30;
+                }
+                else if (banAction.equals("999999")) {
+                    status = 3;
+                    bandays = 0;
+                }
                 AdminDAO.Apply_Ban(id, status, bandays);
+                url = "/AdminBan.jsp";
             }
+            else if(action.equals("ViewApproveRequest")) {
+                
+            }
+            
+            
+            
             
         }
         catch (Exception e) {

@@ -59,7 +59,7 @@
                     <div class="container">
                     
                         <div>
-                            <form method="post" action="AdminServlet?Action=UpdateVoucher">
+                            <form method="post" action="AdminServlet?Action=EditVoucher">
                                 <label for="code">Voucher Code<span>*</span>: </label>
                                 <input id="code" type="text" placeholder="Enter Voucher Code" name="vouchercode" value="${V.getCode()}" required/>
                                 
@@ -89,7 +89,7 @@
                                 <input type="hidden" name="voucherId" id="voucherId" value="${V.id}">
                                 
                                 <div class="mt-10"></div>
-                                <button class="btn theme-btn-2 w-100">Update</button>
+                                <button type="submit" class="btn theme-btn-2 w-100">Update</button>
                             </form>
                         </div>
                     
