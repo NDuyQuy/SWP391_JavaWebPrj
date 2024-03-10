@@ -44,7 +44,7 @@
                         <div class="row">
                             <div class="col-xl-12">
                                 <div class="breadcrumb-text text-center">
-                                    <h1>Our Shop</h1>
+                                    <h1>Sản phẩm</h1>
                                     <ul class="breadcrumb-menu">
                                         <li><a href="Home">home</a></li>
                                         <li><span>product</span></li>
@@ -56,6 +56,12 @@
                 </section>
                 <!-- breadcrumb-area-end -->
 
+            <c:if test="${requestScope.filter != null}">
+                <c:set var="plist" value="${sessionScope.result}"/>
+            </c:if>
+            <c:if test="${requestScope.filter == null}">
+                <c:set var="plist" value="${sessionScope.product_list}"/>
+            </c:if>
                 <!-- shop-area start -->
                 <section class="shop-area pt-100 pb-100">
                     <div class="container">
@@ -68,7 +74,7 @@
                                 <div class="row mb-10">
                                     <div class="col-xl-6 col-lg-6 col-md-6">
                                         <div class="product-showing mb-40">
-                                        <c:if test="${sessionScope.product_list != null}">
+                                        <c:if test="${plist != null}">
                                             <p style="font-family: 'Open Sans', sans-serif; font-weight: bold;">Đang hiện ${first + 1}–${last + 1} trong ${sessionScope.product_list.size()} kết quả</p>
                                         </c:if>
                                     </div>
@@ -98,25 +104,25 @@
                                     </div>-->
                                 </div>
                             </div>
-                            <c:if test="${product_list == null}">
+                            <c:if test="${plist == null}">
                                 <div>
                                     <h5>Không có kết quả tìm kiếm nào.</h5>
                                 </div>
                             </c:if>
-                            <c:if test="${product_list != null}">
+                            <c:if test="${plist != null}">
                                 <!-- tab content -->
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div class="row">
-                                            <c:forEach var="pr" items="${sessionScope.product_list}" begin="${first}" end="${last}">
-                                                <div class="col-lg-6 col-md-6">
+                                            <c:forEach var="pr" items="${plist}" begin="${first}" end="${last}">
+                                                <div class="col-lg-4 col-md-4">
                                                     <div class="product-wrapper mb-50">
                                                         <div class="product-img mb-25">
                                                             <a href="ProductDetail?product=${pr.productID}">
                                                                 <img src="${pr.productImg}" alt="">
                                                             </a>
                                                             <div class="product-action text-center">
-                                                                <a href="#" title="Thêm vào giỏ hàng">
+                                                                <a href="AddToCart?id=${pr.productID}" title="Thêm vào giỏ hàng">
                                                                     <i class="flaticon-shopping-cart"></i>
                                                                 </a>
                                                                 <a href="ProductDetail?product=${pr.productID}" title="Xem chi tiết">
@@ -131,7 +137,7 @@
                                                         <div class="product-content">
                                                             <div class="pro-cat mb-10">
                                                                 <a href="SearchProduct?cate=${pr.mCate.categoryID}">${pr.mCate.categoryName} > </a>
-                                                                <a href="#">${pr.sCate.categoryName}</a>
+                                                                <a href="ShopDetail?id=${pr.shop.user.userID}#cate${pr.sCate.categoryID}" style="color: #525470">${pr.sCate.categoryName}</a>
                                                             </div>
                                                             <h4>
                                                                 <a href="ProductDetail?product=${pr.productID}">${pr.productName}</a>
@@ -149,7 +155,7 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        <c:forEach var="pr" items="${sessionScope.product_list}">
+                                        <c:forEach var="pr" items="${plist}" begin="${first}" end="${last}">
                                             <div class="row">
                                                 <div class="col-xl-5">
                                                     <div class="product-wrapper mb-30">
@@ -181,7 +187,7 @@
                                                         </div>
                                                         <p>${pr.description}</p>
                                                         <div class="product-action">
-                                                            <a href="#" title="Thêm vào giỏ hàng">
+                                                            <a href="AddToCart?id=${pr.productID}" title="Thêm vào giỏ hàng">
                                                                 <i class="flaticon-shopping-cart"></i>
                                                             </a>
                                                             <a href="ProductDetail?product=${pr.productID}" title="Xem chi tiết">
