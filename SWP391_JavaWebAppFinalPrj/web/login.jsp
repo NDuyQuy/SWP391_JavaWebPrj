@@ -73,9 +73,9 @@
                                     <p style="color: red;">${requestScope.login_error}</p>
                                     <form method="post" action="login">
                                         <label for="name">Username|Email <span>**</span></label>
-                                        <input id="name" type="text" placeholder="Enter Username or Email address..." name="username" />
-                                        <label for="pass">Password <span>**</span></label>
-                                        <input id="pass" type="password" placeholder="Enter password..." name="password" />
+                                        <input id="name" type="text" placeholder="Enter Username or Email address..." name="username" oninput="checkTextField();" />
+                                    <label for="pass">Password <span>**</span></label>
+                                    <input id="pass" type="password" placeholder="Enter password..." name="password" oninput="checkTextField();" />
                                         <div class="login-action mb-20 fix">
                                             <span class="log-rem f-left">
                                                 <input id="remember" type="checkbox" />
@@ -85,7 +85,7 @@
                                                 <a href="forgotpassword.jsp">Forgot password?</a>
                                             </span>
                                         </div>
-                                        <button class="btn theme-btn-2 w-100">Login Now</button>
+                                        <button id="btn-login" class="btn theme-btn-2 w-100" disabled="">Login Now</button>
                                         <div class="or-divide"><span>or</span></div>
                                         <button class="btn theme-btn w-100 white-btn" style="color: black; border-style: solid;"><div class="Bq4Bra"><div class="_1a550J social-white-background social-white-google-png"></div></div><div href="https://accounts.google.com/o/oauth2/auth?scope=email profile&redirect_uri=&response_type=code
                                                                                                                                                                                                         &client_id=&approval_prompt=force"class=""><i class="fab fa-google"></i> <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile&redirect_uri=http://localhost:8080/SWP391_JavaWebAppFinalPrj/GoogleLoginServlet&response_type=code
@@ -118,6 +118,17 @@
             </div>
         </div> <!-- end fullscreen search -->
 
+<script>
+            function checkTextField() {
+                if ($.trim($('#name').val()) != "" &&
+                        $('#pass').val() != "")
+                {
+                    $('#btn-login').removeAttr("disabled");
+                } else {
+                    $("#btn-login").prop("disabled", true);
+                }
+            }
+        </script>
 
 
     </body>
