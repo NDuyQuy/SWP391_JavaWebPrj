@@ -48,7 +48,7 @@ public class SearchProductServlet extends HttpServlet {
                 String[] kw = keyword.split(" ");
                 for (Product p : all_product) {
                     for (int i = 0; i < kw.length; i++) {
-                        if (p.getProductName().contains(kw[i])) {
+                        if(p.getProductName().contains(keyword)){
                             result.add(p);
                             break;
                         } else if (p.getmCate().getCategoryName().contains(kw[i])) {
@@ -62,7 +62,7 @@ public class SearchProductServlet extends HttpServlet {
                 }
             }
 
-            int page, perPage = 20;
+            int page, perPage = 24;
             int numPage = result.size() % perPage == 0 ? result.size() / perPage : result.size() / perPage + 1;
             String pageid = request.getParameter("page");
             if (pageid == null) {
