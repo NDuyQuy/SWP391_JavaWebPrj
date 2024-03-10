@@ -22,6 +22,7 @@ public class ProductDao {
     private static final String GETPRODUCTBYMAINCATEID = "Select [product_id],[shop_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [mcate_id] = ?";
     private static final String GETPRODUCTBYID = "Select [shop_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [product_id]=?";
     private static final String GETPRODUCTSBYSHOP = "Select [product_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [shop_id] = ?";
+    private static final String GETPRODUCTSBYSHOPCATEID = "Select [product_id],[shop_id],[mcate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [scate_id] = ?";
     
     public static ArrayList<Product> getAllProducts(){
         PreparedStatement ptm = null;
@@ -125,6 +126,35 @@ public class ProductDao {
             ex.printStackTrace();
         }
         return product_by_mcate;
+    }
+    
+    public static ArrayList<Product> getProductsByShopCateId(int scate_id){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Product p = null;
+        ArrayList<Product> product_by_scate = new ArrayList<>();
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETPRODUCTSBYSHOPCATEID);
+            ptm.setInt(1, scate_id);
+            rs = ptm.executeQuery();
+            while(rs.next()){
+                p = new Product();
+                p.setProductID(rs.getInt("product_id"));
+                p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
+                p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
+                p.setsCate(CategoryDao.getShopCategoryById(scate_id));
+                p.setDescription(rs.getString("description").trim());
+                p.setCreatedDate(LocalDate.parse(rs.getDate("created_date").toString()));
+                p.setProductName(rs.getString("name").trim());
+                p.setPrice(rs.getInt("price"));
+                p.setProductImg(rs.getString("img").trim());
+                p.setQuantity(rs.getInt("quantity"));
+                product_by_scate.add(p);
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return product_by_scate;
     }
     
     public static Product getProductById(int id){
