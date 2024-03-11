@@ -10,5 +10,5 @@ public interface CartDao {
     void removeFromCart(int userId, int productId);
 
     void clearCart(int userId);
-   
 }
+

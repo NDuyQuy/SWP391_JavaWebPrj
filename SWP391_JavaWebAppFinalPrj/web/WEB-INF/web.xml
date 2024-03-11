@@ -72,6 +72,18 @@
         <servlet-name>UpdateQuantityServlet</servlet-name>
         <servlet-class>controller.UpdateQuantityServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShopDetailController</servlet-name>
+        <servlet-class>controller.ShopDetailController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddToCart</servlet-name>
+        <servlet-class>controller.AddToCart</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchShopServlet</servlet-name>
+        <servlet-class>controller.SearchShopServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -143,6 +155,19 @@
     <servlet-mapping>
         <servlet-name>UpdateQuantityServlet</servlet-name>
         <url-pattern>/UpdateQuantityServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopDetailController</servlet-name>
+        <url-pattern>/ShopDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddToCart</servlet-name>
+        <url-pattern>/AddToCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchShopServlet</servlet-name>
+        <url-pattern>/SearchShop</url-pattern>
+>>>>>>> guest_n_customer_layout
     </servlet-mapping>
     <session-config>
         <session-timeout>

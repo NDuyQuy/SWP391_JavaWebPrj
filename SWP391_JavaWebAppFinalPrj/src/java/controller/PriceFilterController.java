@@ -92,7 +92,7 @@ public class PriceFilterController extends HttpServlet {
             }
             
             
-            int page, perPage = 20;
+            int page, perPage = 24;
             int numPage = result.size() % perPage == 0 ? result.size() / perPage : result.size() / perPage + 1;
             String pageid = request.getParameter("page");
             if (pageid == null) {
@@ -109,11 +109,12 @@ public class PriceFilterController extends HttpServlet {
             request.setAttribute("last", last);
             request.setAttribute("num", numPage);
             request.setAttribute("max_price", max_price);
-            
+
+            request.setAttribute("filter", 1);
             session.setAttribute("kw", keyword);
-            session.setAttribute("product_list", result);
-            if (result.isEmpty()) {
-                session.setAttribute("product_list", null);
+            session.setAttribute("result", result);
+            if (result.isEmpty() || result == null) {
+                session.setAttribute("result", null);
             }
             request.getRequestDispatcher("product.jsp").forward(request, response);
         } catch (Exception ex) {

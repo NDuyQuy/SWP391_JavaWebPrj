@@ -30,6 +30,36 @@
         <link rel="stylesheet" href="css/default.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
+        <style>
+            .stars-container {
+                position: relative;
+                display: inline-block;
+                color: transparent;
+                font-size: 29px;
+            }
+
+            .stars-container:before {
+                position: absolute;
+                top: 0;
+                left: 0;
+                content: '★★★★★';
+                color: lightgray;
+            }
+
+            .stars-container:after {
+                position: absolute;
+                top: 0;
+                left: 0;
+                content: '★★★★★';
+                color: gold;
+                overflow: hidden;
+            }
+            <c:forEach var="i" begin="0" end="500">
+                .stars-${i}:after {
+                    width: ${i/5}%;
+                }
+            </c:forEach>
+        </style>
     </head>
     <body>
         <!-- header start -->
@@ -58,6 +88,7 @@
 
                 <!-- shop-area start -->
                 <section class="shop-details-area pt-100 pb-100">
+
                     <div class="container">
                         <div class="row">
                             <div class="col-xl-6 col-lg-4">
@@ -76,7 +107,7 @@
                             <div class="product-details mb-30 pl-30">
                                 <div class="details-cat mb-20">
                                     <a href="SearchProduct?cate=${pr.mCate.categoryID}">${pr.mCate.categoryName} > </a>
-                                    <a href="#">${pr.sCate.categoryName}</a>
+                                    <a href="ShopDetail?id=${pr.shop.user.userID}#cate${pr.sCate.categoryID}">${pr.sCate.categoryName}</a>
                                 </div>
                                 <h2 class="pro-details-title mb-15">${pr.productName}</h2>
                                 <div class="details-price mb-20">
@@ -93,8 +124,8 @@
                                                     </a>
                                                 </div>
                                                 <div class="widget-posts-body">
-                                                    <h6 class="widget-posts-title">${pr.shop.shopName}</h6>
-                                                    <h6>Địa chỉ:<span style="color: #fe4536;"> ${pr.shop.user.address}</span></h6>
+                                                    <a href="ShopDetail?id=${pr.shop.user.userID}"><h6 class="widget-posts-title" style="font-weight: bold;">${pr.shop.shopName}</h6></a>
+                                                    <h7>Địa chỉ:<span style="color: #fe4536;"> ${pr.shop.user.address}</span></h7>
                                                 </div>
                                             </li>
                                         </ul>
@@ -124,11 +155,9 @@
                                     <div class="product-info-list variant-item">
                                         <ul>
                                             <li class="side-pro-rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
+                                                <div><span class="stars-container stars-${sessionScope.aver_rate}">★★★★★ </span>
+                                                    <b style="font-size: 18px;"> ${sessionScope.aver_rate/100}</b> - (${sessionScope.ratings_by_product.size()} đánh giá)
+                                                </div>
                                             </li>
                                             <li><span>Stock:</span> <span class="in-stock">${pr.quantity} sản phẩm</span></li>
                                         </ul>
@@ -136,15 +165,14 @@
 
                                     <div class="product-action-details variant-item">
                                         <div class="product-details-action">
-                                            <form action="#">
-                                                <div class="plus-minus">
-                                                    <div class="cart-plus-minus"><input type="text" value="1" /></div>
-                                                </div>
-                                                <div class="details-cart mt-40" style="font-family: 'Montserrat', sans-serif;">
-                                                    <button class="btn theme-btn">Thêm vào giỏ hàng</button>
-                                                    <button class="btn theme-btn">Mua ngay</button>
-                                                </div>
-                                            </form>
+
+                                            <div class="plus-minus">
+                                                <div class="cart-plus-minus"><input type="text" value="1" /></div>
+                                            </div>
+                                            <div class="details-cart mt-40" style="font-family: 'Montserrat', sans-serif;">
+                                                <button class="btn theme-btn" onclick="location.href = 'AddToCart?id=${pr.productID}'">Thêm vào giỏ hàng</button>
+                                                <button class="btn theme-btn" onclick="location.href = '#'">Mua ngay</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -275,217 +303,46 @@
                             <div class="area-title text-center mb-50">
                                 <h2>Sản phẩm khác của Shop</h2>
                                 <!--                                <p>Browse the huge variety of our products</p>-->
+                                <a href="ShopDetail?id=${pr.shop.user.userID}"></a>
                             </div>
                         </div>
                     </div>
                     <div class="product-slider-2 owl-carousel">
-                        <div class="pro-item">
-                            <div class="product-wrapper">
-                                <div class="product-img mb-25">
-                                    <a href="product-details.html">
-                                        <img src="img/product/pro4.jpg" alt="">
-                                        <img class="secondary-img" src="img/product/pro5.jpg" alt="">
-                                    </a>
-                                    <div class="product-action text-center">
-                                        <a href="#" title="Shoppingb Cart">
-                                            <i class="flaticon-shopping-cart"></i>
+                        <c:forEach var="prs" items="${product_by_shop}">
+                            <div class="pro-item">
+                                <div class="product-wrapper">
+                                    <div class="product-img mb-25">
+                                        <a href="ProductDetail?product=${prs.productID}">
+                                            <img src="${prs.productImg}" alt="">
                                         </a>
-                                        <a href="#" title="Quick View">
-                                            <i class="flaticon-eye"></i>
-                                        </a>
-                                        <a href="#" data-toggle="tooltip" data-placement="right" title="Compare">
-                                            <i class="flaticon-compare"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="pro-cat mb-10">
-                                        <a href="shop.html">decor, </a>
-                                        <a href="shop.html">furniture</a>
-                                    </div>
-                                    <h4>
-                                        <a href="product-details.html">Raglan Baseball Style shirt</a>
-                                    </h4>
-                                    <div class="product-meta">
-                                        <div class="pro-price">
-                                            <span>$119.00 USD</span>
-                                            <span class="old-price">$230.00 USD</span>
+                                        <div class="product-action text-center">
+                                            <a href="AddToCart?id=${prs.productID}" title="Thêm vào giỏ hàng">
+                                                <i class="flaticon-shopping-cart"></i>
+                                            </a>
+                                            <a href="ProductDetail?product=${prs.productID}" title="Xem chi tiết">
+                                                <i class="flaticon-eye"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                    <div class="product-wishlist">
-                                        <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
+                                    <div class="product-content">
+                                        <div class="pro-cat mb-10">
+                                            <a href="SearchProduct?cate=${prs.mCate.categoryID}">${prs.mCate.categoryName} > </a>
+                                            <a href="#" style="color: #525470">${prs.sCate.categoryName}</a>
+                                        </div>
+                                        <h4>
+                                            <a href="ProductDetail?product=${prs.productID}">${prs.productName}</a>
+                                        </h4>
+                                        <div class="product-meta">
+                                            <div class="pro-price">
+                                                <span><fmt:formatNumber value="${prs.price}"/>đ</span>
+                                                <!--<span class="old-price">$230.00 USD</span>-->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="pro-item">
-                            <div class="product-wrapper">
-                                <div class="product-img mb-25">
-                                    <a href="product-details.html">
-                                        <img src="img/product/pro5.jpg" alt="">
-                                        <img class="secondary-img" src="img/product/pro6.jpg" alt="">
-                                    </a>
-                                    <div class="product-action text-center">
-                                        <a href="#" title="Shoppingb Cart">
-                                            <i class="flaticon-shopping-cart"></i>
-                                        </a>
-                                        <a href="#" title="Quick View">
-                                            <i class="flaticon-eye"></i>
-                                        </a>
-                                        <a href="#" data-toggle="tooltip" data-placement="right" title="Compare">
-                                            <i class="flaticon-compare"></i>
-                                        </a>
-                                    </div>
-                                    <div class="sale-tag">
-                                        <span class="new">new</span>
-                                        <span class="sale">sale</span>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="pro-cat mb-10">
-                                        <a href="shop.html">decor, </a>
-                                        <a href="shop.html">furniture</a>
-                                    </div>
-                                    <h4>
-                                        <a href="product-details.html">Raglan Baseball Style shirt</a>
-                                    </h4>
-                                    <div class="product-meta">
-                                        <div class="pro-price">
-                                            <span>$119.00 USD</span>
-                                            <span class="old-price">$230.00 USD</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-wishlist">
-                                        <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-item">
-                            <div class="product-wrapper">
-                                <div class="product-img mb-25">
-                                    <a href="product-details.html">
-                                        <img src="img/product/pro7.jpg" alt="">
-                                        <img class="secondary-img" src="img/product/pro8.jpg" alt="">
-                                    </a>
-                                    <div class="product-action text-center">
-                                        <a href="#" title="Shoppingb Cart">
-                                            <i class="flaticon-shopping-cart"></i>
-                                        </a>
-                                        <a href="#" title="Quick View">
-                                            <i class="flaticon-eye"></i>
-                                        </a>
-                                        <a href="#" data-toggle="tooltip" data-placement="right" title="Compare">
-                                            <i class="flaticon-compare"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="pro-cat mb-10">
-                                        <a href="shop.html">decor, </a>
-                                        <a href="shop.html">furniture</a>
-                                    </div>
-                                    <h4>
-                                        <a href="product-details.html">Raglan Baseball Style shirt</a>
-                                    </h4>
-                                    <div class="product-meta">
-                                        <div class="pro-price">
-                                            <span>$119.00 USD</span>
-                                            <span class="old-price">$230.00 USD</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-wishlist">
-                                        <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-item">
-                            <div class="product-wrapper">
-                                <div class="product-img mb-25">
-                                    <a href="product-details.html">
-                                        <img src="img/product/pro9.jpg" alt="">
-                                        <img class="secondary-img" src="img/product/pro10.jpg" alt="">
-                                    </a>
-                                    <div class="product-action text-center">
-                                        <a href="#" title="Shoppingb Cart">
-                                            <i class="flaticon-shopping-cart"></i>
-                                        </a>
-                                        <a href="#" title="Quick View">
-                                            <i class="flaticon-eye"></i>
-                                        </a>
-                                        <a href="#" data-toggle="tooltip" data-placement="right" title="Compare">
-                                            <i class="flaticon-compare"></i>
-                                        </a>
-                                    </div>
-                                    <div class="sale-tag">
-                                        <span class="new">new</span>
-                                        <span class="sale">sale</span>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="pro-cat mb-10">
-                                        <a href="shop.html">decor, </a>
-                                        <a href="shop.html">furniture</a>
-                                    </div>
-                                    <h4>
-                                        <a href="product-details.html">Raglan Baseball Style shirt</a>
-                                    </h4>
-                                    <div class="product-meta">
-                                        <div class="pro-price">
-                                            <span>$119.00 USD</span>
-                                            <span class="old-price">$230.00 USD</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-wishlist">
-                                        <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pro-item">
-                            <div class="product-wrapper">
-                                <div class="product-img mb-25">
-                                    <a href="product-details.html">
-                                        <img src="img/product/pro1.jpg" alt="">
-                                        <img class="secondary-img" src="img/product/pro11.jpg" alt="">
-                                    </a>
-                                    <div class="product-action text-center">
-                                        <a href="#" title="Shoppingb Cart">
-                                            <i class="flaticon-shopping-cart"></i>
-                                        </a>
-                                        <a href="#" title="Quick View">
-                                            <i class="flaticon-eye"></i>
-                                        </a>
-                                        <a href="#" data-toggle="tooltip" data-placement="right" title="Compare">
-                                            <i class="flaticon-compare"></i>
-                                        </a>
-                                    </div>
-                                    <div class="sale-tag">
-                                        <span class="new">new</span>
-                                        <span class="sale">sale</span>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="pro-cat mb-10">
-                                        <a href="shop.html">decor, </a>
-                                        <a href="shop.html">furniture</a>
-                                    </div>
-                                    <h4>
-                                        <a href="product-details.html">Raglan Baseball Style shirt</a>
-                                    </h4>
-                                    <div class="product-meta">
-                                        <div class="pro-price">
-                                            <span>$119.00 USD</span>
-                                            <span class="old-price">$230.00 USD</span>
-                                        </div>
-                                    </div>
-                                    <div class="product-wishlist">
-                                        <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </c:forEach>
+
                     </div>
                 </div>
             </section>

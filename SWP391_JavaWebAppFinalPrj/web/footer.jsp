@@ -43,7 +43,7 @@
                         <div class="col-xl-5 col-lg-6 col-md-6 ">
                             <div class="footer-widget mb-40 pr-70">
                                 <div class="footer-logo">
-                                    <a href="home.jsp"><img src="img/logo/footer-logo.png" alt=""></a>
+                                    <a href="home.jsp"><img src="img/logo/coco.png" alt=""></a>
                                 </div>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
                                     ut labore et dolore mag na

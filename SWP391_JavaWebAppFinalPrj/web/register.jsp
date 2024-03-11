@@ -70,20 +70,20 @@
                         <div class="basic-login">
                             <h3 class="text-center mb-60">Signup From Here</h3>
                             <form method="get"action="register" onsubmit="return validateForm()">
-                                <label for="name">Username <span>**</span></label>
-                                <input id="name" type="text" placeholder="Enter Username..." name="username" required/>
-                                <label for="email-id">Email Address <span>**</span></label>
-                                <input id="email-id" type="email" placeholder="Enter Email address..." name="email"required/>
-                                <label for="pass">Password <span>**</span></label>
-                                <input id="pass" type="password" placeholder="Enter password..." name="password"required/>
-                                <label for="cpass">Confirm Password <span>**</span></label>
-                                <input id="cpass" type="password" placeholder="Enter confirm password..." name="password"required/>
-                                <div class="mt-10"></div>
-                                <button class="btn theme-btn-2 w-100">Register Now</button>
-                                <div class="or-divide"><span>or</span></div>
-                                <button class="btn theme-btn w-100 white-btn" style="color: black; border-style: solid;"><div class="Bq4Bra"><div class="_1a550J social-white-background social-white-google-png"></div></div><div class="">Continue with Google</div></button>
-                                <div class="text-center mt-30">Have an account? <a href="register.jsp" style="text-decoration: underline;">Login</a></div>
-                            </form>
+                                        <label for="name">Username <span>**</span></label>
+                                        <input id="name" type="text" placeholder="Enter Username..." name="username" oninput="checkTextField();"/>
+                                        <label for="email-id">Email Address <span>**</span></label>
+                                        <input id="email-id" type="email" placeholder="Enter Email address..." name="email" oninput="checkTextField();"/>
+                                        <label for="pass">Password <span>**</span></label>
+                                        <input id="pass" type="password" placeholder="Enter password..." name="password" oninput="checkTextField();"/>
+                                        <label for="cpass">Confirm Password <span>**</span></label>
+                                        <input id="cpass" type="password" placeholder="Enter confirm password..." name="password" oninput="checkTextField();"/>
+                                        <div class="mt-10"></div>
+                                        <button id="btn-register" class="btn theme-btn-2 w-100" disabled="">Register Now</button>
+                                        <div class="or-divide"><span>or</span></div>
+                                        <button class="btn theme-btn w-100 white-btn" style="color: black; border-style: solid;"><div class="Bq4Bra"><div class="_1a550J social-white-background social-white-google-png"></div></div><div class="">Continue with Google</div></button>
+                                        <div class="text-center mt-30">Have an account? <a href="register.jsp" style="text-decoration: underline;">Login</a></div>
+                                    </form>
                         </div>
                     </div>
                 </div>
@@ -134,6 +134,18 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <script>
+
+		function checkTextField() {
+			if ($.trim($('#name').val()) != "" && 
+			$.trim($('#email-id').val()) != "" &&
+			$('#pass').val() != "" &&
+			$('#cpass').val() != "")
+			{
+				$('#btn-register').removeAttr("disabled");
+			} else{
+				 $("#btn-register").prop("disabled", true);
+			}
+		}
             function validateForm() {
                 var newPassword = document.getElementById('pass').value;
                 var reenterPassword = document.getElementById('cpass').value;

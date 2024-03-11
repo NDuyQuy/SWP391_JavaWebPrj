@@ -17,6 +17,7 @@ import model.*;
 public class CategoryDao {
     private static final String GETMAINCATEGORYBYID = "Select [name] FROM [maincategory] WHERE [id]=?";
     private static final String GETSHOPCATEGORYBYID = "Select [maincate_id],[shop_id],[name] FROM [shopcategory] WHERE [id]=?";
+    private static final String GETSHOPCATEGORYBYSHOP = "Select [maincate_id],[id],[name] from [shopcategory] where [shop_id]=?";
     private static final String GETMAINCATEGORIES = "Select [id],[name] from [maincategory]";
     
     public static MainCategory getMainCategoryById(int id){
@@ -74,5 +75,28 @@ public class CategoryDao {
             ex.printStackTrace();
         }
         return cate_list;
+    }
+    
+    public static ArrayList<ShopCategory> getShopCategoryByShop(int s_id){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        ShopCategory sc = null;
+        ArrayList<ShopCategory> cate_shop = new ArrayList<>();
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETSHOPCATEGORYBYSHOP);
+            ptm.setInt(1, s_id);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                sc = new ShopCategory();
+                sc.setmCate(getMainCategoryById(rs.getInt("maincate_id")));
+                sc.setCategoryID(rs.getInt("id"));
+                sc.setShop(SellersDao.getShopById(s_id));
+                sc.setCategoryName(rs.getString("name"));
+                cate_shop.add(sc);
+            }
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return cate_shop;
     }
 }

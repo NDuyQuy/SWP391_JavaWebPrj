@@ -5,15 +5,18 @@
 package controller;
 
 import dao.ProductDao;
+import dao.RatingDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Product;
+import model.Ratings;
 
 /**
  *
@@ -63,8 +66,25 @@ public class ProductDetailController extends HttpServlet {
             String product = request.getParameter("product");
             Product pro = ProductDao.getProductById(Integer.parseInt(product));
             ArrayList<Product> product_by_shop = ProductDao.getProductsByShop(pro.getShop().getUser().getUserID());
-            product_by_shop.remove(pro);
+            ArrayList<Ratings> ratings_by_product = RatingDao.getRatingsByProduct(pro.getProductID());
+            float aver_score = 0;
+            int aver_rate = 0;
+            if (ratings_by_product != null && !ratings_by_product.isEmpty()) {
+                for (Ratings r : ratings_by_product) {
+                    aver_score += r.getScore();
+                }
+                aver_rate = (int) Math.round((aver_score/ratings_by_product.size()) * 100);
+            }
+
+            ListIterator<Product> iter = product_by_shop.listIterator();
+            while (iter.hasNext()) {
+                if (iter.next().getProductID() == pro.getProductID()) {
+                    iter.remove();
+                }
+            }
             HttpSession session = request.getSession();
+            session.setAttribute("aver_rate", aver_rate);
+            session.setAttribute("ratings_by_product", ratings_by_product);
             session.setAttribute("pr", pro);
             session.setAttribute("product_by_shop", product_by_shop);
             request.getRequestDispatcher("product_detail.jsp").forward(request, response);
