@@ -97,6 +97,10 @@ public class LoginController extends HttpServlet {
                         request.getSession().setAttribute("Admin", 1);
                         url = "/AdminMainpage.jsp";
                         break;
+                    case 4:
+                        request.getSession().setAttribute("ShippingUnit", 1);
+                        url = "/SU_Mainpage.jsp";
+                        break;
                     default:
                         url = "/home.jsp";
                 }
