@@ -119,7 +119,7 @@
                     </div>
 
                     <div class="form-row justify-content-center">
-                        <button type="button" class="btn btn-secondary mr-2">Hủy</button>
+                        <a href="sellersvouchercontroller" class="btn btn-secondary mr-2">Hủy</a>
                         <button type="submit" class="btn btn-primary">Sửa</button>
                     </div>
                 </form>

@@ -36,15 +36,7 @@
         <link rel="stylesheet" href="../css/imageInput.css">
     </head>
     <body>
-        <jsp:useBean id="product" scope="request" class="model.Product" />
-        <c:set var="directoryPath" value="${product.productImg}" />
-        <c:set var="imageExtensions" value=".jpg,.jpeg,.png,.gif" />
-        <c:set var="imageFiles" value="" />
-        <c:forEach var="extension" items="${fn:split(imageExtensions, ',')}">
-            <c:forEach var="file" items="${fn:split(fn:substringAfter(imageFiles, extension), ',')}">
-                <c:set var="imageFiles" value="${imageFiles},${fn:substringBefore(file, extension)}${extension}" />
-            </c:forEach>
-        </c:forEach>
+        <jsp:useBean id="product" scope="session" class="model.Product" />
         <main>
             <div class="container mt-5">
                 <div class="row justify-content-center">
@@ -67,25 +59,26 @@
                             </div>
                             <div class="form-group">
                                 <label for="price">Giá:</label>
-                                <input type="text" class="form-control" id="price" name="price" required>
+                                <input type="text" class="form-control" id="price" name="price" value="${product.price}"required>
                             </div>
                             <div class="form-group">
                                 <label for="quantity">Số lượng:</label>
-                                <input type="text" class="form-control" id="quantity" name="quantity" required>
+                                <input type="text" class="form-control" id="quantity" name="quantity" value="${product.quantity}" required>
                             </div>
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>
-                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                                <textarea class="form-control" id="description" name="description" rows="3" value="${product.description}"></textarea>
                             </div>
                             <div class="form-group">
                                 <a href="javascript:void(0)" onclick="$('#pro-image').click()" class="btn btn-secondary border">Upload Image</a>
                                 <input accept="image/*" type="file" id="pro-image" name="images" style="display: none;" class="form-control" multiple>
                                 <div class="preview-images-zone">
-                                    <c:if test="${not empty imageFiles}">
-                                        <c:forEach var="imageFile" items="${fn:split(imageFiles, ',')}">
-                                            <img src="${imageFile}" alt="Image" width="100" height="100">
-                                        </c:forEach>
-                                    </c:if>
+                                    <c:forEach var="i" items="${sessionScope.imgs}">
+                                        <div class="preview-image">
+                                            <div class="image-cancel" data-no="">x</div>
+                                            <div class="image-zone"><img src="../${i}"></div>
+                                        </div>
+                                    </c:forEach>
                                 </div>
                                 <small class="form-text text-muted">Tối đa 10 hình ảnh.</small>
                             </div>

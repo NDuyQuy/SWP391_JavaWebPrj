@@ -21,10 +21,12 @@ import javax.servlet.http.Part;
 import model.User;
 import javax.servlet.annotation.MultipartConfig;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import model.MainCategory;
 import model.Product;
-import model.Shop;
 /**
  *
  * @author ASUS
@@ -82,12 +84,19 @@ public class ProductController extends HttpServlet {
                 int product_id = Integer.parseInt(request.getParameter("p_id"));
                 Product p = SellersDao.getProductById(product_id);
                 String realPath = request.getServletContext().getRealPath(p.getProductImg());
-                //request.setAttribute("product", p);
-                Stream<Path> ps = Files.list(Paths.get(realPath));
+                String prefix = p.getProductImg().replaceAll("\\\\", "/");
+                request.getSession().setAttribute("product", p);
                 
-                ps.forEach(System.out::println);
-                //response.sendRedirect(url);
-                request.getRequestDispatcher(url).forward(request, response);
+                Stream<Path> ps = Files.list(Paths.get(realPath));
+                List<String> imgPaths;
+                imgPaths = ps.map(Path::getFileName).map(Path::toString).collect(Collectors.toList());
+                for (int i = 0; i < imgPaths.size(); i++) {
+                    imgPaths.set(i,prefix+File.separator+imgPaths.get(i));
+                }
+                request.getSession().setAttribute("imgs", imgPaths);
+                
+                response.sendRedirect(url);
+                //request.getRequestDispatcher(url).forward(request, response);
             }
         } else {
             //Get the list of shop categories

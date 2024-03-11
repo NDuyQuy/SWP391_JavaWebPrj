@@ -41,7 +41,7 @@ public class SellersDao {
     private static final String EDITVOUCHER = "UPDATE [vouchers] SET [code]=?, [discount_amount]=?, [start_date]=?, [expire_date]=?, "
             + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
-    
+    //CUSTOM ORDER REALTED SQL STATEMENT
     public static Shop getShopById(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
@@ -282,7 +282,7 @@ public class SellersDao {
         
         //createShopProducts(product, 23);
         //editShopProducts(product);
-        //getShopProducts(23).forEach(System.out::println);
+        getShopProducts(23).forEach(System.out::println);
         /*Date start_date = new Date(2024, 3, 1);
         Date expired_date = new Date(2024, 3, 2);
         Voucher voucher = new Voucher(6, "Mv03", 2, start_date, expired_date, 3, 1, "none", 23, 1, 10);

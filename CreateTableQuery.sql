@@ -122,3 +122,16 @@ create table ratings
 	[score] int NOT NULL,
 	comment text NOT NULL
 )
+-- Alter table orders, add 3 more rows for custom order purpose
+alter table [orders]
+add [type] int, [deadline] date, [cproductName] varchar(50)
+-- Update new table CustomOrderDetail
+create table [CustomOrderDetail]
+(
+	[order_id] int foreign key references [orders]([order_id]),
+	[process_img] varchar(50) not null,
+	[process_video] varchar(50) not null,
+	[description] varchar(50) not null
+)
+alter table [CustomOrderDetail]
+add [created_date] date default GETDATE()
