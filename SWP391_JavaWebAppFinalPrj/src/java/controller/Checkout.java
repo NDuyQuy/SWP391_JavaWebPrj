@@ -9,22 +9,23 @@ import dao.CartDao;
 import dao.CartDaoImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.CartItem;
-import model.Order;
-import model.OrderDetail;
 import model.User;
 
 /**
  *
  * @author LENOVO
  */
+@WebServlet(name = "Checkout", urlPatterns = {"/Checkout"})
 public class Checkout extends HttpServlet {
 private final CartDao cartDao = new CartDaoImpl();
 
@@ -66,7 +67,26 @@ private final CartDao cartDao = new CartDaoImpl();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+       User user = (User) request.getSession().getAttribute("user");
+          
+        
+        List<CartItem> selectedItems = (List<CartItem>) request.getSession().getAttribute("selectedItems");
+
+    if (selectedItems != null && !selectedItems.isEmpty()) {
+       
+        Map<String, List<CartItem>> groupedByShop = selectedItems.stream()
+                    .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShopName()));
+        request.setAttribute("selectedItems", selectedItems);
+        request.setAttribute("cartGroup", groupedByShop);
+
+        // Tiếp tục xử lý trang Checkout
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/checkout.jsp");
+        dispatcher.forward(request, response);
+    } else {
+        // Xử lý trường hợp không có sản phẩm nào được chọn
+        // Có thể điều hướng hoặc hiển thị thông báo lỗi
+        response.sendRedirect("cart.jsp");
+    }
     }
 
     /**
@@ -80,33 +100,25 @@ private final CartDao cartDao = new CartDaoImpl();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+       /// Lấy danh sách sản phẩm đã chọn từ request parameter
+   /* String selectedProductIds = request.getParameter("selectedProductIds");
 
-        // Lấy danh sách sản phẩm đã chọn từ giỏ hàng
-        List<CartItem> selectedItems = cartDao.getCheckedItems(user.getUserID());
-
-        // Tạo đơn hàng mới
-        Order order = createOrder(user, selectedItems);
-
-        // Lưu đơn hàng vào database (hoặc bạn có thể chuyển nó đến một service để xử lý)
-        // orderService.saveOrder(order);
-
-        // Hiển thị đơn hàng trên trang checkout
-        session.setAttribute("checkoutOrder", order);
-        response.sendRedirect("checkout.jsp");
-    }
-private Order createOrder(User user, List<CartItem> selectedItems) {
-        // Tạo đơn hàng mới
-        Order order = new Order();
-        order.setUser(user);
-        order.setOrderDate(LocalDate.now());
-        // Thêm các sản phẩm đã chọn vào đơn hàng
-        for (CartItem cartItem : selectedItems) {
-            OrderDetail orderDetail = new OrderDetail(order, cartItem.getProduct(), cartItem.getQuantity());
-            order.addOrderDetail(orderDetail);
-        }
-        return order;
+    if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
+        String[] selectedIdsArray = selectedProductIds.split(",");
+        
+        // Thực hiện các bước thanh toán với danh sách sản phẩm đã chọn
+        // (ví dụ: tạo đơn đặt hàng, giảm số lượng sản phẩm từ kho, v.v.)
+        
+        // Điều hướng hoặc hiển thị thông báo thanh toán thành công
+        response.sendRedirect("payment-success.jsp");
+    } else {
+        // Xử lý trường hợp khi không có sản phẩm nào được chọn
+        // Có thể điều hướng hoặc hiển thị thông báo lỗi
+        response.sendRedirect("cart.jsp");
+    }*/
+   
+   // Lấy danh sách sản phẩm đã chọn từ session
+    
     }
     /**
      * Returns a short description of the servlet.

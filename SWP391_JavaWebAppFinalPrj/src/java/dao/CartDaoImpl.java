@@ -14,8 +14,11 @@ import model.Shop;
 
 public class CartDaoImpl implements CartDao {
 
-    private static final String ADD_TO_CART = "INSERT INTO cartdetail (user_id, product_id, quantity) VALUES (?, ?, ?)";
-    private static final String UPDATE_CART_ITEM_QUANTITY = "UPDATE cartdetail SET quantity = ? WHERE user_id = ? AND product_id = ?";
+    //  private static final String ADD_TO_CART = "INSERT INTO cartdetail (user_id, product_id, quantity) VALUES (?, ?, ?)";
+    private static final String CHECK_CART = "SELECT * FROM cartdetail WHERE user_id = ? AND product_id = ?";
+    private static final String INSERT_CART = "INSERT INTO cartdetail (user_id, product_id, quantity) VALUES (?, ?, ?)";
+    private static final String UPDATE_CART = "UPDATE cartdetail SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?";
+  private static final String UPDATE_NEW_CART_QUANTITY = "UPDATE cartdetail SET quantity = ? WHERE user_id = ? AND product_id = ?";
     private static final String REMOVE_FROM_CART = "DELETE FROM cartdetail WHERE user_id = ? AND product_id = ?";
     // private static final String GET_CART_ITEMS = "SELECT * FROM [cartdetail] WHERE [user_id] = ?";
     private static final String GET_CART_ITEMS = "SELECT cd.*, p.*, s.shop_name\n"
@@ -28,11 +31,23 @@ public class CartDaoImpl implements CartDao {
     @Override
     public void addToCart(int userId, int productId, int quantity) {
         try (Connection con = SQLConnection.getConnection();
-                PreparedStatement ptm = con.prepareStatement(ADD_TO_CART)) {
-            ptm.setInt(1, userId);
-            ptm.setInt(2, productId);
-            ptm.setInt(3, quantity);
-            ptm.executeUpdate();
+                PreparedStatement checkSt = con.prepareStatement(CHECK_CART); PreparedStatement insertSt = con.prepareStatement(INSERT_CART); PreparedStatement updateSt = con.prepareStatement(UPDATE_CART)) {
+            checkSt.setInt(1, userId);
+            checkSt.setInt(2, productId);
+            ResultSet rs = checkSt.executeQuery();
+            if (rs.next()) {
+                // Sản phẩm đã có trong giỏ hàng, cập nhật số lượng
+                updateSt.setInt(1, quantity);
+                updateSt.setInt(2, userId);
+                updateSt.setInt(3, productId);
+                updateSt.executeUpdate();
+            } else {
+                // Sản phẩm chưa có trong giỏ hàng, thêm mới
+                insertSt.setInt(1, userId);
+                insertSt.setInt(2, productId);
+                insertSt.setInt(3, quantity);
+                insertSt.executeUpdate();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,17 +56,31 @@ public class CartDaoImpl implements CartDao {
     @Override
     public void updateCartItemQuantity(int userId, int productId, int quantityChange) {
         try (Connection con = SQLConnection.getConnection();
-                PreparedStatement ptm = con.prepareStatement(UPDATE_CART_ITEM_QUANTITY)) {
-            int currentQuantity = getCartItemQuantity(userId, productId);
-            int newQuantity = currentQuantity + quantityChange;
-            if (newQuantity > 0) {
-                ptm.setInt(1, newQuantity);
+                PreparedStatement ptm = con.prepareStatement(UPDATE_CART)) {
+            {
+                ptm.setInt(1, quantityChange);
                 ptm.setInt(2, userId);
                 ptm.setInt(3, productId);
                 ptm.executeUpdate();
-            } else if (newQuantity == 0) {
-                removeFromCart(userId, productId);
+
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateNewCartItemQuantity(int userId, int productId, int quantityChange) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement ptm = con.prepareStatement(UPDATE_NEW_CART_QUANTITY)) {
+            {
+                ptm.setInt(1, quantityChange);
+                ptm.setInt(2, userId);
+                ptm.setInt(3, productId);
+                ptm.executeUpdate();
+
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,6 +174,52 @@ public class CartDaoImpl implements CartDao {
         }
     }
 
+    public List<CartItem> getCartItemsByProductIds(int userId, List<Integer> productIds) throws ClassNotFoundException {
+        List<CartItem> cartItems = new ArrayList<>();
+
+        try (Connection connection = SQLConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT * FROM cartdetail WHERE user_id = ? AND product_id IN (" + getQuestionMarks(productIds.size()) + ")")) {
+
+            preparedStatement.setInt(1, userId);
+
+            // Set productIds as parameters
+            int parameterIndex = 2;
+            for (int productId : productIds) {
+                preparedStatement.setInt(parameterIndex++, productId);
+            }
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int productId = resultSet.getInt("productId");
+                    int quantity = resultSet.getInt("quantity");
+
+                    // Fetch the product details from the database (you may need to adjust this based on your schema)
+                    Product product = ProductDao.getProductById(productId);
+
+                    // Create CartItem object and add it to the list
+                    CartItem cartItem = new CartItem(product, quantity);
+                    cartItems.add(cartItem);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception properly in your application
+        }
+
+        return cartItems;
+    }
+
+    private String getQuestionMarks(int size) {
+        StringBuilder questionMarks = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            questionMarks.append("?");
+            if (i < size - 1) {
+                questionMarks.append(",");
+            }
+        }
+        return questionMarks.toString();
+    }
+    
     public static void main(String[] args) {
         int userId = 27;
 

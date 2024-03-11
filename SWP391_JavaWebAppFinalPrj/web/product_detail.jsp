@@ -136,15 +136,14 @@
 
                                     <div class="product-action-details variant-item">
                                         <div class="product-details-action">
-                                            <form action="#">
+                                            
                                                 <div class="plus-minus">
                                                     <div class="cart-plus-minus"><input type="text" value="1" /></div>
                                                 </div>
                                                 <div class="details-cart mt-40" style="font-family: 'Montserrat', sans-serif;">
-                                                    <button class="btn theme-btn">Thêm vào giỏ hàng</button>
-                                                    <button class="btn theme-btn">Mua ngay</button>
+                                                    <button class="btn theme-btn" onclick="location.href='AddToCart?id=${pr.productID}'">Thêm vào giỏ hàng</button>
+                                                    <button class="btn theme-btn" onclick="location.href='#'">Mua ngay</button>
                                                 </div>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>

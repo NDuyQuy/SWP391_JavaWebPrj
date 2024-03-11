@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -11,51 +13,51 @@ import java.util.Date;
  * @author DELL
  */
 public class Voucher {
-    private int voucher_id;
+    private int id;
     private String code;
-    private int discount_amount;
-    private Date start_date;
-    private Date expired_date;
-    private int type; 
-    private int min_require;
+    private int discount;
+    private int discount_type; //1 for value; 2 for percent; -1 for error
+    private String discount_unit;
+    private Timestamp start;
+    private Timestamp end;
+    private int type; //1 for product vouchers; 2 for shop vouchers; 0 for main (category) vouchers; -1 for error
+    private int min;
     private String description;
-    private int shop_id;
-    private int product_id;
-    private int use_count;
+    private int count;
+    ArrayList<Integer> ListApplied = new ArrayList<Integer>();
 
-    public Voucher() {
-    }
-
-    public Voucher(int voucher_id, String code, int discount_amount, Date start_date, Date expired_date, int type, int min_require, String description, int shop_id, int product_id, int use_count) {
-        this.voucher_id = voucher_id;
+    public Voucher(int id, String code, int discount, Timestamp start, Timestamp end, int type, int min, String description, int count) {
+        this.id = id;
         this.code = code;
-        this.discount_amount = discount_amount;
-        this.start_date = start_date;
-        this.expired_date = expired_date;
+        this.discount = discount;
+        setDiscount_type();
+        this.start = start;
+        this.end = end;
         this.type = type;
-        this.min_require = min_require;
+        this.min = min;
         this.description = description;
-        this.shop_id = shop_id;
-        this.product_id = product_id;
-        this.use_count = use_count;
-    }
-    
-    public Voucher(int voucher_id, String code, int discount_amount, int type,int min_require, int shop_id, int use_count) {
-        this.voucher_id = voucher_id;
-        this.code = code;
-        this.discount_amount = discount_amount;
-        this.type = type;
-        this.min_require = min_require;
-        this.shop_id = shop_id;
-        this.use_count = use_count;
-    }
-    
-    public int getVoucher_id() {
-        return voucher_id;
+        this.count = count;
     }
 
-    public void setVoucher_id(int voucher_id) {
-        this.voucher_id = voucher_id;
+    public Voucher(int id, String code, int discount, int type, int min, String description, int count) {
+        this.id = id;
+        this.code = code;
+        this.discount = discount;
+       
+        this.type = type;
+        this.min = min;
+        this.description = description;
+        this.count = count;
+    }
+    
+    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCode() {
@@ -66,28 +68,28 @@ public class Voucher {
         this.code = code;
     }
 
-    public int getDiscount_amount() {
-        return discount_amount;
+    public int getDiscount() {
+        return discount;
     }
 
-    public void setDiscount_amount(int discount_amount) {
-        this.discount_amount = discount_amount;
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
 
-    public Date getStart_date() {
-        return start_date;
+    public Timestamp getStart() {
+        return start;
     }
 
-    public void setStart_date(Date start_date) {
-        this.start_date = start_date;
+    public void setStart(Timestamp start) {
+        this.start = start;
     }
 
-    public Date getExpired_date() {
-        return expired_date;
+    public Timestamp getEnd() {
+        return end;
     }
 
-    public void setExpired_date(Date expired_date) {
-        this.expired_date = expired_date;
+    public void setEnd(Timestamp end) {
+        this.end = end;
     }
 
     public int getType() {
@@ -98,12 +100,12 @@ public class Voucher {
         this.type = type;
     }
 
-    public int getMin_require() {
-        return min_require;
+    public int getMin() {
+        return min;
     }
 
-    public void setMin_require(int min_require) {
-        this.min_require = min_require;
+    public void setMin(int min) {
+        this.min = min;
     }
 
     public String getDescription() {
@@ -114,33 +116,50 @@ public class Voucher {
         this.description = description;
     }
 
-    public int getShop_id() {
-        return shop_id;
+    public int getCount() {
+        return count;
     }
 
-    public void setShop_id(int shop_id) {
-        this.shop_id = shop_id;
+    public void setCount(int count) {
+        this.count = count;
     }
 
-    public int getProduct_id() {
-        return product_id;
+    public ArrayList<Integer> getListApplied() {
+        return ListApplied;
     }
 
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
+    public void setListApplied(ArrayList<Integer> ListApplied) {
+        this.ListApplied = ListApplied;
     }
 
-    public int getUse_count() {
-        return use_count;
+    public int getDiscount_type() {
+        return discount_type;
     }
 
-    public void setUse_count(int use_count) {
-        this.use_count = use_count;
+    public void setDiscount_type() {
+        String prefix = this.code.substring(0, 2);
+        switch(prefix) {
+            case "VA":
+                this.discount_type = 1; //Value
+                this.discount_unit = "VND";
+                break;
+            case "PC":
+                this.discount_type = 2; //Percent
+                this.discount_unit = "%";
+                break;
+            default:
+                this.discount_type = -1;
+                break;
+        }
     }
 
-    @Override
-    public String toString() {
-        return "Voucher{" + "voucher_id=" + voucher_id + ", code=" + code + ", discount_amount=" + discount_amount + ", start_date=" + start_date + ", expired_date=" + expired_date + ", type=" + type + ", min_require=" + min_require + ", description=" + description + ", shop_id=" + shop_id + ", product_id=" + product_id + ", use_count=" + use_count + '}';
+    public String getDiscount_unit() {
+        return discount_unit;
     }
+
+    public void setDiscount_unit(String discount_unit) {
+        this.discount_unit = discount_unit;
+    }
+    
     
 }

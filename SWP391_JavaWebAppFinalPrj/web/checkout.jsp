@@ -7,7 +7,7 @@
 <%@ page import="model.CartItem" %>
 <%@ page import="model.Product" %>
 
-<%@ page import="java.util.ArrayList" %>
+
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Map.Entry" %>
@@ -16,7 +16,13 @@
 <%@ page import="java.util.stream.Collectors" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:useBean id="cart" scope="session" class="model.Cart" />
+
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="model.Product" %>
+<%@ page import="model.Shop" %>
+<%@ page import="model.ShopCategory" %>
+<%@ page import="model.MainCategory" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -86,52 +92,168 @@
                 cursor: pointer;
             }
         </style>
+
     </head>
     <body>
 
-       <jsp:include page="header.jsp"></jsp:include>
-
-        <!-- Form nhập thông tin người nhận -->
-        <h2>Thông Tin Nhận Hàng</h2>
-        <form action="/submitOrder" method="post">
-            <label for="receiverName">Tên người nhận:</label>
-            <input type="text" id="receiverName" name="receiverName" required><br><br>
-            <label for="receiverPhone">Số điện thoại:</label>
-            <input type="text" id="receiverPhone" name="receiverPhone" required><br><br>
-            <label for="receiverAddress">Địa chỉ nhận hàng:</label>
-            <input type="text" id="receiverAddress" name="receiverAddress" required><br><br>
-
-            <!-- Hiển thị thông tin đơn hàng -->
-            <h2>Thông Tin Đơn Hàng</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tên sản phẩm</th>
-                        <th>Số lượng</th>
-                        <th>Đơn giá</th>
-                        <th>Thành tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach items="${cartGroup}" var="entry">
+        <jsp:include page="header.jsp"></jsp:include><!-- Trong trang checkout.jsp -->
+            <!-- Form nhập thông tin người nhận -->
+            <h2>Địa Chỉ Nhận Hàng</h2>
+            <form action="/submitOrder" method="post">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td colspan="4" class="shop-name">${entry.key}</td>
+                            <th>Tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Địa chỉ</th>
+                            <th>Chỉnh sửa</th>
                         </tr>
-                        <c:forEach items="${entry.value}" var="item">
-                            <tr>
-                                <td>${item.product.name}</td>
-                                <td>${item.quantity}</td>
-                                <td>${item.product.price}</td>
-                                <td>${item.product.price * item.quantity}</td>
-                            </tr>
-                        </c:forEach>
-                    </c:forEach>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>${sessionScope.user.fullname}</td>
+                        <td>${sessionScope.user.phone}</td>
+                        <td>${sessionScope.user.address}</td>
+                        <td>
+
+                            <button type="button" class="btn btn-primary" id="editInfoBtn">
+                                Chỉnh sửa thông tin nhận hàng
+                            </button>
+
+                            <!-- Add a modal for editing user information -->
+                            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Chỉnh sửa thông tin nhận hàng</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Add a form for editing user information here -->
+                                            <!-- Populate form fields with default user information -->
+                                            <form id="editForm">
+                                                <div class="form-group">
+                                                    <label for="editFullname">Tên:</label>
+                                                    <input type="text" class="form-control" id="editFullname" value="${sessionScope.user.fullname}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="editPhone">Số điện thoại:</label>
+                                                    <input type="text" class="form-control" id="editPhone" value="${sessionScope.user.phone}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="editAddress">Địa chỉ:</label>
+                                                    <input type="text" class="form-control" id="editAddress" value="${sessionScope.user.address}">
+                                                </div>
+
+                                                <button type="button" class="btn btn-primary" id="saveChangesBtn">Lưu thay đổi</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
+
+            <%
+                double grandTotalAmount = 0.0;
+            %>
+            <%! double totalShopAmount = 0.0; %>
+
+            <!-- Hiển thị thông tin đơn hàng -->
+            <h2>Sản phẩm</h2>
+            <table class="table">
+
+                <tbody>
+                    <jsp:useBean id="cartGroup" class="java.util.HashMap" scope="request" />
+
+                    <c:forEach var="entry" items="${cartGroup}">
+                        <tr>
+                            <!-- < <td>${entry.key}</td> -->
+                            <td colspan="7" class="shop-name">${entry.key}</td>
+                        </tr>
+
+                        <!-- Initialize totalShopAmount for the current shop -->
+                        <c:set var="totalShopAmount" value="0" />
+                        <!-- Iterate over the ArrayList values for the current key -->
+                        <c:forEach var="value" items="${entry.value}">
+                            <tr>
+
+                                <td class="product-thumbnail">
+                                    <a href="#"><img src="${value.product.productImg}" alt=""></a>
+                                </td>
+                                <td class="product-name">
+                                    <a href="#">${value.product.productName}</a>
+                                </td>
+                                <td class="product-price">
+                                    <span class="amount">${value.product.price}</span>
+                                </td>
+                                <td class="product-quantity">
+                                    <span class="quantityInput">${value.product.quantity}</span>
+                                </td>
+                                <td class="product-subtotal">
+                                    <span class="amount">${value.product.price * value.quantity}</span>
+                                </td>
+                                <c:set var="totalShopAmount" value="${totalShopAmount + (value.product.price * value.quantity)}" />
+
+                            </tr>
+
+
+                            <c:set var="grandTotalAmount" value="${grandTotalAmount + (value.product.price * value.quantity)}" />
+
+
+
+                        </c:forEach>
+
+                        <tr>
+                            <td colspan="3"></td>
+                            <td >
+                                <label for="shopVoucher">Voucher của shop:</label>
+                            <td>
+                                <select id="shopVoucher" name="shopVoucher">
+                                    <!-- Thêm các tùy chọn voucher cho shop -->
+                                    <option value="voucher1">Voucher 1</option>
+                                    <option value="voucher2">Voucher 2</option>
+                                </select>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>
+                                <label for="shippingMethod">Phương thức vận chuyển:</label>
+                            </td>
+                            <td>
+                                <select id="shippingMethod" name="shippingMethod">
+                                    <!-- Thêm các tùy chọn phương thức vận chuyển cho shop -->
+                                    <option value="shipping1">Vận chuyển 1</option>
+                                    <option value="shipping2">Vận chuyển 2</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td colspan="3"></td>
+                            <td class="total-shop-amount">Tổng: </td>
+                            <td>${totalShopAmount}</td>
+                        </tr>
+
+                    </c:forEach>
+                </tbody>
+
+            </table>
+
             <h2>Thông Tin Khác</h2>
-            <label for="shopVoucher">Voucher của shop:</label>
-            <input type="text" id="shopVoucher" name="shopVoucher"><br><br>
+
 
             <label for="systemVoucher">Voucher của hệ thống:</label>
             <input type="text" id="systemVoucher" name="systemVoucher"><br><br>
@@ -142,23 +264,63 @@
                 <option value="online">Thanh toán online</option>
             </select><br><br>
 
-            <label for="totalAmount">Tổng tiền hàng:</label>
-            <input type="text" id="totalAmount" name="totalAmount" value="${cart.calculateTotalAmount()}" readonly><br><br>
+            <label for="grandTotal">Tổng tiền hàng: </label> <td>${grandTotalAmount}</td></br>
 
             <label for="shippingFee">Phí vận chuyển:</label>
             <input type="text" id="shippingFee" name="shippingFee" value="Free ship" readonly><br><br>
 
-            <label for="vat">VAT:</label>
-            <input type="text" id="vat" name="vat" value="10 $" readonly><br><br>
+            <!--  <label for="totalAmount">Tổng thanh toán: </label>
+                        <input type="text" id="grandTotal" name="grandTotal" value="${cart.calculateTotalAmount()}" readonly><br><br>
+            -->
 
-            <label for="grandTotal">Tổng thanh toán:</label>
-            <input type="text" id="grandTotal" name="grandTotal" value="${cart.calculateTotalAmount() + 10}" readonly><br><br>
 
             <input class="btn btn-dark rounded-pill py-2 btn-block" type="submit" value="Đặt hàng"/>
         </form>
 
         <!-- Footer -->
         <jsp:include page="footer.jsp"></jsp:include>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- ... Your existing code ... -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <!-- Add this script at the end of the body or in the head section -->
+        <script>
+       $(document).ready(function () {
+    // Show the modal when the edit button is clicked
+    $("#editInfoBtn").click(function () {
+        // Populate modal fields with default user information
+        $("#editFullnameModal").val("${sessionScope.user.fullname}");
+        $("#editPhoneModal").val("${sessionScope.user.phone}");
+        $("#editAddressModal").val("${sessionScope.user.address}");
+
+        $("#editModal").modal("show");
+    });
+
+    // Handle save changes button click
+    $("#saveChangesBtn").click(function () {
+        // Update user information in the main form with values from the modal
+        $("#editFullname").val($("#editFullnameModal").val());
+        $("#editPhone").val($("#editPhoneModal").val());
+        $("#editAddress").val($("#editAddressModal").val());
+
+        // Hide the modal
+        $("#editModal").modal("hide");
+    });
+});
+
+        </script>
 
     </body>
+</html>
+
+
+
+
+</body>
 </html>

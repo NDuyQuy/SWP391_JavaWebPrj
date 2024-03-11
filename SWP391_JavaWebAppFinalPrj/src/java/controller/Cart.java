@@ -5,22 +5,19 @@
  */
 package controller;
 
-import dao.CartDao;
 import dao.CartDaoImpl;
-import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.CartItem;
 import model.User;
 
@@ -28,6 +25,7 @@ import model.User;
  *
  * @author LENOVO
  */
+@WebServlet(name = "Cart", urlPatterns = {"/Cart"})
 public class Cart extends HttpServlet {
 
     /**
@@ -97,7 +95,42 @@ public class Cart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
+        User user = (User) request.getSession().getAttribute("user");
+
+        if (user != null) {
+            List<CartItem> cartItems = CartDaoImpl.getCartItems(user.getUserID());
+
+            // Process selected items
+            String selectedProductIds = request.getParameter("selectedProductIds");
+
+            if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
+                String[] selectedIdsArray = selectedProductIds.split(",");
+                List<CartItem> selectedItems = new ArrayList<>();
+
+                for (String selectedId : selectedIdsArray) {
+                    int productId = Integer.parseInt(selectedId);
+
+                    for (CartItem cartItem : cartItems) {
+                        if (cartItem.getProduct().getProductID() == productId) {
+                            selectedItems.add(cartItem);
+                            break;
+                        }
+                    }
+                }
+
+                // Save selected items to session
+                request.getSession().setAttribute("selectedItems", selectedItems);
+
+                // Redirect to CheckoutServlet
+                response.sendRedirect("Checkout");
+            } else {
+                // Handle the case when no items are selected
+                // You can redirect or show an error message
+                response.sendRedirect("cart.jsp");
+            }
+        } else {
+            response.sendRedirect("login.jsp");
+        }
     }
 
     /**

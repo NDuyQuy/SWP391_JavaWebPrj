@@ -158,5 +158,11 @@ public class Order {
         this.orderDetails = orderDetails;
     }
 
+    @Override
+    public String toString() {
+        return "Order{" + "orderId=" + orderId + ", user=" + user + ", shippingUnitId=" + shippingUnitId + ", voucherCode=" + voucherCode + ", total=" + total + ", shippingMethod=" + shippingMethod + ", paymentMethod=" + paymentMethod + ", status=" + status + ", receiverName=" + receiverName + ", receiverPhone=" + receiverPhone + ", receiverAddress=" + receiverAddress + ", orderDate=" + orderDate + ", cancelReason=" + cancelReason + ", orderDetails=" + orderDetails + '}';
+    }
+    
+    
     
     }
