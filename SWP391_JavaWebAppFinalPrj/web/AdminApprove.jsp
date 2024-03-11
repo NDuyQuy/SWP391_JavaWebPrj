@@ -63,7 +63,7 @@
                             <thead>
                                 <tr> 
                                     <th>Username</th> 
-                                    <th>Fullname</th>
+                                    <th>Full name</th>
                                     <th>Shop name</th>
                                     <th>Create Date</th>
                                     <th>Request Date</th>
@@ -75,7 +75,7 @@
                                 <c:forEach var="s" items="${sessionScope.SL}">
                                     <tr> 
                                         <td><c:out value="${s.userName}"/></td>
-                                        <td><c:out value="${s.Fullname}"/></td>
+                                        <td><c:out value="${s.fullname}"/></td>
                                         <td><c:out value="${s.shopName}"/></td>
                                         <td><c:out value="${s.createDate}"/></td>
                                         <td><c:out value="${s.requestDate}"/></td>

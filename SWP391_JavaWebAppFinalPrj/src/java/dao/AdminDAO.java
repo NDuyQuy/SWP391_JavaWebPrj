@@ -64,9 +64,11 @@ public class AdminDAO {
     
     private static final String DOAPPROVESELLER = "UPDATE [dbo].[users] SET [role] = ? WHERE [id] = ?";
     
-    private static final String CREATESHOP = "INSERT INTO [dbo].[shops]([shop_id], [shop_name], [CCCD], [shop_reported_count]) values (?, ?, ?, ?)";
+    private static final String CREATESHOP = "INSERT INTO [dbo].[shops]([shop_id], [shop_name], [CCCD], [shop_reported_count]) values (?, ?, ?, 0)";
     
     private static final String DELETEAPPROVEREQUEST = "DELETE [dbo].[sellerrequest] WHERE [user_id] = ?";
+    
+    
     
     private static final String SENDNOTIFICATION = "INSERT INTO [dbo].[notifications]([userid], [detail], [status], [createdate]) values (?, ?, ?, ?)";
     
@@ -520,13 +522,15 @@ public class AdminDAO {
                     CCCD = rs.getString("CCCD");
                     shopname = rs.getString("shopname");
                 }
+                ptm = null;
                 ptm = con.prepareStatement(DOAPPROVESELLER);
-                ptm.setInt(1, id);
+                ptm.setInt(1, 2);
+                ptm.setInt(2, id);
                 ptm.executeUpdate();
                 ptm = con.prepareStatement(CREATESHOP);
                 ptm.setInt(1, id);
-                ptm.setString(2, CCCD);
-                ptm.setString(3, shopname);
+                ptm.setString(2, shopname);
+                ptm.setString(3, CCCD);
                 ptm.executeUpdate();
             }
             ptm = con.prepareStatement(DELETEAPPROVEREQUEST);

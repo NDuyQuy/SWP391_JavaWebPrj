@@ -180,9 +180,23 @@ public class AdminServlet extends HttpServlet {
                 url = "/AdminBan.jsp";
             }
             else if(action.equals("ViewApproveRequest")) {
-                
+                ArrayList<SellerRequest> requestList = AdminDAO.Get_Approve_List();
+                if (requestList != null) {
+                    session.setAttribute("SL", requestList);
+                }
             }
-            
+            else if(action.equals("AcceptSeller")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("ID"));
+                AdminDAO.Approve_Seller(id, true);
+                url = "/AdminApprove.jsp";
+            }
+            else if(action.equals("DeclineSeller")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("ID"));
+                AdminDAO.Approve_Seller(id, true);
+                url = "/AdminApprove.jsp";
+            }
             
             
             

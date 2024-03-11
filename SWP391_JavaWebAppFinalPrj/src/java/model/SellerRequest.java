@@ -14,7 +14,7 @@ public class SellerRequest {
     private int id;
     private int userId;
     private String userName;
-    private String Fullname;
+    private String fullname;
     private String shopName;
     private String CCCD;
     private Timestamp createDate; //Create Account Date
@@ -27,7 +27,7 @@ public class SellerRequest {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
-        this.Fullname = Fullname;
+        this.fullname = Fullname;
         this.shopName = shopName;
         this.CCCD = CCCD;
         this.createDate = createDate;
@@ -69,11 +69,11 @@ public class SellerRequest {
     }
 
     public String getFullname() {
-        return Fullname;
+        return fullname;
     }
 
     public void setFullname(String Fullname) {
-        this.Fullname = Fullname;
+        this.fullname = Fullname;
     }
 
     public String getShopName() {
