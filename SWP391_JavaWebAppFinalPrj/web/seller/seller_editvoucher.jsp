@@ -57,7 +57,7 @@
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="voucher_code">Mã Voucher</label>
-                            <input type="text" class="form-control" id="voucher_code" name="voucher_code" value="${voucher.code.substring(2)}">
+                            <input type="text" class="form-control" id="voucher_code" name="voucher_code" value="${voucher.code.substring(2)}" required>
                         </div>
                     </div>
 
@@ -65,11 +65,11 @@
                         <div class="form-group col-md-6">
                             <label for="time">Thời gian sử dụng</label>
                             <div class="input-group">
-                                <input type="date" class="form-control" id="start_date" name="start_date" value="${voucher.start_date}">
+                                <input type="date" class="form-control" id="start_date" name="start_date" value="${voucher.start_date}" required>
                                 <div class="input-group-append">
                                     <span class="input-group-text">đến</span>
                                 </div>
-                                <input type="date" class="form-control" id="expire_date" name="expire_date" value="${voucher.expired_date}">
+                                <input type="date" class="form-control" id="expire_date" name="expire_date" value="${voucher.expired_date}" required>
                             </div>
                         </div>
                     </div>
@@ -84,28 +84,28 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="discount_amount">Mức giảm</label>
-                            <input type="text" class="form-control" id="discount_amount" name="discount_amount" value="${voucher.discount_amount}">
+                            <input type="number" class="form-control" id="discount_amount" name="discount_amount" value="${voucher.discount_amount}" required>
                         </div>
                     </div>
 
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="min_require">Giá trị đơn hàng tối thiểu</label>
-                            <input type="text" class="form-control" id="min_require" name="min_require" value="${voucher.min_require}">
+                            <input type="number" class="form-control" id="min_require" name="min_require" value="${voucher.min_require}" required>
                         </div>
                     </div>
 
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="use_count">Tổng lượt sử dụng tối đa</label>
-                            <input type="text" class="form-control" id="use_count" name="use_count" value="${voucher.use_count}">
+                            <input type="number" class="form-control" id="use_count" name="use_count" value="${voucher.use_count}" required>
                         </div>
                     </div>
 
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="description">Mô tả</label>
-                            <input type="text" class="form-control" id="description" name="description" value="${voucher.description}">
+                            <input type="text" class="form-control" id="description" name="description" value="${voucher.description}" required>
                         </div>
                     </div>
 

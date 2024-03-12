@@ -43,6 +43,12 @@ public class SellersDao {
             + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
     //CUSTOM ORDER REALTED SQL STATEMENT
+    private static final String GETCUSTOMORDERS = "SELECT [id],[product_name],[expected_complete_date],[status],[cost] FROM [custom_order] WHERE [seller_id]=?";
+    private static final String CREATECUSTOMORDER = "INSERT INTO [custom_order]([id],[product_name],[expected_complete_date],[seller_id],[status],[cost])VALUES(?,?,?,?,?,?)";
+        //UPDATE CUSTOM ORDER COMPLETE PROCESS
+    private static final String UPDATESTATUS = "UPDATE [custom_order] SET [status]=? WHERE [id]=?";
+    private static final String UPDATECOMPLETEPROCESS = "INSERT INTO [custom_order_detail]([customorder_id],[process_img],[process_video],[description]) VALUES(?,?,?,?)";
+    
     public static Shop getShopById(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
@@ -63,7 +69,6 @@ public class SellersDao {
         }
         return shop;
     }
-    
     public static ArrayList<Shop> getAllShop(){
         PreparedStatement ptm = null;
         ResultSet rs = null;
@@ -85,7 +90,6 @@ public class SellersDao {
         }
         return shop_list;
     }
-    
     public static ArrayList<ShopCategory> getShopCategories(int shop_id){
         ArrayList<ShopCategory> shopCategories = new ArrayList<>();
         PreparedStatement ptm = null;
@@ -299,13 +303,55 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
+    
+    public static ArrayList<CustomOrder> getShopCustomOrders(int seller_id){
+        ArrayList<CustomOrder> orders = null;
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETCUSTOMORDERS);
+            ptm.setInt(1, seller_id);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String product_name = rs.getString("product_name");
+                Date expected_complete_date = rs.getDate("expected_complete_date");
+                String status = rs.getString("status");
+                double cost = rs.getDouble("cost");
+                CustomOrder co = new CustomOrder(id, product_name, expected_complete_date, status, cost);
+                orders.add(co);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return orders;
+    }
+    public static void createCustomOrder(CustomOrder order){
+        PreparedStatement ptm = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(CREATECUSTOMORDER);
+            ptm.setInt(1, order.getId());
+            ptm.setString(2, order.getProductName());
+            ptm.setDate(3, order.getExpected_complete_date());
+            ptm.setInt(4, order.getSeller_id());
+            ptm.setString(5, order.getStatus());
+            ptm.setInt(6, (int)order.getCost());
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
-        System.out.println(getProductById(6));
-        Product product = new Product(5, null, new MainCategory(1, "bruh"), null, "Meme nong hoi vua thoi vua an", LocalDate.MAX, "Meme", 100000, "img\\seller\\23\\062e45a2-a459-48c9-bbbd-1be2379e455d", 9);
-        
+        //System.out.println(getProductById(6));
+        //Product product = new Product(5, null, new MainCategory(1, "bruh"), null, "Meme nong hoi vua thoi vua an", LocalDate.MAX, "Meme", 100000, "img\\seller\\23\\062e45a2-a459-48c9-bbbd-1be2379e455d", 9);
+        //Date d = new Date(2024, 3, 15);
+        //CustomOrder order = new CustomOrder(2, "Custom product 2", d, "new create", 10000);
+        //order.setSeller_id(23);
+        //createCustomOrder(order);
+        getShopCustomOrders(23).forEach(System.out::println);
         //createShopProducts(product, 23);
         //editShopProducts(product);
-        getShopProducts(23).forEach(System.out::println);
+        //getShopProducts(23).forEach(System.out::println);
         /*Date start_date = new Date(2024, 3, 1);
         Date expired_date = new Date(2024, 3, 2);
         Voucher voucher = new Voucher(6, "Mv03", 2, start_date, expired_date, 3, 1, "none", 23, 1, 10);

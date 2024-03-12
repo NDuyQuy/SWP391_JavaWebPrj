@@ -38,7 +38,6 @@
                                 <div class="form-group">
                                     <label for="category">Thuộc ngành:</label>
                                     <select class="form-control" id="category" name="category" >
-                                        <!-- Add your category options here -->
                                     <c:forEach var="c" items="${sessionScope.main_category_list}">
                                         <option value="${c.categoryID}">${c.categoryName}</option>
                                     </c:forEach>
@@ -46,11 +45,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="price">Giá:</label>
-                                <input type="text" class="form-control" id="price" name="price" required>
+                                <input type="number" class="form-control" id="price" name="price" required>
                             </div>
                             <div class="form-group">
                                 <label for="quantity">Số lượng:</label>
-                                <input type="text" class="form-control" id="quantity" name="quantity" required>
+                                <input type="number" class="form-control" id="quantity" name="quantity" required>
                             </div>
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>

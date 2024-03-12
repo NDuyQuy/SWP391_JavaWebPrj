@@ -135,3 +135,27 @@ create table [CustomOrderDetail]
 )
 alter table [CustomOrderDetail]
 add [created_date] date default GETDATE()
+
+-- Re add the custom order table
+CREATE TABLE [custom_order]
+(
+	[id] int primary key,
+	[product_name] varchar(50) not null,
+	[expected_complete_date] date not null,
+	[seller_id] int foreign key references shops(shop_id),
+	[customer_id] int foreign key references users(id),
+	[status] varchar(50) not null,
+	[created_date] date default GETDATE(),
+	[cost] money not null,
+)
+
+
+
+CREATE TABLE [custom_order_detail] 
+(
+	[customorder_id] int foreign key references [custom_order]([id]),
+	[process_img] varchar(50) not null,
+	[process_video] varchar(50),
+	[description] varchar(50),
+	[created_date] date default GETDATE()
+)

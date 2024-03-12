@@ -28,7 +28,9 @@ public class Order {
     private int type;
     private Date deadline;
     private String cproductName;
-
+    
+    public User user;
+    public ShippingUnit shippingUnit;
     public Order() {
     }
 

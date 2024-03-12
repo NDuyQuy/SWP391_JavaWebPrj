@@ -59,11 +59,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="price">Giá:</label>
-                                <input type="text" class="form-control" id="price" name="price" value="${product.price}"required>
+                                <input type="number" class="form-control" id="price" name="price" value="${product.price}"required>
                             </div>
                             <div class="form-group">
                                 <label for="quantity">Số lượng:</label>
-                                <input type="text" class="form-control" id="quantity" name="quantity" value="${product.quantity}" required>
+                                <input type="number" class="form-control" id="quantity" name="quantity" value="${product.quantity}" required>
                             </div>
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>
