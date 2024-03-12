@@ -11,6 +11,7 @@ import java.sql.Timestamp;
  * @author DELL
  */
 public class ReportedUser {
+    private int ID;
     private int userID;
     private String userName;
     private String status;
@@ -19,9 +20,17 @@ public class ReportedUser {
     private String reportBy;
     private int count;
     private Timestamp date;
+    private Timestamp bantime;
     private String reason;
     private String detail;
-    
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 
     public int getUserID() {
         return userID;
@@ -104,10 +113,21 @@ public class ReportedUser {
         this.detail = detail;
     }
 
+    public Timestamp getBantime() {
+        return bantime;
+    }
+
+    public void setBantime(Timestamp bantime) {
+        this.bantime = bantime;
+    }
+    
+    
+
     public ReportedUser() {
     }
 
-    public ReportedUser(int userID, String userName, String status, String email, String shopname, String reportBy, int count, Timestamp date, String reason, String detail) {
+    public ReportedUser(int ID, int userID, String userName, String status, String email, String shopname, String reportBy, int count, Timestamp date, Timestamp bantime, String reason, String detail) {
+        this.ID = ID;
         this.userID = userID;
         this.userName = userName;
         this.status = status;
@@ -116,9 +136,12 @@ public class ReportedUser {
         this.reportBy = reportBy;
         this.count = count;
         this.date = date;
+        this.bantime = bantime;
         this.reason = reason;
         this.detail = detail;
     }
+
+    
 
     
 }

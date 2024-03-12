@@ -30,8 +30,9 @@ public class LogOutController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
         session.removeAttribute("user");
+        session.invalidate(); 
         response.sendRedirect("Home");
     }
 

@@ -141,6 +141,14 @@ public class Voucher {
                 break;
         }
     }
+
+    public String getDiscount_unit() {
+        return discount_unit;
+    }
+
+    public void setDiscount_unit(String discount_unit) {
+        this.discount_unit = discount_unit;
+    }
     
     
 }

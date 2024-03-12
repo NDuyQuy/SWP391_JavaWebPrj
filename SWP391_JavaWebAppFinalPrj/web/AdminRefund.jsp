@@ -89,7 +89,7 @@
                         </table>
                     </div>
                     
-                    <!-- Edit Category Popup -->
+                    <!-- Edit Popup -->
                     <div class="modal" id="editPopup">
                         <div class="modal-dialog  modal-dialog-centered">
                             <div class="modal-content">

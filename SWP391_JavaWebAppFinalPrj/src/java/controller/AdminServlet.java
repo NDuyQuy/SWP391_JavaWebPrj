@@ -123,12 +123,12 @@ public class AdminServlet extends HttpServlet {
                 int count = Integer.parseInt(request.getParameter("count"));
                 String description = request.getParameter("description");
                 Voucher v = new Voucher(id, code, discount, null, end, type, min, description, count);
-                AdminDAO.Add_New_Voucher(v);
+                AdminDAO.Update_Voucher(v);
                 url = "/AdminVoucher.jsp";
             }
             else if(action.equals("DeleteVoucher")) {
                 Continue = false;
-                int id = Integer.parseInt(request.getParameter("deleteVoucherId"));
+                int id = Integer.parseInt(request.getParameter("VoucherId"));
                 AdminDAO.Delete_Voucher(id);
                 url = "/AdminVoucher.jsp";
             }
@@ -145,6 +145,60 @@ public class AdminServlet extends HttpServlet {
                 AdminDAO.Update_Refund(status, id);
                 url = "/AdminRefund.jsp";
             }
+            else if(action.equals("ViewBan")) {
+                ArrayList<ReportedUser> BanList = AdminDAO.Get_Report_List();
+                if (BanList != null) {
+                    session.setAttribute("BL", BanList);
+                }
+            }
+            else if(action.equals("ApplyBan")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("userId"));
+                String banAction = request.getParameter("banAction");
+                int bandays = 0, status = 0;
+                if (banAction.equals("0")) {
+                    status = -1;
+                    bandays = 0;
+                }
+                else if (banAction.equals("7")) {
+                    status = 2;
+                    bandays = 7;
+                }
+                else if (banAction.equals("14")) {
+                    status = 2;
+                    bandays = 14;
+                }
+                else if (banAction.equals("30")) {
+                    status = 2;
+                    bandays = 30;
+                }
+                else if (banAction.equals("999999")) {
+                    status = 3;
+                    bandays = 0;
+                }
+                AdminDAO.Apply_Ban(id, status, bandays);
+                url = "/AdminBan.jsp";
+            }
+            else if(action.equals("ViewApproveRequest")) {
+                ArrayList<SellerRequest> requestList = AdminDAO.Get_Approve_List();
+                if (requestList != null) {
+                    session.setAttribute("SL", requestList);
+                }
+            }
+            else if(action.equals("AcceptSeller")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("ID"));
+                AdminDAO.Approve_Seller(id, true);
+                url = "/AdminApprove.jsp";
+            }
+            else if(action.equals("DeclineSeller")) {
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("ID"));
+                AdminDAO.Approve_Seller(id, true);
+                url = "/AdminApprove.jsp";
+            }
+            
+            
             
         }
         catch (Exception e) {

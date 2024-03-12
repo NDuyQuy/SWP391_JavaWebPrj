@@ -82,7 +82,7 @@
                                         <td><c:out value="${s.count}"/></td>
                                         <td>
                                             <!-- Edit link with data-id attribute -->
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" data-id="${s.userId}" onclick="openPopup('edit',${s.userID},'${s.userName}','${s.reportBy}','${s.date}','${s.reason}','${s.detail}')">Choose Action</a>
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" data-id="${s.userID}" onclick="openPopup('edit',${s.userID},'${s.userName}','${s.reportBy}','${s.date}','${s.reason}','${s.detail}')">Choose Action</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
