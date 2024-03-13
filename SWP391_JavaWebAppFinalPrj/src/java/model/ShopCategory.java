@@ -9,57 +9,60 @@ package model;
  * @author hien
  */
 public class ShopCategory {
-    private int categoryID;
-    private String categoryName;
-    private MainCategory mCate;
-    private Shop shop;
+    private int id;
+    private int maincate_id;
+    private int shop_id;
+    private String name;
+    private String description;
+    public MainCategory maincategory;
+    public Shops shop;
 
     public ShopCategory() {
     }
 
-    public ShopCategory(int categoryID, MainCategory mCate, Shop shop, String categoryName) {
-        this.categoryID = categoryID;
-        this.mCate = mCate;
-        this.shop = shop;
-        this.categoryName = categoryName;
+    public int getId() {
+        return id;
     }
 
-    public int getCategoryID() {
-        return categoryID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public MainCategory getmCate() {
-        return mCate;
+    public int getMaincate_id() {
+        return maincate_id;
     }
 
-    public Shop getShop() {
-        return shop;
+    public void setMaincate_id(int maincate_id) {
+        this.maincate_id = maincate_id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public int getShop_id() {
+        return shop_id;
     }
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
+    public void setShop_id(int shop_id) {
+        this.shop_id = shop_id;
     }
 
-    public void setmCate(MainCategory mCate) {
-        this.mCate = mCate;
+    public String getName() {
+        return name;
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public String toString() {
-        return "ShopCategory{" + "categoryID=" + categoryID + ", categoryName=" + categoryName + ", mCate=" + mCate + ", shop=" + shop + '}';
+        return "ShopCategory{" + "id=" + id + ", maincate_id=" + maincate_id + ", shop_id=" + shop_id + ", name=" + name + ", description=" + description + '}';
     }
-    
     
 }

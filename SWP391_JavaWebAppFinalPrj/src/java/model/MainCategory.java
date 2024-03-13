@@ -9,36 +9,39 @@ package model;
  * @author hien
  */
 public class MainCategory {
-    private int categoryID;
-    private String categoryName;
+    private int id;
+    private String name;
+    private String description;
 
     public MainCategory() {
     }
 
-    public MainCategory(int categoryID, String categoryName) {
-        this.categoryID = categoryID;
-        this.categoryName = categoryName;
+    public int getId() {
+        return id;
     }
 
-    public int getCategoryID() {
-        return categoryID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getName() {
+        return name;
     }
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public String toString() {
-        return "MainCategory{" + "categoryID=" + categoryID + ", categoryName=" + categoryName + '}';
+        return "MainCategory{" + "id=" + id + ", name=" + name + ", description=" + description + '}';
     }
-    
 }

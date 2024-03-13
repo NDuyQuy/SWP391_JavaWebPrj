@@ -4,7 +4,7 @@
  */
 package model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 /**
  *
@@ -12,59 +12,58 @@ import java.time.LocalDate;
  */
 public class Ratings {
     private int id;
-    private OrderDetail orderDetail;
-    private LocalDate timeStamp;
+    private int orderdetail_id;
+    private Date time_stamp;
     private int score;
     private String comment;
+    public OrderDetail orderdetail;
 
     public Ratings() {
-    }
-
-    public Ratings(int id, OrderDetail orderDetail, LocalDate timeStamp, int score, String comment) {
-        this.id = id;
-        this.orderDetail = orderDetail;
-        this.timeStamp = timeStamp;
-        this.score = score;
-        this.comment = comment;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setOrderDetail(OrderDetail orderDetail) {
-        this.orderDetail = orderDetail;
-    }
-
-    public void setTimeStamp(LocalDate timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public int getId() {
         return id;
     }
 
-    public OrderDetail getOrderDetail() {
-        return orderDetail;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public LocalDate getTimeStamp() {
-        return timeStamp;
+    public int getOrderdetail_id() {
+        return orderdetail_id;
+    }
+
+    public void setOrderdetail_id(int orderdetail_id) {
+        this.orderdetail_id = orderdetail_id;
+    }
+
+    public Date getTime_stamp() {
+        return time_stamp;
+    }
+
+    public void setTime_stamp(Date time_stamp) {
+        this.time_stamp = time_stamp;
     }
 
     public int getScore() {
         return score;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public String getComment() {
         return comment;
     }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    @Override
+    public String toString() {
+        return "Ratings{" + "id=" + id + ", orderdetail_id=" + orderdetail_id + ", time_stamp=" + time_stamp + ", score=" + score + ", comment=" + comment + '}';
+    }
+    
 }

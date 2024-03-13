@@ -5,29 +5,29 @@
  */
 package model;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  *
  * @author ASUS
  */
 public class CustomOrderDetail {
-    private int order_id;
+    private int customorder_id;
     private String process_img;
     private String process_video;
     private String description;
     private Date created_date;
-    public Order order;
+    public CustomOrder customorder;
 
     public CustomOrderDetail() {
     }
 
-    public int getOrder_id() {
-        return order_id;
+    public int getCustomorder_id() {
+        return customorder_id;
     }
 
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
+    public void setCustomorder_id(int customorder_id) {
+        this.customorder_id = customorder_id;
     }
 
     public String getProcess_img() {
@@ -61,6 +61,10 @@ public class CustomOrderDetail {
     public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
-    
+
+    @Override
+    public String toString() {
+        return "CustomOrderDetail{" + "customorder_id=" + customorder_id + ", process_img=" + process_img + ", process_video=" + process_video + ", description=" + description + ", created_date=" + created_date + '}';
+    }
     
 }
