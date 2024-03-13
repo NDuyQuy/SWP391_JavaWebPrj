@@ -3,6 +3,7 @@
     Created on : Feb 26, 2024, 9:48:59 PM
     Author     : LENOVO
 --%>
+<%@page import="model.Voucher"%>
 <%@ page import="java.util.List" %>
 <%@ page import="model.CartItem" %>
 <%@ page import="model.Product" %>
@@ -210,36 +211,11 @@
                             <c:set var="grandTotalAmount" value="${grandTotalAmount + (value.product.price * value.quantity)}" />
 
 
-
                         </c:forEach>
 
-                        <tr>
-                            <td colspan="3"></td>
-                            <td >
-                                <label for="shopVoucher">Voucher của shop:</label>
-                            <td>
-                                <select id="shopVoucher" name="shopVoucher">
-                                    <!-- Thêm các tùy chọn voucher cho shop -->
-                                    <option value="voucher1">Voucher 1</option>
-                                    <option value="voucher2">Voucher 2</option>
-                                </select>
-                            </td>
 
-                        </tr>
 
-                        <tr>
-                            <td colspan="3"></td>
-                            <td>
-                                <label for="shippingMethod">Phương thức vận chuyển:</label>
-                            </td>
-                            <td>
-                                <select id="shippingMethod" name="shippingMethod">
-                                    <!-- Thêm các tùy chọn phương thức vận chuyển cho shop -->
-                                    <option value="shipping1">Vận chuyển 1</option>
-                                    <option value="shipping2">Vận chuyển 2</option>
-                                </select>
-                            </td>
-                        </tr>
+                        
                         <tr>
 
                             <td colspan="3"></td>
@@ -256,7 +232,12 @@
 
 
             <label for="systemVoucher">Voucher của hệ thống:</label>
-            <input type="text" id="systemVoucher" name="systemVoucher"><br><br>
+            <select id="systemVoucher" name="systemVoucher">
+                <!-- Sử dụng cú pháp JSTL để lặp qua danh sách voucher của hệ thống -->
+                <c:forEach var="voucher" items="${systemVouchers}">
+                    <option value="${voucher.id}">${voucher.code} </option>
+                </c:forEach>
+            </select>
 
             <label for="paymentMethod">Phương thức thanh toán:</label>
             <select id="paymentMethod" name="paymentMethod">
@@ -269,9 +250,9 @@
             <label for="shippingFee">Phí vận chuyển:</label>
             <input type="text" id="shippingFee" name="shippingFee" value="Free ship" readonly><br><br>
 
-            <!--  <label for="totalAmount">Tổng thanh toán: </label>
-                        <input type="text" id="grandTotal" name="grandTotal" value="${cart.calculateTotalAmount()}" readonly><br><br>
-            -->
+            <label for="totalAmount">Tổng thanh toán: </label>
+                        <input type="text" id="grandTotal" name="grandTotal" value="${grandTotalAmount}" readonly><br><br>
+            
 
 
             <input class="btn btn-dark rounded-pill py-2 btn-block" type="submit" value="Đặt hàng"/>
@@ -279,41 +260,60 @@
 
         <!-- Footer -->
         <jsp:include page="footer.jsp"></jsp:include>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <!-- ... Your existing code ... -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <!-- ... Your existing code ... -->
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        <!-- Add this script at the end of the body or in the head section -->
+            <!-- Add this script at the end of the body or in the head section -->
+            <script>
+                $(document).ready(function () {
+                    // Show the modal when the edit button is clicked
+                    $("#editInfoBtn").click(function () {
+                        // Populate modal fields with default user information
+                        $("#editFullnameModal").val("${sessionScope.user.fullname}");
+                        $("#editPhoneModal").val("${sessionScope.user.phone}");
+                        $("#editAddressModal").val("${sessionScope.user.address}");
+
+                        $("#editModal").modal("show");
+                    });
+
+                    // Handle save changes button click
+                    $("#saveChangesBtn").click(function () {
+                        // Update user information in the main form with values from the modal
+                        $("#editFullname").val($("#editFullnameModal").val());
+                        $("#editPhone").val($("#editPhoneModal").val());
+                        $("#editAddress").val($("#editAddressModal").val());
+
+                        // Hide the modal
+                        $("#editModal").modal("hide");
+                    });
+                });
+
+        </script>
+
+        <!-- Cập nhật tổng số tiền khi người dùng chọn voucher -->
         <script>
-       $(document).ready(function () {
-    // Show the modal when the edit button is clicked
-    $("#editInfoBtn").click(function () {
-        // Populate modal fields with default user information
-        $("#editFullnameModal").val("${sessionScope.user.fullname}");
-        $("#editPhoneModal").val("${sessionScope.user.phone}");
-        $("#editAddressModal").val("${sessionScope.user.address}");
+            $(document).ready(function () {
+                $("#shopVoucher, #systemVoucher").change(function () {
+                    // Gọi hàm JavaScript để cập nhật tổng số tiền
+                    updateTotalAmount();
+                });
+            });
 
-        $("#editModal").modal("show");
-    });
+            function updateTotalAmount() {
+                // Lấy giá trị đã chọn từ các select box
+                var shopVoucherId = $("#shopVoucher").val();
+                var systemVoucherId = $("#systemVoucher").val();
 
-    // Handle save changes button click
-    $("#saveChangesBtn").click(function () {
-        // Update user information in the main form with values from the modal
-        $("#editFullname").val($("#editFullnameModal").val());
-        $("#editPhone").val($("#editPhoneModal").val());
-        $("#editAddress").val($("#editAddressModal").val());
-
-        // Hide the modal
-        $("#editModal").modal("hide");
-    });
-});
-
+                // Gửi request tới servlet hoặc JavaScript function để tính tổng số tiền mới
+                // Sau đó cập nhật tổng số tiền hiển thị trên trang
+            }
         </script>
 
     </body>

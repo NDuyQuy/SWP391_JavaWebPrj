@@ -5,23 +5,23 @@
  */
 package controller;
 
+import dao.VoucherDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import dao.*;
-import java.util.List;
-import javax.servlet.RequestDispatcher;
-import model.*;
+import model.Voucher;
+
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name = "OrderListController", urlPatterns = {"/OrderListController"})
-public class OrderListController extends HttpServlet {
+@WebServlet(name = "VoucherSelectionServlet", urlPatterns = {"/VoucherSelection"})
+public class VoucherSelectionServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +40,10 @@ public class OrderListController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderListController</title>");            
+            out.println("<title>Servlet VoucherSelectionServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OrderListController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet VoucherSelectionServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,14 +61,25 @@ public class OrderListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
-        OrderDao dao = new OrderDao();
-        List<Order> orders = dao.getOrdersByUserId(user.getUserID());
-       
-       request.setAttribute("orders", orders);
-        request.getRequestDispatcher("/orderlist.jsp").forward(request, response);
+        // Tạo một phiên bản của lớp VoucherDao
+        VoucherDao voucherDao = new VoucherDao();
+        
+        // Lấy shopid từ request parameter (nếu cần)
+        int shopId = Integer.parseInt(request.getParameter("shopId"));
+        
+        // Lấy danh sách voucher của shop từ VoucherDao
+        List<Voucher> shopVouchers = voucherDao.getVouchersByShopId(shopId);
+        
+        // Lấy danh sách voucher của hệ thống theo type = 1 từ VoucherDao
+        int systemVoucherType = 1;
+        List<Voucher> systemVouchers = voucherDao.getVouchersByType(systemVoucherType);
+        
+        // Gửi danh sách voucher đến trang JSP để hiển thị
+        request.setAttribute("shopVouchers", shopVouchers);
+        request.setAttribute("systemVouchers", systemVouchers);
+        
+        request.getRequestDispatcher("/checkout.jsp").forward(request, response);
     }
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.

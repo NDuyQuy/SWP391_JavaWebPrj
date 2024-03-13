@@ -5,23 +5,24 @@
  */
 package controller;
 
+import dao.ShippingUnitDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import dao.*;
-import java.util.List;
-import javax.servlet.RequestDispatcher;
-import model.*;
+import model.ShippingUnit;
+
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name = "OrderListController", urlPatterns = {"/OrderListController"})
-public class OrderListController extends HttpServlet {
+@WebServlet(name = "ShippingMethodServlet", urlPatterns = {"/ShippingMethodServlet"})
+public class ShippingMethodServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +41,10 @@ public class OrderListController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderListController</title>");            
+            out.println("<title>Servlet ShippingMethodServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OrderListController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShippingMethodServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,14 +62,17 @@ public class OrderListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = (User) request.getSession().getAttribute("user");
-        OrderDao dao = new OrderDao();
-        List<Order> orders = dao.getOrdersByUserId(user.getUserID());
-       
-       request.setAttribute("orders", orders);
-        request.getRequestDispatcher("/orderlist.jsp").forward(request, response);
+        // Lấy danh sách phương thức vận chuyển cho từng cửa hàng từ ShippingUnitDao
+        ShippingUnitDao shippingUnitDao = new ShippingUnitDao();
+        List<ShippingUnit> shippingUnits = shippingUnitDao.getAllShippingUnits(); // Sửa phương thức này nếu cần
+
+        // Set danh sách phương thức vận chuyển vào request attribute để sử dụng trong JSP
+        request.setAttribute("shippingUnits", shippingUnits);
+
+        // Forward request và response tới trang checkout.jsp
+        RequestDispatcher dispatcher = request.getRequestDispatcher("checkout.jsp");
+        dispatcher.forward(request, response);
     }
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.

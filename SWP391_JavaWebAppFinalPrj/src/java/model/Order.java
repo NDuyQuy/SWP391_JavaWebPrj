@@ -29,6 +29,24 @@ public class Order {
     public Order() {
     }
 
+    public Order(int orderId, User user, int shippingUnitId, String voucherCode, double total, String shippingMethod, String paymentMethod, String status, String receiverName, String receiverPhone, String receiverAddress, LocalDate orderDate, String cancelReason) {
+        this.orderId = orderId;
+        this.user = user;
+        this.shippingUnitId = shippingUnitId;
+        this.voucherCode = voucherCode;
+        this.total = total;
+        this.shippingMethod = shippingMethod;
+        this.paymentMethod = paymentMethod;
+        this.status = status;
+        this.receiverName = receiverName;
+        this.receiverPhone = receiverPhone;
+        this.receiverAddress = receiverAddress;
+        this.orderDate = orderDate;
+        this.cancelReason = cancelReason;
+    }
+    
+    
+
     public Order(int orderId, User user, int shippingUnitId, String voucherCode, double total, String shippingMethod, String paymentMethod, String status, String receiverName, String receiverPhone, String receiverAddress, LocalDate orderDate, String cancelReason, List<OrderDetail> orderDetails) {
         this.orderId = orderId;
         this.user = user;

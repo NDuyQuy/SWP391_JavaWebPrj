@@ -5,6 +5,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -24,8 +25,26 @@ public class Voucher {
     private int min;
     private String description;
     private int count;
+    private int shop_id;
     ArrayList<Integer> ListApplied = new ArrayList<Integer>();
 
+    public Voucher() {
+    }
+
+    public Voucher(int id, String code, int discount, Timestamp start, Timestamp end, int type, int min, String description, int count, int shop_id) {
+        this.id = id;
+        this.code = code;
+        this.discount = discount;
+        setDiscount_type();
+        this.start = start;
+        this.end = end;
+        this.type = type;
+        this.min = min;
+        this.description = description;
+        this.count = count;
+        this.shop_id = shop_id;
+    }
+    
     public Voucher(int id, String code, int discount, Timestamp start, Timestamp end, int type, int min, String description, int count) {
         this.id = id;
         this.code = code;
@@ -49,8 +68,21 @@ public class Voucher {
         this.description = description;
         this.count = count;
     }
-    
-    
+
+    public Voucher(int voucherId, String code, int discountAmount, LocalDateTime startDateTime, LocalDateTime expireDateTime, int type, int minRequire, String description, int useCount, int shopId) {
+        this.id = id;
+        this.code = code;
+        this.discount = discount;
+        setDiscount_type();
+        this.start = start;
+        this.end = end;
+        this.type = type;
+        this.min = min;
+        this.description = description;
+        this.count = count;
+        this.shop_id = shop_id;
+    }
+
 
     public int getId() {
         return id;
@@ -159,6 +191,19 @@ public class Voucher {
 
     public void setDiscount_unit(String discount_unit) {
         this.discount_unit = discount_unit;
+    }
+
+    public int getShop_id() {
+        return shop_id;
+    }
+
+    public void setShop_id(int shop_id) {
+        this.shop_id = shop_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Voucher{" + "id=" + id + ", code=" + code + ", discount=" + discount + ", discount_type=" + discount_type + ", discount_unit=" + discount_unit + ", start=" + start + ", end=" + end + ", type=" + type + ", min=" + min + ", description=" + description + ", count=" + count + ", shop_id=" + shop_id + '}';
     }
     
     

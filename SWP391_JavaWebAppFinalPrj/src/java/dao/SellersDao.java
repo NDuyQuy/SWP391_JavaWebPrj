@@ -292,4 +292,26 @@ public class SellersDao {
         //editShopCategory(1, 4, "POLO T-Shirt");
         //deleteShopCategory(4);
     }
+    
+    public static int getShopIdByShopName(String shopName) {
+    int shopId = -1; // Giả sử không tìm thấy, trả về -1
+    PreparedStatement ptm = null;
+    ResultSet rs = null;
+
+    try (Connection con = SQLConnection.getConnection()) {
+        String query = "SELECT [shop_id] FROM [shops] WHERE [shop_name] = ?";
+        ptm = con.prepareStatement(query);
+        ptm.setString(1, shopName);
+        rs = ptm.executeQuery();
+
+        if (rs.next()) {
+            shopId = rs.getInt("shop_id");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return shopId;
+}
+
 }
