@@ -7,23 +7,23 @@ import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import model.Category;
+import model.MainCategory;
 /**
  *
  * @author DELL
  */
 public class AdminDAO {
     //MAIN CATEGORY RELATED SQL STATEMENT
-    private static final String GETCATEGORYLIST = "SELECT [id], [name] FROM [dbo].[maincategory]";
+    private static final String GETCATEGORYLIST = "SELECT [id], [name], [description] FROM [dbo].[maincategory]";
 
-    private static final String ADDCATEGORYLIST = "INSERT INTO [dbo].[maincategory]([name]) values (?)";
+    private static final String ADDCATEGORYLIST = "INSERT INTO [dbo].[maincategory]([name], [description]) values (?, ?)";
     
-    private static final String UPDATECATEGORY = "UPDATE [maincategory] SET [name] = ? WHERE  [id] = ?";
+    private static final String UPDATECATEGORY = "UPDATE [maincategory] SET [name] = ?, [description] = ? WHERE  [id] = ?";
     
     private static final String DELETECATEGORY = "DELETE [maincategory] WHERE [id] = ?";
     
-    public static ArrayList<Category> Get_Category_List() {
-        ArrayList<Category> result = new ArrayList<Category>();
+    public static ArrayList<MainCategory> Get_Category_List() {
+        ArrayList<MainCategory> result = new ArrayList<MainCategory>();
         PreparedStatement ptm = null;
         ResultSet rs = null;
         try (Connection con = SQLConnection.getConnection()) {
@@ -32,7 +32,8 @@ public class AdminDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String Name = rs.getString("name").trim();
-                Category c = new Category(id, Name);
+                String Description = rs.getString("description").trim();
+                MainCategory c = new MainCategory(id, Name, Description);
                 result.add(c);                
             }
             SQLConnection.closeConnection(con);
@@ -42,22 +43,24 @@ public class AdminDAO {
         return result;
     }
     
-    public static void Add_Main_Category(String Name) {
+    public static void Add_Main_Category(String Name, String Description) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(ADDCATEGORYLIST);
             ptm.setString(1, Name);
+            ptm.setString(2, Description);
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static void Update_Main_Category(int id, String Name) {
+    public static void Update_Main_Category(MainCategory category) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(UPDATECATEGORY);
-            ptm.setString(1, Name);
-            ptm.setInt(2, id);
+            ptm.setString(1, category.getName());
+            ptm.setString(2, category.getDescription());
+            ptm.setInt(3, category.getId());
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,8 +76,4 @@ public class AdminDAO {
             e.printStackTrace();
         }
     }
-    public static void main(String[] args) {
-        Update_Main_Category(3, "houseware");
-    }
-    
 }

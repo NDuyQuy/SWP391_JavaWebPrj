@@ -6,7 +6,7 @@
 package controller;
 
 import dao.CartDao;
-import dao.CartDaoImpl;
+import dao.CartDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -37,7 +37,7 @@ public class AddToCart extends HttpServlet {
         int productId = Integer.parseInt(request.getParameter("id"));
         HttpSession session = request.getSession();
          User user = (User) session.getAttribute("user");
-        CartDao cartDao = new CartDaoImpl();
+        CartDao cartDao = new CartDao();
         cartDao.addToCart(user.getUserID(), productId, 1);
         
         response.sendRedirect("Home");

@@ -6,7 +6,7 @@
 package controller;
 
 import dao.CartDao;
-import dao.CartDaoImpl;
+import dao.CartDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -78,11 +78,11 @@ public class UpdateQuantityServlet extends HttpServlet {
             quantityChange = 1;
         } else if ("remove".equals(action)) {
 
-            CartDao cartDao = new CartDaoImpl();
+            CartDao cartDao = new CartDao();
             cartDao.removeFromCart(userId, productId);
         }
 
-        CartDao cartDao = new CartDaoImpl();
+        CartDao cartDao = new CartDao();
         cartDao.updateCartItemQuantity(userId, productId, quantityChange);
         response.sendRedirect("Cart");
         

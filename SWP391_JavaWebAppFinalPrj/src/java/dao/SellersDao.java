@@ -49,7 +49,7 @@ public class SellersDao {
     private static final String UPDATESTATUS = "UPDATE [custom_order] SET [status]=? WHERE [id]=?";
     private static final String UPDATECOMPLETEPROCESS = "INSERT INTO [custom_order_detail]([customorder_id],[process_img],[process_video],[description]) VALUES(?,?,?,?)";
     
-    public static Shop getShopById(int id){
+    public static Shops getShopById(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
         User user = UsersDao.getUserById(id);
@@ -69,7 +69,7 @@ public class SellersDao {
         }
         return shop;
     }
-    public static ArrayList<Shop> getAllShop(){
+    public static ArrayList<Shops> getAllShop(){
         PreparedStatement ptm = null;
         ResultSet rs = null;
         Shop s = null;

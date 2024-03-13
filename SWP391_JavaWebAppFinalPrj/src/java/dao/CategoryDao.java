@@ -16,9 +16,9 @@ import model.*;
  */
 public class CategoryDao {
     private static final String GETMAINCATEGORYBYID = "Select [name] FROM [maincategory] WHERE [id]=?";
-    private static final String GETSHOPCATEGORYBYID = "Select [maincate_id],[shop_id],[name] FROM [shopcategory] WHERE [id]=?";
-    private static final String GETSHOPCATEGORYBYSHOP = "Select [maincate_id],[id],[name] from [shopcategory] where [shop_id]=?";
-    private static final String GETMAINCATEGORIES = "Select [id],[name] from [maincategory]";
+    private static final String GETSHOPCATEGORYBYID = "Select [id],[maincate_id],[shop_id],[name],[description] FROM [shopcategory] WHERE [id]=?";
+    private static final String GETSHOPCATEGORYBYSHOP = "Select [id],[maincate_id],[shop_id],[name],[description] from [shopcategory] where [shop_id]=?";
+    private static final String GETMAINCATEGORIES = "Select [id],[name],[description] from [maincategory]";
     
     public static MainCategory getMainCategoryById(int id){
         PreparedStatement ptm = null;
@@ -29,7 +29,9 @@ public class CategoryDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                mc = new MainCategory(id, rs.getString("name").trim());
+                String name = rs.getString("name").trim();
+                String description = rs.getString("description").trim();
+                mc = new MainCategory(id, name, description);
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -47,9 +49,10 @@ public class CategoryDao {
             rs = ptm.executeQuery();
             if(rs.next()){
                 MainCategory mc = getMainCategoryById(rs.getInt("maincate_id"));
-                Shop shop = SellersDao.getShopById(rs.getInt("shop_id"));
-                String shopName = rs.getString("name").trim();
-                sc = new ShopCategory(id, mc, shop, shopName);
+                Shops shop = SellersDao.getShopById(rs.getInt("shop_id"));
+                String shopcategory = rs.getString("name").trim();
+                String description = rs.getString("description").trim();
+                sc = new ShopCategory(id, shop.getShop_id(), shopcategory, description, mc, shop);
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -67,8 +70,9 @@ public class CategoryDao {
             rs = ptm.executeQuery();
             while(rs.next()){
                 mc = new MainCategory();
-                mc.setCategoryID(rs.getInt("id"));
-                mc.setCategoryName(rs.getString("name"));
+                mc.setId(rs.getInt("id"));
+                mc.setName(rs.getString("name"));
+                mc.setDescription(rs.getString("description"));
                 cate_list.add(mc);
             }
         }catch(Exception ex){
@@ -88,10 +92,12 @@ public class CategoryDao {
             rs = ptm.executeQuery();
             while (rs.next()) {
                 sc = new ShopCategory();
-                sc.setmCate(getMainCategoryById(rs.getInt("maincate_id")));
-                sc.setCategoryID(rs.getInt("id"));
+                sc.setMaincategory(getMainCategoryById(rs.getInt("maincate_id")));
+                sc.setId(rs.getInt("id"));
                 sc.setShop(SellersDao.getShopById(s_id));
-                sc.setCategoryName(rs.getString("name"));
+                sc.setName(rs.getString("name"));
+                sc.setDescription(rs.getString("description"));
+                sc.setShop_id(s_id);
                 cate_shop.add(sc);
             }
         } catch(Exception ex){

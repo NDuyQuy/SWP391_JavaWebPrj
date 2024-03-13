@@ -6,7 +6,7 @@
 package controller;
 
 import dao.CartDao;
-import dao.CartDaoImpl;
+import dao.CartDao;
 import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -72,7 +72,7 @@ public class Cart extends HttpServlet {
 
       
         if (user != null) {
-            List<CartItem> cartItems = CartDaoImpl.getCartItems(user.getUserID());
+            List<CartItem> cartItems = CartDao.getCartItems(user.getUserID());
             Map<String, List<CartItem>> groupedByShop = cartItems.stream()
                 .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShopName()));
             request.setAttribute("cartItems", cartItems);

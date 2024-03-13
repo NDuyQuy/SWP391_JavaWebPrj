@@ -61,6 +61,16 @@ public class Ratings {
         this.comment = comment;
     }
 
+    public OrderDetail getOrderdetail() {
+        return orderdetail;
+    }
+
+    public void setOrderdetail(OrderDetail orderdetail) {
+        this.orderdetail = orderdetail;
+    }
+    
+    
+
     @Override
     public String toString() {
         return "Ratings{" + "id=" + id + ", orderdetail_id=" + orderdetail_id + ", time_stamp=" + time_stamp + ", score=" + score + ", comment=" + comment + '}';

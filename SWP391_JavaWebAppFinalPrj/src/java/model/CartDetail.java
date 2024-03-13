@@ -13,11 +13,22 @@ public class CartDetail {
     private int user_id;
     private int product_id;
     private int quantity;
-    public Users user;
+    public Shops shop;
     public Products product;
 
     public CartDetail() {
     }
+
+    public CartDetail(int user_id, int product_id, int quantity, Shops shop, Products product) {
+        this.user_id = user_id;
+        this.product_id = product_id;
+        this.quantity = quantity;
+        this.shop = shop;
+        this.product = product;
+    }
+    
+    
+    
 
     public int getUser_id() {
         return user_id;
@@ -42,6 +53,24 @@ public class CartDetail {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public Shops getShop() {
+        return shop;
+    }
+
+    public void setShop(Shops shop) {
+        this.shop = shop;
+    }
+
+    public Products getProduct() {
+        return product;
+    }
+
+    public void setProduct(Products product) {
+        this.product = product;
+    }
+    
+    
 
     @Override
     public String toString() {
