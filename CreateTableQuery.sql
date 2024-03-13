@@ -1,10 +1,10 @@
 use master
-go;
+go
 
-CREATE DATABASE SWP391_FinalPrjDB;
+CREATE DATABASE SWP391_FinalPrjDB 
 
 use SWP391_FinalPrjDB
-go;
+go
 
 create table users
 (
@@ -14,18 +14,20 @@ create table users
 	[email] nvarchar(100),
 	[phone]  nvarchar(15),
 	[fullname]  nvarchar(50),
-	[address]  nvarchar(100),
+	[address]  nvarchar(200),
 	[role] tinyint default 1,
-	[img]  n nvarchar(50) default '/img/users/default/1.jsp'
+	[img]  nvarchar(50) default '/img/users/default/1.jsp'
 )
 create table shops
 (
 	[shop_id] int primary key references[users]([id]),
-	[CCCD]  nvarchar(10), 
+	[CCCD]  nvarchar(12), 
 	[shop_description] text default 'Welcome to my shop',
 	[shop_img]  nvarchar(50),
 	[shop_reported_count] tinyint default 0,
-	[shop_name]  nvarchar(50)
+	[shop_name]  nvarchar(50),
+	[ban_time] datetime,
+	[ban_status] bit default 0
 )
 
 create table [messages]
@@ -162,6 +164,14 @@ CREATE TABLE [custom_order_detail]
 CREATE TABLE [used_voucher_detail]
 (
 	[voucher_id] int foreign key references [vouchers]([voucher_id]),
-	[order_id] int foreign key references[order]([order_id])
+	[order_id] int foreign key references[orders]([order_id])
+)
 
+create table report_detail
+(
+	[id] int IDENTITY(1,1) primary key ,
+	[shop_id] int foreign key references [shops]([shop_id]),
+	[reporter_id] int foreign key references[users]([id]),
+	[created_date] datetime default GETDATE(),
+	[reason] text
 )
