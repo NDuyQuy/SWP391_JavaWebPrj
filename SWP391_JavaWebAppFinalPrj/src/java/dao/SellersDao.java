@@ -15,7 +15,7 @@ import model.*;
  */
 public class SellersDao {
    
-    private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_name] FROM [shops] WHERE [shop_id]=?";
+    private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_reported_count],[shop_name] FROM [shops] WHERE [shop_id]=?";
     private static final String GETALLSHOP = "Select [shop_id],[shop_name],[shop_img],[shop_description] from [shops]";
     
     //SHOP CATEGORY RELATED SQL STATEMENT 
@@ -54,6 +54,7 @@ public class SellersDao {
                 shop.setUser(user);
                 shop.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
                 shop.setShopImg(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
+                shop.setReportedAccount(rs.getInt("shop_reported_count"));
                 shop.setShopName(rs.getString("shop_name").trim());
             }
         }catch (Exception e) {

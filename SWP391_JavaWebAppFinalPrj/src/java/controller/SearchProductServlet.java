@@ -39,9 +39,9 @@ public class SearchProductServlet extends HttpServlet {
             String category = request.getParameter("cate");
             ArrayList<Product> all_product = ProductDao.getAllProducts();
             ArrayList<Product> result = new ArrayList<>();
-            if (keyword == null && category != null) {
+            if (category != null) {
                 result = ProductDao.getProductsByMainCateId(Integer.parseInt(category));
-            } else if (keyword.equals("") && category == null) {
+            } else if (keyword == null || keyword.equals("")) {
                 result = all_product;
             } else if (keyword != null) {
 

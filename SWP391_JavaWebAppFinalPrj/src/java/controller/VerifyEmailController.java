@@ -66,7 +66,7 @@ public class VerifyEmailController extends HttpServlet {
             request.getRequestDispatcher("/forgotpassword.jsp").forward(request, response);
             return;
         }
-        request.getSession().setAttribute("user",u);
+        request.getSession().setAttribute("user_acc",u);
         String verifyCode = SendEmail.generateRandomNumber(6);
         //PURPOSE 1 = FORGOT EMAIL CONTENT, 2 = REGISTER EMAIL CONTENT
         SendEmail.sendEmail(email, verifyCode, (byte)1);

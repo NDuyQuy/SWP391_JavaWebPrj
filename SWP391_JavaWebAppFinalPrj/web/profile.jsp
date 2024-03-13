@@ -4,6 +4,7 @@
     Author     : hien
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="user" scope="session" class="model.User" />
 <!DOCTYPE html>
@@ -121,26 +122,26 @@
                                         <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg">
                                     </div>
                                     <div class="widget-posts-body">
-                                        <h6 class="widget-posts-title">${user.fullname}</h6>
-                                    <div class="widget-posts-meta"><a href="profile.jsp"><i class="fa fa-edit"></i> Edit profile</a></div>
+                                        <h6 class="widget-posts-title"><b>${user.userName}</b></h6>
+                                    <div class="widget-posts-meta"><a href="profile.jsp"><i class="fa fa-edit"></i> Sửa hồ sơ</a></div>
                                 </div>
                             </div>
                             <ul class="cat pt-20">
                                 <li>
                                     <dl>
-                                        <dt><a href="#">My account</a></dt>
-                                        <dd style="margin-top:10px;"><a href="profile.jsp">Profile</a></dd>
-                                        <dd><a href="changepassword.jsp">Change password</a></dd>
+                                        <dt><a href="#">Tài khoản của tôi</a></dt>
+                                        <dd style="margin-top:10px;"><a href="profile.jsp">Hồ sơ</a></dd>
+                                        <dd><a href="changepassword.jsp">Thay đổi mật khẩu</a></dd>
                                     </dl>
                                 </li>
                                 <li>
                                     <dl>
-                                        <dt><a href="#">My Orders</a></dt>
+                                        <dt><a href="#">Đơn mua</a></dt>
                                     </dl>
                                 </li>
                                 <li>
                                     <dl>
-                                        <dt><a href="#">My Vouchers</a></dt>
+                                        <dt><a href="#">Kho Voucher</a></dt>
                                     </dl>
                                 </li>
                             </ul>
@@ -150,10 +151,10 @@
                         <div class="widget">
                             <div class="top" style="border-bottom: 1px solid #eaedff">
                                 <div class="widget-title" >
-                                    My profile
+                                    Hồ sơ của tôi
                                 </div>
                                 <div style="margin-bottom: 15px;">
-                                    Manage and protect your account
+                                    Quản lý và bảo mật tài khoản
                                 </div>
                             </div>
                             <div class="bottom">
@@ -161,31 +162,35 @@
                                     <form action="profile" method="post">
                                         <table width="550" height="400">
                                             <tr>
-                                                <td>Username</td>
-                                                <td name="uname" value="${user.userName}">${user.userName}</td>
+                                                <td>Tên đăng nhập</td>
+                                                <td name="uname">${user.userName}</td>
                                             </tr>
                                             <tr>
-                                                <td>Name</td>
+                                                <td>Họ tên</td>
                                                 <td><input type="text" size="40" name="fname" value="${user.fullname}"></td>
                                             </tr>
-                                            <c:if test="user.role == 2">
+                                            <c:if test="${user.role} == 2">
                                                 <tr>
-                                                <td>CCCD/CMND</td>
-                                                <td> 
-                                                    <span name="email">${user.identityCard}</span></td>
-                                            </tr>
+                                                    <td>CCCD/CMND</td>
+                                                    <td>
+                                                        <c:set var="ic" value="${user.identityCard}"/>
+                                                        <span name="cccd">${fn:substring(ic, 0, fn:length(ic) - 4).replaceAll("[\\W\\w]","*")}${ic.subSequence(fn:length(ic)-4,fn:length(ic))}</span></td>
+                                                </tr>
                                             </c:if>
                                             <tr>
                                                 <td>Email</td>
                                                 <td> 
-                                                    <span name="email">${user.email}<a href="#" style="text-decoration: underline;">Change</a></span></td>
+                                                    <c:set var="mail" value="${user.email}"/>
+                                                    <c:set var="bf_mail" value="${fn:substringBefore(mail, '@')}"/>
+                                                    <span name="email">${mail.subSequence(0,2)}${fn:substring(bf_mail, 2, fn:length(bf_mail)).replaceAll("[\\W\\w]","*")}@${fn:substringAfter(mail,'@')}</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Phone number</td>
-                                                <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}" placeholder="xxxxxxxxxx"></td>
+                                                <td>Số điện thoại</td>
+                                                <c:set var="phone" value="${user.phone}"/>
+                                                <td><input type="tel" size="40" name="phone" value="${phone}" pattern="[0-9]{10}" placeholder="xxxxxxxxxx"></td>
                                             </tr>
                                             <tr>
-                                                <td>Address</td>
+                                                <td>Địa chỉ</td>
                                                 <td><input type="text" size="40" name="addr" value="${user.address}"></td>
                                             </tr>
                                             <tr>
@@ -199,7 +204,7 @@
                                                             padding: 0 20px;
                                                             min-width: 70px;
                                                             max-width: 220px;
-                                                            border: 0;">Save</button></td>
+                                                            border: 0;">Lưu</button></td>
                                             </tr>
                                         </table>
                                     </form>
@@ -219,7 +224,7 @@
                                                 margin-bottom: 1.25rem;
                                                 min-width: 70px;
                                                 max-width: 220px;
-                                                border: 1px solid rgba(0,0,0,.8);" type="button">Select image</button>
+                                                border: 1px solid rgba(0,0,0,.8);" type="button">Chọn ảnh</button>
 
                                         <div class="des" style="color: rgba(0,0,0,.8);">
                                             <div>

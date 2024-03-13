@@ -59,7 +59,7 @@ public class ChangeForgotedPassController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String pass = request.getParameter("pass");
-        User u = (User)request.getSession().getAttribute("user");
+        User u = (User)request.getSession().getAttribute("user_acc");
         UsersDao.changePassword(u.getUserName(), pass);
         request.getRequestDispatcher("/login.jsp").forward(request, response);
     }

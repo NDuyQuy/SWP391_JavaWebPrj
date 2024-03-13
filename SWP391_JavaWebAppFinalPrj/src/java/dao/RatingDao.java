@@ -7,6 +7,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import model.Ratings;
@@ -20,6 +21,7 @@ public class RatingDao {
     private static final String GETRATINGSBYPRODUCT = "Select r.id,r.orderdetail_id,[time_stamp],[score],[comment] from ratings r\n"
             + "join orderdetail o\n"
             + "on r.orderdetail_id = o.id and o.productID = ?";
+    private static final String NEWRATING = "Insert into [ratings]([orderdetail_id],[time_stamp],[score],[comment] values(?,?,?,?)";
 
     public static ArrayList<Ratings> getRatingsByProduct(int p_id) {
         PreparedStatement ptm = null;
@@ -43,5 +45,19 @@ public class RatingDao {
             ex.printStackTrace();
         }
         return rating_by_product;
+    }
+    
+    public static void newRating(int ordde_id, LocalDate date, int score, String comment){
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(NEWRATING);
+            ptm.setInt(1, ordde_id);
+            ptm.setTimestamp(2, Timestamp.valueOf(date.toString()));
+            ptm.setInt(3, score);
+            ptm.setString(4, comment);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 }

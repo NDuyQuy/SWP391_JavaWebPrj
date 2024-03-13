@@ -34,7 +34,7 @@ public class RegisterController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -66,13 +66,14 @@ public class RegisterController extends HttpServlet {
         String password = request.getParameter("password");
         User u = new User(username, password, email);
         //SEND EMAIL, SOTRE USERS DATA,VERIFY CODE DATA
+
         request.getSession().setAttribute("registration", u);
         String verifyCode = SendEmail.generateRandomNumber(6);
-        long expiredTime = System.currentTimeMillis() + 30*60*1000;
+        long expiredTime = System.currentTimeMillis() + 30 * 60 * 1000;
         VerifyCode code = new VerifyCode(verifyCode, expiredTime);
         request.getSession().setAttribute("verify", code);
-        SendEmail.sendEmail(email, verifyCode, (byte)2);
-        
+        SendEmail.sendEmail(email, verifyCode, (byte) 2);
+
         request.getRequestDispatcher(url).forward(request, response);
     }
 
@@ -92,7 +93,7 @@ public class RegisterController extends HttpServlet {
             VerifyCode realCode = (VerifyCode) request.getSession().getAttribute("verify");
             String verifyCode = request.getParameter("verify");
             long currentTime = System.currentTimeMillis();
-            if(verifyCode.equals(realCode.getCode())&&currentTime<=realCode.getExpiredTime()){
+            if (verifyCode.equals(realCode.getCode()) && currentTime <= realCode.getExpiredTime()) {
                 User u = (User) request.getSession().getAttribute("registration");
                 UsersDao.register(u.getUserName(), u.getPassword(), u.getEmail());
             }

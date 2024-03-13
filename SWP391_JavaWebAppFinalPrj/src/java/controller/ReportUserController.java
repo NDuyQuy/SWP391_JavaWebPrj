@@ -4,25 +4,32 @@
  */
 package controller;
 
-import dao.CategoryDao;
-import dao.ProductDao;
+import controller.seller.ProductController;
+import dao.ReportDao;
+import dao.UsersDao;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.UUID;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.MainCategory;
-import model.Product;
-import model.ShopCategory;
+import javax.servlet.http.Part;
+import model.ReportedUser;
+import model.User;
 
 /**
  *
  * @author hien
  */
-public class Home extends HttpServlet {
+@MultipartConfig
+public class ReportUserController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +48,10 @@ public class Home extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Home</title>");            
+            out.println("<title>Servlet ReportUserController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Home at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ReportUserController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,17 +69,7 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ArrayList<MainCategory> mcate_list = CategoryDao.getMainCategories();
-        ArrayList<ShopCategory> scate_list = CategoryDao.getShopCategories();
-        ArrayList<Product> all_product = ProductDao.getAllProducts();
-        ProductDao pd = new ProductDao();
-        HttpSession session = request.getSession();
-        session.setAttribute("main_category_list", mcate_list);
-        session.setAttribute("shop_category_list", scate_list);
-        session.setAttribute("product_list", all_product);
-        session.setAttribute("productDao", pd);
-        session.removeAttribute("kw");
-        request.getRequestDispatcher("home.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -86,7 +83,25 @@ public class Home extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            request.setCharacterEncoding("utf-8");
+            User reporter = (User) request.getSession().getAttribute("user");
+            User reported_user = UsersDao.getUserById(Integer.parseInt(request.getParameter("id")));
+            String reason = request.getParameter("reason");
+            String detail = request.getParameter("detail");
+
+            Timestamp date = new Timestamp(System.currentTimeMillis());
+
+            ReportedUser ru = new ReportedUser(reported_user.getUserID(), reported_user.getUserName(), reporter.getUserName(), date, reason, detail);
+
+            ReportDao.newReport(reported_user.getUserID(), reporter.getUserID(), date, reason, detail);
+
+            request.setAttribute("success", 1);
+            request.getRequestDispatcher("shop_detail.jsp").forward(request, response);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     /**
@@ -99,4 +114,5 @@ public class Home extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    
 }

@@ -214,7 +214,7 @@ public class ProductDao {
     
     public static void main(String[] args) {
         ArrayList<Product> pr = getAllProducts();
-        Product p = getProductById(2);
-        System.out.println(p.getDescription());
+        ArrayList<Product> p = getProductsByShop(23);
+        System.out.println(p.get(0).getProductName());
     }
 }

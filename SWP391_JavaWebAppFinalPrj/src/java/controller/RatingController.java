@@ -4,25 +4,20 @@
  */
 package controller;
 
-import dao.CategoryDao;
-import dao.ProductDao;
+import dao.RatingDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.MainCategory;
-import model.Product;
-import model.ShopCategory;
 
 /**
  *
  * @author hien
  */
-public class Home extends HttpServlet {
+public class RatingController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +36,10 @@ public class Home extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Home</title>");            
+            out.println("<title>Servlet RatingController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Home at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet RatingController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,17 +57,7 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ArrayList<MainCategory> mcate_list = CategoryDao.getMainCategories();
-        ArrayList<ShopCategory> scate_list = CategoryDao.getShopCategories();
-        ArrayList<Product> all_product = ProductDao.getAllProducts();
-        ProductDao pd = new ProductDao();
-        HttpSession session = request.getSession();
-        session.setAttribute("main_category_list", mcate_list);
-        session.setAttribute("shop_category_list", scate_list);
-        session.setAttribute("product_list", all_product);
-        session.setAttribute("productDao", pd);
-        session.removeAttribute("kw");
-        request.getRequestDispatcher("home.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -86,7 +71,18 @@ public class Home extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try{
+            request.setCharacterEncoding("utf-8");
+            int rate = Integer.parseInt(request.getParameter("rate"));
+            String comment = request.getParameter("comment");
+            int orderdetail_id = Integer.parseInt(request.getParameter("id"));
+            
+            RatingDao.newRating(orderdetail_id, LocalDate.now(), rate, comment);
+            request.getRequestDispatcher("product_detail.jsp").forward(request, response);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
     }
 
     /**

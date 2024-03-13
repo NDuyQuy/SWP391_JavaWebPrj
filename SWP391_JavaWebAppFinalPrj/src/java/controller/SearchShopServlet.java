@@ -39,14 +39,17 @@ public class SearchShopServlet extends HttpServlet {
             ProductDao productdao = new ProductDao();
             ArrayList<Shop> shoplist = SellersDao.getAllShop();
             ArrayList<Shop> result = new ArrayList<>();
-            for (Shop s : shoplist) {
-                if (keyword.length() > 2) {
-                    if (s.getShopName().toLowerCase().contains(keyword.toLowerCase())) {
-                        result.add(s);
+            if (keyword == null || keyword.equals("")) {
+                result = shoplist;
+            } else {
+                for (Shop s : shoplist) {
+                    if (keyword.length() > 2) {
+                        if (s.getShopName().toLowerCase().contains(keyword.toLowerCase())) {
+                            result.add(s);
+                        }
                     }
                 }
             }
-
             int page, perPage = 10;
             int numPage = result.size() % perPage == 0 ? result.size() / perPage : result.size() / perPage + 1;
             String pageid = request.getParameter("page");
