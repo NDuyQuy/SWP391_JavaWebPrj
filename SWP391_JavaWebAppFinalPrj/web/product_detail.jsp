@@ -195,7 +195,7 @@
                                                     <b style="font-size: 18px;"> ${sessionScope.aver_rate/100}</b> - (${sessionScope.ratings_by_product.size()} đánh giá)
                                                 </div>
                                             </li>
-                                            <li><span>Stock:</span> <span class="in-stock">Còn lại ${pr.quantity}</span></li>
+                                            <li><span>Stock:</span> <span class="in-stock">${pr.quantity} có sẵn</span></li>
                                         </ul>
                                     </div>
 
@@ -241,22 +241,22 @@
                                                     Chưa có đánh giá nào.
                                                 </c:if>
                                                 <c:forEach var="rating" items="${sessionScope.ratings_by_product}">
-                                                <div class="product-commnets-list mb-25 pb-15">
-                                                    <div class="pro-comments-img">
-                                                        <img src="${rating.user.userImg}" alt="" style="border-radius: 50%;">
-                                                    </div>
-                                                    <div class="pro-commnets-text">
-                                                        <h4>${rating.user.userName} -
-                                                            <span>${rating.timeStamp}</span>
-                                                        </h4>
-                                                        <div class="pro-rating">
-                                                            <span class="stars-container stars-${rating.score}">★★★★★ </span>
+                                                    <div class="product-commnets-list mb-25 pb-15">
+                                                        <div class="pro-comments-img">
+                                                            <img src="${rating.user.userImg}" alt="" style="border-radius: 50%;">
                                                         </div>
-                                                        <p>${rating.comment}</p>
+                                                        <div class="pro-commnets-text">
+                                                            <h4>${rating.user.userName} -
+                                                                <span>${rating.timeStamp}</span>
+                                                            </h4>
+                                                            <div class="pro-rating">
+                                                                <span class="stars-container stars-${rating.score}">★★★★★ </span>
+                                                            </div>
+                                                            <p>${rating.comment}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
                                                 </c:forEach>
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -389,6 +389,18 @@
                             <h3 class="text-center" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px; margin-bottom: 40px">Đánh giá sản phẩm này</h3>
                             <form method="post" action="Rating?id=${pr.productID}">
                                 <table width="550" height="300">
+                                    <tr>
+                                        <td>
+                                            <div class="side-pro-img">
+                                                <a href="ProductDetail?product=${orderdetail.product.productID}"><img src="${orderdetail.product.productImg}" alt=""></a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="side-pro-content">
+                                                <h5><a href="ProductDetail?product=${orderdetail.product.productID}">${orderdetail.product.productName}</a></h5>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td style="width: 100%"><span style="color:red;">*</span>Đánh giá</td>
                                         <td>

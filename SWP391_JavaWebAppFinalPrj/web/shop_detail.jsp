@@ -272,9 +272,9 @@
                 </div>
             </div>
             <c:if test="${requestScope.success != null}">
-            <div id="success" class="popup-message" data-animation="jump" data-animation-speed="fast">
-                <h4>Gửi thành công!</h4>
-            </div>
+                <div id="success" class="popup-message" data-animation="jump" data-animation-speed="fast">
+                    <h4>Gửi thành công!</h4>
+                </div>
             </c:if>
         </main>
         <jsp:include page="footer.jsp"></jsp:include>
