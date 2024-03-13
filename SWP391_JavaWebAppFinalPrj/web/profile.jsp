@@ -5,7 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:useBean id="user" scope="session" class="model.User" />
+<jsp:useBean id="user" scope="session" class="model.Users" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -162,7 +162,7 @@
                                         <table width="550" height="400">
                                             <tr>
                                                 <td>Username</td>
-                                                <td name="uname" value="${user.userName}">${user.userName}</td>
+                                                <td name="uname" value="${user.userName}">${user.username}</td>
                                             </tr>
                                             <tr>
                                                 <td>Name</td>

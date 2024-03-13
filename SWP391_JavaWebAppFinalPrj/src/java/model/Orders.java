@@ -137,12 +137,12 @@ public class Orders {
         this.type = type;
     }
 
-    public Shops getShop() {
-        return shop;
+    public int getShop_id() {
+        return shop_id;
     }
 
-    public void setShop(Shops shop) {
-        this.shop = shop;
+    public void setShop_id(int shop_id) {
+        this.shop_id = shop_id;
     }
 
     @Override

@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.User;
+import model.*;
 
 /**
  *
@@ -60,7 +60,7 @@ public class CustomOrderController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "/seller/custom_order_management.jsp";
-        int user_id = ((User) request.getSession().getAttribute("user")).getUserID();
+        int user_id = ((Users) request.getSession().getAttribute("user")).getId();
         int order_id = Integer.parseInt(request.getParameter("o_id"));
         
     }

@@ -129,7 +129,7 @@
                                         <c:if test="${sessionScope.user != null}">
                                             <a href="profile.jsp"><i class="far fa-user"></i></a>
                                             <ul class="submenu">
-                                                <li  style="font-size: 16px;">Chào <b>${sessionScope.user.userName}</b>!</li>
+                                                <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
                                                 <li>
                                                     <a href="profile.jsp">Tài khoản</a>
                                                 </li>

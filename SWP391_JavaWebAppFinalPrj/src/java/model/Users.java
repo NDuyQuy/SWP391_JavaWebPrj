@@ -23,6 +23,27 @@ public class Users {
     public Users() {
     }
 
+    public Users(int id, String username, String email, String phone, String fullname, String address, int role) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.fullname = fullname;
+        this.address = address;
+        this.role = role;
+    }
+
+    public Users(int id, String username, String email, String phone, String fullname, String address, int role, String img) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.fullname = fullname;
+        this.address = address;
+        this.role = role;
+        this.img = img;
+    }
+    
     public int getId() {
         return id;
     }

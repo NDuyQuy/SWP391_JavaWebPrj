@@ -27,6 +27,26 @@ public class Products {
     public Products() {
     }
 
+    public Products(int product_id, int shop_id, int scate_id, String description, Date createdDate, String name, int money, String img, int quantity) {
+        this.product_id = product_id;
+        this.shop_id = shop_id;
+        this.scate_id = scate_id;
+        this.description = description;
+        this.createdDate = createdDate;
+        this.name = name;
+        this.money = money;
+        this.img = img;
+        this.quantity = quantity;
+    }
+
+    public Products(int scate_id, String description, String name, int money, int quantity) {
+        this.scate_id = scate_id;
+        this.description = description;
+        this.name = name;
+        this.money = money;
+        this.quantity = quantity;
+    }
+    
     public int getProduct_id() {
         return product_id;
     }

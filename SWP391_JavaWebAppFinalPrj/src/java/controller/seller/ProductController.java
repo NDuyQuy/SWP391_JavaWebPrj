@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import model.User;
+import model.*;
 import javax.servlet.annotation.MultipartConfig;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +26,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import model.MainCategory;
-import model.Product;
 /**
  *
  * @author ASUS
@@ -73,7 +72,7 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "/seller/shopproduct_management.jsp";
-        int id = ((User) request.getSession().getAttribute("user")).getUserID();
+        int id = ((Users) request.getSession().getAttribute("user")).getId();
         String open = request.getParameter("open");
         if (open != null) {
             if (open.equals("create")) {
@@ -82,9 +81,9 @@ public class ProductController extends HttpServlet {
             }else{
                 url = "seller/edit_product.jsp";
                 int product_id = Integer.parseInt(request.getParameter("p_id"));
-                Product p = SellersDao.getProductById(product_id);
-                String realPath = request.getServletContext().getRealPath(p.getProductImg());
-                String prefix = p.getProductImg().replaceAll("\\\\", "/");
+                Products p = SellersDao.getProductById(product_id);
+                String realPath = request.getServletContext().getRealPath(p.getImg());
+                String prefix = p.getImg().replaceAll("\\\\", "/");
                 request.getSession().setAttribute("product", p);
                 
                 Stream<Path> ps = Files.list(Paths.get(realPath));
@@ -117,7 +116,7 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "/seller/shopproduct_management.jsp";
-        int user_id = ((User) request.getSession().getAttribute("user")).getUserID();
+        int user_id = ((Users) request.getSession().getAttribute("user")).getId();
         String act = request.getParameter("act");
         String uploadPath = null ;
         String serverContextPath = request.getServletContext().getRealPath("");
@@ -126,8 +125,8 @@ public class ProductController extends HttpServlet {
                 case "create":
                     uploadPath = getNewDir(user_id);
                     uploadImageFile(request, uploadPath);
-                    Product p = getProduct(request);
-                    p.setProductImg(uploadPath.replace(serverContextPath, ""));
+                    Products p = getProduct(request);
+                    p.setImg(uploadPath.replace(serverContextPath, ""));
                     SellersDao.createShopProducts(p, user_id);
                     break;
                 case "edit":
@@ -199,15 +198,15 @@ public class ProductController extends HttpServlet {
         }
         return "";
     }
-    private Product getProduct(HttpServletRequest request) throws ServletException{
-        Product product = null;
+    private Products getProduct(HttpServletRequest request) throws ServletException{
+        Products product = null;
         try {
             String name = request.getParameter("productName");
             String description = request.getParameter("description");
-            int mcate_id = Integer.parseInt(request.getParameter("category"));
+            int scate_id = Integer.parseInt(request.getParameter("category"));
             int price = Integer.parseInt(request.getParameter("price"));
             int quantity = Integer.parseInt(request.getParameter("quantity"));
-            product = new Product(new MainCategory(mcate_id, ""), description, name, price, quantity);
+            product = new Products(scate_id, description, name, price, quantity);
         } catch (Exception e) {
         }
         return product;

@@ -16,6 +16,11 @@ public class MainCategory {
     public MainCategory() {
     }
 
+    public MainCategory(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

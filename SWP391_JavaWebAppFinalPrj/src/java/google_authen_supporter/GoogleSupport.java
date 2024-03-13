@@ -2,9 +2,7 @@ package google_authen_supporter;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import dao.UsersDao;
 import java.io.IOException;
-import model.User;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;

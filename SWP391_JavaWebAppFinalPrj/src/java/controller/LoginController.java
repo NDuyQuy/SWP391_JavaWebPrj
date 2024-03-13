@@ -78,11 +78,10 @@ public class LoginController extends HttpServlet {
             password = request.getParameter("password");
             if(UsersDao.checkLogin(username, password)){
                 // get full name, address, phone, email and role of the user
-                User u = UsersDao.getUserInfoByUsername(username);
-                //set username for users
-                u.setUserName(username);
+                Users u = UsersDao.getUserInfoByUsername(username);
+                // set password
                 u.setPassword(password);
-                //add user into session scope
+                // add user into session scope
                 request.getSession().setAttribute("user", u);
                 int role = u.getRole();
                 //switch the url 

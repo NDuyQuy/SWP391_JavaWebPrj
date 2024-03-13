@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import dao.*;
 import javax.servlet.http.HttpSession;
-import model.User;
+import model.*;
 /**
  *
  * @author ASUS
@@ -58,7 +58,7 @@ public class ShopCategoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id = ((User)request.getSession().getAttribute("user")).getUserID();
+        int id = ((Users)request.getSession().getAttribute("user")).getId();
         //Get the list of shop categories
         request.getSession().setAttribute("shop_categories", SellersDao.getShopCategories(id));
         request.getRequestDispatcher("/seller/shopcategory_management.jsp").forward(request, response);
@@ -80,7 +80,7 @@ public class ShopCategoryController extends HttpServlet {
         HttpSession session = request.getSession();
         //get the action string
         String action = request.getParameter("act");
-        int shop_id = ((User)request.getSession().getAttribute("user")).getUserID();
+        int shop_id = ((Users)request.getSession().getAttribute("user")).getId();
         if(action.equals("addnew")){
             int mc_id = Integer.parseInt(request.getParameter("a_mc"));
             String name = request.getParameter("categoryName");
