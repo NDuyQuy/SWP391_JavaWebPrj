@@ -61,7 +61,7 @@ public class ShopCategoryController extends HttpServlet {
         int id = ((User)request.getSession().getAttribute("user")).getUserID();
         //Get the list of shop categories
         request.getSession().setAttribute("shop_categories", SellersDao.getShopCategories(id));
-        request.getRequestDispatcher("/shopcategory_management.jsp").forward(request, response);
+        request.getRequestDispatcher("/seller/shopcategory_management.jsp").forward(request, response);
     }
 
     /**

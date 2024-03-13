@@ -1,161 +1,167 @@
+use master
+go;
+
+CREATE DATABASE SWP391_FinalPrjDB;
+
 use SWP391_FinalPrjDB
-go
-alter table users
-add [img] char(50);
+go;
+
+create table users
+(
+	[id] int primary key identity(1,1),
+	[usernname]  nvarchar(50),
+	[password]  nvarchar(50),
+	[email] nvarchar(100),
+	[phone]  nvarchar(15),
+	[fullname]  nvarchar(50),
+	[address]  nvarchar(100),
+	[role] tinyint default 1,
+	[img]  n nvarchar(50) default '/img/users/default/1.jsp'
+)
 create table shops
 (
-	[shop_id] int primary key references[users]([id]) not null,
-	[CCCD] char not null, 
-	[shop_description] text,
-	[shop_img] char(50),
-	[shop_reported_count] tinyint default 0 not null,
-	[shop_name] char(50)
+	[shop_id] int primary key references[users]([id]),
+	[CCCD]  nvarchar(10), 
+	[shop_description] text default 'Welcome to my shop',
+	[shop_img]  nvarchar(50),
+	[shop_reported_count] tinyint default 0,
+	[shop_name]  nvarchar(50)
 )
 
 create table [messages]
 (
 	[message_id] int primary key identity (1,1) ,
-	[shop_id] int foreign key references [shops]([shop_id]) not null,
-	[customer_id] int foreign key references [users]([id]) not null,
-	[time_stamp] date not null,
-	[message_status] tinyint not null,
-	[content] char(255) not null
+	[shop_id] int foreign key references [shops]([shop_id]) ,
+	[customer_id] int foreign key references [users]([id]) ,
+	[time_stamp] datetime default GETDATE(),
+	[message_status] tinyint ,
+	[content] text
 )
 create table maincategory
 (
 	[id] int primary key identity(1,1),
-	[name] char(50) not null
+	[name]  nvarchar(50),
+	[description] text
 )
 create table shopcategory
 (
 	[id] int primary key identity(1,1),
 	[maincate_id] int foreign key references [maincategory]([id]),
 	[shop_id] int foreign key references [shops]([shop_id]),
-	[name] char(50) not null
+	[name]  nvarchar(50),
+	[description] text
 )
 create table products
 (
 	[product_id] int primary key identity(1,1),
-	[shop_id] int foreign key references[shops]([shop_id]) not null,
-	[mcate_id] int foreign key references[maincategory]([id]) not null,
+	[shop_id] int foreign key references[shops]([shop_id]) ,
 	[scate_id] int foreign key references[shopcategory]([id]) ,
-	[description] text NOT NULL,
-	[created_date] date NOT NULL,
-	[name] char(50) NOT NULL,
-	[price] int NOT NULL,
-	[img] text NOT NULL,
-	[quantity] int NOT NULL
+	[description] text ,
+	[created_date] datetime default GETDATE() ,
+	[name]  nvarchar(50) ,
+	[price] money ,
+	[img] text ,
+	[quantity] int 
 )
 create table cartdetail
 (
-	[user_id] int foreign key references [users]([id]) not null,
-	[product_id] int foreign key references [products]([product_id]) not null,
-	[quantity] int NOT NULL
+	[user_id] int foreign key references [users]([id]) ,
+	[product_id] int foreign key references [products]([product_id]) ,
+	[quantity] int 
 )
+-- NOTE: !! VOUCHER TYPE 
+--  TYPE = 0 -> VOUCHER APPLY FOR WHOLE SYSTEM
+--  TYPE = 1 -> VOUCHER APPLY FOR A WHOLE SHOP
+--	TYPE = 2 -> VOUCHER APPLY FOR A PRODUCT
 create table vouchers
 (
 	[voucher_id] int identity(1,1) primary key,
-	[code] char(10) not null unique,
-	[discount_amount] int not null,
-	[start_date] date not null,
-	[expire_date] date not null,
-	[type] int not null,
-	[min_require] int not null,
-	[description] text NOT NULL,
+	[code]  nvarchar(10),
+	[discount_amount] int,
+	[start_date] date ,
+	[expire_date] date ,
+	[type] tinyint default 0,
+	[min_require] int ,
+	[description] text ,
 	[shop_id] int foreign key references [shops]([shop_id]),
 	[product_id] int foreign key references [products]([product_id]),
-	[use_count] int NOT NULL
+	[use_count] int 
 )
 create table shippingunits
 (
-	[id] int identity(1,1) primary key,
-	[name] char(50) NOT NULL ,
-	[cost] money NOT NULL ,
-	[support_shippingmethod] tinyint NOT NULL 
+	[id] int primary key references [users]([id]),
+	[name]  nvarchar(50) ,
+	[cost] money,
+	[support_shippingmethod] tinyint 
 )
+-- NORMAL ORDER -> TYPE = 1 
+-- CUSTOM ORDER -> TYPE = 2
 create table orders
 (
 	[order_id] int identity(1,1) primary key,
 	[customer_id] int foreign key references [users]([id]),
+	[shop_id] int foreign key references [shops]([shop_id]),
+	[shipping_cost] money ,
+	[total] money ,
+	[payment_method]  nvarchar(50) ,
+	[status]  nvarchar(50) ,
+	[receiver_name]  nvarchar(50) ,
+	[receiver_phone]  nvarchar(50),
+	[receiver_adress]  nvarchar(255) ,
+	[shipping_method]  nvarchar(50),
 	[shippingunit_id] int foreign key references [shippingunits]([id]),
-	[voucher_code] int NOT NULL,
-	[total] int NOT NULL,
-	[shipping_method] char(50) NOT NULL,
-	[payment_method] char(50) NOT NULL,
-	[status] char(50) NOT NULL,
-	[receiver_name] char(50) NOT NULL,
-	[receiver_phone] char(50) NOT NULL,
-	[receiver_adress] char(255) NOT NULL,
-	[order_date] date NOT NULL,
-	[cancel_reason] char(50)
+	[order_date] datetime default GETDATE(),
+	[type] tinyint default 1
 )
 create table orderdetail
 (
+	[id] int identity(1,1) primary key,
 	[orderID] int foreign key references [orders]([order_id]),
 	[productID] int foreign key references [products]([product_id]),
-	[quantity] int NOT NULL
+	[quantity] int,
+	[cancel_reason]  nvarchar(50)
 )
-create table shopvoucherdetail
-(
-	[voucher_id] int foreign key references [vouchers]([voucher_id]),
-	[shop_id] int foreign key references [shops]([shop_id])
-)
-create table productvoucherdetail
-(
-	[voucher_id] int foreign key references [vouchers]([voucher_id]),
-	[product_id] int foreign key references [products]([product_id])
-)
-alter table orderdetail
-add id int identity(1,1) primary key;
+--waiting repose admin => status = 0
+-- admin accept -> status = 1
+-- seller accept -> status = 2
+-- seller | admin unaccept -> status = 3
+
 create table refundsnreturns
 (
 	[id] int primary key identity(1,1),
 	[orderdetail_id] int references [orderdetail](id),
-	[reason] text NOT NULL,
-	[status] tinyint NOT NULL
+	[reason] text,
+	[status] tinyint,
+	[img]   nvarchar(50)
 )
 create table ratings
 (
 	[id] int primary key identity(1,1),
 	[orderdetail_id] int references [orderdetail](id),
-	[time_stamp] date not null,
-	[score] int NOT NULL,
-	comment text NOT NULL
+	[time_stamp] datetime default GETDATE(),
+	[score] int ,
+	[comment] text 
 )
--- Alter table orders, add 3 more rows for custom order purpose
-alter table [orders]
-add [type] int, [deadline] date, [cproductName] varchar(50)
--- Update new table CustomOrderDetail
-create table [CustomOrderDetail]
-(
-	[order_id] int foreign key references [orders]([order_id]),
-	[process_img] varchar(50) not null,
-	[process_video] varchar(50) not null,
-	[description] varchar(50) not null
-)
-alter table [CustomOrderDetail]
-add [created_date] date default GETDATE()
-
 -- Re add the custom order table
 CREATE TABLE [custom_order]
 (
-	[id] int primary key,
-	[product_name] varchar(50) not null,
-	[expected_complete_date] date not null,
-	[seller_id] int foreign key references shops(shop_id),
-	[customer_id] int foreign key references users(id),
-	[status] varchar(50) not null,
-	[created_date] date default GETDATE(),
-	[cost] money not null,
+	[id] int primary key references [orders]([order_id]),
+	[product_name]  nvarchar(50) ,
+	[expected_complete_date] date
 )
-
-
-
+-- description the current process of making the product
 CREATE TABLE [custom_order_detail] 
 (
 	[customorder_id] int foreign key references [custom_order]([id]),
-	[process_img] varchar(50) not null,
-	[process_video] varchar(50),
-	[description] varchar(50),
+	[process_img] nvarchar(50) ,
+	[process_video] nvarchar(50),
+	[description]  nvarchar(50),
 	[created_date] date default GETDATE()
+)
+
+CREATE TABLE [used_voucher_detail]
+(
+	[voucher_id] int foreign key references [vouchers]([voucher_id]),
+	[order_id] int foreign key references[order]([order_id])
+
 )

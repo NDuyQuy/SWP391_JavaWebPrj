@@ -1,12 +1,31 @@
-insert into [shops](shop_id,CCCD)
-values (23,123456)
+insert into [users]([username],[password],[email]) VALUES
+('A','1','A@gmail.com'),
+('B','1','B@gmail.com'),
+('C','1','C@gmail.com'),
+('D','1','D@gmail.com'),
+('E','1','E@gmail.com'),
+('F','1','F@gmail.com'),
+('G','1','G@gmail.com'),
+('H','1','H@gmail.com'),
+('J','1','J@gmail.com'),
+('K','1','K@gmail.com'),
+('L','1','L@gmail.com'),
+('M','1','M@gmail.com'),
+('N','1','N@gmail.com'),
+('O','1','O@gmail.com'),
+('P','1','P@gmail.com')
+insert into [shops](shop_id,CCCD,shop_name) values 
+(1,'123456','A Shop'),
+(2,'654321','B Shop')
+
 insert into [maincategory]([name])values
-('fashion'),('technology')
+('fashion'),('technology'),('houseware')
+
 insert into [products]([shop_id], [mcate_id],[description],[created_date],[name],[price],[img],[quantity]) values
 (23,1,'T-shirt',GETDATE(),'T-shirt for boy',10000,'no img',10),
 (23,1,'T-shirt',GETDATE(),'T-shirt for girl',10000,'no img',10),
-(23,1,'Dress',GETDATE(),'Dres for boy',10000,'no img',10),
-(23,1,'Dress',GETDATE(),'Dres for girl',10000,'no img',10)
+(23,1,'Dress',GETDATE(),'Dress for boy',10000,'no img',10),
+(23,1,'Dress',GETDATE(),'Dress for girl',10000,'no img',10)
 insert into [shippingunits]([name],[support_shippingmethod],[cost])
 values ('QuyNguyen Express',1,100000),
 ('NguyenDuy Express',3,100000)
