@@ -35,6 +35,7 @@ public class RatingDao {
             while (rs.next()) {
                 r = new Ratings();
                 r.setId(rs.getInt(1));
+                r.setUser(OrderDao.getOrderAndDetailsById(OrderDetailDao.getOrderDetailById(rs.getInt(2))).getUser());
                 r.setOrderDetail(OrderDetailDao.getOrderDetailById(rs.getInt(2)));
                 r.setTimeStamp(LocalDate.parse(rs.getDate(3).toString()));
                 r.setScore(rs.getInt(4));

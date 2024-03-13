@@ -67,6 +67,7 @@ public class ProductDetailController extends HttpServlet {
             Product pro = ProductDao.getProductById(Integer.parseInt(product));
             ArrayList<Product> product_by_shop = ProductDao.getProductsByShop(pro.getShop().getUser().getUserID());
             ArrayList<Ratings> ratings_by_product = RatingDao.getRatingsByProduct(pro.getProductID());
+            
             float aver_score = 0;
             int aver_rate = 0;
             if (ratings_by_product != null && !ratings_by_product.isEmpty()) {

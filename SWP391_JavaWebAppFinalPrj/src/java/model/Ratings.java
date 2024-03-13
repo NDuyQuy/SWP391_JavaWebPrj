@@ -12,6 +12,7 @@ import java.time.LocalDate;
  */
 public class Ratings {
     private int id;
+    private User user;
     private OrderDetail orderDetail;
     private LocalDate timeStamp;
     private int score;
@@ -20,12 +21,29 @@ public class Ratings {
     public Ratings() {
     }
 
+    public Ratings(int id, User user, OrderDetail orderDetail, LocalDate timeStamp, int score, String comment) {
+        this.id = id;
+        this.user = user;
+        this.orderDetail = orderDetail;
+        this.timeStamp = timeStamp;
+        this.score = score;
+        this.comment = comment;
+    }
+
     public Ratings(int id, OrderDetail orderDetail, LocalDate timeStamp, int score, String comment) {
         this.id = id;
         this.orderDetail = orderDetail;
         this.timeStamp = timeStamp;
         this.score = score;
         this.comment = comment;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void setId(int id) {

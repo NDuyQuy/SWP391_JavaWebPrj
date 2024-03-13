@@ -225,7 +225,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="profile-tab6" data-toggle="tab" href="#profile6" role="tab" aria-controls="profile"
-                                           aria-selected="false">Reviews (2)</a>
+                                           aria-selected="false">Reviews (${sessionScope.ratings_by_product.size()})</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent2">
@@ -237,46 +237,26 @@
                                     <div class="tab-pane fade" id="profile6" role="tabpanel" aria-labelledby="profile-tab6">
                                         <div class="desc-text review-text">
                                             <div class="product-commnets">
+                                                <c:if test="${sessionScope.ratings_by_product == null || empty sessionScope.ratings_by_product}">
+                                                    Chưa có đánh giá nào.
+                                                </c:if>
+                                                <c:forEach var="rating" items="${sessionScope.ratings_by_product}">
                                                 <div class="product-commnets-list mb-25 pb-15">
                                                     <div class="pro-comments-img">
-                                                        <img src="img/product/comments/01.png" alt="" style="border-radius: 50%;">
+                                                        <img src="${rating.user.userImg}" alt="" style="border-radius: 50%;">
                                                     </div>
                                                     <div class="pro-commnets-text">
-                                                        <h4>Roger West -
-                                                            <span>June 5, 2018</span>
+                                                        <h4>${rating.user.userName} -
+                                                            <span>${rating.timeStamp}</span>
                                                         </h4>
                                                         <div class="pro-rating">
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
+                                                            <span class="stars-container stars-${rating.score}">★★★★★ </span>
                                                         </div>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                                            incididunt
-                                                            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                            exercitation.</p>
+                                                        <p>${rating.comment}</p>
                                                     </div>
                                                 </div>
-                                                <div class="product-commnets-list mb-25 pb-15">
-                                                    <div class="pro-comments-img">
-                                                        <img src="img/product/comments/02.png" alt="" style="border-radius: 50%;">
-                                                    </div>
-                                                    <div class="pro-commnets-text">
-                                                        <h4>Roger West -
-                                                            <span>June 5, 2018</span>
-                                                        </h4>
-                                                        <div class="pro-rating">
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                        </div>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                                            incididunt
-                                                            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                            exercitation.</p>
-                                                    </div>
-                                                </div>
+                                                </c:forEach>
+                                                
                                             </div>
                                         </div>
                                     </div>
