@@ -44,17 +44,21 @@ VALUES
   (2, 10, 'Decorative Pillows Set', 'Decorative Pillows Set', 39999, 18),
   (2, 11, 'Abstract Wall Art', 'Abstract Wall Art', 69999, 12);
 
-insert into [shippingunits]([name],[support_shippingmethod],[cost])
-values ('QuyNguyen Express',1,100000),
-('NguyenDuy Express',3,100000)
--- Done 13:54 27/02/2024
---Demo insert data into shops which shop_id AKA user's id dont exist
---insert into [shops](shop_id,CCCD) values (30,123456)
---Demo finished 22:55 27/02/2024. Result Insert statement conflict.
----
---1/03/2024 01:04 data insertion 
+--14/03/24 7:17
+insert into [shippingunits]([id],[name],[support_shippingmethod],[cost])
+values (1,'QuyNguyen Express',1,10000),
+(2,'NguyenDuy Express',3,20000)
 INSERT INTO [vouchers]([code],[discount_amount],[start_date],[expire_date],[type],[min_require],[description],[shop_id],[use_count]) VALUES
 ('Mv01',1,'01-03-2024','02-03-2024',2,1,'no description',1,10),
 ('Mv02',1,'01-03-2024','02-03-2024',2,1,'no description',1,10),
 ('MvI',1,'01-03-2024','02-03-2024',2,1,'no description',2,10),
 ('MvII',1,'01-03-2024','02-03-2024',2,1,'no description',2,10)
+
+-- CHANGE THE DEFAULT VALUE OF ROW IMG IN USERS
+ALTER TABLE [users]
+DROP CONSTRAINT DF__users__img__38996AB5; 
+
+ALTER TABLE [users]
+ADD CONSTRAINT DF__users__img__38996AB5 DEFAULT 'img/users/default/1.jpg' FOR [img];
+
+--

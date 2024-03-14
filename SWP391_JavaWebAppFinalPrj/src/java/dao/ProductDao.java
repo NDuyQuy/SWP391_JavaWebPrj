@@ -49,6 +49,7 @@ public class ProductDao {
                 String product_img = rs.getString("img");
                 int quantity = rs.getInt("quantity");
                 p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                
                 results.add(p);
             }
         }catch(Exception ex){
@@ -219,10 +220,8 @@ public class ProductDao {
     }
     
     public static void main(String[] args) {
-        /*ArrayList<Products> pr = getProductsByPrice(10000,50000);
-        pr.forEach(System.out::println);*/
+        ArrayList<Products> pr = getProductsByMainCateId(1);
+        pr.forEach(System.out::println);
         
-        Products p = getHighestPrice();
-        System.out.println(p);
     }
 }

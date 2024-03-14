@@ -10,4 +10,8 @@ package dao;
  * @author ASUS
  */
 public class OrdersDao {
+    private static final String GETORDERSBYSHOP = "SELECT * FROM [orders] WHERE [shop_id]=?";
+    private static final String CREATECUSTOMORDER = "INSERT INTO [orders]([shop_id],[total],[status],[type]) VALUES (?,?,'wait for customer accept',?)";
+    private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='', ";
+    
 }

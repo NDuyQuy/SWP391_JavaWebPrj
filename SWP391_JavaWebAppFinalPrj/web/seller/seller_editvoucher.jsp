@@ -34,7 +34,7 @@
         <link rel="stylesheet" href="../css/responsive.css">
     </head>
     <body>
-        <jsp:useBean id="voucher" scope="request" class="model.Voucher" />
+        <jsp:useBean id="voucher" scope="request" class="model.Vouchers" />
         <!-- header start -->
         <jsp:include page="../header.jsp"></jsp:include>
             <!-- header end -->
@@ -69,7 +69,7 @@
                                 <div class="input-group-append">
                                     <span class="input-group-text">đến</span>
                                 </div>
-                                <input type="date" class="form-control" id="expire_date" name="expire_date" value="${voucher.expired_date}" required>
+                                <input type="date" class="form-control" id="expire_date" name="expire_date" value="${voucher.expire_date}" required>
                             </div>
                         </div>
                     </div>

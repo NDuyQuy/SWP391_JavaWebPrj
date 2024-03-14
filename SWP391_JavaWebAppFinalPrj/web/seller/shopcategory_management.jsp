@@ -68,9 +68,9 @@
                             <tbody> 
                                 <c:forEach var="s" items="${shop_categories}">
                                     <tr> 
-                                        <td><c:out value="${s.categoryID}"/></td>
-                                        <td><c:out value="${s.categoryName}"/></td>
-                                        <td><c:out value="${s.mCate.categoryName}"/></td>
+                                        <td><c:out value="${s.id}"/></td>
+                                        <td><c:out value="${s.name}"/></td>
+                                        <td><c:out value="${s.maincategory.name}"/></td>
                                         <td>
                                             
                                             <a class="edit-link" style="color: blue; cursor: pointer;" onclick="openPopup('edit',${s.categoryID})">Edit</a>
@@ -107,7 +107,7 @@
                                             <input type="text" id="addCategoryName" name="categoryName" class="form-control" required> <br>
                                             <select name="a_mc"class="form-control">
                                                 <c:forEach var="s" items="${sessionScope.main_category_list}">
-                                                    <option value="${s.categoryID}">${s.categoryName}</option>
+                                                    <option value="${s.id}">${s.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -140,7 +140,7 @@
                                             <!-- Hidden input to store the category ID -->
                                             <select name="e_mc"class="form-control">
                                                 <c:forEach var="s" items="${sessionScope.main_category_list}">
-                                                    <option value="${s.categoryID}">${s.categoryName}</option>
+                                                    <option value="${s.id}">${s.name}</option>
                                                 </c:forEach>
                                             </select>
                                             <input type="hidden" name="categoryId" id="editCategoryId">

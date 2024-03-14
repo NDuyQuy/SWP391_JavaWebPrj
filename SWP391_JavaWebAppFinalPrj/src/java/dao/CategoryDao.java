@@ -46,10 +46,11 @@ public class CategoryDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                MainCategory mc = getMainCategoryById(rs.getInt("maincate_id"));
-                Shop shop = SellersDao.getShopById(rs.getInt("shop_id"));
+                sc = new ShopCategory();
+                sc.maincategory = getMainCategoryById(rs.getInt("maincate_id"));
+                sc.shop = SellersDao.getShopById(rs.getInt("shop_id"));
                 String shopName = rs.getString("name").trim();
-                sc = new ShopCategory(id, mc, shop, shopName);
+                sc.setName(shopName);
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -66,9 +67,7 @@ public class CategoryDao {
             ptm = con.prepareStatement(GETMAINCATEGORIES);
             rs = ptm.executeQuery();
             while(rs.next()){
-                mc = new MainCategory();
-                mc.setCategoryID(rs.getInt("id"));
-                mc.setCategoryName(rs.getString("name"));
+                mc = new MainCategory(rs.getInt("id"), rs.getString("name"));
                 cate_list.add(mc);
             }
         }catch(Exception ex){
@@ -88,10 +87,10 @@ public class CategoryDao {
             rs = ptm.executeQuery();
             while (rs.next()) {
                 sc = new ShopCategory();
-                sc.setmCate(getMainCategoryById(rs.getInt("maincate_id")));
-                sc.setCategoryID(rs.getInt("id"));
-                sc.setShop(SellersDao.getShopById(s_id));
-                sc.setCategoryName(rs.getString("name"));
+                sc.maincategory = getMainCategoryById(rs.getInt("maincate_id"));
+                sc.setId(rs.getInt("id"));
+                sc.shop = (SellersDao.getShopById(s_id));
+                sc.setName(rs.getString("name"));
                 cate_shop.add(sc);
             }
         } catch(Exception ex){
@@ -99,4 +98,5 @@ public class CategoryDao {
         }
         return cate_shop;
     }
+    
 }

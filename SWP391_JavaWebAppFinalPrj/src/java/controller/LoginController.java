@@ -91,6 +91,8 @@ public class LoginController extends HttpServlet {
                         break;
                     case 2:
                         url = "/home.jsp";
+                        Shops shop = SellersDao.getShopById(u.getId());
+                        request.getSession().setAttribute("shop", shop);
                         break;
                     case 3:
                         request.getSession().setAttribute("Admin", 1);

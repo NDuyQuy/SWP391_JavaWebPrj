@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.User;
+import model.Users;
 
 /**
  *
@@ -73,11 +73,11 @@ public class ChangePassController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            User u = (User) request.getSession().getAttribute("user");
+            Users u = (Users) request.getSession().getAttribute("user");
             String oldPass = request.getParameter("oldpass");
             String newPass = request.getParameter("newpass");
             if(oldPass.equals(u.getPassword())){
-                UsersDao.changePassword(u.getUserName(),newPass);
+                UsersDao.changePassword(u.getUsername(),newPass);
                 u.setPassword(newPass);
                 request.getSession().setAttribute("user",u);
                 request.getRequestDispatcher("/profile.jsp").forward(request, response);

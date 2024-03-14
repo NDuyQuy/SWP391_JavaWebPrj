@@ -16,7 +16,7 @@ import model.*;
  */
 public class SellersDao {
    
-    private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_name] FROM [shops] WHERE [shop_id]=?";
+    private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_name],[CCCD] FROM [shops] WHERE [shop_id]=?";
     private static final String GETALLSHOP = "Select [shop_id],[shop_name],[shop_img],[shop_description] from [shops]";
     
     //SHOP CATEGORY RELATED SQL STATEMENT 
@@ -64,6 +64,7 @@ public class SellersDao {
                 shop.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
                 shop.setShop_img(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
                 shop.setShop_name(rs.getString("shop_name").trim());
+                shop.setCCCD(rs.getString("CCCD"));
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -172,8 +173,8 @@ public class SellersDao {
                 int type = rs.getInt("type");
                 int min_require = rs.getInt("min_require");
                 int use_count = rs.getInt("use_count");
-                Date start_date = new Date(rs.getTimestamp("start_date").getTime());
-                Date expire_date = new Date(rs.getTimestamp("expire_date").getTime());
+                Date start_date = rs.getDate("start_date");
+                Date expire_date = rs.getDate("expire_date");
                 String description = rs.getString("description");
                 voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
                 vouchers.add(voucher);
@@ -348,5 +349,8 @@ public class SellersDao {
         }
     }
     public static void main(String[] args) {
+        //getShopVouchers(1).forEach(System.out::println);
+        getShopProducts(1).forEach(System.out::println);
     }
+    
 }

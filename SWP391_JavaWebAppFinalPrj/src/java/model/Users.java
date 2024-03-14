@@ -43,6 +43,12 @@ public class Users {
         this.role = role;
         this.img = img;
     }
+
+    public Users(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
     
     public int getId() {
         return id;

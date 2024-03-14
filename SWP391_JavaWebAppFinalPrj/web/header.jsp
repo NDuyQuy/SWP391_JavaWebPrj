@@ -12,7 +12,7 @@
         <title>JSP Page</title>
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" media="all">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,900,900i&amp;subset=vietnamese" rel="stylesheet">
-        	<!-- CSS here -->
+        <!-- CSS here -->
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/owl.carousel.min.css">
         <link rel="stylesheet" href="css/animate.min.css">
@@ -86,17 +86,25 @@
                                     <c:if test="${user.role != 2}">
                                         <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
                                         </c:if>
-                                        <c:if test="${user.role == 2}">
-                                        <li><a href="SellerCentre"><i class="flaticon-employee"></i> Shop của tôi</a></li>
+                                        <c:if test="${user.role eq 2}">
+                                        <li><a href="#"> Xem tổng quan phân tích bán hàng</a></li>
+                                        <li><a href="productcontroller"> Quản lý sản phẩm của shop</a></li>
+                                        <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
+                                        <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
+                                        <li><a href="#"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
+                                        <li><a href="#"> Chat</a></li>
                                         </c:if>
                                 </ul>
-                                <h4>Danh mục</h4>
-                                <ul>
-                                    <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                        <li><a href="SearchProduct?cate=${cate.categoryID}"><i class="flaticon-shopping-cart-1"></i> ${cate.categoryName}</a></li>
-                                    </c:forEach>
-                                    
-                                </ul>
+                                <c:if test="${user.role != 2}">
+
+                                    <h4>Danh mục</h4>
+                                    <ul>
+                                        <c:forEach var="cate" items="${sessionScope.main_category_list}">
+                                            <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
+                                            </c:forEach>
+                                    </ul>
+                                </c:if>
+
                             </div>
                         </div>
                         <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
@@ -118,10 +126,10 @@
                                             <ul class="submenu">
 
                                                 <li >
-                                                    <a href="login.jsp">Login</a>
+                                                    <a href="login.jsp">Đăng nhập</a>
                                                 </li>
                                                 <li>
-                                                    <a href="register.jsp">Register</a>
+                                                    <a href="register.jsp">Đăng ký</a>
                                                 </li>
 
                                             </ul>
@@ -131,7 +139,7 @@
                                             <ul class="submenu">
                                                 <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
                                                 <li>
-                                                    <a href="profile.jsp">Tài khoản</a>
+                                                    <a href="profile.jsp">Hồ sơ của bạn</a>
                                                 </li>
                                                 <li>
                                                     <a href="#">Đơn mua</a>
@@ -175,57 +183,6 @@
                                                         </a>
                                                     </div>
                                                 </li>
-                                                <li>
-                                                    <div class="cart-img">
-                                                        <a href="product-details.html">
-                                                            <img src="img/product/pro2.jpg" alt="" />
-                                                        </a>
-                                                    </div>
-                                                    <div class="cart-content">
-                                                        <h3>
-                                                            <a href="product-details.html">Black & White Shoes</a>
-                                                        </h3>
-                                                        <div class="cart-price">
-                                                            <span class="new">$ 229.9</span>
-                                                            <span>
-                                                                <del>$239.9</del>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="del-icon">
-                                                        <a href="#">
-                                                            <i class="far fa-trash-alt"></i>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="cart-img">
-                                                        <a href="product-details.html">
-                                                            <img src="img/product/pro3.jpg" alt="" />
-                                                        </a>
-                                                    </div>
-                                                    <div class="cart-content">
-                                                        <h3>
-                                                            <a href="product-details.html">Black & White Shoes</a>
-                                                        </h3>
-                                                        <div class="cart-price">
-                                                            <span class="new">$ 229.9</span>
-                                                            <span>
-                                                                <del>$239.9</del>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="del-icon">
-                                                        <a href="#">
-                                                            <i class="far fa-trash-alt"></i>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="checkout-link">
-                                                        <a href="Cart">Xem giỏ hàng</a>
-                                                    </div>
-                                                </li>
                                             </ul>
                                         </c:if>
                                     </li>
@@ -257,8 +214,8 @@
                     this.parentNode.appendChild(a);
                     s = document.createElement("DIV");
                     s.innerHTML = "<span style='color: #fe4536;'> Tìm shop '" + val + "'<span>";
-                    s.addEventListener("click", function (e){
-                       location.href = "SearchShop?kw=" + val;
+                    s.addEventListener("click", function (e) {
+                        location.href = "SearchShop?kw=" + val;
                     });
                     a.appendChild(s);
                     for (i = 0; i < arr.length; i++) {
@@ -320,7 +277,7 @@
                     closeAllLists(e.target);
                 });
             }
-            
+
             autocomplete(document.getElementById("myInput"), suggestion);
         </script>
     </body>

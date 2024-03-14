@@ -69,6 +69,7 @@ public class VoucherController extends HttpServlet {
                 Vouchers v = SellersDao.getVoucherByID(voucher_id);
                 request.setAttribute("voucher", v);
             } catch (Exception e) {
+                
             }
         } else {
             //Get the list of shop categories

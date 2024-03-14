@@ -94,7 +94,7 @@
                             <tbody> 
                             <c:forEach var="s" items="${sessionScope.vouchers}">
                                 <tr> 
-                                    <td><c:out value="${s.code}"/></td>
+                                    <td><c:out value="${s.code.substring(2)}"/></td>
                                     <td><c:out value="${(s.type eq 2) ? 'Voucher sản phẩm' : 'Voucher toàn shop'}"/></td>
                                     <td><c:out value="${s.discount_amount}"/></td>
                                     <td><c:out value="${s.min_require}"/></td>

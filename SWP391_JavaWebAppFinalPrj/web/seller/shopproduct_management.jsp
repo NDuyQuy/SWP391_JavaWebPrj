@@ -58,7 +58,7 @@
                                 <th>Tên sản phẩm</th>
                                 <th>Kho hàng</th>
                                 <th>Giá</th>
-                                <th>Thuộc ngành</th>
+                                <th>Danh mục</th>
                                 <th>Sửa</th>
                                 <th>Xóa</th>
                             </tr>
@@ -66,15 +66,15 @@
                         <tbody> 
                         <c:forEach var="p" items="${sessionScope.products}">
                             <tr> 
-                                <td><c:out value="${p.productName}"/></td>
+                                <td><c:out value="${p.name}"/></td>
                                 <td><c:out value="${p.quantity}"/></td>
-                                <td><c:out value="${p.price.intValue()}"/></td>
-                                <td><c:out value="${p.mCate.categoryName}"/></td>
+                                <td><c:out value="${p.money}"/></td>
+                                <td><c:out value="${p.shopCategory.name}"/></td>
                                 <td>
-                                    <a href="productcontroller?open=edit&p_id=${p.productID}" class="edit-link" style="color: blue; cursor: pointer;">Edit</a>
+                                    <a href="productcontroller?open=edit&p_id=${p.product_id}" class="edit-link" style="color: blue; cursor: pointer;">Edit</a>
                                 </td>
                                 <td>
-                                    <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${p.productID})">Delete</a>
+                                    <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${p.product_id})">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>
