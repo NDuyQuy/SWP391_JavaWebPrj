@@ -4,7 +4,7 @@
     Author     : ASUS
 --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -64,7 +64,8 @@
                             </tr>
                         </thead>
                         <tbody> 
-                        <c:forEach var="p" items="${sessionScope.products}">
+                        <jsp:useBean id="products" scope="session" class="java.util.ArrayList" />
+                        <c:forEach var="p" items="${products}">
                             <tr> 
                                 <td><c:out value="${p.name}"/></td>
                                 <td><c:out value="${p.quantity}"/></td>
@@ -80,13 +81,12 @@
                         </c:forEach>
                     </tbody> 
                 </table>
-                </div>
             </section>
         </main>              
         <!-- footer start -->
         <jsp:include page="../footer.jsp"></jsp:include>
         <!-- footer end -->
-        
+
         <!-- Delete Category Popup-->
         <div class="modal" id="deletePopup">
             <div class="modal-dialog">
@@ -112,7 +112,7 @@
         <!-- JavaScript to control the display of the popups -->
         <script>
             function openPopup(type, productID) {
-                if (type === 'delete'){
+                if (type === 'delete') {
                     document.getElementById('productID').setAttribute('value', productID);
                 }
                 $('#' + type + 'Popup').modal('show');

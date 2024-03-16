@@ -71,7 +71,7 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String url = "/seller/shopproduct_management.jsp";
+        String url = "seller/shopproduct_management.jsp";
         int id = ((Users) request.getSession().getAttribute("user")).getId();
         String open = request.getParameter("open");
         if (open != null) {
@@ -100,6 +100,7 @@ public class ProductController extends HttpServlet {
         } else {
             //Get the list of shop categories
             request.getSession().setAttribute("products", SellersDao.getShopProducts(id));
+            //response.sendRedirect(url);
             request.getRequestDispatcher(url).forward(request, response);
         }
     }
@@ -119,18 +120,21 @@ public class ProductController extends HttpServlet {
         int user_id = ((Users) request.getSession().getAttribute("user")).getId();
         String act = request.getParameter("act");
         String uploadPath = null ;
+        Products p = null;
         String serverContextPath = request.getServletContext().getRealPath("");
         if (act!=null) {
             switch(act){
                 case "create":
                     uploadPath = getNewDir(user_id);
                     uploadImageFile(request, uploadPath);
-                    Products p = getProduct(request);
+                    p = getProduct(request);
+                    uploadPath = uploadPath.replaceAll("\\\\", "/");
                     p.setImg(uploadPath.replace(serverContextPath, ""));
                     SellersDao.createShopProducts(p, user_id);
                     break;
                 case "edit":
-                    
+                    p = getProduct(request);
+                    SellersDao.editShopProducts(p);
                     break;
                 case "delete":
                     int product_id = Integer.parseInt(request.getParameter("productID"));
@@ -138,9 +142,11 @@ public class ProductController extends HttpServlet {
                     break;
                 default:    break;
             }
+            request.getRequestDispatcher(url).forward(request, response);
         }
-        
-        
+        else{
+            request.getRequestDispatcher(url).forward(request, response);
+        }
     }
 
     /**
@@ -201,12 +207,14 @@ public class ProductController extends HttpServlet {
     private Products getProduct(HttpServletRequest request) throws ServletException{
         Products product = null;
         try {
+            int product_id = (request.getParameter("productId")!= null)?Integer.parseInt(request.getParameter("productId")):0;
             String name = request.getParameter("productName");
             String description = request.getParameter("description");
             int scate_id = Integer.parseInt(request.getParameter("category"));
             int price = Integer.parseInt(request.getParameter("price"));
             int quantity = Integer.parseInt(request.getParameter("quantity"));
             product = new Products(scate_id, description, name, price, quantity);
+            product.setProduct_id(product_id);
         } catch (Exception e) {
         }
         return product;

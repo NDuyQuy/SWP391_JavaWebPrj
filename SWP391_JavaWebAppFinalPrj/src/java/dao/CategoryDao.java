@@ -15,10 +15,10 @@ import model.*;
  * @author hien
  */
 public class CategoryDao {
-    private static final String GETMAINCATEGORYBYID = "Select [name] FROM [maincategory] WHERE [id]=?";
-    private static final String GETSHOPCATEGORYBYID = "Select [maincate_id],[shop_id],[name] FROM [shopcategory] WHERE [id]=?";
-    private static final String GETSHOPCATEGORYBYSHOP = "Select [maincate_id],[id],[name] from [shopcategory] where [shop_id]=?";
-    private static final String GETMAINCATEGORIES = "Select [id],[name] from [maincategory]";
+    private static final String GETMAINCATEGORYBYID = "Select * FROM [maincategory] WHERE [id]=?";
+    private static final String GETSHOPCATEGORYBYID = "Select * FROM [shopcategory] WHERE [id]=?";
+    private static final String GETSHOPCATEGORYBYSHOP = "Select * from [shopcategory] where [shop_id]=?";
+    private static final String GETMAINCATEGORIES = "Select * FROM [maincategory]";
     
     public static MainCategory getMainCategoryById(int id){
         PreparedStatement ptm = null;
@@ -46,11 +46,14 @@ public class CategoryDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                sc = new ShopCategory();
-                sc.maincategory = getMainCategoryById(rs.getInt("maincate_id"));
-                sc.shop = SellersDao.getShopById(rs.getInt("shop_id"));
-                String shopName = rs.getString("name").trim();
-                sc.setName(shopName);
+                int shopcategory_id = rs.getInt("id");
+                int maincategory_id = rs.getInt("maincate_id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                int shop_id = rs.getInt("shop_id");
+                sc = new ShopCategory(shopcategory_id, maincategory_id, shop_id, name, description);
+                sc.setMaincategory(getMainCategoryById(rs.getInt("maincate_id")));
+                sc.setShop((SellersDao.getShopById(shop_id)));
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -86,11 +89,13 @@ public class CategoryDao {
             ptm.setInt(1, s_id);
             rs = ptm.executeQuery();
             while (rs.next()) {
-                sc = new ShopCategory();
-                sc.maincategory = getMainCategoryById(rs.getInt("maincate_id"));
-                sc.setId(rs.getInt("id"));
-                sc.shop = (SellersDao.getShopById(s_id));
-                sc.setName(rs.getString("name"));
+                int shopcategory_id = rs.getInt("id");
+                int maincategory_id = rs.getInt("maincate_id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                sc = new ShopCategory(shopcategory_id, maincategory_id, s_id, name, description);
+                sc.setMaincategory(getMainCategoryById(rs.getInt("maincate_id")));
+                sc.setShop((SellersDao.getShopById(s_id)));
                 cate_shop.add(sc);
             }
         } catch(Exception ex){
@@ -98,5 +103,8 @@ public class CategoryDao {
         }
         return cate_shop;
     }
-    
+    public static void main(String[] args) {
+        getMainCategories().forEach(System.out::println);
+        //System.out.println(getMainCategoryById(2));
+    }
 }

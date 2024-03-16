@@ -23,8 +23,8 @@ public class Vouchers {
     private int shop_id;
     private int product_id;
     private int use_count;
-    public Shops shop;
-    public Products product;
+    private Shops shop;
+    private Products product;
 
     public Vouchers() {
     }
@@ -142,6 +142,22 @@ public class Vouchers {
         this.use_count = use_count;
     }
 
+    public Shops getShop() {
+        return shop;
+    }
+
+    public void setShop(Shops shop) {
+        this.shop = shop;
+    }
+
+    public Products getProduct() {
+        return product;
+    }
+
+    public void setProduct(Products product) {
+        this.product = product;
+    }
+    
     @Override
     public String toString() {
         return "Vouchers{" + "voucher_id=" + voucher_id + ", code=" + code + ", discount_amount=" + discount_amount + ", start_date=" + start_date + ", expire_date=" + expire_date + ", type=" + type + ", min_require=" + min_require + ", description=" + description + ", shop_id=" + shop_id + ", product_id=" + product_id + ", use_count=" + use_count + '}';

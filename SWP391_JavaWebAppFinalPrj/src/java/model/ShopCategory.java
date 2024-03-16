@@ -14,12 +14,20 @@ public class ShopCategory {
     private int shop_id;
     private String name;
     private String description;
-    public MainCategory maincategory;
-    public Shops shop;
+    private MainCategory maincategory;
+    private Shops shop;
 
     public ShopCategory() {
     }
 
+    public ShopCategory(int id, int maincate_id, int shop_id, String name, String description) {
+        this.id = id;
+        this.maincate_id = maincate_id;
+        this.shop_id = shop_id;
+        this.name = name;
+        this.description = description;
+    }
+    
     public int getId() {
         return id;
     }
@@ -60,6 +68,22 @@ public class ShopCategory {
         this.description = description;
     }
 
+    public MainCategory getMaincategory() {
+        return maincategory;
+    }
+
+    public void setMaincategory(MainCategory maincategory) {
+        this.maincategory = maincategory;
+    }
+
+    public Shops getShop() {
+        return shop;
+    }
+
+    public void setShop(Shops shop) {
+        this.shop = shop;
+    }
+    
     @Override
     public String toString() {
         return "ShopCategory{" + "id=" + id + ", maincate_id=" + maincate_id + ", shop_id=" + shop_id + ", name=" + name + ", description=" + description + '}';

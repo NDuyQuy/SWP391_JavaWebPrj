@@ -14,8 +14,8 @@ public class OrderDetail {
     private int productID;
     private int quantity;
     private String cancel_reason;
-    public Orders order;
-    public Products product;
+    private Orders order;
+    private Products product;
 
     public OrderDetail() {
     }
@@ -58,6 +58,22 @@ public class OrderDetail {
 
     public void setCancel_reason(String cancel_reason) {
         this.cancel_reason = cancel_reason;
+    }
+
+    public Orders getOrder() {
+        return order;
+    }
+
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+
+    public Products getProduct() {
+        return product;
+    }
+
+    public void setProduct(Products product) {
+        this.product = product;
     }
 
     @Override

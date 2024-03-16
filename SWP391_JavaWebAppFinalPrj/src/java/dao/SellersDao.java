@@ -60,7 +60,7 @@ public class SellersDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                shop.users = user;
+                shop.setUsers(user);
                 shop.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
                 shop.setShop_img(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
                 shop.setShop_name(rs.getString("shop_name").trim());
@@ -83,7 +83,7 @@ public class SellersDao {
             while(rs.next()){
                 s = new Shops();
                 s.setShop_id(rs.getInt("shop_id"));
-                s.users = UsersDao.getUserById(rs.getInt("shop_id"));
+                s.setUsers(UsersDao.getUserById(rs.getInt("shop_id")));
                 s.setShop_name(rs.getString("shop_name").trim());
                 s.setShop_img(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
                 s.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
@@ -113,7 +113,7 @@ public class SellersDao {
                 //GET MAIN CATEGORY ID & NAME 
                 String mname = rs.getString(3).trim();
                 int mcate_id = rs.getInt(4);
-                sc.maincategory = new MainCategory(mcate_id, mname);
+                sc.setMaincategory(new MainCategory(mcate_id, mname));
                 sc.setId(id);   sc.setName(sname); sc.setMaincate_id(mcate_id);
                 shopCategories.add(sc);
             }
@@ -340,9 +340,9 @@ public class SellersDao {
             ptm.setInt(1, order.getId());
             ptm.setString(2, order.getProduct_name());
             ptm.setDate(3, (Date) order.getExpected_complete_date());
-            ptm.setInt(4, order.order.getShop_id());
-            ptm.setString(5, order.order.getStatus());
-            ptm.setInt(6, (int)order.order.getTotal());
+            ptm.setInt(4, order.getOrder().getShop_id());
+            ptm.setString(5, order.getOrder().getStatus());
+            ptm.setInt(6, (int)order.getOrder().getTotal());
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

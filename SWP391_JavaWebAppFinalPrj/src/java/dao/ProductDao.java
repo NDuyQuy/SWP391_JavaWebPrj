@@ -49,7 +49,8 @@ public class ProductDao {
                 String product_img = rs.getString("img");
                 int quantity = rs.getInt("quantity");
                 p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
-                
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 results.add(p);
             }
         }catch(Exception ex){
@@ -97,6 +98,8 @@ public class ProductDao {
                 String product_img = rs.getString("img");
                 int quantity = rs.getInt("quantity");
                 p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 result.add(p);
             }
         }catch(Exception ex){
@@ -126,6 +129,8 @@ public class ProductDao {
                 String product_img = rs.getString("img");
                 int quantity = rs.getInt("quantity");
                 p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 product_by_mcate.add(p);
             }
         }catch(Exception ex){
@@ -155,6 +160,8 @@ public class ProductDao {
                 String product_img = rs.getString("img");
                 int quantity = rs.getInt("quantity");
                 p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 product_by_scate.add(p);
             }
         }catch(Exception ex){
@@ -183,6 +190,8 @@ public class ProductDao {
                 String product_img = rs.getString("img");
                 int quantity = rs.getInt("quantity");
                 p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -211,6 +220,8 @@ public class ProductDao {
                 String product_img = rs.getString("img");
                 int quantity = rs.getInt("quantity");
                 p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 product_by_shop.add(p);
             }
         }catch(Exception ex){
@@ -221,7 +232,7 @@ public class ProductDao {
     
     public static void main(String[] args) {
         ArrayList<Products> pr = getProductsByMainCateId(1);
-        pr.forEach(System.out::println);
+        pr.forEach(pro->System.out.println(pro.getShopCategory()));
         
     }
 }

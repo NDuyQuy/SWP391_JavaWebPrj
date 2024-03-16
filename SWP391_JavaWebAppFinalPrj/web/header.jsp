@@ -96,7 +96,6 @@
                                         </c:if>
                                 </ul>
                                 <c:if test="${user.role != 2}">
-
                                     <h4>Danh mục</h4>
                                     <ul>
                                         <c:forEach var="cate" items="${sessionScope.main_category_list}">
@@ -121,7 +120,7 @@
                                         </form>
                                     </li>
                                     <li class="login-btn">
-                                        <c:if test="${sessionScope.user == null}">
+                                        <c:if test="${sessionScope.user eq null}">
                                             <a href="login.jsp"><i class="far fa-user"></i></a>
                                             <ul class="submenu">
 

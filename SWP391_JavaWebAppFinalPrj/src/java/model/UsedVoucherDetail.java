@@ -12,8 +12,8 @@ package model;
 public class UsedVoucherDetail {
     private int voucher_id;
     private int order_id;
-    public Vouchers voucher;
-    public Orders order;
+    private Vouchers voucher;
+    private Orders order;
 
     public UsedVoucherDetail() {
     }
@@ -34,6 +34,24 @@ public class UsedVoucherDetail {
         this.order_id = order_id;
     }
 
+    public Vouchers getVoucher() {
+        return voucher;
+    }
+
+    public void setVoucher(Vouchers voucher) {
+        this.voucher = voucher;
+    }
+
+    public Orders getOrder() {
+        return order;
+    }
+
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+    
+    
+    
     @Override
     public String toString() {
         return "UsedVoucherDetail{" + "voucher_id=" + voucher_id + ", order_id=" + order_id + '}';

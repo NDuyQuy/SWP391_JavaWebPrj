@@ -36,7 +36,7 @@
         <link rel="stylesheet" href="../css/imageInput.css">
     </head>
     <body>
-        <jsp:useBean id="product" scope="session" class="model.Product" />
+        <jsp:useBean id="product" scope="session" class="model.Products" />
         <main>
             <div class="container mt-5">
                 <div class="row justify-content-center">
@@ -44,22 +44,23 @@
                         <h3 class="text-center mb-4">Sửa thông tin sản phẩm</h3>
                         <form action="../productcontroller" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="act" value="edit">
+                            <input type="hidden" name="productId" value="${product.product_id}">
                             <div class="form-group">
                                 <label for="productName">Tên sản phẩm:</label>
-                                <input type="text" class="form-control" id="productName" name="productName" value="${product.productName}" required>
+                                <input type="text" class="form-control" id="productName" name="productName" value="${product.name}" required>
                             </div>
                             <div class="form-group">
                                 <label for="category">Thuộc ngành:</label>
                                 <select class="form-control" id="category" name="category" >
                                     <!-- Add your category options here -->
                                     <c:forEach var="c" items="${sessionScope.main_category_list}">
-                                        <option value="${c.categoryID}" ${(product.getmCate().categoryID == c.categoryID) ? 'selected' : ''}>${c.categoryName}</option>
+                                        <option value="${c.categoryID}" ${(product.shopCategory.maincate_id == c.id) ? 'selected' : ''}>${c.name}</option>
                                     </c:forEach>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="price">Giá:</label>
-                                <input type="number" class="form-control" id="price" name="price" value="${product.price}"required>
+                                <input type="number" class="form-control" id="price" name="price" value="${product.money}"required>
                             </div>
                             <div class="form-group">
                                 <label for="quantity">Số lượng:</label>
@@ -67,7 +68,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" value="${product.description}"></textarea>
+                                <textarea class="form-control" id="description" name="description" rows="3">${product.description}</textarea>
                             </div>
                             <div class="form-group">
                                 <a href="javascript:void(0)" onclick="$('#pro-image').click()" class="btn btn-secondary border">Upload Image</a>

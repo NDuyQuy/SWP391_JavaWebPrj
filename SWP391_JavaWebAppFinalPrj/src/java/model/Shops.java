@@ -20,7 +20,7 @@ public class Shops{
     private String shop_name;
     private Date ban_time;
     private int ban_status;
-    public Users users;
+    private Users users;
 
     public Shops() {
     }
@@ -89,6 +89,14 @@ public class Shops{
         this.ban_status = ban_status;
     }
 
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+    
     @Override
     public String toString() {
         return "Shops{" + "shop_id=" + shop_id + ", CCCD=" + CCCD + ", description=" + description + ", shop_img=" + shop_img + ", shop_reported_count=" + shop_reported_count + ", shop_name=" + shop_name + ", ban_time=" + ban_time + ", ban_status=" + ban_status + '}';

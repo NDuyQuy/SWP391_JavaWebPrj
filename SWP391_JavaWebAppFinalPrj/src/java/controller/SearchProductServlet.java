@@ -50,10 +50,10 @@ public class SearchProductServlet extends HttpServlet {
                         if(p.getName().contains(keyword)){
                             result.add(p);
                             break;
-                        } else if (p.shopCategory.getName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getName().contains(kw[i])) {
                             result.add(p);
                             break;
-                        } else if (p.shopCategory.getName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getName().contains(kw[i])) {
                             result.add(p);
                             break;
                         }
