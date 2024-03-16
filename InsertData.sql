@@ -60,5 +60,25 @@ DROP CONSTRAINT DF__users__img__38996AB5;
 
 ALTER TABLE [users]
 ADD CONSTRAINT DF__users__img__38996AB5 DEFAULT 'img/users/default/1.jpg' FOR [img];
-
 --
+--ADD DEFAULT VALUE FOR STATUS IN ORDER
+ALTER TABLE[orders]
+ADD CONSTRAINT DF_orders_status_1 DEFAULT 'wait for seller respond' FOR [status]
+
+SET IDENTITY_INSERT [orders] ON
+INSERT INTO [orders]
+([order_id], [customer_id],[shop_id],[shipping_cost],[total],[payment_method],[receiver_name],[receiver_phone],[receiver_adress],[shipping_method],[order_date])
+VALUES
+(1, 4, 1, 5.00, 50.00, N'Cash', N'John Doe', N'123456789', N'123 Main St', N'nhanh', '2024-03-16T12:00:00'),
+(2, 5, 1, 7.00, 60.00, N'OnlineBanking', N'Jane Smith', N'987654321', N'456 Oak St', N'hỏa tốc', '2024-03-16T18:00:00'),
+(3, 4, 1, 6.00, 55.00, N'Cash', N'Alice Johnson', N'111222333', N'789 Elm St', N'tiết kiệm', '2024-03-16T22:00:00'),
+(4, 5, 1, 8.00, 70.00, N'OnlineBanking', N'Bob Brown', N'444555666', N'321 Pine St', N'nhanh', '2024-03-17T00:00:00'),
+(5, 4, 1, 5.50, 52.00, N'Cash', N'Sarah Davis', N'777888999', N'654 Maple St', N'hỏa tốc', '2024-03-17T00:30:00'),
+(6, 5, 1, 6.50, 58.00, N'OnlineBanking', N'Michael Wilson', N'666777888', N'987 Cedar St', N'tiết kiệm', '2024-03-17T00:30:00'),
+(7, 4, 1, 7.50, 65.00, N'Cash', N'Emily Taylor', N'222333444', N'753 Birch St', N'nhanh', '2024-03-17T01:00:00'),
+(8, 5, 1, 8.50, 75.00, N'OnlineBanking', N'David Martinez', N'999888777', N'159 Walnut St', N'hỏa tốc', '2024-03-17T01:30:00'),
+(9, 4, 1, 5.75, 53.00, N'Cash', N'Olivia Anderson', N'333444555', N'369 Oak St', N'tiết kiệm', '2024-03-17T01:45:00'),
+(10, 5, 1, 6.75, 63.00, N'OnlineBanking', N'Sophia Hernandez', N'555444333', N'753 Elm St', N'nhanh', '2024-03-17T02:45:00');
+
+SET IDENTITY_INSERT [orders] OFF
+GO

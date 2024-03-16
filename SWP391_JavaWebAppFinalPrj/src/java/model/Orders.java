@@ -33,6 +33,23 @@ public class Orders {
     public Orders() {
     }
 
+    public Orders(int order_id, int customer_id, int shop_id, int shipping_cost, int total, String payment_method, String status, String receiver_name, String receiver_phone, String receiver_address, String shipping_method, int shippingunit_id, Date order_date, int type) {
+        this.order_id = order_id;
+        this.customer_id = customer_id;
+        this.shop_id = shop_id;
+        this.shipping_cost = shipping_cost;
+        this.total = total;
+        this.payment_method = payment_method;
+        this.status = status;
+        this.receiver_name = receiver_name;
+        this.receiver_phone = receiver_phone;
+        this.receiver_address = receiver_address;
+        this.shipping_method = shipping_method;
+        this.shippingunit_id = shippingunit_id;
+        this.order_date = order_date;
+        this.type = type;
+    }
+    
     public int getOrder_id() {
         return order_id;
     }

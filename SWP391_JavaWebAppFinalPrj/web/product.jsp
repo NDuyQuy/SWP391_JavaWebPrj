@@ -35,9 +35,7 @@
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
             <!-- header end -->
-
             <main>
-
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
@@ -137,7 +135,7 @@
                                                         <div class="product-content">
                                                             <div class="pro-cat mb-10">
                                                                 <a href="SearchProduct?cate=${pr.shopCategory.maincategory.name}">${pr.shopCategory.maincategory.name} > </a>
-                                                                <a href="ShopDetail?id=${pr.shop.shop_id}#cate${pr.shopCategory.id}" style="color: #525470">${pr.shopCategory.name}</a>
+                                                                <a href="ShopDetail?id=${pr.shop.users.id}#cate${pr.shopCategory.id}" style="color: #525470">${pr.shopCategory.name}</a>
                                                             </div>
                                                             <h4>
                                                                 <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
