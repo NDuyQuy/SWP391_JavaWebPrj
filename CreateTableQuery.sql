@@ -86,7 +86,6 @@ create table vouchers
 	[min_require] int ,
 	[description] text ,
 	[shop_id] int foreign key references [shops]([shop_id]),
-	[product_id] int foreign key references [products]([product_id]),
 	[use_count] int 
 )
 create table shippingunits

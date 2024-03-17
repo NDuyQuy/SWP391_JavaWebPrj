@@ -38,9 +38,9 @@ public class SellersDao {
     private static final String GETVOUCHERBYID = "SELECT [voucher_id],[code],[discount_amount],[start_date],[expire_date],[type],[min_require],[description],[shop_id],[product_id],[use_count] FROM [vouchers] WHERE [voucher_id] = ?";
     
     private static final String CREATEVOUCHER = "INSERT INTO [vouchers]([code],[discount_amount],"
-            + "[start_date],[expire_date],[type],[description],[shop_id],[product_id],[use_count],[min_require]) VALUES(?,?,?,?,?,?,?,?,?,?)";
+            + "[start_date],[expire_date],[type],[description],[shop_id],[use_count],[min_require]) VALUES(?,?,?,?,?,?,?,?,?)";
     private static final String EDITVOUCHER = "UPDATE [vouchers] SET [code]=?, [discount_amount]=?, [start_date]=?, [expire_date]=?, "
-            + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
+            + "[type]=?, [description]=?,[shop_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
     //CUSTOM ORDER REALTED SQL STATEMENT
     private static final String GETCUSTOMORDERS = "SELECT [id],[product_name],[expected_complete_date],[status],[cost] FROM [custom_order] WHERE [seller_id]=?";
@@ -204,7 +204,6 @@ public class SellersDao {
                 int min_require = rs.getInt("min_require");
                 String description = rs.getString("description").trim();
                 int shop_id = rs.getInt("shop_id") ;
-                int product_id = rs.getInt("product_id") ;
                 int use_count = rs.getInt("use_count");
                 voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
             }
@@ -224,9 +223,8 @@ public class SellersDao {
             ptm.setInt(5, voucher.getType());
             ptm.setString(6, voucher.getDescription());
             ptm.setInt(7, voucher.getShop_id());
-            ptm.setInt(8, voucher.getProduct_id());
-            ptm.setInt(9, voucher.getUse_count());
-            ptm.setInt(10, voucher.getMin_require());
+            ptm.setInt(8, voucher.getUse_count());
+            ptm.setInt(9, voucher.getMin_require());
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,10 +241,9 @@ public class SellersDao {
             ptm.setInt(5, voucher.getType());
             ptm.setString(6, voucher.getDescription());
             ptm.setInt(7, voucher.getShop_id());
-            ptm.setInt(8, voucher.getProduct_id());
-            ptm.setInt(9, voucher.getUse_count());
-            ptm.setInt(10, voucher.getMin_require());
-            ptm.setInt(11, voucher.getVoucher_id());
+            ptm.setInt(8, voucher.getUse_count());
+            ptm.setInt(9, voucher.getMin_require());
+            ptm.setInt(10, voucher.getVoucher_id());
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

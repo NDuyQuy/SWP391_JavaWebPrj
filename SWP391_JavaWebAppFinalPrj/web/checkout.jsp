@@ -6,7 +6,9 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:useBean id="user" scope="session" class="model.User" />
+<jsp:include page="/Checkout?Action=*"/>
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -78,6 +80,7 @@
         </style>
     </head>
     <body>
+        <jsp:useBean id="user" scope="session" class="model.Users" />
 
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>

@@ -21,10 +21,8 @@ public class Vouchers {
     private int min_require;
     private String description;
     private int shop_id;
-    private int product_id;
     private int use_count;
     private Shops shop;
-    private Products product;
 
     public Vouchers() {
     }
@@ -40,7 +38,7 @@ public class Vouchers {
         this.description = description;
     }
 
-    public Vouchers(int voucher_id, String code, int discount_amount, Date start_date, Date expire_date, int type, int min_require, String description, int shop_id, int product_id, int use_count) {
+    public Vouchers(int voucher_id, String code, int discount_amount, Date start_date, Date expire_date, int type, int min_require, String description, int shop_id, int use_count) {
         this.voucher_id = voucher_id;
         this.code = code;
         this.discount_amount = discount_amount;
@@ -50,7 +48,6 @@ public class Vouchers {
         this.min_require = min_require;
         this.description = description;
         this.shop_id = shop_id;
-        this.product_id = product_id;
         this.use_count = use_count;
     }
     
@@ -126,14 +123,7 @@ public class Vouchers {
         this.shop_id = shop_id;
     }
 
-    public int getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
-    }
-
+    
     public int getUse_count() {
         return use_count;
     }
@@ -150,17 +140,6 @@ public class Vouchers {
         this.shop = shop;
     }
 
-    public Products getProduct() {
-        return product;
-    }
-
-    public void setProduct(Products product) {
-        this.product = product;
-    }
     
-    @Override
-    public String toString() {
-        return "Vouchers{" + "voucher_id=" + voucher_id + ", code=" + code + ", discount_amount=" + discount_amount + ", start_date=" + start_date + ", expire_date=" + expire_date + ", type=" + type + ", min_require=" + min_require + ", description=" + description + ", shop_id=" + shop_id + ", product_id=" + product_id + ", use_count=" + use_count + '}';
-    }
     
 }

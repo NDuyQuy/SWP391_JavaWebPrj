@@ -111,9 +111,9 @@
                                                             <input type="number" name="quantity" value="${value.product.quantity}" min="0">
                                                             <button type="submit" name="action" value="increase">+</button>
                                                             -->
-                                                            <buton<a href="UpdateQuantityServlet?id=${value.product.productID}&action=increase">+</a>
+                                                            <button><a href="UpdateQuantityServlet?id=${value.product.productID}&action=increase">+</a></button>
                                                             <input type="number" name="quantity" value="${value.product.quantity}" min="1">
-                                                            <buton><a href="UpdateQuantityServlet?id=${value.product.productID}&action=decrease">-</a></buton>
+                                                            <button><a href="UpdateQuantityServlet?id=${value.product.productID}&action=decrease">-</a></button>
                                                         </td>
                                                         <td class="product-subtotal">
                                                             <span class="amount">${value.product.price * value.quantity}</span>
@@ -201,7 +201,7 @@
 
                                                 <li>Total <span id="totalPrice">0.00</span></li>
                                             </ul>
-                                            <a class="btn theme-btn" href="#">Proceed to checkout</a>
+                                            <a class="btn theme-btn" href="Checkout?Action=GetList">Proceed to checkout</a>
                                         </div>
                                     </div>
                                 </div>
