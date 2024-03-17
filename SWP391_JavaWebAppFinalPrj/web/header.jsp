@@ -87,7 +87,7 @@
                                         <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
                                         </c:if>
                                         <c:if test="${user.role eq 2}">
-                                        <li><a href="#"> Xem tổng quan phân tích bán hàng</a></li>
+                                        <li><a href="ordercontroller"> Xem tổng quan phân tích bán hàng</a></li>
                                         <li><a href="productcontroller"> Quản lý sản phẩm của shop</a></li>
                                         <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
                                         <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
@@ -140,9 +140,11 @@
                                                 <li>
                                                     <a href="profile.jsp">Hồ sơ của bạn</a>
                                                 </li>
-                                                <li>
-                                                    <a href="#">Đơn mua</a>
-                                                </li>
+                                                <c:if test="${sessionScope.user.role eq 1}">
+                                                    <li>
+                                                        <a href="#">Đơn mua</a>
+                                                    </li>
+                                                </c:if>
                                                 <li>
                                                     <a href="logout">Đăng xuất</a>
                                                 </li>
@@ -150,14 +152,12 @@
                                         </c:if>
 
                                     </li>
-                                    <li class="d-shop-cart">
-                                        <a href="Cart">
-                                            <i class="flaticon-shopping-cart"></i>
-                                            <c:if test="${sessionScope.user.role == 1}">
+                                    <c:if test="${sessionScope.user.role == 1}">
+                                        <li class="d-shop-cart">
+                                            <a href="Cart">
+                                                <i class="flaticon-shopping-cart"></i>
                                                 <span class="cart-count">3</span>
-                                            </c:if>
-                                        </a>
-                                        <c:if test="${sessionScope.user.role == 1}">
+                                            </a>
                                             <ul class="minicart">
                                                 <li>
                                                     <div class="cart-img">
@@ -183,8 +183,16 @@
                                                     </div>
                                                 </li>
                                             </ul>
-                                        </c:if>
-                                    </li>
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${sessionScope.user.role == 2}">
+                                        <li class="d-notification-icon">
+                                            <a href="#" class="text-decoration-none">
+                                                <i class="fas fa-bell"></i>
+                                                <span class="badge badge-pill badge-danger position-absolute top-0 end-0">${sessionScope.noti}</span>
+                                            </a>
+                                        </li>
+                                    </c:if>
                                 </ul>
                             </div>
                         </div>

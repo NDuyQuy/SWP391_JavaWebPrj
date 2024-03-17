@@ -4,48 +4,81 @@
     Author     : ASUS
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Order Chart</title>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <h2 class="text-danger">Chart display</h2>
-        <canvas id="ordersChart" width="400" height="400"></canvas>
-        <script>
-        var ordersCountByHour = ${ordersCountByHour}; // Get orders count by hour from the servlet
-        
-        // Prepare data for the chart
-        var hours = Object.keys(ordersCountByHour);
-        var counts = Object.values(ordersCountByHour);
-        
-        var xyValues = Array.from(ordersCountByHour.entries()).map(([key, value]) => [key, value]);
-        // Render chart using Chart.js
-        var ctx = document.getElementById('ordersChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: hours,
-                datasets: [{
-                    label: 'Orders Count by Hour',
-                    data: xyValues,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Tổng quan phân tích bán hàng</title>
+            <!-- Include Chart.js library -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+        </head>
+        <body>
+            <h1>Tổng quan</h1>
+            <table>
+                <tr>
+                    <td>Tổng doanh thu</td>
+                    <td>Tổng số đơn hàng</td>
+                    <td>Doanh thu trên mỗi đơn hàng</td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+            <h1>Biểu đồ</h1>
+            <div style="width: 75%;">
+                <canvas id="scatterChart"></canvas>
+            </div>
+
+            <script>
+                // Retrieve JSON data from request attribute
+                var jsonData = '<%= request.getAttribute("jsonData")%>';
+                // Parse JSON data
+                var data = JSON.parse(jsonData);
+
+                // Render scatter chart
+                var ctx = document.getElementById('scatterChart').getContext('2d');
+                var scatterChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                                label: 'Order Counts',
+                                data: data,
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                    },
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                    type: 'linear',
+                                    position: 'bottom',
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Hour'
+                                    },
+                                    ticks: {
+                                        min: 0,
+                                        max: ${requestScope.dim},
+                                        stepSize: 1
+                                    }
+                                }],
+                            yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Order Count'
+                                    },
+                                    ticks: {
+                                        min: 0,
+                                        max: 25,
+                                        stepSize: 2
+                                    }
+                                }]
+                        }
                     }
-                }
-            }
-        });
-    </script>
+                });
+        </script>
     </body>
 </html>

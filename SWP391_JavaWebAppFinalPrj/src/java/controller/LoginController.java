@@ -93,6 +93,8 @@ public class LoginController extends HttpServlet {
                         url = "/home.jsp";
                         Shops shop = SellersDao.getShopById(u.getId());
                         request.getSession().setAttribute("shop", shop);
+                        int numberOfWaitingOrders = OrdersDao.getWaitingOrders(u.getId()).size();
+                        request.getSession().setAttribute("noti",numberOfWaitingOrders);
                         break;
                     case 3:
                         request.getSession().setAttribute("Admin", 1);

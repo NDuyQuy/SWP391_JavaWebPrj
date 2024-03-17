@@ -67,7 +67,7 @@ ADD CONSTRAINT DF_orders_status_1 DEFAULT 'wait for seller respond' FOR [status]
 
 SET IDENTITY_INSERT [orders] ON
 INSERT INTO [orders]
-([order_id], [customer_id],[shop_id],[shipping_cost],[total],[payment_method],[receiver_name],[receiver_phone],[receiver_adress],[shipping_method],[order_date])
+([order_id], [customer_id],[shop_id],[shipping_cost],[total],[payment_method],[receiver_name],[receiver_phone],[receiver_address],[shipping_method],[order_date])
 VALUES
 (1, 4, 1, 5.00, 50.00, N'Cash', N'John Doe', N'123456789', N'123 Main St', N'nhanh', '2024-03-16T12:00:00'),
 (2, 5, 1, 7.00, 60.00, N'OnlineBanking', N'Jane Smith', N'987654321', N'456 Oak St', N'hỏa tốc', '2024-03-16T18:00:00'),
@@ -80,5 +80,24 @@ VALUES
 (9, 4, 1, 5.75, 53.00, N'Cash', N'Olivia Anderson', N'333444555', N'369 Oak St', N'tiết kiệm', '2024-03-17T01:45:00'),
 (10, 5, 1, 6.75, 63.00, N'OnlineBanking', N'Sophia Hernandez', N'555444333', N'753 Elm St', N'nhanh', '2024-03-17T02:45:00');
 
+SET IDENTITY_INSERT [orders] OFF
+GO
+
+SET IDENTITY_INSERT [orders] ON
+INSERT INTO [orders]
+(order_id,customer_id,shop_id,shipping_cost,total,payment_method,status,receiver_name,
+receiver_phone,receiver_address,shipping_method,shippingunit_id,order_date)
+VALUES
+(11,6,1,10000,70000,N'COD',N'đã nhận',N'Quý',N'0123456789',N'1 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(12,6,1,10000,70000,N'OnlineBanking',N'đã nhận',N'Khanh',N'0123456789',N'2 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(13,6,1,10000,70000,N'COD',N'đã nhận',N'Khánh',N'0123456789',N'3 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(14,6,1,10000,70000,N'OnlineBanking',N'đã nhận',N'Quân',N'0123456789',N'4 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(15,6,1,10000,70000,N'COD',N'đã nhận',N'Quyền',N'0123456789',N'5 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(16,6,1,10000,70000,N'OnlineBanking',N'đã nhận',N'Huyền',N'0123456789',N'6 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(17,6,1,10000,70000,N'COD',N'đã nhận',N'Hiền',N'0123456789',N'7 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(18,6,1,10000,70000,N'OnlineBanking',N'đã nhận',N'Hà',N'0123456789',N'8 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(19,6,1,10000,70000,N'COD',N'đã nhận',N'Hạnh',N'0123456789',N'9 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(20,6,1,10000,70000,N'OnlineBanking',N'đã nhận',N'Thu',N'0123456789',N'10 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00'),
+(21,6,1,10000,70000,N'COD',N'đã nhận',N'Đức',N'0123456789',N'11 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00')
 SET IDENTITY_INSERT [orders] OFF
 GO

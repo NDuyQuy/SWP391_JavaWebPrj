@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -62,9 +65,36 @@ public class OrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LocalDate date = LocalDate.of(2024, Month.MARCH, 17);
-        Map<Integer, Integer> ordersCountByHour = OrdersDao.getOrdersCountByHour(1, date);
-        request.setAttribute("ordersCountByHour", ordersCountByHour);
+        LocalDate date = LocalDate.now();
+        int daysInMonth;
+        try {
+            String time[] = request.getParameter("month_year").split("-");
+            int year = Integer.parseInt(time[0]);
+            int month = Integer.parseInt(time[1]);
+            date = date.withMonth(month);
+            date.withYear(year);
+            daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
+        } catch (Exception e) {
+            int m = date.getMonthValue();
+            int y = date.getYear();
+            daysInMonth = LocalDate.of(y, m, 1).lengthOfMonth();
+        }
+        Map<Integer, Integer> orderCounts = OrdersDao.getOrdersCountADateInMonth(1, 2,date.getYear());
+        request.setAttribute("dim", daysInMonth);
+        StringBuilder json = new StringBuilder("[");
+        for (Map.Entry<Integer, Integer> entry : orderCounts.entrySet()) {
+            json.append("{");
+            json.append("\"x\":").append(entry.getKey()).append(",");
+            json.append("\"y\":").append(entry.getValue());
+            json.append("},");
+        }
+        if (!orderCounts.isEmpty()) {
+            json.deleteCharAt(json.length() - 1); // Remove the last comma
+        }
+        json.append("]");
+        // Set JSON data as request attribute
+        request.setAttribute("jsonData", json.toString());
+        //GO TO JSP TO DISPLAY CHART
         request.getRequestDispatcher("seller/order_chart_demo.jsp").forward(request, response);
 
     }

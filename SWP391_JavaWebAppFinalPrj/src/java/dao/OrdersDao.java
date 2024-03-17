@@ -16,13 +16,15 @@ import model.Orders;
  * @author ASUS
  */
 public class OrdersDao {
-    private static final String GETORDERSBYSHOP = "SELECT * FROM [orders] WHERE [shop_id]=?";
+    private static final String GETORDERSBYSHOP = "SELECT * FROM [orders] WHERE [shop_id]=? AND status=N'đã nhận'";
     private static final String GETORDERSBYSHOPANDDATE = "SELECT * FROM [orders] WHERE CONVERT(date, order_date) = ? AND [shop_id]=?";
-    private static final String GETORDERSCOUNTBYHOUR = "SELECT HOUR(order_date) AS hour, COUNT(*) AS count FROM [orders]"
-            + "WHERE CONVERT(date, order_date) = ? AND [shop_id]=? GROUP BY HOUR(order_date)";
+    private static final String GETORDERSCOUNTBYHOUR = "SELECT DATEPART(HOUR, order_date) AS hour, COUNT(*) AS count FROM [orders] "
+            + "WHERE CONVERT(date, order_date) = ? AND [shop_id] = ? AND status=N'đã nhận' GROUP BY DATEPART(HOUR, order_date)";
+    private static final String GETORDERSCOUNTBYMONTH = "SELECT DAY(order_date) AS day, COUNT(*) AS count FROM [orders] "
+            + "WHERE MONTH(order_date) = ? AND YEAR(order_date) = ? AND [shop_id] = ? AND status=N'đã nhận' GROUP BY DAY(order_date)";
     private static final String CREATECUSTOMORDER = "INSERT INTO [orders]([shop_id],[total],[status],[type]) VALUES (?,?,'wait for customer accept',?)";
     private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='', ";
-    
+    private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status]=N'chờ người bán xác nhận'";
     private static Orders getOrderObject(ResultSet rs) throws SQLException{
         int order_id = rs.getInt("order_id");
         int customer_id = rs.getInt("customer_id");
@@ -100,9 +102,49 @@ public class OrdersDao {
         }
         return ordersCountByHour;
     }
-    
+    public static Map<Integer, Integer> getOrdersCountADateInMonth(int shop_id, int month, int year){
+        Map<Integer, Integer> ordersADateInMonth = new HashMap<>();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Orders order = null;
+        try(Connection con = SQLConnection.getConnection()){
+            statement = con.prepareStatement(GETORDERSCOUNTBYMONTH);
+            statement.setInt(1, month);
+            statement.setInt(2, year);
+            statement.setInt(3, shop_id);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {                
+                int day = resultSet.getInt("day");
+                int count = resultSet.getInt("count");
+                ordersADateInMonth.put(day, count);
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return ordersADateInMonth;
+    }
+    public static List<Orders> getWaitingOrders(int shop_id){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Orders order = null;
+        ArrayList<Orders> orderses = new ArrayList<>();
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETWAITINGORDERS);
+            ptm.setInt(1, shop_id);
+            rs = ptm.executeQuery();
+            while(rs.next()){
+                order = getOrderObject(rs);
+                orderses.add(order);
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return orderses;
+    }
     public static void main(String[] args) {
-        LocalDate date = LocalDate.of(2024, 3, 16);
-        getOrdersesByShopAndDate(1,date).forEach(System.out::println);
+        LocalDate date = LocalDate.of(2024, 3, 17);
+        //getWaitingOrders(1).forEach(System.out::println);
+        //getOrdersCountByHour(1, date).entrySet().forEach(System.out::println);
+        getOrdersCountADateInMonth(1, 3, 2024).entrySet().forEach(System.out::println);
     }
 }
