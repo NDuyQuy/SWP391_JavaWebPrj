@@ -17,7 +17,6 @@
         <link rel="manifest" href="site.html">
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
-
         <!-- CSS here -->
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/owl.carousel.min.css">
@@ -64,21 +63,21 @@
                                 <form method="post" action="becomeseller">
                                     <table width="550" height="300">
                                         <tr>
-                                            <td><span style="color:red;">**</span>Tên shop</td>
-                                            <td colspan="2"><input type="text" size="40" name="sname" placeholder="Tên của shop" value="" maxlength="30" required=""></td>
+                                            <td><span style="color:red;">*</span>Tên shop</td>
+                                            <td colspan="2"><input type="text" size="40" name="sname" placeholder="Tên của shop" value="" maxlength="30" required></td>
                                         </tr>
                                         <tr>
-                                            <td><span style="color:red;">**</span>CCCD/CMND</td>
-                                            <td colspan="2"><input type="text" size="40" name="cccd" placeholder="Số CCCD/CMND" value="" required=""></td>
+                                            <td><span style="color:red;">*</span>CCCD/CMND</td>
+                                            <td colspan="2"><input type="number" size="40" name="cccd" placeholder="Số CCCD/CMND" value="" required></td>
                                         </tr>
                                         <tr>
-                                            <td><span style="color:red;">**</span>Địa chỉ lấy hàng</td>
-                                            <td><input type="text" size="40" name="fullname" placeholder="Họ và tên" value="" required=""></td>
-                                            <td><input type="tel" size="40" name="phone" placeholder="Số điện thoại" value="" required=""></td>
+                                            <td><span style="color:red;">*</span>Thông tin liên lạc</td>
+                                            <td><input type="text" size="40" name="fullname" placeholder="Họ và tên" value="" required></td>
+                                            <td><input type="tel" size="40" name="phone" placeholder="Số điện thoại" value="" required></td>
                                         </tr>
                                         <tr>
-                                            <td></td>
-                                            <td colspan="2"><input type="text" size="40" name="saddr" placeholder="Địa chỉ lấy hàng" value="" required=""></td>
+                                            <td><span style="color:red;">*</span>Địa chỉ của shop</td>
+                                            <td colspan="2"><input type="text" size="40" name="saddr" placeholder="Địa chỉ lấy hàng" value="" required></td>
                                         </tr>
                                         <tr>
                                             <td></td>
@@ -93,4 +92,5 @@
             </section>
         <jsp:include page="footer.jsp"></jsp:include>
     </body>
+    
 </html>

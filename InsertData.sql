@@ -1,3 +1,5 @@
+USE SWP391_FinalPrjDB
+GO
 insert into [users]([username],[password],[email]) VALUES
 ('A','1','A@gmail.com'),
 ('B','1','B@gmail.com'),
@@ -13,38 +15,70 @@ insert into [users]([username],[password],[email]) VALUES
 ('M','1','M@gmail.com'),
 ('N','1','N@gmail.com'),
 ('O','1','O@gmail.com'),
-('P','1','P@gmail.com')
+('P','1','P@gmail.com');
 insert into [shops](shop_id,CCCD,shop_name) values 
 (1,'123456','A Shop'),
-(2,'654321','B Shop')
+(2,'654321','B Shop');
 
+--DATA INSERT FOR MAIN CATEGORY ID
 insert into [maincategory]([name])values
-('fashion'),('technology'),('houseware')
+('fashion'),('technology'),('houseware'),('food'),('travel'),('fitness'),('entertainment'),('books'),('home decor'),('electronics');
+--DATA INSERT FOR SHOPCATEGORY ID
+INSERT INTO [shopcategory](maincate_id,shop_id,name)VALUES
+(1,1,'T-shirt'),(1,1,'Jean'),(1,1,'Dress'),(1, 1, 'Skirts'),(1, 1, 'Blouses'),(1, 1, 'Jackets'),(9, 2, 'Curtains'),
+(9, 2, 'Lamps'),(9, 2, 'Rugs'),(9, 2, 'Decorative Pillows'),(9, 2, 'Wall Art');
 
-insert into [products]([shop_id], [mcate_id],[description],[created_date],[name],[price],[img],[quantity]) values
-(23,1,'T-shirt',GETDATE(),'T-shirt for boy',10000,'no img',10),
-(23,1,'T-shirt',GETDATE(),'T-shirt for girl',10000,'no img',10),
-(23,1,'Dress',GETDATE(),'Dress for boy',10000,'no img',10),
-(23,1,'Dress',GETDATE(),'Dress for girl',10000,'no img',10)
-insert into [shippingunits]([name],[support_shippingmethod],[cost])
-values ('QuyNguyen Express',1,100000),
-('NguyenDuy Express',3,100000)
-insert into [orders]([customer_id],[shippingunit_id],[voucher_code],[total],[shipping_method],[payment_method],
-[status],[receiver_name],[receiver_phone],[receiver_adress],[order_date])
-values (1,1,0,0,'none','none','none','a','0123456789','A street',GETDATE())
--- Done 13:54 27/02/2024
---Demo insert data into shops which shop_id AKA user's id dont exist
---insert into [shops](shop_id,CCCD) values (30,123456)
---Demo finished 22:55 27/02/2024. Result Insert statement conflict.
----
-INSERT INTO [shopcategory](maincate_id,shop_id,name)VALUES(1,23,'T-shirt'),(1,23,'Jean'),(1,23,'Dress')
---1/03/2024 01:04 data insertion 
-insert into [users]([username],[password],[email],[role]) values
-('b','1','b',2),('c','1','c',2),('d','1','d',2)
-INSERT INTO [shops](shop_id,CCCD) values
-(24,1),(25,1),(26,1)
+--DATA INSERT FOR PRODUCT
+INSERT INTO [products] ([shop_id], [scate_id], [description], [name], [price], [quantity])
+VALUES
+  (1, 1, 'High-quality Cotton T-shirt', 'Cotton T-shirt', 19999, 50),
+  (1, 2, 'Stylish Blue Jeans', 'Blue Jeans', 39999, 30),
+  (1, 3, 'Elegant Evening Dress', 'Evening Dress', 89999, 20),
+  (1, 4, 'Casual Skirts', 'Casual Skirts', 29999, 40),
+  (1, 5, 'Formal Blouses', 'Formal Blouses', 49999, 25),
+  (1, 6, 'Fashionable Jackets', 'Fashionable Jackets', 69999, 15),
+
+  (2, 7, 'Floral Pattern Curtains', 'Floral Curtains', 29999, 15),
+  (2, 8, 'Modern Table Lamp', 'Table Lamp', 49999, 25),
+  (2, 9, 'Soft and Cozy Area Rug', 'Cozy Area Rug', 79999, 10),
+  (2, 10, 'Decorative Pillows Set', 'Decorative Pillows Set', 39999, 18),
+  (2, 11, 'Abstract Wall Art', 'Abstract Wall Art', 69999, 12);
+
+--14/03/24 7:17
+insert into [shippingunits]([id],[name],[support_shippingmethod],[cost])
+values (1,'QuyNguyen Express',1,10000),
+(2,'NguyenDuy Express',3,20000)
 INSERT INTO [vouchers]([code],[discount_amount],[start_date],[expire_date],[type],[min_require],[description],[shop_id],[use_count]) VALUES
-('Mv01',1,'01-03-2024','02-03-2024',2,1,'no description',23,10),
-('Mv02',1,'01-03-2024','02-03-2024',2,1,'no description',23,10),
-('MvI',1,'01-03-2024','02-03-2024',2,1,'no description',24,10),
-('MvII',1,'01-03-2024','02-03-2024',2,1,'no description',24,10)
+('Mv01',1,'01-03-2024','02-03-2024',2,1,'no description',1,10),
+('Mv02',1,'01-03-2024','02-03-2024',2,1,'no description',1,10),
+('MvI',1,'01-03-2024','02-03-2024',2,1,'no description',2,10),
+('MvII',1,'01-03-2024','02-03-2024',2,1,'no description',2,10)
+
+-- CHANGE THE DEFAULT VALUE OF ROW IMG IN USERS
+ALTER TABLE [users]
+DROP CONSTRAINT DF__users__img__38996AB5; 
+
+ALTER TABLE [users]
+ADD CONSTRAINT DF__users__img__38996AB5 DEFAULT 'img/users/default/1.jpg' FOR [img];
+--
+--ADD DEFAULT VALUE FOR STATUS IN ORDER
+ALTER TABLE[orders]
+ADD CONSTRAINT DF_orders_status_1 DEFAULT 'wait for seller respond' FOR [status]
+
+SET IDENTITY_INSERT [orders] ON
+INSERT INTO [orders]
+([order_id], [customer_id],[shop_id],[shipping_cost],[total],[payment_method],[receiver_name],[receiver_phone],[receiver_adress],[shipping_method],[order_date])
+VALUES
+(1, 4, 1, 5.00, 50.00, N'Cash', N'John Doe', N'123456789', N'123 Main St', N'nhanh', '2024-03-16T12:00:00'),
+(2, 5, 1, 7.00, 60.00, N'OnlineBanking', N'Jane Smith', N'987654321', N'456 Oak St', N'hỏa tốc', '2024-03-16T18:00:00'),
+(3, 4, 1, 6.00, 55.00, N'Cash', N'Alice Johnson', N'111222333', N'789 Elm St', N'tiết kiệm', '2024-03-16T22:00:00'),
+(4, 5, 1, 8.00, 70.00, N'OnlineBanking', N'Bob Brown', N'444555666', N'321 Pine St', N'nhanh', '2024-03-17T00:00:00'),
+(5, 4, 1, 5.50, 52.00, N'Cash', N'Sarah Davis', N'777888999', N'654 Maple St', N'hỏa tốc', '2024-03-17T00:30:00'),
+(6, 5, 1, 6.50, 58.00, N'OnlineBanking', N'Michael Wilson', N'666777888', N'987 Cedar St', N'tiết kiệm', '2024-03-17T00:30:00'),
+(7, 4, 1, 7.50, 65.00, N'Cash', N'Emily Taylor', N'222333444', N'753 Birch St', N'nhanh', '2024-03-17T01:00:00'),
+(8, 5, 1, 8.50, 75.00, N'OnlineBanking', N'David Martinez', N'999888777', N'159 Walnut St', N'hỏa tốc', '2024-03-17T01:30:00'),
+(9, 4, 1, 5.75, 53.00, N'Cash', N'Olivia Anderson', N'333444555', N'369 Oak St', N'tiết kiệm', '2024-03-17T01:45:00'),
+(10, 5, 1, 6.75, 63.00, N'OnlineBanking', N'Sophia Hernandez', N'555444333', N'753 Elm St', N'nhanh', '2024-03-17T02:45:00');
+
+SET IDENTITY_INSERT [orders] OFF
+GO

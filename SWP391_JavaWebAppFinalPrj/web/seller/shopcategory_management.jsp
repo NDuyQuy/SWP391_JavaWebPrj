@@ -68,19 +68,18 @@
                             <tbody> 
                                 <c:forEach var="s" items="${shop_categories}">
                                     <tr> 
-                                        <td><c:out value="${s.categoryID}"/></td>
-                                        <td><c:out value="${s.categoryName}"/></td>
-                                        <td><c:out value="${s.mCate.categoryName}"/></td>
+                                        <td><c:out value="${s.id}"/></td>
+                                        <td><c:out value="${s.name}"/></td>
+                                        <td><c:out value="${s.maincategory.name}"/></td>
                                         <td>
                                             
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" onclick="openPopup('edit',${s.categoryID})">Edit</a>
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" onclick="openPopup('edit',${s.id},${s.name})">Edit</a>
                                         </td>
                                         <td>
-                                            <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${s.categoryID})">Delete</a>
+                                            <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${s.id})">Delete</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
-
                             </tbody> 
                         </table>
                     </div>
@@ -106,8 +105,8 @@
                                             <label for="addCategoryName">Category Name:</label>
                                             <input type="text" id="addCategoryName" name="categoryName" class="form-control" required> <br>
                                             <select name="a_mc"class="form-control">
-                                                <c:forEach var="s" items="${sessionScope.main_category_list}">
-                                                    <option value="${s.categoryID}">${s.categoryName}</option>
+                                                <c:forEach var="m" items="${sessionScope.main_category_list}">
+                                                    <option value="${m.id}">${m.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -124,7 +123,6 @@
                     <div class="modal" id="editPopup">
                         <div class="modal-dialog">
                             <div class="modal-content">
-
                                 <!-- Modal Header -->
                                 <div class="modal-header">
                                     <h4 class="modal-title">Edit Category</h4>
@@ -136,11 +134,11 @@
                                         <div class="form-group">
                                             <input type="hidden" name="act" value ="edit">
                                             <label for="editCategoryName">Category Name:</label>
-                                            <input type="text" id="editCategoryName" name="categoryName" class="form-control" required>        <br>
+                                            <input type="text" id="categoryName" name="categoryName" class="form-control" required><br>
                                             <!-- Hidden input to store the category ID -->
                                             <select name="e_mc"class="form-control">
-                                                <c:forEach var="s" items="${sessionScope.main_category_list}">
-                                                    <option value="${s.categoryID}">${s.categoryName}</option>
+                                                <c:forEach var="m" items="${sessionScope.main_category_list}">
+                                                    <option value="${m.id}">${m.name}</option>
                                                 </c:forEach>
                                             </select>
                                             <input type="hidden" name="categoryId" id="editCategoryId">
@@ -187,10 +185,12 @@
         <jsp:include page="../footer.jsp"></jsp:include>
         <!-- JavaScript to control the display of the popups -->
         <script>
-            function openPopup(type, categoryId,categoryName) {
+            function openPopup(type, categoryId, categoryName) {
                 if (type === 'edit' ) {
                     // Set the category ID in the edit popup
                     document.getElementById('editCategoryId').setAttribute('value', categoryId);
+                    document.getElementById('categoryName').setAttribute('value', categoryName);
+                    
                 }else if (type === 'delete'){
                     document.getElementById('deleteCategoryId').setAttribute('value', categoryId);
                 }

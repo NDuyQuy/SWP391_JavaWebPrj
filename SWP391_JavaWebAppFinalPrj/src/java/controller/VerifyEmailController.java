@@ -59,7 +59,7 @@ public class VerifyEmailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
-        User u = UsersDao.getUserInfoByEmail(email);
+        Users u = UsersDao.getUserInfoByEmail(email);
         //CHECK IF USERS ENTER EMAIL THAT NOT THE EMAIL REGISTER
         if(u==null){
             request.setAttribute("error", "Your Email Is Not Correct");

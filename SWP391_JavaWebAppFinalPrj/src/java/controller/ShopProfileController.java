@@ -1,28 +1,25 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package controller;
 
-import dao.CategoryDao;
-import dao.ProductDao;
-import dao.SellersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.*;
-import model.ShopCategory;
+import model.Users;
 
 /**
  *
- * @author hien
+ * @author ASUS
  */
-public class ShopDetailController extends HttpServlet {
+@WebServlet(name = "ShopProfileController", urlPatterns = {"/shopprofile"})
+public class ShopProfileController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,18 +33,18 @@ public class ShopDetailController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        int s_id = Integer.parseInt(request.getParameter("id"));
-        Shops shop = SellersDao.getShopById(s_id);
-        ArrayList<Products> plist = ProductDao.getProductsByShop(s_id);
-        ArrayList<ShopCategory> cate_shop = CategoryDao.getShopCategoryByShop(s_id);
-        ProductDao dao = new ProductDao();
-        
-        HttpSession session = request.getSession();
-        session.setAttribute("sh", shop);
-        session.setAttribute("cate_shop", cate_shop);
-        session.setAttribute("product_by_shop", plist);
-        session.setAttribute("productDao", dao);
-        request.getRequestDispatcher("shop_detail.jsp").forward(request, response);
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ShopProfileController</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ShopProfileController at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -76,7 +73,10 @@ public class ShopDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String shop_name = request.getParameter("sname");
+        String description = request.getParameter("des");
+        int shop_id = ((Users)request.getSession().getAttribute("user")).getId();
+        
     }
 
     /**

@@ -14,7 +14,7 @@ public class ShippingUnits {
     private String name;
     private int cost;
     private int support_shippingmethod;
-    public Users user;
+    private Users user;
 
     public ShippingUnits() {
     }
@@ -51,6 +51,14 @@ public class ShippingUnits {
         this.support_shippingmethod = support_shippingmethod;
     }
 
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+    
     @Override
     public String toString() {
         return "ShippingUnits{" + "id=" + id + ", name=" + name + ", cost=" + cost + ", support_shippingmethod=" + support_shippingmethod + '}';

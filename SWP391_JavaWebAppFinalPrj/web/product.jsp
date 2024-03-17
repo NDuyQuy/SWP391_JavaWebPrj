@@ -35,9 +35,7 @@
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
             <!-- header end -->
-
             <main>
-
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
@@ -114,18 +112,18 @@
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div class="row">
-                                            <c:forEach var="pr" items="${plist}" begin="${first}" end="${last}">
+                                            <c:forEach var="pr" items="${plist}" begin="${requestScope.first}" end="${requestScope.last}">
                                                 <div class="col-lg-4 col-md-4">
                                                     <div class="product-wrapper mb-50">
                                                         <div class="product-img mb-25">
-                                                            <a href="ProductDetail?product=${pr.productID}">
-                                                                <img src="${pr.productImg}" alt="">
+                                                            <a href="ProductDetail?product=${pr.product_id}">
+                                                                <img src="${pr.img}" alt="">
                                                             </a>
                                                             <div class="product-action text-center">
-                                                                <a href="AddToCart?id=${pr.productID}" title="Thêm vào giỏ hàng">
+                                                                <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
                                                                     <i class="flaticon-shopping-cart"></i>
                                                                 </a>
-                                                                <a href="ProductDetail?product=${pr.productID}" title="Xem chi tiết">
+                                                                <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
                                                                     <i class="flaticon-eye"></i>
                                                                 </a>
                                                             </div>
@@ -136,15 +134,15 @@
                                                         </div>
                                                         <div class="product-content">
                                                             <div class="pro-cat mb-10">
-                                                                <a href="SearchProduct?cate=${pr.mCate.categoryID}">${pr.mCate.categoryName} > </a>
-                                                                <a href="ShopDetail?id=${pr.shop.user.userID}#cate${pr.sCate.categoryID}" style="color: #525470">${pr.sCate.categoryName}</a>
+                                                                <a href="SearchProduct?cate=${pr.shopCategory.maincategory.name}">${pr.shopCategory.maincategory.name} > </a>
+                                                                <a href="ShopDetail?id=${pr.shop.users.id}#cate${pr.shopCategory.id}" style="color: #525470">${pr.shopCategory.name}</a>
                                                             </div>
                                                             <h4>
-                                                                <a href="ProductDetail?product=${pr.productID}">${pr.productName}</a>
+                                                                <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
                                                             </h4>
                                                             <div class="product-meta">
                                                                 <div class="pro-price">
-                                                                    <span><fmt:formatNumber value="${pr.price}"/>đ</span>
+                                                                    <span><fmt:formatNumber value="${pr.money}"/>đ</span>
                                                                     <!--<span class="old-price">$230.00 USD</span>-->
                                                                 </div>
                                                             </div>
@@ -155,13 +153,13 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        <c:forEach var="pr" items="${plist}" begin="${first}" end="${last}">
+                                        <c:forEach var="pr" items="${plist}" begin="${requestScope.first}" end="${requestScope.last}">
                                             <div class="row">
                                                 <div class="col-xl-5">
                                                     <div class="product-wrapper mb-30">
                                                         <div class="product-img">
-                                                            <a href="ProductDetail?product=${pr.productID}">
-                                                                <img src="${pr.productImg}" alt="">
+                                                            <a href="ProductDetail?product=${pr.product_id}">
+                                                                <img src="${pr.img}" alt="">
                                                             </a>
                                                             <div class="sale-tag">
                                                                 <span class="new">new</span>
@@ -173,11 +171,11 @@
                                                 <div class="col-xl-7">
                                                     <div class="product-content pro-list-content pr-0 mb-50">
                                                         <div class="pro-cat mb-10">
-                                                            <a href="SearchProduct?cate=${pr.mCate.categoryID}">${pr.mCate.categoryName} > </a>
-                                                            <a href="#">${pr.sCate.categoryName}</a>
+                                                            <a href="SearchProduct?cate=${pr.shopCategory.maincategory.id}">${pr.shopCategory.maincategory.name} > </a>
+                                                            <a href="#">${pr.shopCategory.maincategory.name}</a>
                                                         </div>
                                                         <h4>
-                                                            <a href="ProductDetail?product=${pr.productID}">${pr.productName}</a>
+                                                            <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
                                                         </h4>
                                                         <div class="product-meta mb-10">
                                                             <div class="pro-price">
@@ -187,10 +185,10 @@
                                                         </div>
                                                         <p>${pr.description}</p>
                                                         <div class="product-action">
-                                                            <a href="AddToCart?id=${pr.productID}" title="Thêm vào giỏ hàng">
+                                                            <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
                                                                 <i class="flaticon-shopping-cart"></i>
                                                             </a>
-                                                            <a href="ProductDetail?product=${pr.productID}" title="Xem chi tiết">
+                                                            <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
                                                                 <i class="flaticon-eye"></i>
                                                             </a>
                                                         </div>
@@ -249,7 +247,6 @@
                                         </button>
                                     </form>
                                 </div>
-
                                 <div class="shop-widget">
                                     <h3 class="shop-title">Catergories</h3>
                                     <ul class="shop-link">
@@ -265,7 +262,7 @@
                                         <c:forEach var="pr" items="${sessionScope.recent_list}">
                                             <li>
                                                 <div class="side-pro-img">
-                                                    <a href="ProductDetail?product=${pr.productID}"><img src="${pr.productImg}" alt=""></a>
+                                                    <a href="ProductDetail?product=${pr.product_id}"><img src="${pr.img}" alt=""></a>
                                                 </div>
                                                 <div class="side-pro-content">
                                                     <div class="side-pro-rating">
@@ -275,9 +272,9 @@
                                                         <i class="fas fa-star"></i>
                                                         <i class="fas fa-star"></i>
                                                     </div>
-                                                    <h5><a href="ProductDetail?product=${pr.productID}">${pr.productName}</a></h5>
+                                                    <h5><a href="ProductDetail?product=${pr.product_id}">${pr.name}</a></h5>
                                                     <div class="side-pro-price">
-                                                        <span><fmt:formatNumber value="${pr.price}"/>đ</span>
+                                                        <span><fmt:formatNumber value="${pr.money}"/>đ</span>
                                                     </div>
                                                 </div>
                                             </li>

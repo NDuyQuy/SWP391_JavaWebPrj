@@ -26,13 +26,30 @@ public class Orders {
     private int shippingunit_id;
     private Date order_date;
     private int type;
-    public Users customer;
-    public Shops shop;
-    public ShippingUnits shippingunit;
+    private Users customer;
+    private Shops shop;
+    private ShippingUnits shippingunit;
 
     public Orders() {
     }
 
+    public Orders(int order_id, int customer_id, int shop_id, int shipping_cost, int total, String payment_method, String status, String receiver_name, String receiver_phone, String receiver_address, String shipping_method, int shippingunit_id, Date order_date, int type) {
+        this.order_id = order_id;
+        this.customer_id = customer_id;
+        this.shop_id = shop_id;
+        this.shipping_cost = shipping_cost;
+        this.total = total;
+        this.payment_method = payment_method;
+        this.status = status;
+        this.receiver_name = receiver_name;
+        this.receiver_phone = receiver_phone;
+        this.receiver_address = receiver_address;
+        this.shipping_method = shipping_method;
+        this.shippingunit_id = shippingunit_id;
+        this.order_date = order_date;
+        this.type = type;
+    }
+    
     public int getOrder_id() {
         return order_id;
     }
@@ -137,6 +154,22 @@ public class Orders {
         this.type = type;
     }
 
+    public int getShop_id() {
+        return shop_id;
+    }
+
+    public void setShop_id(int shop_id) {
+        this.shop_id = shop_id;
+    }
+
+    public Users getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Users customer) {
+        this.customer = customer;
+    }
+
     public Shops getShop() {
         return shop;
     }
@@ -145,6 +178,14 @@ public class Orders {
         this.shop = shop;
     }
 
+    public ShippingUnits getShippingunit() {
+        return shippingunit;
+    }
+
+    public void setShippingunit(ShippingUnits shippingunit) {
+        this.shippingunit = shippingunit;
+    }
+    
     @Override
     public String toString() {
         return "Orders{" + "order_id=" + order_id + ", customer_id=" + customer_id + ", shop_id=" + shop_id + ", shipping_cost=" + shipping_cost + ", total=" + total + ", payment_method=" + payment_method + ", status=" + status + ", receiver_name=" + receiver_name + ", receiver_phone=" + receiver_phone + ", receiver_address=" + receiver_address + ", shipping_method=" + shipping_method + ", shippingunit_id=" + shippingunit_id + ", order_date=" + order_date + ", type=" + type + '}';

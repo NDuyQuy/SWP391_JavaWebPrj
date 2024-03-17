@@ -9,7 +9,7 @@ go
 create table users
 (
 	[id] int primary key identity(1,1),
-	[usernname]  nvarchar(50),
+	[username]  nvarchar(50),
 	[password]  nvarchar(50),
 	[email] nvarchar(100),
 	[phone]  nvarchar(15),

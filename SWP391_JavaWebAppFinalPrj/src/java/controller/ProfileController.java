@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 //import static jdk.nashorn.internal.runtime.regexp.joni.constants.AsmConstants.S;
-import model.User;
+import model.Users;
 
 /**
  *
@@ -78,8 +78,8 @@ public class ProfileController extends HttpServlet {
             String fname = request.getParameter("fname");
             String addr = request.getParameter("addr");
             String phone = request.getParameter("phone");
-            User u =((User) request.getSession().getAttribute("user"));
-            String uname = u.getUserName();
+            Users u =((Users) request.getSession().getAttribute("user"));
+            String uname = u.getUsername();
             UsersDao.updateProfile(fname, phone, addr, uname);
             //Change user data
             u.setFullname(fname);

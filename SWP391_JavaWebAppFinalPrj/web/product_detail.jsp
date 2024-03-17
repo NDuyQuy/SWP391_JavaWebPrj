@@ -67,7 +67,6 @@
             <!-- header end -->
 
             <main>
-
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
@@ -112,7 +111,6 @@
                                 <h2 class="pro-details-title mb-15">${pr.productName}</h2>
                                 <div class="details-price mb-20">
                                     <span><fmt:formatNumber value="${pr.price}"/>đ</span>
-                                    <!--<span class="old-price">$246.00</span>-->
                                 </div>
                                 <div class="product-variant" >
                                     <div class="product-desc variant-item" style="display: flex;">

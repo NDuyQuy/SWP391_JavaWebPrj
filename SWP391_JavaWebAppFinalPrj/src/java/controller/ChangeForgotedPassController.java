@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.User;
+import model.Users;
 
 /**
  *
@@ -59,8 +59,8 @@ public class ChangeForgotedPassController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String pass = request.getParameter("pass");
-        User u = (User)request.getSession().getAttribute("user");
-        UsersDao.changePassword(u.getUserName(), pass);
+        Users u = (Users)request.getSession().getAttribute("user");
+        UsersDao.changePassword(u.getUsername(), pass);
         request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
 

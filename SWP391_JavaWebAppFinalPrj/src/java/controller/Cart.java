@@ -74,7 +74,7 @@ public class Cart extends HttpServlet {
         if (user != null) {
             List<CartDetail> cartItems = CartDao.getCartItems(user.getId());
             Map<String, List<CartDetail>> groupedByShop = cartItems.stream()
-                .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShop_name()));
+                .collect(Collectors.groupingBy(cartItem -> cartItem.getProduct().getShop().getShop_name()));
             request.setAttribute("cartItems", cartItems);
             request.setAttribute("cartGroup", groupedByShop);
           

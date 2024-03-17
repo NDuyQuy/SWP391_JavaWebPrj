@@ -13,7 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.User;
+import model.Users;
 import password_supporter.PasswordManager;
 /**
  *
@@ -47,7 +47,7 @@ public class GoogleLoginServlet extends HttpServlet {
         Boolean verify_email = userInfo.get("verified_email").getAsBoolean();
         String url = "";
         if (verify_email) {
-            User u = UsersDao.getUserInfoByEmail(email);
+            Users u = UsersDao.getUserInfoByEmail(email);
             request.getSession().setAttribute("user", u);
             int role = u.getRole();
             //switch the url 

@@ -11,6 +11,7 @@ import dao.ProductDao;
 import static dao.ProductDao.getProductById;
 import java.sql.SQLException;
 import model.Shops;
+import model.Users;
 
 public class CartDao {
 
@@ -18,10 +19,10 @@ public class CartDao {
     private static final String UPDATE_CART_ITEM_QUANTITY = "UPDATE cartdetail SET quantity = ? WHERE user_id = ? AND product_id = ?";
     private static final String REMOVE_FROM_CART = "DELETE FROM cartdetail WHERE user_id = ? AND product_id = ?";
     // private static final String GET_CART_ITEMS = "SELECT * FROM [cartdetail] WHERE [user_id] = ?";
-    private static final String GET_CART_ITEMS = "SELECT cartdetail.user_id, products.*, shops.shop_name\n"
+    private static final String GET_CART_ITEMS = "SELECT quantity \n"
             + "FROM cartdetail\n"
-            + "INNER JOIN products ON cartdetail.product_id = products.product_id\n"
-            + "INNER JOIN shops ON products.shop_id = shops.shop_id\n"
+            + "INNER JOIN products ON products.product_id = cartdetail.product_id\n"
+            + "INNER JOIN users ON users.id = cartdetail.user_id\n"
             + "WHERE cartdetail.user_id = ?";
     private static final String CLEAR_CART = "DELETE FROM cartdetail WHERE user_id = ?";
 
@@ -110,8 +111,8 @@ public class CartDao {
                 int productId = rs.getInt("product_id");
                 int quantity = rs.getInt("quantity");
                 String shop_name = rs.getString("shop_name");
-                Shops shop = new Shops();
-                shop.setShop_name(shop_name);
+                Users user = new Users ();
+                user.setId(userId);
                 // Lấy thông tin sản phẩm từ ResultSet
                 Products product = new Products();
                 product.setProduct_id(productId);
@@ -120,7 +121,7 @@ public class CartDao {
                 product.setImg(rs.getString("img"));
                 product.setQuantity(rs.getInt("quantity"));
                 // Tạo đối tượng CartItem và thêm vào danh sách
-                cartItems.add(new CartDetail(userId, productId, quantity, shop, product));
+                cartItems.add(new CartDetail(userId, productId, quantity, user, product));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +154,7 @@ public class CartDao {
                 System.out.println("Product ID: " + cartItem.getProduct().getProduct_id());
                 System.out.println("Product Name: " + cartItem.getProduct().getName());
                 System.out.println("Quantity: " + cartItem.getQuantity());
-                System.out.println("Shop Name: " + cartItem.getShop().getShop_name());
+                System.out.println("Shop Name: " + cartItem.getProduct().getShop().getShop_name());
                 System.out.println("Total Price: " + (cartItem.getProduct().getMoney() * cartItem.getQuantity()));
                 System.out.println("-------------");
             }

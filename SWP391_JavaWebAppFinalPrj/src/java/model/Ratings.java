@@ -16,7 +16,7 @@ public class Ratings {
     private Date time_stamp;
     private int score;
     private String comment;
-    public OrderDetail orderdetail;
+    private OrderDetail orderdetail;
 
     public Ratings() {
     }
@@ -68,7 +68,6 @@ public class Ratings {
     public void setOrderdetail(OrderDetail orderdetail) {
         this.orderdetail = orderdetail;
     }
-    
     
 
     @Override

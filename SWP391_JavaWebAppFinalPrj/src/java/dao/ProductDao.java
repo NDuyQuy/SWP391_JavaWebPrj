@@ -7,8 +7,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import model.Products;
 
 /**
@@ -16,13 +16,14 @@ import model.Products;
  * @author hien
  */
 public class ProductDao {
-    private static final String GETALLPRODUCTS = "Select [product_id],[shop_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products]";
+    private static final String GETALLPRODUCTS = "Select [product_id],[shop_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products]";
     private static final String GETHIGHESTPRICE = "Select top(1) [product_id],[price] from [products] order by price desc";
-    private static final String GETPRODUCTBYPRICE = "Select [product_id],[shop_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [price] >= ? and [price] <= ?";
-    private static final String GETPRODUCTBYMAINCATEID = "Select [product_id],[shop_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [mcate_id] = ?";
-    private static final String GETPRODUCTBYID = "Select [shop_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [product_id]=?";
-    private static final String GETPRODUCTSBYSHOP = "Select [product_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [shop_id] = ?";
-    private static final String GETPRODUCTSBYSHOPCATEID = "Select [product_id],[shop_id],[mcate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [scate_id] = ?";
+    private static final String GETPRODUCTBYPRICE = "Select [product_id],[shop_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [price] >= ? and [price] <= ?";
+    private static final String GETPRODUCTBYMAINCATEID = "SELECT [product_id],p.[shop_id],[scate_id],p.[description],[created_date],p.[name],[price],[img],[quantity] "
+            + "FROM [products] p inner join [shopcategory] sc ON sc.id = p.scate_id WHERE sc.[maincate_id] = ?";
+    private static final String GETPRODUCTBYID = "Select [shop_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [product_id]=?";
+    private static final String GETPRODUCTSBYSHOP = "Select [product_id],[shop_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [shop_id] = ?";
+    private static final String GETPRODUCTSBYSHOPCATEID = "Select [product_id],[shop_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [scate_id] = ?";
     
     public static ArrayList<Products> getAllProducts(){
         PreparedStatement ptm = null;
@@ -33,17 +34,19 @@ public class ProductDao {
             ptm = con.prepareStatement(GETALLPRODUCTS);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Products();
-                p.setProduct_id(rs.getInt("product_id"));
-                p.setShop_id(rs.getInt("shop_id"));
-                p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
-                p.setsCate(CategoryDao.getShopCategoryById(rs.getInt("scate_id")));
-                p.setDescription(rs.getString("description").trim());
-                p.setCreatedDate(LocalDate.parse(rs.getDate("created_date").toString()));
-                p.setProductName(rs.getString("name").trim());
-                p.setPrice(rs.getFloat("price"));
-                p.setProductImg(rs.getString("img").trim());
-                p.setQuantity(rs.getInt("quantity"));
+                int product_id = rs.getInt("product_id");
+                int shop_id = rs.getInt("shop_id");
+                int shopcategory_id = rs.getInt("scate_id");
+                String description = rs.getString("description");
+                //CREATED DATE IN SQL DB IS DATETIME
+                Date created_date = new Date(rs.getTimestamp("created_date").getTime());
+                String product_name = rs.getString("name");
+                int price = rs.getInt("price");
+                String product_img = rs.getString("img");
+                int quantity = rs.getInt("quantity");
+                p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 results.add(p);
             }
         }catch(Exception ex){
@@ -60,8 +63,8 @@ public class ProductDao {
             ptm = con.prepareStatement(GETHIGHESTPRICE);
             rs = ptm.executeQuery();
             if(rs.next()){
-                p.setProductID(rs.getInt("product_id"));
-                p.setPrice(rs.getFloat("price"));
+                p.setProduct_id(rs.getInt("product_id"));
+                p.setMoney(rs.getInt("price"));
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -80,17 +83,19 @@ public class ProductDao {
             ptm.setInt(2, max);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Products();
-                p.setProductID(rs.getInt("product_id"));
-                p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
-                p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
-                p.setsCate(CategoryDao.getShopCategoryById(rs.getInt("scate_id")));
-                p.setDescription(rs.getString("description").trim());
-                p.setCreatedDate(LocalDate.parse(rs.getDate("created_date").toString()));
-                p.setProductName(rs.getString("name").trim());
-                p.setPrice(rs.getInt("price"));
-                p.setProductImg(rs.getString("img").trim());
-                p.setQuantity(rs.getInt("quantity"));
+                int product_id = rs.getInt("product_id");
+                int shop_id = rs.getInt("shop_id");
+                int shopcategory_id = rs.getInt("scate_id");
+                String description = rs.getString("description");
+                //CREATED DATE IN SQL DB IS DATETIME
+                Date created_date = new Date(rs.getTimestamp("created_date").getTime());
+                String product_name = rs.getString("name");
+                int price = rs.getInt("price");
+                String product_img = rs.getString("img");
+                int quantity = rs.getInt("quantity");
+                p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 result.add(p);
             }
         }catch(Exception ex){
@@ -109,17 +114,19 @@ public class ProductDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Products();
-                p.setProductID(rs.getInt("product_id"));
-                p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
-                p.setmCate(CategoryDao.getMainCategoryById(id));
-                p.setsCate(CategoryDao.getShopCategoryById(rs.getInt("scate_id")));
-                p.setDescription(rs.getString("description").trim());
-                p.setCreatedDate(LocalDate.parse(rs.getDate("created_date").toString()));
-                p.setProductName(rs.getString("name").trim());
-                p.setPrice(rs.getInt("price"));
-                p.setProductImg(rs.getString("img").trim());
-                p.setQuantity(rs.getInt("quantity"));
+                int product_id = rs.getInt("product_id");
+                int shop_id = rs.getInt("shop_id");
+                int shopcategory_id = rs.getInt("scate_id");
+                String description = rs.getString("description");
+                //CREATED DATE IN SQL DB IS DATETIME
+                Date created_date = new Date(rs.getTimestamp("created_date").getTime());
+                String product_name = rs.getString("name");
+                int price = rs.getInt("price");
+                String product_img = rs.getString("img");
+                int quantity = rs.getInt("quantity");
+                p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 product_by_mcate.add(p);
             }
         }catch(Exception ex){
@@ -138,17 +145,19 @@ public class ProductDao {
             ptm.setInt(1, scate_id);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Product();
-                p.setProductID(rs.getInt("product_id"));
-                p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
-                p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
-                p.setsCate(CategoryDao.getShopCategoryById(scate_id));
-                p.setDescription(rs.getString("description").trim());
-                p.setCreatedDate(LocalDate.parse(rs.getDate("created_date").toString()));
-                p.setProductName(rs.getString("name").trim());
-                p.setPrice(rs.getInt("price"));
-                p.setProductImg(rs.getString("img").trim());
-                p.setQuantity(rs.getInt("quantity"));
+                int product_id = rs.getInt("product_id");
+                int shop_id = rs.getInt("shop_id");
+                int shopcategory_id = scate_id;
+                String description = rs.getString("description");
+                //CREATED DATE IN SQL DB IS DATETIME
+                Date created_date = new Date(rs.getTimestamp("created_date").getTime());
+                String product_name = rs.getString("name");
+                int price = rs.getInt("price");
+                String product_img = rs.getString("img");
+                int quantity = rs.getInt("quantity");
+                p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 product_by_scate.add(p);
             }
         }catch(Exception ex){
@@ -166,16 +175,19 @@ public class ProductDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p.setProductID(id);
-                p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
-                p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
-                p.setsCate(CategoryDao.getShopCategoryById(rs.getInt("scate_id")));
-                p.setDescription(rs.getString("description").trim());
-                p.setCreatedDate(LocalDate.parse(rs.getDate("created_date").toString()));
-                p.setProductName(rs.getString("name").trim());
-                p.setPrice(rs.getInt("price"));
-                p.setProductImg(rs.getString("img").trim());
-                p.setQuantity(rs.getInt("quantity"));
+                int product_id = id;
+                int shop_id = rs.getInt("shop_id");
+                int shopcategory_id = rs.getInt("scate_id");
+                String description = rs.getString("description");
+                //CREATED DATE IN SQL DB IS DATETIME
+                Date created_date = new Date(rs.getTimestamp("created_date").getTime());
+                String product_name = rs.getString("name");
+                int price = rs.getInt("price");
+                String product_img = rs.getString("img");
+                int quantity = rs.getInt("quantity");
+                p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -193,17 +205,19 @@ public class ProductDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Products();
-                p.setProductID(rs.getInt("product_id"));
-                p.setShop(SellersDao.getShopById(id));
-                p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
-                p.setsCate(CategoryDao.getShopCategoryById(rs.getInt("scate_id")));
-                p.setDescription(rs.getString("description").trim());
-                p.setCreatedDate(LocalDate.parse(rs.getDate("created_date").toString()));
-                p.setProductName(rs.getString("name").trim());
-                p.setPrice(rs.getInt("price"));
-                p.setProductImg(rs.getString("img").trim());
-                p.setQuantity(rs.getInt("quantity"));
+                int product_id = rs.getInt("product_id");
+                int shop_id = rs.getInt("shop_id");
+                int shopcategory_id = rs.getInt("scate_id");
+                String description = rs.getString("description");
+                //CREATED DATE IN SQL DB IS DATETIME
+                Date created_date = new Date(rs.getTimestamp("created_date").getTime());
+                String product_name = rs.getString("name");
+                int price = rs.getInt("price");
+                String product_img = rs.getString("img");
+                int quantity = rs.getInt("quantity");
+                p = new Products(product_id, shop_id, shopcategory_id, description, created_date, product_name, price, product_img, quantity);
+                p.setShopCategory(CategoryDao.getShopCategoryById(shopcategory_id));
+                p.setShop(SellersDao.getShopById(shop_id)); 
                 product_by_shop.add(p);
             }
         }catch(Exception ex){
@@ -213,6 +227,8 @@ public class ProductDao {
     }
     
     public static void main(String[] args) {
+        ArrayList<Products> pr = getProductsByMainCateId(1);
+        pr.forEach(pro->System.out.println(pro.getShopCategory()));
         
     }
 }

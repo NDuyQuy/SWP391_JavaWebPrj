@@ -18,8 +18,8 @@ public class Messages {
     private Date time_stamp;
     private int message_status;
     private String content;
-    public Users customer;
-    public Shops shop;
+    private Users customer;
+    private Shops shop;
 
     public Messages() {
     }
@@ -72,6 +72,22 @@ public class Messages {
         this.content = content;
     }
 
+    public Users getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Users customer) {
+        this.customer = customer;
+    }
+
+    public Shops getShop() {
+        return shop;
+    }
+
+    public void setShop(Shops shop) {
+        this.shop = shop;
+    }
+    
     @Override
     public String toString() {
         return "Messages{" + "message_id=" + message_id + ", shop_id=" + shop_id + ", customer_id=" + customer_id + ", time_stamp=" + time_stamp + ", message_status=" + message_status + ", content=" + content + '}';

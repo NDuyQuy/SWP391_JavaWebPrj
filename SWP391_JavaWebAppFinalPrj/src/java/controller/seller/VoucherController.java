@@ -60,15 +60,16 @@ public class VoucherController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "/seller/seller_voucher_management.jsp";
-        int id = ((User) request.getSession().getAttribute("user")).getUserID();
+        int id = ((Users) request.getSession().getAttribute("user")).getId();
         String open = request.getParameter("open");
         if (open != null) {
             url = (open.equals("create")) ? "/seller/seller_createvoucher.jsp" : "/seller/seller_editvoucher.jsp";
             try {
                 int voucher_id = Integer.parseInt(request.getParameter("v_id"));
-                Voucher v = SellersDao.getVoucherByID(voucher_id);
+                Vouchers v = SellersDao.getVoucherByID(voucher_id);
                 request.setAttribute("voucher", v);
             } catch (Exception e) {
+                
             }
         } else {
             //Get the list of shop categories
@@ -89,9 +90,9 @@ public class VoucherController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "/seller/seller_voucher_management.jsp";
-        int id = ((User) request.getSession().getAttribute("user")).getUserID();
+        int id = ((Users) request.getSession().getAttribute("user")).getId();
         String act = request.getParameter("act");
-        Voucher voucher = null;
+        Vouchers voucher = null;
         try {
             switch (act) {
                 case "create":
@@ -128,9 +129,9 @@ public class VoucherController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Voucher getVoucher(HttpServletRequest request, HttpServletResponse response)
+    private Vouchers getVoucher(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Voucher voucher = null;
+        Vouchers voucher = null;
         try {
             String voucher_id = request.getParameter("voucher_id");
             int id = (voucher_id == null || voucher_id.isEmpty()) ? 0 : Integer.parseInt(voucher_id);
@@ -145,7 +146,7 @@ public class VoucherController extends HttpServlet {
             int use_count = Integer.parseInt(request.getParameter("use_count"));
             String description = request.getParameter("description");
             int product_applied = (request.getParameter("product_applied")!= null)?Integer.parseInt(request.getParameter("product_applied")): 1;
-            voucher = new Voucher(id, code, discount_amount, start_date, expire_date, type, min_require, description, type, product_applied, use_count);
+            voucher = new Vouchers(id, code, discount_amount, start_date, expire_date, type, min_require, description, type, product_applied, use_count);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

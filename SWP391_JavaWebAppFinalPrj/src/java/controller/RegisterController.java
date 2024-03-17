@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import dao.UsersDao;
 import email.SendEmail;
-import model.User;
+import model.Users;
 import model.VerifyCode;
 
 /**
@@ -64,7 +64,7 @@ public class RegisterController extends HttpServlet {
         String username = request.getParameter("username");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        User u = new User(username, password, email);
+        Users u = new Users(username, password, email);
         //SEND EMAIL, SOTRE USERS DATA,VERIFY CODE DATA
         request.getSession().setAttribute("registration", u);
         String verifyCode = SendEmail.generateRandomNumber(6);
@@ -93,8 +93,8 @@ public class RegisterController extends HttpServlet {
             String verifyCode = request.getParameter("verify");
             long currentTime = System.currentTimeMillis();
             if(verifyCode.equals(realCode.getCode())&&currentTime<=realCode.getExpiredTime()){
-                User u = (User) request.getSession().getAttribute("registration");
-                UsersDao.register(u.getUserName(), u.getPassword(), u.getEmail());
+                Users u = (Users) request.getSession().getAttribute("registration");
+                UsersDao.register(u.getUsername(), u.getPassword(), u.getEmail());
             }
         } catch (Exception e) {
             request.setAttribute("error", e.getMessage());

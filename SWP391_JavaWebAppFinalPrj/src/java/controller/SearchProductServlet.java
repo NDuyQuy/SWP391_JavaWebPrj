@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.MainCategory;
-import model.Product;
+import model.Products;
 
 /**
  *
@@ -37,24 +37,23 @@ public class SearchProductServlet extends HttpServlet {
             request.setCharacterEncoding("utf-8");
             String keyword = request.getParameter("kw");
             String category = request.getParameter("cate");
-            ArrayList<Product> all_product = ProductDao.getAllProducts();
-            ArrayList<Product> result = new ArrayList<>();
+            ArrayList<Products> all_product = ProductDao.getAllProducts();
+            ArrayList<Products> result = new ArrayList<>();
             if (keyword == null && category != null) {
                 result = ProductDao.getProductsByMainCateId(Integer.parseInt(category));
             } else if (keyword.equals("") && category == null) {
                 result = all_product;
             } else if (keyword != null) {
-
                 String[] kw = keyword.split(" ");
-                for (Product p : all_product) {
+                for (Products p : all_product) {
                     for (int i = 0; i < kw.length; i++) {
-                        if(p.getProductName().contains(keyword)){
+                        if(p.getName().contains(keyword)){
                             result.add(p);
                             break;
-                        } else if (p.getmCate().getCategoryName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getName().contains(kw[i])) {
                             result.add(p);
                             break;
-                        } else if (p.getsCate().getCategoryName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getName().contains(kw[i])) {
                             result.add(p);
                             break;
                         }
@@ -73,7 +72,7 @@ public class SearchProductServlet extends HttpServlet {
             int first = (page - 1) * perPage;
             int last = Math.min(page * perPage, result.size()) - 1;
 
-            float max_price = ProductDao.getHighestPrice().getPrice();
+            float max_price = ProductDao.getHighestPrice().getMoney();
 
             request.setAttribute("first", first);
             request.setAttribute("last", last);

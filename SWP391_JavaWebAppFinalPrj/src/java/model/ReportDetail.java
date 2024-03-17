@@ -17,8 +17,8 @@ public class ReportDetail {
     private int reporter_id;
     private Date created_date;
     private String text;
-    public Shops reported_shop;
-    public Users reporter;
+    private Shops reported_shop;
+    private Users reporter;
 
     public ReportDetail() {
     }
@@ -63,6 +63,22 @@ public class ReportDetail {
         this.text = text;
     }
 
+    public Shops getReported_shop() {
+        return reported_shop;
+    }
+
+    public void setReported_shop(Shops reported_shop) {
+        this.reported_shop = reported_shop;
+    }
+
+    public Users getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(Users reporter) {
+        this.reporter = reporter;
+    }
+    
     @Override
     public String toString() {
         return "ReportDetail{" + "id=" + id + ", shop_id=" + shop_id + ", reporter_id=" + reporter_id + ", created_date=" + created_date + ", text=" + text + '}';

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+import dao.CategoryDao;
 
 /**
  *
@@ -13,11 +14,12 @@ public class ShopCategory {
     private int shop_id;
     private String name;
     private String description;
-    public MainCategory maincategory;
-    public Shops shop;
+    private MainCategory maincategory;
+    private Shops shop;
 
     public ShopCategory() {
     }
+
 
     public ShopCategory(int id, int shop_id, String name, String description, MainCategory maincategory, Shops shop) {
         this.id = id;
@@ -28,6 +30,16 @@ public class ShopCategory {
         this.shop = shop;
     }
     
+    
+
+
+    public ShopCategory(int id, int maincate_id, int shop_id, String name, String description) {
+        this.id = id;
+        this.maincategory = CategoryDao.getMainCategoryById(maincate_id);
+        this.shop_id = shop_id;
+        this.name = name;
+        this.description = description;
+    }
     
 
     public int getId() {
@@ -77,7 +89,6 @@ public class ShopCategory {
     public void setShop(Shops shop) {
         this.shop = shop;
     }
-    
     
 
     @Override
