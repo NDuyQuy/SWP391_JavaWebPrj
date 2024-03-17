@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.CartItem;
-import model.User;
+import model.CartDetail;
+import model.Users;
 
 /**
  *
@@ -68,13 +68,13 @@ public class Cart extends HttpServlet {
             throws ServletException, IOException {
       
         // Lấy thông tin người dùng từ session
-        User user = (User) request.getSession().getAttribute("user");
+        Users user = (Users) request.getSession().getAttribute("user");
 
       
         if (user != null) {
-            List<CartItem> cartItems = CartDao.getCartItems(user.getUserID());
-            Map<String, List<CartItem>> groupedByShop = cartItems.stream()
-                .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShopName()));
+            List<CartDetail> cartItems = CartDao.getCartItems(user.getId());
+            Map<String, List<CartDetail>> groupedByShop = cartItems.stream()
+                .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShop_name()));
             request.setAttribute("cartItems", cartItems);
             request.setAttribute("cartGroup", groupedByShop);
           

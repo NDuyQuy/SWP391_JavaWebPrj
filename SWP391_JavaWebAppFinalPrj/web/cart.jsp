@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="model.CartItem" %>
+<%@ page import="model.CartDetail" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="dao.UsersDao" %>
-<%@ page import="model.User" %>
+<%@ page import="model.Users" %>
 
 <html class="no-js" lang="zxx">
 
@@ -112,8 +112,8 @@
                                                             <button type="submit" name="action" value="increase">+</button>
                                                             -->
                                                             <buton<a href="UpdateQuantityServlet?id=${value.product.productID}&action=increase">+</a>
-                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="0">
-                                                <buton><a href="UpdateQuantityServlet?id=${value.product.productID}&action=decrease">-</a></buton>
+                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="1">
+                                                            <buton><a href="UpdateQuantityServlet?id=${value.product.productID}&action=decrease">-</a></buton>
                                                         </td>
                                                         <td class="product-subtotal">
                                                             <span class="amount">${value.product.price * value.quantity}</span>

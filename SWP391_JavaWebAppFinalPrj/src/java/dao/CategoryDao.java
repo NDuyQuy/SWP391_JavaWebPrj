@@ -16,9 +16,18 @@ import model.*;
  */
 public class CategoryDao {
     private static final String GETMAINCATEGORYBYID = "Select [name] FROM [maincategory] WHERE [id]=?";
+    
     private static final String GETSHOPCATEGORYBYID = "Select [id],[maincate_id],[shop_id],[name],[description] FROM [shopcategory] WHERE [id]=?";
+    
     private static final String GETSHOPCATEGORYBYSHOP = "Select [id],[maincate_id],[shop_id],[name],[description] from [shopcategory] where [shop_id]=?";
+    
     private static final String GETMAINCATEGORIES = "Select [id],[name],[description] from [maincategory]";
+    
+    private static final String CREATESHOPCATEGORY = "INSERT INTO [shopcategory]([maincate_id],[shop_id],[name],[description]) VALUES (?, ?, ?, ?)";
+    
+    private static final String UPDATESHOPCATEGORY = "UPDATE [shopcategory] SET [maincate_id] = ?,[shop_id] = ?,[name] = ?,[description] = ? WHERE [id] = ?";
+    
+    private static final String DELETESHOPCATEGORY = "DELETE [shopcategory] WHERE [id] = ?";
     
     public static MainCategory getMainCategoryById(int id){
         PreparedStatement ptm = null;
@@ -105,4 +114,45 @@ public class CategoryDao {
         }
         return cate_shop;
     }
+    
+    public static void addShopCategory(int mainct, String name, String Description, int shop_id) {
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(CREATESHOPCATEGORY);
+            ptm.setInt(1, mainct);
+            ptm.setInt(2, shop_id);
+            ptm.setString(3, name);
+            ptm.setString(4, Description);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void updateShopCategory(int shopct, int mainct, String name, String Description, int shop_id) {
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(UPDATESHOPCATEGORY);
+            ptm.setInt(1, mainct);
+            ptm.setInt(2, shop_id);
+            ptm.setString(3, name);
+            ptm.setString(4, Description);
+            ptm.setInt(5, shopct);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void deleteShopCategory(int shopct) {
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(DELETESHOPCATEGORY);
+            ptm.setInt(1, shopct);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
 }

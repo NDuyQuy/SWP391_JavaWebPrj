@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Product;
-import model.Shop;
+import model.Products;
+import model.Shops;
 import model.ShopCategory;
 
 /**
@@ -38,8 +38,8 @@ public class ShopDetailController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         int s_id = Integer.parseInt(request.getParameter("id"));
-        Shop shop = SellersDao.getShopById(s_id);
-        ArrayList<Product> plist = ProductDao.getProductsByShop(s_id);
+        Shops shop = SellersDao.getShopById(s_id);
+        ArrayList<Products> plist = ProductDao.getProductsByShop(s_id);
         ArrayList<ShopCategory> cate_shop = CategoryDao.getShopCategoryByShop(s_id);
         ProductDao dao = new ProductDao();
         

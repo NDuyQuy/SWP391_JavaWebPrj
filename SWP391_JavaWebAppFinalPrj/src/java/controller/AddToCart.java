@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.User;
+import model.Users;
 
 /**
  *
@@ -36,9 +36,9 @@ public class AddToCart extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         int productId = Integer.parseInt(request.getParameter("id"));
         HttpSession session = request.getSession();
-         User user = (User) session.getAttribute("user");
+        Users user = (Users) session.getAttribute("user");
         CartDao cartDao = new CartDao();
-        cartDao.addToCart(user.getUserID(), productId, 1);
+        cartDao.addToCart(user.getId(), productId, 1);
         
         response.sendRedirect("Home");
     }

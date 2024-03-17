@@ -40,7 +40,7 @@ public class AdminServlet extends HttpServlet {
         try {
             String action = request.getParameter("Action");
             if (action.equals("ViewCategory")) {
-                ArrayList<Category> CategoryList = AdminDAO.Get_Category_List();
+                ArrayList<MainCategory> CategoryList = AdminDAO.Get_Category_List();
                 if (CategoryList != null) {
                     session.setAttribute("CL", CategoryList);
                 }
@@ -48,14 +48,23 @@ public class AdminServlet extends HttpServlet {
             else if (action.equals("AddCategory")) {
                 Continue = false;
                 String Name = request.getParameter("categoryName");
-                AdminDAO.Add_Main_Category(Name);
+                String Description = request.getParameter("description");
+                AdminDAO.Add_Main_Category(Name, Description);
                 url = "/AdminCategory.jsp";
             }
             else if(action.equals("EditCategory")){
                 Continue = false;
                 String Name = request.getParameter("categoryName");
                 int id = Integer.parseInt(request.getParameter("categoryId"));
-                AdminDAO.Update_Main_Category(id,Name);
+                String Description = request.getParameter("description");
+                MainCategory mainct = new MainCategory(id, Name, Description);
+                AdminDAO.Update_Main_Category(mainct);
+                url = "/AdminCategory.jsp";
+            }
+            else if(action.equals("DeleteCategory")){
+                Continue = false;
+                int id = Integer.parseInt(request.getParameter("categoryId"));
+                AdminDAO.Delete_Main_Category(id);
                 url = "/AdminCategory.jsp";
             }
         }

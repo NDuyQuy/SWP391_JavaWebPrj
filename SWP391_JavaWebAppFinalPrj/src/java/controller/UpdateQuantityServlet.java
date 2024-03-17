@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.CartItem;
-import model.User;
+import model.CartDetail;
+import model.Users;
 
 /**
  *
@@ -64,26 +64,28 @@ public class UpdateQuantityServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         User user = (User) request.getSession().getAttribute("user");
-        int userId = user.getUserID();
+         Users user = (Users) request.getSession().getAttribute("user");
+        int userId = user.getId();
 
         int productId = Integer.parseInt(request.getParameter("id"));
-
+        
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
         String action = request.getParameter("action");
         int quantityChange = 0;
 
         if ("decrease".equals(action)) {
-            quantityChange = -1;
+            quantity--;
+            CartDao cartDao = new CartDao();
+            cartDao.updateCartItemQuantity(userId, productId, quantityChange);
         } else if ("increase".equals(action)) {
-            quantityChange = 1;
+            quantity++;
+            CartDao cartDao = new CartDao();
+            cartDao.updateCartItemQuantity(userId, productId, quantityChange);
         } else if ("remove".equals(action)) {
 
             CartDao cartDao = new CartDao();
             cartDao.removeFromCart(userId, productId);
         }
-
-        CartDao cartDao = new CartDao();
-        cartDao.updateCartItemQuantity(userId, productId, quantityChange);
         response.sendRedirect("Cart");
         
     }

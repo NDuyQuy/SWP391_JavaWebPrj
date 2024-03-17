@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import model.Product;
+import model.Products;
 
 /**
  *
@@ -24,18 +24,18 @@ public class ProductDao {
     private static final String GETPRODUCTSBYSHOP = "Select [product_id],[mcate_id],[scate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [shop_id] = ?";
     private static final String GETPRODUCTSBYSHOPCATEID = "Select [product_id],[shop_id],[mcate_id],[description],[created_date],[name],[price],[img],[quantity] from [products] where [scate_id] = ?";
     
-    public static ArrayList<Product> getAllProducts(){
+    public static ArrayList<Products> getAllProducts(){
         PreparedStatement ptm = null;
         ResultSet rs = null;
-        Product p = new Product();
-        ArrayList<Product> results = new ArrayList<>();
+        Products p = new Products();
+        ArrayList<Products> results = new ArrayList<>();
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(GETALLPRODUCTS);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Product();
-                p.setProductID(rs.getInt("product_id"));
-                p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
+                p = new Products();
+                p.setProduct_id(rs.getInt("product_id"));
+                p.setShop_id(rs.getInt("shop_id"));
                 p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
                 p.setsCate(CategoryDao.getShopCategoryById(rs.getInt("scate_id")));
                 p.setDescription(rs.getString("description").trim());
@@ -52,10 +52,10 @@ public class ProductDao {
         return results;
     }
     
-    public static Product getHighestPrice(){
+    public static Products getHighestPrice(){
         PreparedStatement ptm = null;
         ResultSet rs = null;
-        Product p = new Product();
+        Products p = new Products();
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(GETHIGHESTPRICE);
             rs = ptm.executeQuery();
@@ -69,18 +69,18 @@ public class ProductDao {
         return p;
     }
     
-    public static ArrayList<Product> getProductsByPrice(int min, int max){
+    public static ArrayList<Products> getProductsByPrice(int min, int max){
         PreparedStatement ptm = null;
         ResultSet rs = null;
-        ArrayList<Product> result = new ArrayList<>();
-        Product p = null;
+        ArrayList<Products> result = new ArrayList<>();
+        Products p = null;
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(GETPRODUCTBYPRICE);
             ptm.setInt(1, min);
             ptm.setInt(2, max);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Product();
+                p = new Products();
                 p.setProductID(rs.getInt("product_id"));
                 p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
                 p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
@@ -99,17 +99,17 @@ public class ProductDao {
         return result;
     }
     
-    public static ArrayList<Product> getProductsByMainCateId(int id){
+    public static ArrayList<Products> getProductsByMainCateId(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
-        Product p = null;
-        ArrayList<Product> product_by_mcate = new ArrayList<>();
+        Products p = null;
+        ArrayList<Products> product_by_mcate = new ArrayList<>();
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(GETPRODUCTBYMAINCATEID);
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Product();
+                p = new Products();
                 p.setProductID(rs.getInt("product_id"));
                 p.setShop(SellersDao.getShopById(rs.getInt("shop_id")));
                 p.setmCate(CategoryDao.getMainCategoryById(id));
@@ -128,11 +128,11 @@ public class ProductDao {
         return product_by_mcate;
     }
     
-    public static ArrayList<Product> getProductsByShopCateId(int scate_id){
+    public static ArrayList<Products> getProductsByShopCateId(int scate_id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
-        Product p = null;
-        ArrayList<Product> product_by_scate = new ArrayList<>();
+        Products p = null;
+        ArrayList<Products> product_by_scate = new ArrayList<>();
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(GETPRODUCTSBYSHOPCATEID);
             ptm.setInt(1, scate_id);
@@ -157,10 +157,10 @@ public class ProductDao {
         return product_by_scate;
     }
     
-    public static Product getProductById(int id){
+    public static Products getProductById(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
-        Product p = new Product();
+        Products p = new Products();
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(GETPRODUCTBYID);
             ptm.setInt(1, id);
@@ -183,17 +183,17 @@ public class ProductDao {
         return p;
     }
     
-    public static ArrayList<Product> getProductsByShop(int id){
+    public static ArrayList<Products> getProductsByShop(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
-        Product p = null;
-        ArrayList<Product> product_by_shop = new ArrayList<>();
+        Products p = null;
+        ArrayList<Products> product_by_shop = new ArrayList<>();
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(GETPRODUCTSBYSHOP);
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             while(rs.next()){
-                p = new Product();
+                p = new Products();
                 p.setProductID(rs.getInt("product_id"));
                 p.setShop(SellersDao.getShopById(id));
                 p.setmCate(CategoryDao.getMainCategoryById(rs.getInt("mcate_id")));
@@ -213,8 +213,6 @@ public class ProductDao {
     }
     
     public static void main(String[] args) {
-        ArrayList<Product> pr = getAllProducts();
-        Product p = getProductById(2);
-        System.out.println(p.getDescription());
+        
     }
 }
