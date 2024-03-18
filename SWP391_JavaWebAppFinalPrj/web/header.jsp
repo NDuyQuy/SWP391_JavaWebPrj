@@ -9,7 +9,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Co.Handmade</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="site.html">
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" media="all">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,900,900i&amp;subset=vietnamese" rel="stylesheet">
         	<!-- CSS here -->
@@ -93,7 +98,7 @@
                                 <h4>Danh mục</h4>
                                 <ul>
                                     <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                        <li><a href="SearchProduct?cate=${cate.categoryID}"><i class="flaticon-shopping-cart-1"></i> ${cate.categoryName}</a></li>
+                                        <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
                                     </c:forEach>
                                     
                                 </ul>
@@ -105,9 +110,9 @@
                                     <li class="search-btn">
                                         <form autocomplete="off" action="SearchProduct" class="shop-search">
                                             <div class="autocomplete" style="width: 500px;">
-                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${sessionScope.kw}">
+                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${sessionScope.kw}" oninput="checkTextField()">
                                             </div>
-                                            <button type="submit" style="height: 50px; width: 50px">
+                                            <button id="btn-search" type="submit" style="height: 50px; width: 50px" disabled="">
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </form>
@@ -241,7 +246,10 @@
         </header>
 
         <script>
-            var suggestion = ["túi xách", "cài áo", "bông tai", "khăn thêu", "áo sơ mi", "áo thun", "áo dài"];
+            var suggestion = [];
+            <c:forEach var="scate" items="${sessionScope.shop_category_list}">
+            suggestion.push("${scate.name}");
+            </c:forEach>
             function autocomplete(inp, arr) {
                 var currentFocus;
                 inp.addEventListener("input", function (e) {
@@ -320,8 +328,25 @@
                     closeAllLists(e.target);
                 });
             }
-            
+
             autocomplete(document.getElementById("myInput"), suggestion);
+
+            var input = document.getElementById("myInput");
+            input.addEventListener("keydown", function (event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    document.getElementById("btn-search").click();
+                }
+            });
+
+            function checkTextField() {
+                if ($.trim($('#myInput').val()) !== "")
+                {
+                    $('#btn-search').removeAttr("disabled");
+                } else {
+                    $("#btn-search").prop("disabled", true);
+                }
+            }
         </script>
     </body>
 </html>

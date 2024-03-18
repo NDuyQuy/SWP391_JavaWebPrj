@@ -6,6 +6,7 @@ package controller;
 
 import dao.ProductDao;
 import dao.RatingDao;
+import dao.SellersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Product;
+import model.Products;
 import model.Ratings;
 
 /**
@@ -64,9 +65,9 @@ public class ProductDetailController extends HttpServlet {
             throws ServletException, IOException {
         try {
             String product = request.getParameter("product");
-            Product pro = ProductDao.getProductById(Integer.parseInt(product));
-            ArrayList<Product> product_by_shop = ProductDao.getProductsByShop(pro.getShop().getUser().getUserID());
-            ArrayList<Ratings> ratings_by_product = RatingDao.getRatingsByProduct(pro.getProductID());
+            Products pro = ProductDao.getProductById(Integer.parseInt(product));
+            ArrayList<Products> product_by_shop = ProductDao.getProductsByShop(pro.getShop_id());
+            ArrayList<Ratings> ratings_by_product = RatingDao.getRatingsByProduct(pro.getProduct_id());
             float aver_score = 0;
             int aver_rate = 0;
             if (ratings_by_product != null && !ratings_by_product.isEmpty()) {
@@ -76,9 +77,9 @@ public class ProductDetailController extends HttpServlet {
                 aver_rate = (int) Math.round((aver_score/ratings_by_product.size()) * 100);
             }
 
-            ListIterator<Product> iter = product_by_shop.listIterator();
+            ListIterator<Products> iter = product_by_shop.listIterator();
             while (iter.hasNext()) {
-                if (iter.next().getProductID() == pro.getProductID()) {
+                if (iter.next().getProduct_id() == pro.getProduct_id()) {
                     iter.remove();
                 }
             }

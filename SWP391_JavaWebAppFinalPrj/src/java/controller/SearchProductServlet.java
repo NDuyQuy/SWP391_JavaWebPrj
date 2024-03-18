@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.MainCategory;
-import model.Product;
+import model.Products;
 
 /**
  *
@@ -37,24 +37,24 @@ public class SearchProductServlet extends HttpServlet {
             request.setCharacterEncoding("utf-8");
             String keyword = request.getParameter("kw");
             String category = request.getParameter("cate");
-            ArrayList<Product> all_product = ProductDao.getAllProducts();
-            ArrayList<Product> result = new ArrayList<>();
-            if (keyword == null && category != null) {
+            ArrayList<Products> all_product = ProductDao.getAllProducts();
+            ArrayList<Products> result = new ArrayList<>();
+            if (category != null) {
                 result = ProductDao.getProductsByMainCateId(Integer.parseInt(category));
-            } else if (keyword.equals("") && category == null) {
+            } else if (keyword == null || keyword.equals("")) {
                 result = all_product;
             } else if (keyword != null) {
 
                 String[] kw = keyword.split(" ");
-                for (Product p : all_product) {
+                for (Products p : all_product) {
                     for (int i = 0; i < kw.length; i++) {
-                        if(p.getProductName().contains(keyword)){
+                        if(p.getName().toLowerCase().contains(keyword.toLowerCase())){
                             result.add(p);
                             break;
-                        } else if (p.getmCate().getCategoryName().contains(kw[i])) {
+                        } else if (CategoryDao.getMainCategoryById(CategoryDao.getShopCategoryById(p.getScate_id()).getMaincate_id()).getName().contains(kw[i])) {
                             result.add(p);
                             break;
-                        } else if (p.getsCate().getCategoryName().contains(kw[i])) {
+                        } else if (CategoryDao.getShopCategoryById(p.getScate_id()).getName().contains(kw[i])) {
                             result.add(p);
                             break;
                         }
@@ -62,7 +62,7 @@ public class SearchProductServlet extends HttpServlet {
                 }
             }
 
-            int page, perPage = 24;
+            int page, perPage = 15;
             int numPage = result.size() % perPage == 0 ? result.size() / perPage : result.size() / perPage + 1;
             String pageid = request.getParameter("page");
             if (pageid == null) {
@@ -73,7 +73,7 @@ public class SearchProductServlet extends HttpServlet {
             int first = (page - 1) * perPage;
             int last = Math.min(page * perPage, result.size()) - 1;
 
-            float max_price = ProductDao.getHighestPrice().getPrice();
+            float max_price = ProductDao.getHighestPrice().getMoney();
 
             request.setAttribute("first", first);
             request.setAttribute("last", last);

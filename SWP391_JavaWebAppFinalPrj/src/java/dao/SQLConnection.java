@@ -20,7 +20,7 @@ public class SQLConnection {
         String url ="jdbc:sqlserver://localhost:1433;databaseName=SWP391_FinalPrjDB;encrypt=true;trustServerCertificate=true";
         //intergratedSecurity=true (if connect with SQL Server by Window Authentication)
         // 
-        String user = "sa";String pass = "123456";
+        String user = "sa";String pass = "123";
         con = DriverManager.getConnection(url, user, pass);
         return con;
     }

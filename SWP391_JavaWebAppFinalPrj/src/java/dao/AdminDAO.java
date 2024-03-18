@@ -7,7 +7,7 @@ import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import model.Category;
+import model.MainCategory;
 /**
  *
  * @author DELL
@@ -22,8 +22,8 @@ public class AdminDAO {
     
     private static final String DELETECATEGORY = "DELETE [maincategory] WHERE [id] = ?";
     
-    public static ArrayList<Category> Get_Category_List() {
-        ArrayList<Category> result = new ArrayList<Category>();
+    public static ArrayList<MainCategory> Get_Category_List() {
+        ArrayList<MainCategory> result = new ArrayList<MainCategory>();
         PreparedStatement ptm = null;
         ResultSet rs = null;
         try (Connection con = SQLConnection.getConnection()) {
@@ -32,7 +32,7 @@ public class AdminDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String Name = rs.getString("name").trim();
-                Category c = new Category(id, Name);
+                MainCategory c = new MainCategory(id, Name);
                 result.add(c);                
             }
             SQLConnection.closeConnection(con);

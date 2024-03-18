@@ -59,6 +59,42 @@
                     width: ${i/5}%;
                 }
             </c:forEach>
+
+            .rate {
+                float: left;
+                height: 46px;
+                padding: 0 10px;
+            }
+            .rate:not(:checked) > input {
+                position:absolute;
+                top:-9999px;
+            }
+            .rate:not(:checked) > label {
+                float:right;
+                width:1em;
+                overflow:hidden;
+                white-space:nowrap;
+                cursor:pointer;
+                font-size:30px;
+                color:#ccc;
+            }
+            .rate:not(:checked) > label:before {
+                content: '★ ';
+            }
+            .rate > input:checked ~ label {
+                color: #ffc700;
+            }
+            .rate:not(:checked) > label:hover,
+            .rate:not(:checked) > label:hover ~ label {
+                color: #deb217;
+            }
+            .rate > input:checked + label:hover,
+            .rate > input:checked + label:hover ~ label,
+            .rate > input:checked ~ label:hover,
+            .rate > input:checked ~ label:hover ~ label,
+            .rate > label:hover ~ input:checked ~ label {
+                color: #c59b08;
+            }
         </style>
     </head>
     <body>
@@ -96,7 +132,7 @@
                                     <div class="tab-content" id="myTabContentpro">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel">
                                             <div class="product-large-img">
-                                                <img src="${pr.productImg}" alt="">
+                                                <img src="${pr.img}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -106,12 +142,12 @@
                         <div class="col-xl-6 col-lg-8">
                             <div class="product-details mb-30 pl-30">
                                 <div class="details-cat mb-20">
-                                    <a href="SearchProduct?cate=${pr.mCate.categoryID}">${pr.mCate.categoryName} > </a>
-                                    <a href="ShopDetail?id=${pr.shop.user.userID}#cate${pr.sCate.categoryID}">${pr.sCate.categoryName}</a>
+                                    <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
+                                    <a href="ShopDetail?id=${pr.shop_id}#cate${pr.scate_id}">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
                                 </div>
-                                <h2 class="pro-details-title mb-15">${pr.productName}</h2>
+                                <h2 class="pro-details-title mb-15">${pr.name}</h2>
                                 <div class="details-price mb-20">
-                                    <span><fmt:formatNumber value="${pr.price}"/>đ</span>
+                                    <span><fmt:formatNumber value="${pr.money}"/>đ</span>
                                     <!--<span class="old-price">$246.00</span>-->
                                 </div>
                                 <div class="product-variant" >
@@ -119,13 +155,13 @@
                                         <ul class="recent-posts" style="width: 70%">
                                             <li>
                                                 <div class="widget-posts-image">
-                                                    <a href="ShopDetail?id=${pr.shop.user.userID}">
-                                                        <img src='${pr.productImg}' alt=''>
+                                                    <a href="ShopDetail?id=${pr.shop_id}">
+                                                        <img src='${sessionScope.sellersDao.getShopById(pr.shop_id).shop_img}' alt=''>
                                                     </a>
                                                 </div>
                                                 <div class="widget-posts-body">
-                                                    <a href="ShopDetail?id=${pr.shop.user.userID}"><h6 class="widget-posts-title" style="font-weight: bold;">${pr.shop.shopName}</h6></a>
-                                                    <h7>Địa chỉ:<span style="color: #fe4536;"> ${pr.shop.user.address}</span></h7>
+                                                    <a href="ShopDetail?id=${pr.shop_id}"><h6 class="widget-posts-title" style="font-weight: bold;">${sellersDao.getShopById(pr.shop_id).shop_name}</h6></a>
+                                                    <h7>Địa chỉ:<span style="color: #fe4536;"> ${usersDao.getUserById(pr.shop_id).address}</span></h7>
                                                 </div>
                                             </li>
                                         </ul>
@@ -140,7 +176,7 @@
                                                     width: 100px;
                                                     border: 2px solid #ecedff;
                                                     margin-bottom: 5px;">Chat</button>
-                                            <button onclick="location.href = 'ShopDetail?id=${pr.shop.user.userID}'" 
+                                            <button onclick="location.href = 'ShopDetail?id=${pr.shop_id}'" 
                                                     style="color: black;
                                                     position: relative;
                                                     overflow: visible;
@@ -159,7 +195,7 @@
                                                     <b style="font-size: 18px;"> ${sessionScope.aver_rate/100}</b> - (${sessionScope.ratings_by_product.size()} đánh giá)
                                                 </div>
                                             </li>
-                                            <li><span>Stock:</span> <span class="in-stock">${pr.quantity} sản phẩm</span></li>
+                                            <li><span>Stock:</span> <span class="in-stock">${pr.quantity} có sẵn</span></li>
                                         </ul>
                                     </div>
 
@@ -170,8 +206,9 @@
                                                 <div class="cart-plus-minus"><input type="text" value="1" /></div>
                                             </div>
                                             <div class="details-cart mt-40" style="font-family: 'Montserrat', sans-serif;">
-                                                <button class="btn theme-btn" onclick="location.href = 'AddToCart?id=${pr.productID}'">Thêm vào giỏ hàng</button>
+                                                <button class="btn theme-btn" onclick="location.href = 'AddToCart?id=${pr.product_id}'">Thêm vào giỏ hàng</button>
                                                 <button class="btn theme-btn" onclick="location.href = '#'">Mua ngay</button>
+                                                <!--<a class="search-trigger" href="#"><i class="fa fa-flag" style="display: inline-block; font-size: 25px; color: #fe4536;" title="Tố cáo người dùng này"></i></a>-->
                                             </div>
                                         </div>
                                     </div>
@@ -189,7 +226,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="profile-tab6" data-toggle="tab" href="#profile6" role="tab" aria-controls="profile"
-                                           aria-selected="false">Reviews (2)</a>
+                                           aria-selected="false">Reviews (${sessionScope.ratings_by_product.size()})</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent2">
@@ -201,88 +238,26 @@
                                     <div class="tab-pane fade" id="profile6" role="tabpanel" aria-labelledby="profile-tab6">
                                         <div class="desc-text review-text">
                                             <div class="product-commnets">
-                                                <div class="product-commnets-list mb-25 pb-15">
-                                                    <div class="pro-comments-img">
-                                                        <img src="img/product/comments/01.png" alt="">
-                                                    </div>
-                                                    <div class="pro-commnets-text">
-                                                        <h4>Roger West -
-                                                            <span>June 5, 2018</span>
-                                                        </h4>
-                                                        <div class="pro-rating">
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
+                                                <c:if test="${sessionScope.ratings_by_product == null || empty sessionScope.ratings_by_product}">
+                                                    Chưa có đánh giá nào.
+                                                </c:if>
+                                                <c:forEach var="rating" items="${sessionScope.ratings_by_product}">
+                                                    <div class="product-commnets-list mb-25 pb-15">
+                                                        <div class="pro-comments-img">
+                                                            <img src="${rating.user.img}" alt="" style="border-radius: 50%;">
                                                         </div>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                                            incididunt
-                                                            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                            exercitation.</p>
-                                                    </div>
-                                                </div>
-                                                <div class="product-commnets-list mb-25 pb-15">
-                                                    <div class="pro-comments-img">
-                                                        <img src="img/product/comments/02.png" alt="">
-                                                    </div>
-                                                    <div class="pro-commnets-text">
-                                                        <h4>Roger West -
-                                                            <span>June 5, 2018</span>
-                                                        </h4>
-                                                        <div class="pro-rating">
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                            <i class="far fa-star"></i>
-                                                        </div>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                                            incididunt
-                                                            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                            exercitation.</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="review-box mt-50">
-                                                <h4>Add a Review</h4>
-                                                <div class="your-rating mb-40">
-                                                    <span>Your Rating:</span>
-                                                    <div class="rating-list">
-                                                        <a href="#">
-                                                            <i class="far fa-star"></i>
-                                                        </a>
-                                                        <a href="#">
-                                                            <i class="far fa-star"></i>
-                                                        </a>
-                                                        <a href="#">
-                                                            <i class="far fa-star"></i>
-                                                        </a>
-                                                        <a href="#">
-                                                            <i class="far fa-star"></i>
-                                                        </a>
-                                                        <a href="#">
-                                                            <i class="far fa-star"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <form class="review-form" action="#">
-                                                    <div class="row">
-                                                        <div class="col-xl-12">
-                                                            <label for="message">YOUR REVIEW</label>
-                                                            <textarea name="message" id="message" cols="30" rows="10"></textarea>
-                                                        </div>
-                                                        <div class="col-xl-6">
-                                                            <label for="r-name">Name</label>
-                                                            <input type="text" id="r-name">
-                                                        </div>
-                                                        <div class="col-xl-6">
-                                                            <label for="r-email">Email</label>
-                                                            <input type="email" id="r-email">
-                                                        </div>
-                                                        <div class="col-xl-12">
-                                                            <button class="btn theme-btn">Add your Review</button>
+                                                        <div class="pro-commnets-text">
+                                                            <h4>${rating.user.username} -
+                                                                <span>${rating.timeStamp}</span>
+                                                            </h4>
+                                                            <div class="pro-rating">
+                                                                <span class="stars-container stars-${rating.score}">★★★★★ </span>
+                                                            </div>
+                                                            <p>${rating.comment}</p>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </c:forEach>
+
                                             </div>
                                         </div>
                                     </div>
@@ -296,58 +271,177 @@
             <!-- shop-area end -->
 
             <!-- product-area start -->
-            <section class="product-area pb-100">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="area-title text-center mb-50">
-                                <h2>Sản phẩm khác của Shop</h2>
-                                <!--                                <p>Browse the huge variety of our products</p>-->
-                                <a href="ShopDetail?id=${pr.shop.user.userID}"></a>
+
+            <c:if test="${product_by_shop.size() > 0}">
+                <section class="product-area pb-100">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="area-title text-center mb-50">
+                                    <h2>Sản phẩm khác của Shop</h2>
+                                    <!--                                <p>Browse the huge variety of our products</p>-->
+                                    <a href="ShopDetail?id=${pr.shop_id}" style='float:right; color:#fe4536;'>Xem thêm>></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="product-slider-2 owl-carousel">
-                        <c:forEach var="prs" items="${product_by_shop}">
-                            <div class="pro-item">
-                                <div class="product-wrapper">
-                                    <div class="product-img mb-25">
-                                        <a href="ProductDetail?product=${prs.productID}">
-                                            <img src="${prs.productImg}" alt="">
-                                        </a>
-                                        <div class="product-action text-center">
-                                            <a href="AddToCart?id=${prs.productID}" title="Thêm vào giỏ hàng">
-                                                <i class="flaticon-shopping-cart"></i>
-                                            </a>
-                                            <a href="ProductDetail?product=${prs.productID}" title="Xem chi tiết">
-                                                <i class="flaticon-eye"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="pro-cat mb-10">
-                                            <a href="SearchProduct?cate=${prs.mCate.categoryID}">${prs.mCate.categoryName} > </a>
-                                            <a href="#" style="color: #525470">${prs.sCate.categoryName}</a>
-                                        </div>
-                                        <h4>
-                                            <a href="ProductDetail?product=${prs.productID}">${prs.productName}</a>
-                                        </h4>
-                                        <div class="product-meta">
-                                            <div class="pro-price">
-                                                <span><fmt:formatNumber value="${prs.price}"/>đ</span>
-                                                <!--<span class="old-price">$230.00 USD</span>-->
+                        <c:if test="${product_by_shop.size() < 3}">
+                            <div class="row mt-30">
+                                <div class="col-xl-12 col-lg-12">
+
+                                    <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                                        <c:set var="plist" value="${sessionScope.product_by_shop}"/>
+
+
+                                        <div class="tab-content" id="myTabContent">
+                                            <div class="row">
+                                                <c:forEach var="pr" items="${plist}">
+                                                    <div class="col-lg-4 col-md-4">
+                                                        <div class="product-wrapper mb-50">
+                                                            <div class="product-img mb-25">
+                                                                <a href="ProductDetail?product=${pr.product_id}">
+                                                                    <img src="${pr.img}" alt="">
+                                                                </a>
+                                                                <div class="product-action text-center">
+                                                                    <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
+                                                                        <i class="flaticon-shopping-cart"></i>
+                                                                    </a>
+                                                                    <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
+                                                                        <i class="flaticon-eye"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="sale-tag">
+                                                                    <span class="new">new</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-content">
+                                                                <div class="pro-cat mb-10">
+                                                                    <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
+                                                                    <a class="" href="#" style="color: #525470">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
+                                                                </div>
+                                                                <h4>
+                                                                    <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
+                                                                </h4>
+                                                                <div class="product-meta">
+                                                                    <div class="pro-price">
+                                                                        <span><fmt:formatNumber value="${pr.money}"/>đ</span>
+                                                                        <!--<span class="old-price">$230.00 USD</span>-->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:forEach>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
-                        </c:forEach>
+                        </c:if>
+                        <c:if test="${product_by_shop.size() > 2}">
+                            <div class="product-slider-2 owl-carousel">
+                                <c:forEach var="prs" items="${product_by_shop}">
+                                    <div class="pro-item">
+                                        <div class="product-wrapper">
+                                            <div class="product-img mb-25">
+                                                <a href="ProductDetail?product=${prs.product_id}">
+                                                    <img src="${prs.img}" alt="">
+                                                </a>
+                                                <div class="product-action text-center">
+                                                    <a href="AddToCart?id=${prs.product_id}" title="Thêm vào giỏ hàng">
+                                                        <i class="flaticon-shopping-cart"></i>
+                                                    </a>
+                                                    <a href="ProductDetail?product=${prs.product_id}" title="Xem chi tiết">
+                                                        <i class="flaticon-eye"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="product-content">
+                                                <div class="pro-cat mb-10">
+                                                    <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(prs.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(prs.scate_id).maincate_id).name} > </a>
+                                                    <a href="#" style="color: #525470">${sessionScope.categoryDao.getShopCategoryById(prs.scate_id).name}</a>
+                                                </div>
+                                                <h4>
+                                                    <a href="ProductDetail?product=${prs.product_id}">${prs.name}</a>
+                                                </h4>
+                                                <div class="product-meta">
+                                                    <div class="pro-price">
+                                                        <span><fmt:formatNumber value="${prs.money}"/>đ</span>
+                                                        <!--<span class="old-price">$230.00 USD</span>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
 
+                            </div>
+                        </c:if>
+                    </div>
+                </section>
+            </c:if>
+            <!-- product-area end -->
+            <div class="search-wrap" style="background: rgba(0,0,0,.6);">
+                <div class="search-inner">
+                    <i class="fas fa-times search-close" id="search-close"></i>
+                    <div class="search-cell" style="background: #FFF; width: 45%; margin-left: 27%; height: 66%; border-radius: 5px">
+                        <div class="basic-login" style="border: 0; padding: 50px 70px;">
+                            <h3 class="text-center" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px; margin-bottom: 40px">Đánh giá sản phẩm này</h3>
+                            <form method="post" action="Rating?id=${pr.product_id}">
+                                <table width="550" height="300">
+                                    <tr>
+                                        <td>
+                                            <div class="side-pro-img">
+                                                <a href="ProductDetail?product=${pr.product_id}"><img src="${pr.img}" style="width: 70px;" alt=""></a>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="side-pro-content">
+                                                <h5><a href="ProductDetail?product=${pr.product_id}" style="font-weight: bold;">${pr.name}</a></h5>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 100%"><span style="color:red;">*</span>Đánh giá</td>
+                                        <td>
+                                            <div class="rate">
+                                                <input type="radio" id="star5" name="rate" value="5" required=""/>
+                                                <label for="star5" title="text">5 stars</label>
+                                                <input type="radio" id="star4" name="rate" value="4" />
+                                                <label for="star4" title="text">4 stars</label>
+                                                <input type="radio" id="star3" name="rate" value="3" />
+                                                <label for="star3" title="text">3 stars</label>
+                                                <input type="radio" id="star2" name="rate" value="2" />
+                                                <label for="star2" title="text">2 stars</label>
+                                                <input type="radio" id="star1" name="rate" value="1" />
+                                                <label for="star1" title="text">1 star</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span style="color:red;">*</span>Comment</td>
+                                        <td><textarea id="comment" name="comment" rows="3" cols="50" style="border: 2px solid #eaedff; margin-top: 10px" required=""></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><button style="color: #fff;
+                                                    position: relative;
+                                                    overflow: visible;
+                                                    background: #fe4536;
+                                                    height: 40px;
+                                                    padding: 0 10px;
+                                                    margin-top: 15px;
+                                                    margin-bottom: 1.25rem;
+                                                    min-width: 70px;
+                                                    max-width: 220px;
+                                                    border: 0;" type="submit">Hoàn thành</button></td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <!-- product-area end -->
-
+            </div>
             <jsp:include page="footer.jsp"></jsp:include>
     </body>
 </html>

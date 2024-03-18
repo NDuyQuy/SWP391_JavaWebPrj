@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Shop;
+import model.Shops;
 
 /**
  *
@@ -36,13 +36,16 @@ public class SearchShopServlet extends HttpServlet {
         try {
             request.setCharacterEncoding("utf-8");
             String keyword = request.getParameter("kw");
-            ProductDao productdao = new ProductDao();
-            ArrayList<Shop> shoplist = SellersDao.getAllShop();
-            ArrayList<Shop> result = new ArrayList<>();
-            for (Shop s : shoplist) {
-                if (keyword.length() > 2) {
-                    if (s.getShopName().toLowerCase().contains(keyword.toLowerCase())) {
-                        result.add(s);
+            ArrayList<Shops> shoplist = SellersDao.getAllShop();
+            ArrayList<Shops> result = new ArrayList<>();
+            if (keyword == null) {
+                result = shoplist;
+            } else {
+                for (Shops s : shoplist) {
+                    if (keyword.length() > 2) {
+                        if (s.getShop_name().toLowerCase().contains(keyword.toLowerCase())) {
+                            result.add(s);
+                        }
                     }
                 }
             }
@@ -63,7 +66,6 @@ public class SearchShopServlet extends HttpServlet {
             request.setAttribute("num", numPage);
 
             HttpSession session = request.getSession();
-            session.setAttribute("productDao", productdao);
             session.setAttribute("kw", keyword);
             session.setAttribute("shop_search", result);
             if (result.isEmpty() || result == null) {

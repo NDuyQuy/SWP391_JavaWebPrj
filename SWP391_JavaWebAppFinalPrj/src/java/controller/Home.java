@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.CategoryDao;
+import dao.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.MainCategory;
+import model.Products;
+import model.ShopCategory;
 
 /**
  *
@@ -59,9 +61,22 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ArrayList<MainCategory> cate_list = CategoryDao.getMainCategories();
+        ArrayList<MainCategory> mcate_list = CategoryDao.getMainCategories();
+        ArrayList<ShopCategory> scate_list = CategoryDao.getShopCategories();
+        ArrayList<Products> newest_products = ProductDao.getNewestProducts();
+        ProductDao pd = new ProductDao();
+        SellersDao sd = new SellersDao();
+        CategoryDao cd = new CategoryDao();
+        UsersDao ud = new UsersDao();
         HttpSession session = request.getSession();
-        session.setAttribute("main_category_list", cate_list);
+        session.setAttribute("main_category_list", mcate_list);
+        session.setAttribute("shop_category_list", scate_list);
+        session.setAttribute("newest_products", newest_products);
+        session.setAttribute("productDao", pd);
+        session.setAttribute("sellersDao", sd);
+        session.setAttribute("categoryDao", cd);
+        session.setAttribute("usersDao", ud);
+        session.removeAttribute("kw");
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 

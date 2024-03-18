@@ -8,6 +8,7 @@ package dao;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import model.Shops;
 import model.Users;
 /**
  *
@@ -23,6 +24,9 @@ public class UsersDao {
     private static final String GETUSERSINFOBYEMAIL = "SELECT [id], [username],[fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
     private static final String GETUSERBYID = "SELECT [username],[address] FROM [users] WHERE [id]=?";
+    private static final String NEWREPORT = "Insert into [report_detail]([shop_id],[reporter_id],[reason]) values (?,?,?)";
+    private static final String UPDATE_REPORTED_COUNT = "Update [shops] set [shop_reported_count] = ? where [shop_id] = ?";
+    
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
         boolean checked = false;
@@ -187,9 +191,38 @@ public class UsersDao {
         return user;
     }
     
+    public static void newReport(int reported, int report, String reason){
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(NEWREPORT);
+            ptm.setInt(1, reported);
+            ptm.setInt(2, report);
+            ptm.setString(3, reason);
+            ptm.executeUpdate();
+            updateReportedCount(reported);
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void updateReportedCount(int id){
+        PreparedStatement ptm = null;
+        Shops sh = SellersDao.getShopById(id);
+        int count = sh.getShop_reported_count() + 1;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(UPDATE_REPORTED_COUNT);
+            ptm.setInt(1, count);
+            ptm.setInt(2, id);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
     public static void main(String[] args) {
         //register("a", "1", "A@gmail.com");
         //System.out.println(checkLoginByEmail("A@gmail.com", "1"));
         System.out.println(getUserInfoByUsername("A"));
+        newReport(1, 2, "adi");
     }
 }

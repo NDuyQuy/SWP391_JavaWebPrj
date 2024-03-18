@@ -81,33 +81,33 @@
 
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
-        <div class="order">
-        <img src="path/to/product_image.jpg" alt="Product Image" width="100">
-        <h3>Tên Shop: Shop ABC</h3>
-        <p>Tên Sản Phẩm: Sản Phẩm 1</p>
-        <p>Tổng Tiền: 120,000 VND</p>
-        <button onclick="viewOrderDetails(1)">Xem Chi Tiết</button>
-        <button onclick="contactSeller(1)">Liên Hệ Người Bán</button>
-        <button onclick="cancelOrder(1)">Hủy Đơn Hàng</button>
-    </div>
+            <div class="order">
+                <img src="path/to/product_image.jpg" alt="Product Image" width="100">
+                <h3>Tên Shop: Shop ABC</h3>
+                <p>Tên Sản Phẩm: Sản Phẩm 1</p>
+                <p>Tổng Tiền: 120,000 VND</p>
+                <button onclick="viewOrderDetails(1)">Xem Chi Tiết</button>
+                <button onclick="contactSeller(1)">Liên Hệ Người Bán</button>
+                <button onclick="cancelOrder(1)">Hủy Đơn Hàng</button>
+            </div>
 
-    <!-- Thêm các đơn hàng khác nếu cần -->
+            <!-- Thêm các đơn hàng khác nếu cần -->
 
-    <script>
-        function viewOrderDetails(orderId) {
-            window.location.href = '/orderDetails.html?orderId=' + orderId;
-        }
+        <script>
+            function viewOrderDetails(orderId) {
+                window.location.href = '/orderDetails.html?orderId=' + orderId;
+            }
 
-        function contactSeller(orderId) {
-            // Xử lý liên hệ người bán
-            console.log('Liên hệ người bán cho đơn hàng ' + orderId);
-        }
+            function contactSeller(orderId) {
+                // Xử lý liên hệ người bán
+                console.log('Liên hệ người bán cho đơn hàng ' + orderId);
+            }
 
-        function cancelOrder(orderId) {
-            // Xử lý hủy đơn hàng
-            console.log('Hủy đơn hàng ' + orderId);
-        }
-    </script>
+            function cancelOrder(orderId) {
+                // Xử lý hủy đơn hàng
+                console.log('Hủy đơn hàng ' + orderId);
+            }
+        </script>
 
 
 

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import model.Ratings;
 
 /**
@@ -20,6 +21,7 @@ public class RatingDao {
     private static final String GETRATINGSBYPRODUCT = "Select r.id,r.orderdetail_id,[time_stamp],[score],[comment] from ratings r\n"
             + "join orderdetail o\n"
             + "on r.orderdetail_id = o.id and o.productID = ?";
+    private static final String NEWRATING = "Insert into [ratings]([orderdetail_id],[score],[comment]) values(?,?,?)";
 
     public static ArrayList<Ratings> getRatingsByProduct(int p_id) {
         PreparedStatement ptm = null;
@@ -33,8 +35,8 @@ public class RatingDao {
             while (rs.next()) {
                 r = new Ratings();
                 r.setId(rs.getInt(1));
-                r.setOrderDetail(OrderDetailDao.getOrderDetailById(rs.getInt(2)));
-                r.setTimeStamp(LocalDate.parse(rs.getDate(3).toString()));
+                r.setOrderdetail_id(rs.getInt(2));
+                r.setTime_stamp(rs.getDate(3));
                 r.setScore(rs.getInt(4));
                 r.setComment(rs.getString(5));
                 rating_by_product.add(r);
@@ -43,5 +45,18 @@ public class RatingDao {
             ex.printStackTrace();
         }
         return rating_by_product;
+    }
+    
+    public static void newRating(int ordde_id, int score, String comment){
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(NEWRATING);
+            ptm.setInt(1, ordde_id);
+            ptm.setInt(2, score);
+            ptm.setString(3, comment);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 }

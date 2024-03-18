@@ -1,24 +1,23 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller;
 
-import dao.UsersDao;
+import dao.RatingDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import email.SendEmail;
-import model.*;
+
 /**
  *
- * @author ASUS
+ * @author hien
  */
-public class VerifyEmailController extends HttpServlet {
+public class RatingController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,15 +31,15 @@ public class VerifyEmailController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet VerifyEmailController</title>");            
+            out.println("<title>Servlet RatingController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet VerifyEmailController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet RatingController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,24 +57,7 @@ public class VerifyEmailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        Users u = UsersDao.getUserInfoByEmail(email);
-        //CHECK IF USERS ENTER EMAIL THAT NOT THE EMAIL REGISTER
-        if(u==null){
-            request.setAttribute("error", "Your Email Is Not Correct");
-            request.getRequestDispatcher("/forgotpassword.jsp").forward(request, response);
-            return;
-        }
-        request.getSession().setAttribute("user",u);
-        String verifyCode = SendEmail.generateRandomNumber(6);
-        //PURPOSE 1 = FORGOT EMAIL CONTENT, 2 = REGISTER EMAIL CONTENT
-        SendEmail.sendEmail(email, verifyCode, (byte)1);
-        //CURENTTIME RETURN TIME IN MILISECOND, + 30 MIN IN MILISECOND -> EXPIRED TIME
-        long expiredTime = System.currentTimeMillis()+(30*60*1000);
-        VerifyCode code = new VerifyCode(verifyCode, expiredTime);
-        //STORE CODE IN SESSION
-        request.getSession().setAttribute("verifyCode", code);
-        request.getRequestDispatcher("/verifyemail.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -89,20 +71,18 @@ public class VerifyEmailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String verifyCode = request.getParameter("verify");
-        VerifyCode realCode = (VerifyCode) request.getSession().getAttribute("verifyCode");
-        String url = "/verifyemail.jsp";
-        if(verifyCode.equals(realCode.getCode())){
-            long currentTime = System.currentTimeMillis();
-            if(currentTime>=realCode.getExpiredTime()) request.setAttribute("error", "Your VerifyCode Is Expired");
-            else
-            {
-                url = "/changeforgotedpass.jsp";
-            }
-        }else{
-            request.setAttribute("error", "Your VerifyCode Is Not Correct");
+        try{
+            request.setCharacterEncoding("utf-8");
+            int rate = Integer.parseInt(request.getParameter("rate"));
+            String comment = request.getParameter("comment");
+            int orderdetail_id = Integer.parseInt(request.getParameter("id"));
+            
+            RatingDao.newRating(orderdetail_id, rate, comment);
+            request.getRequestDispatcher("product_detail.jsp").forward(request, response);
+        } catch(Exception e){
+            e.printStackTrace();
         }
-        request.getRequestDispatcher(url).forward(request, response);
+        
     }
 
     /**

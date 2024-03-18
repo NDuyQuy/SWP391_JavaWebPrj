@@ -66,23 +66,6 @@
 
         </main>
 
-        <!-- Fullscreen search -->
-        <div class="search-wrap">
-            <div class="search-inner">
-                <i class="fas fa-times search-close" id="search-close"></i>
-                <div class="search-cell">
-                    <form method="get">
-                        <div class="search-field-holder">
-                            <input type="search" class="main-search-input" placeholder="Search Entire Store...">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> <!-- end fullscreen search -->
-
-
-
-
 
 		<!-- JS here -->
         <script src="js/vendor/jquery-1.12.4.min.js"></script>

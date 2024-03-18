@@ -56,22 +56,22 @@
                         <c:forEach var="shop" items="${sessionScope.shop_search}" begin="${first}" end="${last}">
                             <div class="row mt-30" >
                                 <div class="col-lg-8 offset-lg-2" style="background-color: #fff; display: flex; border: 2px solid #efefef;">
-                                    <ul class="recent-posts" style="width: 60%" onclick="location.href='ShopDetail?id=${shop.user.userID}'">
+                                    <ul class="recent-posts" style="width: 60%" onclick="location.href='ShopDetail?id=${shop.shop_id}'">
                                         <li>
                                             <div class="widget-posts-image" style="padding: 20px 20px;">
-                                                <a href="ShopDetail?id=${shop.user.userID}">
-                                                    <img src='${shop.shopImg}' alt='' style="width: 80px; height: 80px;">
+                                                <a href="ShopDetail?id=${shop.shop_id}">
+                                                    <img src='${shop.shop_img}' alt='' style="width: 80px; height: 80px;">
                                                 </a>
                                             </div>
                                             <div class="widget-posts-body" style="">
-                                                <a href="ShopDetail?id=${shop.user.userID}"><h5 class="widget-posts-title" style="margin-top: 25px; font-size: 20px;">${shop.shopName}</h5></a>
-                                                <h6 style="margin-top: 20px;">Địa chỉ:<span style="color: #fe4536;"> ${shop.user.address}</span></h6>
+                                                <a href="ShopDetail?id=${shop.shop_id}"><h5 class="widget-posts-title" style="margin-top: 25px; font-size: 20px;">${shop.shop_name}</h5></a>
+                                                <h6 style="margin-top: 20px;">Địa chỉ:<span style="color: #fe4536;"> ${sessionScope.usersDao.getUserById(shop.shop_id).address}</span></h6>
                                             </div>
                                         </li>
                                     </ul>
                                     <div class="f-mid" style="width: 20%; margin: auto 0; padding-top: 14px">
                                         <p style="color: #fe4536; text-align: center; line-height: 20px">
-                                            <i class="fas fa-hand-peace"></i> ${productDao.getProductsByShop(shop.user.userID).size()}
+                                            <i class="fas fa-hand-peace"></i> ${sessionScope.productDao.getProductsByShop(shop.shop_id).size()}
                                         </p>
                                         <p style="text-align: center; line-height: 18px">
                                             sản phẩm
@@ -88,7 +88,7 @@
                                                 width: 100px;
                                                 border: 2px solid #ecedff;
                                                 margin-bottom: 5px;">Chat</button>
-                                        <button onclick="location.href = 'ShopDetail?id=${shop.user.userID}'" 
+                                        <button onclick="location.href = 'ShopDetail?id=${shop.shop_id}'" 
                                                 style="color: black;
                                                 position: relative;
                                                 overflow: visible;

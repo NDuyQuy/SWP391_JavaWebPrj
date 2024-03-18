@@ -84,6 +84,14 @@
         <servlet-name>SearchShopServlet</servlet-name>
         <servlet-class>controller.SearchShopServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RatingController</servlet-name>
+        <servlet-class>controller.RatingController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ReportUserController</servlet-name>
+        <servlet-class>controller.ReportUserController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -167,7 +175,14 @@
     <servlet-mapping>
         <servlet-name>SearchShopServlet</servlet-name>
         <url-pattern>/SearchShop</url-pattern>
->>>>>>> guest_n_customer_layout
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RatingController</servlet-name>
+        <url-pattern>/Rating</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReportUserController</servlet-name>
+        <url-pattern>/Report</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

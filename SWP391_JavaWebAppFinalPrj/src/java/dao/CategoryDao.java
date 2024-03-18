@@ -19,6 +19,7 @@ public class CategoryDao {
     private static final String GETSHOPCATEGORYBYID = "Select [maincate_id],[shop_id],[name] FROM [shopcategory] WHERE [id]=?";
     private static final String GETSHOPCATEGORYBYSHOP = "Select [maincate_id],[id],[name] from [shopcategory] where [shop_id]=?";
     private static final String GETMAINCATEGORIES = "Select [id],[name] from [maincategory]";
+    private static final String GETSHOPCATEGORIES = "Select [id],[name] from [shopcategory]";
     
     public static MainCategory getMainCategoryById(int id){
         PreparedStatement ptm = null;
@@ -46,10 +47,13 @@ public class CategoryDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                MainCategory mc = getMainCategoryById(rs.getInt("maincate_id"));
-                Shop shop = SellersDao.getShopById(rs.getInt("shop_id"));
-                String shopName = rs.getString("name").trim();
-                sc = new ShopCategory(id, mc, shop, shopName);
+                int mc = rs.getInt("maincate_id");
+                int shop_id = rs.getInt("shop_id");
+                String name = rs.getString("name").trim();
+                sc.setId(id);
+                sc.setShop_id(shop_id);
+                sc.setName(name);
+                sc.setMaincate_id(mc);
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -67,8 +71,8 @@ public class CategoryDao {
             rs = ptm.executeQuery();
             while(rs.next()){
                 mc = new MainCategory();
-                mc.setCategoryID(rs.getInt("id"));
-                mc.setCategoryName(rs.getString("name"));
+                mc.setId(rs.getInt("id"));
+                mc.setName(rs.getString("name"));
                 cate_list.add(mc);
             }
         }catch(Exception ex){
@@ -76,6 +80,26 @@ public class CategoryDao {
         }
         return cate_list;
     }
+    
+    public static ArrayList<ShopCategory> getShopCategories(){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        ShopCategory sc = null;
+        ArrayList<ShopCategory> cate_list = new ArrayList<>();
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETSHOPCATEGORIES);
+            rs = ptm.executeQuery();
+            while(rs.next()){
+                sc = new ShopCategory();
+                sc.setId(rs.getInt("id"));
+                sc.setName(rs.getString("name"));
+                cate_list.add(sc);
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return cate_list;
+    }    
     
     public static ArrayList<ShopCategory> getShopCategoryByShop(int s_id){
         PreparedStatement ptm = null;
@@ -88,10 +112,10 @@ public class CategoryDao {
             rs = ptm.executeQuery();
             while (rs.next()) {
                 sc = new ShopCategory();
-                sc.setmCate(getMainCategoryById(rs.getInt("maincate_id")));
-                sc.setCategoryID(rs.getInt("id"));
-                sc.setShop(SellersDao.getShopById(s_id));
-                sc.setCategoryName(rs.getString("name"));
+                sc.setMaincate_id(rs.getInt("maincate_id"));
+                sc.setId(rs.getInt("id"));
+                sc.setShop_id(s_id);
+                sc.setName(rs.getString("name"));
                 cate_shop.add(sc);
             }
         } catch(Exception ex){

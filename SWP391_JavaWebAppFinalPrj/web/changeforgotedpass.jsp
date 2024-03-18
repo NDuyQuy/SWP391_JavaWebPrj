@@ -15,10 +15,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="manifest" href="site.html">
-		<link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
 
-		<!-- CSS here -->
+        <!-- CSS here -->
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/owl.carousel.min.css">
         <link rel="stylesheet" href="css/animate.min.css">
@@ -34,53 +34,39 @@
         <link rel="stylesheet" href="css/responsive.css">
     </head>
     <body>
-        
+
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
-        <!-- header end -->
+            <!-- header end -->
 
 
-        <main>
+            <main>
 
-        <!-- login Area Strat-->
-        <section class="login-area pt-100 pb-100">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
-                        <div class="basic-login">
-                            <h3 class="text-center mb-60">Change your password</h3>
-                            <p style="color: red">${requestScope.error}</p>
-                            <form action="cfPass" method="get">
-                                <label for="pass">Enter New Password <span>**</span></label>
-                                <input id="pass" type="text" placeholder="Enter New Password..." name="pass" required/>
-                                <label for="cpass">Confirm Your Password <span>**</span></label>
-                                <input id="cpass" type="text" placeholder="Confirm Your Password..."  required/>
-                                <div class="mt-10"></div>
-                                <button class="btn theme-btn-2 w-100">Change</button>
-                            </form>
+                <!-- login Area Strat-->
+                <section class="login-area pt-100 pb-100">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+                                <div class="basic-login">
+                                    <h3 class="text-center mb-60">Change your password</h3>
+                                    <p style="color: red">${requestScope.error}</p>
+                                <form action="cfPass" method="get">
+                                    <label for="pass">Enter New Password <span>**</span></label>
+                                    <input id="pass" type="text" placeholder="Enter New Password..." name="pass" required/>
+                                    <label for="cpass">Confirm Your Password <span>**</span></label>
+                                    <input id="cpass" type="text" placeholder="Confirm Your Password..."  required/>
+                                    <div class="mt-10"></div>
+                                    <button class="btn theme-btn-2 w-100">Change</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        <!-- login Area End-->
+            </section>
+            <!-- login Area End-->
 
 
         </main>
-
-        <!-- Fullscreen search -->
-        <div class="search-wrap">
-            <div class="search-inner">
-                <i class="fas fa-times search-close" id="search-close"></i>
-                <div class="search-cell">
-                    <form method="get">
-                        <div class="search-field-holder">
-                            <input type="search" class="main-search-input" placeholder="Search Entire Store...">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> <!-- end fullscreen search -->
 
         <!-- footer start -->
         <jsp:include page="footer.jsp"></jsp:include>
@@ -88,7 +74,21 @@
 
 
 
-		<!-- JS here -->
+        <!-- JS here -->
+        <script>
+            function validateForm() {
+                var newPassword = document.getElementById('pass').value;
+                var reenterPassword = document.getElementById('cpass').value;
+                if (newPassword !== reenterPassword) {
+                    alert('Passwords do not match. Please reenter your new password.');
+                    document.getElementById('cpass').focus();
+                    return false; // Prevent form submission
+                } else {
+                    return true;
+                }
+                // If the passwords match, the form will be submitted
+            }
+        </script>
         <script src="js/vendor/jquery-1.12.4.min.js"></script>
         <script src="js/jquery-ui.js"></script>
         <script src="js/popper.min.js"></script>
