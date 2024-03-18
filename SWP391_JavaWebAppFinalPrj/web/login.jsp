@@ -43,7 +43,7 @@
         <jsp:include page="header.jsp"></jsp:include>
             <!-- header end -->
 
-
+            
             <main>
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
@@ -62,7 +62,7 @@
                     </div>
                 </section>
                 <!-- breadcrumb-area-end -->
-
+                <h5 style="color:red;" class="text-center">${requestScope.session_out}</h5>
                 <!-- login Area Strat-->
                 <section class="login-area pt-100 pb-100">
                     <div class="container">

@@ -20,6 +20,12 @@ public class CustomOrder {
     public CustomOrder() {
     }
 
+    public CustomOrder(int id, String product_name, Date expected_complete_date) {
+        this.id = id;
+        this.product_name = product_name;
+        this.expected_complete_date = expected_complete_date;
+    }
+    
     public int getId() {
         return id;
     }

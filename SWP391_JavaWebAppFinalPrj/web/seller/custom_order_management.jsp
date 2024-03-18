@@ -38,23 +38,20 @@
         <jsp:include page="../header.jsp"></jsp:include>
 
             <main>
-                <!-- breadcrumb-area-start -->
+                
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
                         <div class="row">
                             <div class="col-xl-12">
                                 <div class="breadcrumb-text text-center">
-                                    <h1>Category Management</h1>
+                                    <h1>Custom Order Management</h1>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                <!-- breadcrumb-area-end -->
-
-                <!-- login Area Strat-->
                 <section class="login-area pt-100 pb-100">
-                    <jsp:useBean id="shop_categories" scope="session" class="java.util.ArrayList" />
+                    <jsp:useBean id="c_o_l" scope="request" class="java.util.ArrayList" />
                     <div>
                         <table class="table table-bordered">
                             <thead>
@@ -66,13 +63,13 @@
                                 </tr>
                             </thead>
                             <tbody> 
-                                <c:forEach var="s" items="${shop_categories}">
+                                <c:forEach var="c" items="${c_o_l}">
                                     <tr> 
-                                        <td><c:out value="${s.categoryID}"/></td>
-                                        <td><c:out value="${s.categoryName}"/></td>
-                                        <td><c:out value="${s.mCate.categoryName}"/></td>
+                                        <td><c:out value="${c.product_name}"/></td>
+                                        <td><c:out value="${c.order.status}"/></td>
+                                        <td><c:out value="${c.order.total}"/></td>
                                         <td>
-                                            <a href="../CustomOrderController?open=updateprocess&o_id=${s.id}">Cập nhật quá trình</a>
+                                            <a href="CustomOrderController?open=up&o_id=${c.id}">Cập nhật quá trình</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -95,11 +92,9 @@
                                 </div>
                                 <!-- Modal Body -->
                                 <div class="modal-body">
-                                    <form action="shopcategorycontroller" method="post">
+                                    <form action="CustomOrderController" method="post">
                                         <div class="form-group">
-                                            <input type="hidden" name="act" value ="addnew">
-                                            <label for="orderCode">Mã Order</label>
-                                            <input type="text" id="orderCode" name="orderCode" class="form-control" required> <br>
+                                            <input type="hidden" name="act" value ="add">
                                             <label for="productName">Tên sản phẩm</label>
                                             <input type="text" id="productName" name="productName" class="form-control" required> <br>
                                             <label for="price">Giá</label>
@@ -119,7 +114,7 @@
                    
 
             </section>
-            <!-- login Area End-->
+            
 
 
         </main>
@@ -127,7 +122,8 @@
         <jsp:include page="../footer.jsp"></jsp:include>
         <!-- JavaScript to control the display of the popups -->
         <script>
-            function openPopup(type, categoryId,categoryName) {
+            function openPopup(type, categoryId) {
+                
                 $('#' + type + 'Popup').modal('show');
             }
 

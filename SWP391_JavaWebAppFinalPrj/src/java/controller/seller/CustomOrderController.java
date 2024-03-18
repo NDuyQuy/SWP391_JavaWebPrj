@@ -5,8 +5,14 @@
  */
 package controller.seller;
 
+import dao.OrdersDao;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Date;
+import java.time.LocalDate;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -60,9 +66,23 @@ public class CustomOrderController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "/seller/custom_order_management.jsp";
-        int user_id = ((Users) request.getSession().getAttribute("user")).getId();
-        int order_id = Integer.parseInt(request.getParameter("o_id"));
-        
+        try {
+            int user_id = ((Users) request.getSession().getAttribute("user")).getId();
+            String open = request.getParameter("open");
+            if(open!=null){
+                int order_id = Integer.parseInt(request.getParameter("o_id"));
+                request.setAttribute("orderID", order_id);
+                url = "/seller/update_customorder_process.jsp";
+            }else{
+                //GET CUSTOM ORDERS LIST 
+                request.setAttribute("c_o_l", OrdersDao.getCustomOrderOfShop(user_id));
+            }
+            
+            request.getRequestDispatcher(url).forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -76,7 +96,20 @@ public class CustomOrderController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = "/seller/custom_order_management.jsp";
+        try {
+            int user_id = ((Users) request.getSession().getAttribute("user")).getId();
+            String act = request.getParameter("act");
+            if(act.equals("add")){
+                addNewCustomOrder(request, user_id);
+            }else{
+                
+            }
+            
+        } catch (Exception e) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -88,5 +121,23 @@ public class CustomOrderController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    
+    private void addNewCustomOrder(HttpServletRequest request, int shop_id)throws ServletException, IOException {
+        String productName = request.getParameter("productName");
+        int price = Integer.parseInt(request.getParameter("price"));
+        Date deadline = Date.valueOf(request.getParameter("ecd"));
+        OrdersDao.createCustomOrder(shop_id, price, productName, deadline);
+    }
+    private void updateProcess(HttpServlet request, int shop_id) throws ServletException, IOException {
+        
+    }
+    private String getUploadDir(int order_id, int user_id) throws IOException{
+        // Create the directory structure if it doesn't exist
+        String uploadPath = getServletContext().getRealPath("img")
+                + File.separator + "seller"+ File.separator + String.valueOf(user_id)+File.separator+String.valueOf(order_id)
+                + File.separator + LocalDate.now().toString();
+        // IF DIR EXISTS RANDOM AGAIN TO UNTIL DIR DONT EXISTS
+        if(Files.exists(Paths.get(uploadPath))) Files.createDirectories(Paths.get(uploadPath));
+        return uploadPath;
+    }
 }

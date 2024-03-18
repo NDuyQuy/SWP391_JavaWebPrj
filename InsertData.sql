@@ -101,3 +101,16 @@ VALUES
 (21,6,1,10000,70000,N'COD',N'đã nhận',N'Đức',N'0123456789',N'11 Nguyễn Minh Châu, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng',N'nhanh',1, '2024-03-16T12:00:00')
 SET IDENTITY_INSERT [orders] OFF
 GO
+INSERT INTO [orderdetail] ([orderID], [productID], [quantity], [totalPrice])
+VALUES 
+    (11, 11, 1, 60000),
+    (12, 11, 1, 60000),
+    (13, 11, 1, 60000),
+    (14, 11, 1, 60000),
+    (15, 11, 1, 60000),
+    (16, 11, 1, 60000),
+    (17, 11, 1, 60000),
+    (18, 11, 1, 60000),
+    (19, 11, 1, 60000),
+    (20, 11, 1, 60000),
+    (21, 11, 1, 60000);

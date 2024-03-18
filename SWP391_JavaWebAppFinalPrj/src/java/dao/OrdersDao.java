@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+import model.CustomOrder;
 import model.Orders;
 /**
  *
@@ -22,9 +23,16 @@ public class OrdersDao {
             + "WHERE CONVERT(date, order_date) = ? AND [shop_id] = ? AND status=N'đã nhận' GROUP BY DATEPART(HOUR, order_date)";
     private static final String GETORDERSCOUNTBYMONTH = "SELECT DAY(order_date) AS day, COUNT(*) AS count FROM [orders] "
             + "WHERE MONTH(order_date) = ? AND YEAR(order_date) = ? AND [shop_id] = ? AND status=N'đã nhận' GROUP BY DAY(order_date)";
-    private static final String CREATECUSTOMORDER = "INSERT INTO [orders]([shop_id],[total],[status],[type]) VALUES (?,?,'wait for customer accept',?)";
+    private static final String CALTOTALREVENUEINAMOTH = "EXEC CalculateTotalRevenueForShopAndMonth @ShopID = ?, @Month = ?, @Year = ?";
+    private static final String GETCOMPLETEORDERCOUNTINMONTHOFSHOP = "SELECT COUNT(order_id) as [count] FROM [orders] "
+            + "WHERE [shop_id] = ? AND MONTH(order_date) = ? AND YEAR(order_date) = ? AND [status] = N'đã nhận'";
+    private static final String GETTOTALPRODUCTSELL = "EXEC GetTotalProductSell @ShopId = ?, @Month = ?, @Year = ?";
+    private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status]=N'%chờ người bán xác nhận%'";
+    
+    private static final String GETCUSTOMORDERS = "SELECT co.*,o.status,total FROM [custom_order] co join [orders] o on co.id = o.order_id WHERE o.shop_id = ?";
+    private static final String CREATECUSTOMORDER = "EXEC CREATECUSTOMORDERS @ShopId = ?, @Price=?,@ProductName=?, @Deadline = ?";
     private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='', ";
-    private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status]=N'chờ người bán xác nhận'";
+    
     private static Orders getOrderObject(ResultSet rs) throws SQLException{
         int order_id = rs.getInt("order_id");
         int customer_id = rs.getInt("customer_id");
@@ -141,10 +149,105 @@ public class OrdersDao {
         }
         return orderses;
     }
+    public static Integer getTotalRevenueInAMonthOfShop(int shop_id, int month, int year){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Integer totalRev = 0;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(CALTOTALREVENUEINAMOTH);
+            ptm.setInt(1, shop_id);
+            ptm.setInt(2, month);
+            ptm.setInt(3, year);
+            rs = ptm.executeQuery();
+            if(rs.next()){
+                totalRev = rs.getInt("TotalRevenue");
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return totalRev;
+    }
+    public static Integer getOrdersCountInAMonthOfShop(int shop_id, int month, int year){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Integer ttOrdersCount = 0;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETCOMPLETEORDERCOUNTINMONTHOFSHOP);
+            ptm.setInt(1, shop_id);
+            ptm.setInt(2, month);
+            ptm.setInt(3, year);
+            rs = ptm.executeQuery();
+            if(rs.next()){
+                ttOrdersCount = rs.getInt("count");
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return  ttOrdersCount;
+    }
+    public static Integer getTotalProductSell(int shop_id, int month, int year){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Integer ttProduct = 0;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETTOTALPRODUCTSELL);
+            ptm.setInt(1, shop_id);
+            ptm.setInt(2, month);
+            ptm.setInt(3, year);
+            rs = ptm.executeQuery();
+            if(rs.next()){
+                ttProduct = rs.getInt("totalProductQuantity");
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return  ttProduct;
+    }
+    public static void createCustomOrder(int shop_id,int priceProduct, String productName, Date deadline){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm=con.prepareStatement(CREATECUSTOMORDER);
+            ptm.setInt(1, shop_id);
+            ptm.setInt(2, priceProduct);
+            ptm.setString(3, productName);
+            ptm.setDate(4, (java.sql.Date) deadline);
+            ptm.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static List<CustomOrder> getCustomOrderOfShop(int shop_id){
+        List<CustomOrder> list = new ArrayList<>();
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETCUSTOMORDERS);
+            ptm.setInt(1, shop_id);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                int order_id = rs.getInt("id");
+                int price = rs.getInt("total");
+                String productName = rs.getString("product_name");
+                String status = rs.getString("status");
+                Date deadline = rs.getDate("expected_complete_date");
+                CustomOrder co = new CustomOrder(order_id,productName,deadline);
+                Orders o = new Orders();
+                o.setTotal(price); o.setStatus(status); 
+                co.setOrder(o);
+                list.add(co);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
     public static void main(String[] args) {
         LocalDate date = LocalDate.of(2024, 3, 17);
+        getCustomOrderOfShop(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);
         //getOrdersCountByHour(1, date).entrySet().forEach(System.out::println);
-        getOrdersCountADateInMonth(1, 3, 2024).entrySet().forEach(System.out::println);
+        //getOrdersCountADateInMonth(1, 3, 2024).entrySet().forEach(System.out::println);
+        //System.out.println(getOrdersCountInAMonthOfShop(1, 2, 2024));
     }
 }

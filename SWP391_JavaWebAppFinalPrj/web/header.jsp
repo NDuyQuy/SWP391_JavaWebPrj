@@ -91,7 +91,7 @@
                                         <li><a href="productcontroller"> Quản lý sản phẩm của shop</a></li>
                                         <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
                                         <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
-                                        <li><a href="#"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
+                                        <li><a href="CustomOrderController"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
                                         <li><a href="#"> Chat</a></li>
                                         </c:if>
                                 </ul>

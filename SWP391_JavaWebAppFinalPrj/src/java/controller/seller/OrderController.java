@@ -9,9 +9,7 @@ import dao.OrdersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -19,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Users;
 
 /**
  *
@@ -44,7 +43,7 @@ public class OrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderController</title>");            
+            out.println("<title>Servlet OrderController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet OrderController at " + request.getContextPath() + "</h1>");
@@ -65,38 +64,31 @@ public class OrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LocalDate date = LocalDate.now();
-        int daysInMonth;
         try {
-            String time[] = request.getParameter("month_year").split("-");
-            int year = Integer.parseInt(time[0]);
-            int month = Integer.parseInt(time[1]);
-            date = date.withMonth(month);
-            date.withYear(year);
-            daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
-        } catch (Exception e) {
-            int m = date.getMonthValue();
-            int y = date.getYear();
-            daysInMonth = LocalDate.of(y, m, 1).lengthOfMonth();
+            int shop_id = ((Users) request.getSession().getAttribute("user")).getId();
+            LocalDate date = LocalDate.now();
+            int daysInMonth;
+            String month_year = request.getParameter("month_year");
+            if (month_year != null) {
+                String time[] = month_year.split("-");
+                int year = Integer.parseInt(time[0]);
+                int month = Integer.parseInt(time[1]);
+                date = LocalDate.of(year, month, 1);
+                daysInMonth = date.lengthOfMonth();
+            } else {
+                daysInMonth = LocalDate.of(date.getYear(), date.getMonthValue(), 1).lengthOfMonth();
+            }
+            Map<Integer, Integer> orderCounts = OrdersDao.getOrdersCountADateInMonth(shop_id, date.getMonthValue(), date.getYear());
+            // Set JSON data as request attribute
+            request.setAttribute("dim", daysInMonth);
+            request.setAttribute("jsonData", getCharValueJsonString(orderCounts));
+            request.setAttribute("statistics", getStatistic(date, shop_id));
+            //GO TO JSP TO DISPLAY CHART
+            request.getRequestDispatcher("seller/order_chart_demo.jsp").forward(request, response);
+        } catch (NullPointerException e) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
-        Map<Integer, Integer> orderCounts = OrdersDao.getOrdersCountADateInMonth(1, 2,date.getYear());
-        request.setAttribute("dim", daysInMonth);
-        StringBuilder json = new StringBuilder("[");
-        for (Map.Entry<Integer, Integer> entry : orderCounts.entrySet()) {
-            json.append("{");
-            json.append("\"x\":").append(entry.getKey()).append(",");
-            json.append("\"y\":").append(entry.getValue());
-            json.append("},");
-        }
-        if (!orderCounts.isEmpty()) {
-            json.deleteCharAt(json.length() - 1); // Remove the last comma
-        }
-        json.append("]");
-        // Set JSON data as request attribute
-        request.setAttribute("jsonData", json.toString());
-        //GO TO JSP TO DISPLAY CHART
-        request.getRequestDispatcher("seller/order_chart_demo.jsp").forward(request, response);
-
     }
 
     /**
@@ -123,4 +115,38 @@ public class OrderController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private String getCharValueJsonString(Map<Integer, Integer> orderCounts) {
+        StringBuilder json = new StringBuilder("[");
+        for (Map.Entry<Integer, Integer> entry : orderCounts.entrySet()) {
+            json.append("{");
+            json.append("\"x\":").append(entry.getKey()).append(",");
+            json.append("\"y\":").append(entry.getValue());
+            json.append("},");
+        }
+        if (!orderCounts.isEmpty()) {
+            json.deleteCharAt(json.length() - 1); // Remove the last comma
+        }
+        json.append("]");
+        return json.toString();
+    }
+    
+    private ArrayList<Integer> getStatistic(LocalDate date, int shop_id){
+        ArrayList<Integer> statisticList = new ArrayList<>();
+        //ADD TOTAL REVENUE
+        int ttRev = OrdersDao.getTotalRevenueInAMonthOfShop(shop_id, date.getMonthValue(), date.getYear());
+        statisticList.add(ttRev);
+        //ADD TOTAL ORDERS COUNT
+        int ttOrd = OrdersDao.getOrdersCountInAMonthOfShop(shop_id, date.getMonthValue(), date.getYear());
+        statisticList.add(ttOrd);
+        //ADD AVERAGE REVENUE
+        Integer avg = 0;
+        try {
+            avg = ttRev/ttOrd;
+        } catch (Exception e) {
+        }
+        statisticList.add(avg);
+        //ADD TOTAL COUNT OF SELLED PRODUCT
+        statisticList.add(OrdersDao.getTotalProductSell(shop_id, date.getMonthValue(), date.getYear()));
+        return statisticList;
+    }
 }

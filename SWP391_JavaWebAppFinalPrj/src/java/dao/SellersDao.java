@@ -43,8 +43,6 @@ public class SellersDao {
             + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
     //CUSTOM ORDER REALTED SQL STATEMENT
-    private static final String GETCUSTOMORDERS = "SELECT [id],[product_name],[expected_complete_date],[status],[cost] FROM [custom_order] WHERE [seller_id]=?";
-    private static final String CREATECUSTOMORDER = "INSERT INTO [custom_order]([id],[product_name],[expected_complete_date],[seller_id],[status],[cost])VALUES(?,?,?,?,?,?)";
         //UPDATE CUSTOM ORDER COMPLETE PROCESS
     private static final String UPDATESTATUS = "UPDATE [order] SET [status]=? WHERE [id]=?";
     private static final String UPDATECOMPLETEPROCESS = "INSERT INTO [custom_order_detail]([customorder_id],[process_img],[process_video],[description]) VALUES(?,?,?,?)";
@@ -310,43 +308,6 @@ public class SellersDao {
         }
     }
     
-    public static ArrayList<CustomOrder> getShopCustomOrders(int seller_id){
-        ArrayList<CustomOrder> orders = null;
-        PreparedStatement ptm = null;
-        ResultSet rs = null;
-        try(Connection con = SQLConnection.getConnection()){
-            ptm = con.prepareStatement(GETCUSTOMORDERS);
-            ptm.setInt(1, seller_id);
-            rs = ptm.executeQuery();
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String product_name = rs.getString("product_name");
-                Date expected_complete_date = rs.getDate("expected_complete_date");
-                String status = rs.getString("status");
-                double cost = rs.getDouble("cost");
-                //CustomOrder co = new CustomOrder(id, product_name, expected_complete_date, status, cost);
-                //orders.add(co);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return orders;
-    }
-    public static void createCustomOrder(CustomOrder order){
-        PreparedStatement ptm = null;
-        try (Connection con = SQLConnection.getConnection()) {
-            ptm = con.prepareStatement(CREATECUSTOMORDER);
-            ptm.setInt(1, order.getId());
-            ptm.setString(2, order.getProduct_name());
-            ptm.setDate(3, (Date) order.getExpected_complete_date());
-            ptm.setInt(4, order.getOrder().getShop_id());
-            ptm.setString(5, order.getOrder().getStatus());
-            ptm.setInt(6, (int)order.getOrder().getTotal());
-            ptm.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public static void main(String[] args) {
         //getShopVouchers(1).forEach(System.out::println);
         getShopProducts(1).forEach(System.out::println);
