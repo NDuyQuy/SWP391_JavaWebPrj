@@ -67,7 +67,8 @@
         </style>
     </head>
     <body>
-
+        
+<!--HEADER, skip this-->
         <header>
             <div id="header-sticky" class="header-area box-90 pt-1 pb-1">
                 <div class="container-fluid">
@@ -117,7 +118,7 @@
                                     <li class="login-btn">
                                         <c:if test="${sessionScope.user == null}">
                                             <a href="login.jsp"><i class="far fa-user"></i></a>
-                                            <ul class="submenu">
+                                            <ul class="submenu" style="margin-left: -150px;">
 
                                                 <li >
                                                     <a href="login.jsp">Login</a>
@@ -156,9 +157,16 @@
                 </div>
             </div>
         </header>
+                                            
+
+    <!--CHAT SCREEN START FROM HERE-->
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-3 col-xl-3 chat" style="padding-right: 0; padding-left: 0;"><div class="card mb-sm-3 mb-md-0 contacts_card">
+                        
+                        <!--SEARCH BAR-->
+                        
                         <div class="card-header" style="background: #fff">
                             <div class="input-group">
                                 <input type="text" placeholder="Tìm kiếm..." name="" class="form-control search">
@@ -167,26 +175,41 @@
                                 </div>
                             </div>
                         </div>
+                        
+<!--DISPLAY SENDER LIST-->
+
                         <div class="card-body contacts_body">
                             <ui class="contacts">
+                                
+                                <!--SENDER SELECTED, CURRENTLY DISPLAYING THIS SENDER'S CHAT MESSAGE-->
                                 <li class="active">
                                     <div class="d-flex bd-highlight">
+                                        
+                                        <!--IMAGE OF SENDER-->
                                         <div class="img_cont">
                                             <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img">
                                         </div>
                                         <div class="user_info">
+                                            <!--NAME OF SENDER-->
                                             <span>A</span>
+                                            <!--MOST RECENT MESSAGE-->
                                             <p>text</p>
                                         </div>
                                     </div>
                                 </li>
+                                
+                                <!--OTHER SENDER-->
                                 <li>
                                     <div class="d-flex bd-highlight">
+                                        
+                                        <!--IMAGE OF SENDER-->
                                         <div class="img_cont">
                                             <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img">
                                         </div>
                                         <div class="user_info">
-                                            <span>B</span>
+                                            <!--NAME OF SENDER-->
+                                            <span>B</span> 
+                                            <!--MOST RECENT MESSAGE-->
                                             <p>text</p>
                                         </div>
                                     </div>
@@ -196,50 +219,88 @@
                         </div>
                         <div class="card-footer"></div>
                     </div></div>
+                
+<!--MAIN CHAT BOX-->
                 <div class="col-lg-9 col-xl-9 chat" style="padding-right: 0; padding-left: 0;">
                     <div class="card">
+                        
+                        <!--INFO OF SENDER WHOSE CHAT MESSAGES ARE DISPLAYED-->
                         <div class="card-header msg_head" style="background: #fff">
                             <div class="d-flex bd-highlight">
+                                
+                                <!--IMAGE OF SENDER-->
                                 <div class="img_cont">
                                     <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img">
                                 </div>
                                 <div class="user_info">
+                                    <!--NAME OF SENDER-->
                                     <span>A</span>
                                 </div>
                             </div>
+                            
+                            <!--MENU OF ACTIONS THAT CAN IMPLEMENT TO SENDER, IF NEEDED. EX: REPORT, VIEW SHOP IF SENDER IS SELLER-->
                             <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
                             <div class="action_menu">
+                                
+                                <!--LIST ACTIONS HERE-->
                                 <ul>
+                                    <li></li>
                                     <li></li>
                                 </ul>
                             </div>
+                            
                         </div>
+                        
+<!--DISPLAY MESSAGE-->
                         <div class="card-body msg_card_body">
+                            
+                            <!--MESSAGE OF SENDER-->
                             <div class="d-flex justify-content-start mb-4">
+                                <!--IMAGE OF SENDER-->
                                 <div class="img_cont_msg">
                                     <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img_msg">
                                 </div>
                                 <div class="msg_cotainer">
+                                    
+                                    <!--CONTENT OF MESSAGE-->
                                     HI
+                                    
+                                    <!--TIME RECEIVE MESSAGE-->
                                     <span class="msg_time">5:57</span>
                                 </div>
                             </div>
+                            
+                            <!--MESSAGE OF RECEIVER-->
                             <div class="d-flex justify-content-end mb-4">
                                 <div class="msg_cotainer_send">
+                                    
+                                    <!--CONTENT OF MESSAGE-->
                                     HI
+                                    
+                                    <!--TIME SEND MESSAGE-->
                                     <span class="msg_time_send">5:57</span>
                                 </div>
+                                <!--IMAGE OF RECEIVER-->
                                 <div class="img_cont_msg">
                                     <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img_msg">
                                 </div>
                             </div>
+                            
                         </div>
+
+<!--MESSAGE INPUT BOX-->
                         <div class="card-footer">
                             <div class="input-group">
+                                
+                                <!--IF NEED, ADD INPUT FILE-->
                                 <div class="input-group-append">
                                     <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
                                 </div>
+                                
+                                <!--TYPE MESSAGE HERE-->
                                 <textarea name="" class="form-control type_msg" placeholder="Nhập nội dung tin nhắn..."></textarea>
+                                
+                                <!--SEND BUTTON-->
                                 <div class="input-group-append">
                                     <span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
                                 </div>
