@@ -22,6 +22,13 @@ public class CustomOrderDetail {
     public CustomOrderDetail() {
     }
 
+    public CustomOrderDetail(int customorder_id, String process_img, String process_video, String description) {
+        this.customorder_id = customorder_id;
+        this.process_img = process_img;
+        this.process_video = process_video;
+        this.description = description;
+    }
+    
     public int getCustomorder_id() {
         return customorder_id;
     }

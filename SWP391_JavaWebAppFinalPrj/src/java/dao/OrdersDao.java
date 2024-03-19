@@ -10,8 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import model.CustomOrder;
-import model.Orders;
+import model.*;
 /**
  *
  * @author ASUS
@@ -27,11 +26,16 @@ public class OrdersDao {
     private static final String GETCOMPLETEORDERCOUNTINMONTHOFSHOP = "SELECT COUNT(order_id) as [count] FROM [orders] "
             + "WHERE [shop_id] = ? AND MONTH(order_date) = ? AND YEAR(order_date) = ? AND [status] = N'đã nhận'";
     private static final String GETTOTALPRODUCTSELL = "EXEC GetTotalProductSell @ShopId = ?, @Month = ?, @Year = ?";
-    private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status]=N'%chờ người bán xác nhận%'";
+    private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status]=N'chờ người bán xác nhận'";
     
     private static final String GETCUSTOMORDERS = "SELECT co.*,o.status,total FROM [custom_order] co join [orders] o on co.id = o.order_id WHERE o.shop_id = ?";
     private static final String CREATECUSTOMORDER = "EXEC CREATECUSTOMORDERS @ShopId = ?, @Price=?,@ProductName=?, @Deadline = ?";
-    private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='', ";
+    private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='' ";
+    
+    private static final String UPDATE_PROCESS = "INSERT INTO [custom_order_detail]([customorder_id],[process_img],[process_video],[description]) VALUES (?,?,?,?)";
+    
+    private static final String UPDATE_STATUS = "UPDATE [orders] SET [status]=? WHERE [order_id]=?";
+    
     
     private static Orders getOrderObject(ResultSet rs) throws SQLException{
         int order_id = rs.getInt("order_id");
@@ -210,7 +214,7 @@ public class OrdersDao {
             ptm=con.prepareStatement(CREATECUSTOMORDER);
             ptm.setInt(1, shop_id);
             ptm.setInt(2, priceProduct);
-            ptm.setString(3, productName);
+            ptm.setNString(3, productName);
             ptm.setDate(4, (java.sql.Date) deadline);
             ptm.execute();
         }catch(Exception e){
@@ -242,9 +246,77 @@ public class OrdersDao {
         }
         return list;
     }
+    public static void updateCustomOrderProcessDetai(CustomOrderDetail cod, String status){
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(UPDATE_STATUS);
+            ptm.setInt(2, cod.getCustomorder_id());
+            ptm.setNString(1, status);
+            ptm.execute();
+            ptm = con.prepareStatement(UPDATE_PROCESS);
+            ptm.setInt(1, cod.getCustomorder_id());
+            ptm.setNString(1, cod.getProcess_img());
+            ptm.setNString(1, cod.getProcess_video());
+            ptm.setNString(1, cod.getDescription());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static List<ShippingUnits> getLocalShippingUnits(String shop_address){
+        List<ShippingUnits> shippingUnits = new ArrayList<>();
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement("EXEC SearchShippingUnitsByAddress @input_address = ?");
+            statement.setNString(1, shop_address);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {                
+                ShippingUnits unit = new ShippingUnits();
+                unit.setId(resultSet.getInt("id"));
+                unit.setSupport_shippingmethod(resultSet.getInt("support_shippingmethod"));
+                unit.setName(resultSet.getNString("name"));
+                shippingUnits.add(unit);
+            }
+        } catch (Exception e) {
+        }
+        return shippingUnits;
+    }
+    public static Orders getOrderByID(int order_id){
+        Orders o = null;
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM [orders] WHERE [order_id]=?");
+            statement.setInt(1, order_id);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()){
+                o = getOrderObject(rs);
+            }
+        }catch (Exception e) {
+        }
+        return o;
+    }
+    public static List<OrderDetail> getOrderDetail(int order_id){
+        List<OrderDetail> ods = new ArrayList<>();
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement("SELECT od.*,p.name FROM [orderdetail] od join [products] p on p.product_id = od.productID WHERE od.orderID = ?");
+            statement.setInt(1, order_id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {                
+                OrderDetail od = new OrderDetail();
+                Products p = new Products();
+                p.setName(resultSet.getString("name"));
+                od.setOrderID(resultSet.getInt("orderID"));
+                od.setQuantity(resultSet.getInt("quantity"));
+                od.setProduct(p);
+                od.setOrder(getOrderByID(order_id));
+                ods.add(od);
+            }
+        } catch (Exception e) {
+        }
+        return ods;
+    }
+    
     public static void main(String[] args) {
         LocalDate date = LocalDate.of(2024, 3, 17);
-        getCustomOrderOfShop(1).forEach(System.out::println);
+        getOrderDetail(11).forEach(System.out::println);
+        //getWaitingOrders(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);
         //getOrdersCountByHour(1, date).entrySet().forEach(System.out::println);
         //getOrdersCountADateInMonth(1, 3, 2024).entrySet().forEach(System.out::println);

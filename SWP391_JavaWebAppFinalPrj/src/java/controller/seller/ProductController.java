@@ -5,6 +5,7 @@
  */
 package controller.seller;
 
+import dao.CategoryDao;
 import dao.SellersDao;
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +23,8 @@ import model.*;
 import javax.servlet.annotation.MultipartConfig;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import model.MainCategory;
 /**
  *
  * @author ASUS
@@ -72,36 +71,43 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "seller/shopproduct_management.jsp";
-        int id = ((Users) request.getSession().getAttribute("user")).getId();
-        String open = request.getParameter("open");
-        if (open != null) {
-            if (open.equals("create")) {
-                url = "seller/addnew_product.jsp";
-                response.sendRedirect(url);
-            }else{
-                url = "seller/edit_product.jsp";
-                int product_id = Integer.parseInt(request.getParameter("p_id"));
-                Products p = SellersDao.getProductById(product_id);
-                String realPath = request.getServletContext().getRealPath(p.getImg());
-                String prefix = p.getImg().replaceAll("\\\\", "/");
-                request.getSession().setAttribute("product", p);
-                
-                Stream<Path> ps = Files.list(Paths.get(realPath));
-                List<String> imgPaths;
-                imgPaths = ps.map(Path::getFileName).map(Path::toString).collect(Collectors.toList());
-                for (int i = 0; i < imgPaths.size(); i++) {
-                    imgPaths.set(i,prefix+File.separator+imgPaths.get(i));
+        try {
+            int user_id = ((Users) request.getSession().getAttribute("user")).getId();
+            String open = request.getParameter("open");
+            if (open != null) {
+                request.getSession().setAttribute("SCategoryList", CategoryDao.getShopCategoryByShop(user_id));
+                if (open.equals("create")) {
+                    url = "seller/addnew_product.jsp";
+                    //request.getRequestDispatcher(url).forward(request, response);
+                    response.sendRedirect(url);
+                }else{
+                    url = "seller/edit_product.jsp";
+                    int product_id = Integer.parseInt(request.getParameter("p_id"));
+                    Products p = SellersDao.getProductById(product_id);
+                    String realPath = request.getServletContext().getRealPath(p.getImg());
+                    String prefix = p.getImg().replaceAll("\\\\", "/");
+                    request.getSession().setAttribute("product", p);
+                    
+                    Stream<Path> ps = Files.list(Paths.get(realPath));
+                    List<String> imgPaths;
+                    imgPaths = ps.map(Path::getFileName).map(Path::toString).collect(Collectors.toList());
+                    for (int i = 0; i < imgPaths.size(); i++) {
+                        imgPaths.set(i,prefix+File.separator+imgPaths.get(i));
+                    }
+                    request.getSession().setAttribute("imgs", imgPaths);
+
+                    response.sendRedirect(url);
+                    //request.getRequestDispatcher(url).forward(request, response);
                 }
-                request.getSession().setAttribute("imgs", imgPaths);
-                
-                response.sendRedirect(url);
-                //request.getRequestDispatcher(url).forward(request, response);
+            } else {
+                //Get the list of shop categories
+                request.getSession().setAttribute("products", SellersDao.getShopProducts(user_id));
+                //response.sendRedirect(url);
+                request.getRequestDispatcher(url).forward(request, response);
             }
-        } else {
-            //Get the list of shop categories
-            request.getSession().setAttribute("products", SellersDao.getShopProducts(id));
-            //response.sendRedirect(url);
-            request.getRequestDispatcher(url).forward(request, response);
+        } catch (NullPointerException e) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }
 
@@ -116,6 +122,7 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String url = "/seller/shopproduct_management.jsp";
         int user_id = ((Users) request.getSession().getAttribute("user")).getId();
         String act = request.getParameter("act");
@@ -126,14 +133,22 @@ public class ProductController extends HttpServlet {
             switch(act){
                 case "create":
                     uploadPath = getNewDir(user_id);
+                    //UPLOAD IMG FILE INTO uploadPath(dir)
                     uploadImageFile(request, uploadPath);
-                    p = getProduct(request);
+                    p = getProduct(request); 
+                    uploadPath = uploadPath.replace(serverContextPath, "");
                     uploadPath = uploadPath.replaceAll("\\\\", "/");
-                    p.setImg(uploadPath.replace(serverContextPath, ""));
+                    p.setImg(uploadPath);
                     SellersDao.createShopProducts(p, user_id);
                     break;
                 case "edit":
                     p = getProduct(request);
+                    uploadPath = Paths.get(serverContextPath, p.getImg()).toString();
+                    //DELETE OLD FILE IN FOLDER THEN UPLOAD THE NEW FILE INTO IT
+                    delOldFile(uploadPath); uploadImageFile(request, uploadPath);
+                    uploadPath = uploadPath.replace(serverContextPath, "");
+                    uploadPath = uploadPath.replaceAll("\\\\", "/");
+                    p.setImg(uploadPath);
                     SellersDao.editShopProducts(p);
                     break;
                 case "delete":
@@ -142,6 +157,7 @@ public class ProductController extends HttpServlet {
                     break;
                 default:    break;
             }
+            request.getSession().setAttribute("products", SellersDao.getShopProducts(user_id));
             request.getRequestDispatcher(url).forward(request, response);
         }
         else{
@@ -182,9 +198,9 @@ public class ProductController extends HttpServlet {
             // Check if the part is the file input with the name "images"
             if (part.getName().equals("images")) {
                 String fileName = extractFileName(part);
-                String finalPath = uploadPath + File.separator + fileName;
+                String finalPath = Paths.get(uploadPath,fileName).toString();
                 if (fileName.length() > 0) {
-                    part.write(uploadPath + File.separator + fileName);
+                    part.write(finalPath);
                 }
                 boolean isExists = Files.exists(Paths.get(finalPath));
                 if(!isExists){
@@ -216,7 +232,29 @@ public class ProductController extends HttpServlet {
             product = new Products(scate_id, description, name, price, quantity);
             product.setProduct_id(product_id);
         } catch (Exception e) {
+            
         }
         return product;
+    }
+    private void delOldFile(String directoryPath){
+        try {
+            // List all files in the directory
+            Files.list(Paths.get(directoryPath))
+                 // Filter out directories
+                 .filter(Files::isRegularFile)
+                 // Delete each file
+                 .forEach(file -> {
+                     try {
+                         Files.delete(file);
+                         System.out.println("Deleted file: " + file.getFileName());
+                     } catch (IOException e) {
+                         System.err.println("Failed to delete file: " + file.getFileName());
+                         e.printStackTrace();
+                     }
+                 });
+        } catch (IOException e) {
+            System.err.println("Failed to list files in directory: " + directoryPath);
+            e.printStackTrace();
+        }
     }
 }

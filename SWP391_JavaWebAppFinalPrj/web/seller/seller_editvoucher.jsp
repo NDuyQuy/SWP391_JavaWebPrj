@@ -46,14 +46,13 @@
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="voucher_type">Loại mã</label>
-                            <select class="form-control" id="voucher_type" name="voucher_type">
+                            <select class="form-control" id="voucher_type" name="voucher_type" id="voucherType">
                                 <option value="1" ${voucher.type == 1 ? 'selected' : ''}>Voucher toàn shop</option>
                                 <option value="2" ${voucher.type == 2 ? 'selected' : ''}>Voucher sản phẩm</option>
                             </select>
 
                         </div>
                     </div>
-
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="voucher_code">Mã Voucher</label>
@@ -79,7 +78,7 @@
                             <label for="promotion_type">Loại giảm giá</label>
                             <select class="form-control" id="promotion_type" name="promotion_type">
                                 <option value="Mv">Giảm tiền trực tiếp</option>
-                                <option value="Pv">Giảm theo phần trăm</option>
+                                <option value="Pv" disabled="">Giảm theo phần trăm</option>
                             </select>
                         </div>
                         <div class="form-group col-md-4">
@@ -112,12 +111,14 @@
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="product_applied">Sản phẩm được áp dụng</label>
-                            <select class="form-control" id="product_applied" name="product_applied">
-                                <!-- Add options here -->
+                            <select class="form-control" id="product_applied" name="product_applied" required >
+                                <option>Chọn sản phẩm áp dụng</option>
+                                <c:forEach var="p" items="${requestScope.productList}">
+                                    <option value="${p.product_id}">${p.name}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
-
                     <div class="form-row justify-content-center">
                         <a href="sellersvouchercontroller" class="btn btn-secondary mr-2">Hủy</a>
                         <button type="submit" class="btn btn-primary">Sửa</button>
@@ -130,9 +131,16 @@
         <jsp:include page="../footer.jsp"></jsp:include>
         <!-- footer end -->
 
-
-
         <!-- JS here -->
+        <script>
+            document.getElementById('voucherType').addEventListener('change', function () {
+                if (document.getElementById('voucherType').getAttribute("value") === '1') {
+                    document.getElementById('product_applied').setAttribute("disabled") ;
+                } else {
+                    document.getElementById('product_applied').removeAttribute("disabled") ;
+                }
+            });
+        </script>
         <script src="../js/vendor/jquery-1.12.4.min.js"></script>
         <script src="../js/jquery-ui.js"></script>
         <script src="../js/popper.min.js"></script>

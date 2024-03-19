@@ -5,18 +5,12 @@
  */
 package controller;
 
-import dao.CartDao;
-import dao.CartDaoImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.CartItem;
-import model.User;
 
 /**
  *
@@ -64,7 +58,8 @@ public class UpdateQuantityServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         User user = (User) request.getSession().getAttribute("user");
+        /*
+        User user = (User) request.getSession().getAttribute("user");
         int userId = user.getUserID();
 
         int productId = Integer.parseInt(request.getParameter("id"));
@@ -84,7 +79,7 @@ public class UpdateQuantityServlet extends HttpServlet {
 
         CartDao cartDao = new CartDaoImpl();
         cartDao.updateCartItemQuantity(userId, productId, quantityChange);
-        response.sendRedirect("Cart");
+        response.sendRedirect("Cart");*/
         
     }
 

@@ -73,13 +73,10 @@
                                         </td>
                                     </tr>
                                 </c:forEach>
-
                             </tbody> 
                         </table>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="openPopup('add')">
-                        Add New Category
-                    </button>
+                    <button type="button" class="btn btn-primary" onclick="openPopup('add')">Tạo đơn mới</button>
                     <!-- Add Category Popup -->
                     <div class="modal" id="addPopup">
                         <div class="modal-dialog">

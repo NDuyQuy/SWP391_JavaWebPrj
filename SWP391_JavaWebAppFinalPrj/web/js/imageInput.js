@@ -29,7 +29,6 @@ function readImage() {
         for (let i = 0; i < files.length; i++) {
             var file = files[i];
             if (!file.type.match('image')) continue;
-
             var picReader = new FileReader();
 
             picReader.addEventListener('load', function (event) {
@@ -47,3 +46,15 @@ function readImage() {
         console.log('Browser not support');
     }
 }
+
+document.getElementById('pro-image').addEventListener('change', function () {
+    // Get the selected files
+    var files = this.files;
+    // Maximum number of allowed files
+    var maxFiles = 3; // Change this to your desired maximum
+    // If the number of selected files exceeds the maximum, alert the user and clear the file input
+    if (files.length > maxFiles) {
+        alert('You can only select up to ' + maxFiles + ' files.');
+        this.value = ''; // Clear the file input
+    }
+});

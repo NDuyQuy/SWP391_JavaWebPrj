@@ -5,6 +5,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
@@ -33,8 +34,8 @@ public class RatingDao {
             while (rs.next()) {
                 r = new Ratings();
                 r.setId(rs.getInt(1));
-                r.setOrderDetail(OrderDetailDao.getOrderDetailById(rs.getInt(2)));
-                r.setTimeStamp(LocalDate.parse(rs.getDate(3).toString()));
+                r.setOrderdetail(OrderDetailDao.getOrderDetailById(rs.getInt(2)));
+                r.setTime_stamp(Date.valueOf(rs.getDate(3).toString()));
                 r.setScore(rs.getInt(4));
                 r.setComment(rs.getString(5));
                 rating_by_product.add(r);

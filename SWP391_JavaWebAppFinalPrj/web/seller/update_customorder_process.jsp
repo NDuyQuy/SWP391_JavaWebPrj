@@ -36,11 +36,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="productVideo">Video sản phẩm</label>
-                                <input accept="video/mp4"type="file" class="form-control" id="productVideo" name="productVideo" >
+                                <input accept=".mp4"type="file" class="form-control" id="productVideo" name="productVideo" >
                             </div>
                             <div class="form-group">
                                 <label for="description">Mô tả:</label>
-                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                                <textarea class="form-control" id="description" name="description" rows="3" maxlength="200" required></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="status">Tình trạng sản phẩm</label>
@@ -60,7 +60,5 @@
                 </div>
             </div>
         </main>
-        <!-- JS here-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>

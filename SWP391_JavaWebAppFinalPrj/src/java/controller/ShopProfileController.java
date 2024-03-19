@@ -7,11 +7,14 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import model.Users;
 
 /**
@@ -75,8 +78,15 @@ public class ShopProfileController extends HttpServlet {
             throws ServletException, IOException {
         String shop_name = request.getParameter("sname");
         String description = request.getParameter("des");
-        int shop_id = ((Users)request.getSession().getAttribute("user")).getId();
-        
+        try {
+            int shop_id = ((Users)request.getSession().getAttribute("user")).getId();
+            Part p = request.getPart("logo");
+            if(p!=null){
+                String upLoadDir = getDir(shop_id) + "/logo.jpg";
+                p.write(upLoadDir);
+            }
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -88,5 +98,13 @@ public class ShopProfileController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    private String getDir(int user_id) throws IOException{
+        String uploadPath = Paths.get(getServletContext().getRealPath(""),"img", "user","shop_logo",String.valueOf(user_id)).toString();
+        
+        // IF DIR EXISTS RANDOM AGAIN TO UNTIL DIR DONT EXISTS
+        if(!Files.exists(Paths.get(uploadPath))) Files.createDirectories(Paths.get(uploadPath));
+        else Files.delete(Paths.get(uploadPath,"logo.jpg"));
+        return uploadPath;
+    }
+    
 }

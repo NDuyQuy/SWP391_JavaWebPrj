@@ -78,7 +78,6 @@
                                 </li>
                             </ul>
                         </nav>
-
                         <table class="table table-bordered">
                             <thead>
                                 <tr> 
@@ -111,7 +110,6 @@
                     </table>
                 </div>
             </section>
-
         </main>
         <jsp:include page="../footer.jsp"></jsp:include>
         <!-- Delete Category Popup-->

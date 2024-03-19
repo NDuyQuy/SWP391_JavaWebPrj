@@ -50,11 +50,11 @@
                                 <input type="text" class="form-control" id="productName" name="productName" value="${product.name}" required>
                             </div>
                             <div class="form-group">
-                                <label for="category">Thuộc ngành:</label>
+                                <label for="category">Thuộc danh mục:</label>
                                 <select class="form-control" id="category" name="category" >
                                     <!-- Add your category options here -->
-                                    <c:forEach var="c" items="${sessionScope.main_category_list}">
-                                        <option value="${c.categoryID}" ${(product.shopCategory.maincate_id == c.id) ? 'selected' : ''}>${c.name}</option>
+                                    <c:forEach var="c" items="${requestScope.main_category_list}">
+                                        <option value="${c.id}" ${(product.scate_id == c.id) ? 'selected' : ''}>${c.name}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -81,7 +81,9 @@
                                         </div>
                                     </c:forEach>
                                 </div>
-                                <small class="form-text text-muted">Tối đa 10 hình ảnh.</small>
+                                <small class="form-text text-muted">Tối đa 3 hình ảnh.</small>
+                                <small class="form-text text-muted">CHÚ Ý:Vì lý do kỹ thuật nên việc upload file ảnh mới sẽ thay thế 
+                                    toàn bộ ảnh cũ của sản phẩm.</small>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success" id="submit-btn">Sửa</button>

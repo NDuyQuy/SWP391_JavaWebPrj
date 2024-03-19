@@ -5,12 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import model.CartItem;
-import model.Product;
-import dao.ProductDao;
-import static dao.ProductDao.getProductById;
-import java.sql.SQLException;
-import model.Shop;
 
 public class CartDaoImpl implements CartDao {
 
@@ -105,7 +99,7 @@ public class CartDaoImpl implements CartDao {
         }
         return cartItems;
     }
-     */
+     
     public static List<CartItem> getCartItems(int userId) {
         List<CartItem> cartItems = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
@@ -164,5 +158,11 @@ public class CartDaoImpl implements CartDao {
                 System.out.println("-------------");
             }
         }
+    }
+    */
+
+    @Override
+    public void clearCart(int userId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -15,7 +15,6 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="manifest" href="site.html">
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
 
@@ -134,16 +133,16 @@
                                     </dl>
                                 </li>
                                 <c:if test="${user.role eq 1}">
-                                <li>
-                                    <dl>
-                                        <dt><a href="#">My Orders</a></dt>
-                                    </dl>
-                                </li>
-                                <li>
-                                    <dl>
-                                        <dt><a href="#">My Vouchers</a></dt>
-                                    </dl>
-                                </li>
+                                    <li>
+                                        <dl>
+                                            <dt><a href="#">My Orders</a></dt>
+                                        </dl>
+                                    </li>
+                                    <li>
+                                        <dl>
+                                            <dt><a href="#">My Vouchers</a></dt>
+                                        </dl>
+                                    </li>
                                 </c:if>
                             </ul>
                         </div>
@@ -158,23 +157,16 @@
                                     Manage and protect your account
                                 </div>
                             </div>
-                            <div class="bottom">
-                                <div class="profile-table" style="font-size: 15px;">
-                                    <form action="profile" method="post">
+
+                            <form action="profile" method="post" enctype="multipart/form-data">
+                                <div class="bottom">
+                                    <div class="profile-table" style="font-size: 15px;">
                                         <table width="550" height="400">
                                             <tr>
                                                 <td>Username</td>
                                                 <td><input type="text" size="40" name="fname" value="${user.username}" disabled></td>
                                             </tr>
-                                            
-                                            <c:if test="${user.role eq 2}">
-                                                <tr>
-                                                    <td>CCCD</td>
-                                                    <td> 
-                                                        <input type="text" size="40" name="CCCD" value="${sessionScope.shop.CCCD}" disabled>
-                                                    </td>
-                                                </tr>
-                                            </c:if>
+
                                             <tr>
                                                 <td>Email</td>
                                                 <td> 
@@ -207,35 +199,35 @@
                                                             border: 0;">Save</button></td>
                                             </tr>
                                         </table>
-                                    </form>
-                                </div>
-                                <div class="profile-avatar">
-                                    <div class="avatar">
-                                        <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
-                                            <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="${user.img}">
-                                            <input type="file" accept=".jpg,.jpeg,.png" hidden="">
-                                        </span>
-                                        <button style="color: #000;
-                                                position: relative;
-                                                overflow: visible;
-                                                background: #fff;
-                                                height: 40px;
-                                                padding: 0 10px;
-                                                margin-bottom: 1.25rem;
-                                                min-width: 70px;
-                                                max-width: 220px;
-                                                border: 1px solid rgba(0,0,0,.8);" type="button">Select image</button>
 
-                                        <div class="des" style="color: rgba(0,0,0,.8);">
-                                            <div>
-                                                File size: maximum 1MB
-                                                <br>File extension: .JPG, .JPEG, .PNG
+
+                                    </div>
+                                    <div class="profile-avatar">
+                                        <div class="avatar">
+                                            <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
+                                                <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="${user.img}">
+                                                <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upUImg" >
+                                            </span>
+                                            <button id="uBtn" style="color: #000;
+                                                    position: relative;
+                                                    overflow: visible;
+                                                    background: #fff;
+                                                    height: 40px;
+                                                    padding: 0 10px;
+                                                    margin-bottom: 1.25rem;
+                                                    min-width: 70px;
+                                                    max-width: 220px;
+                                                    border: 1px solid rgba(0,0,0,.8);" type="button">Select image</button>
+                                            <div class="des" style="color: rgba(0,0,0,.8);">
+                                                <div>
+                                                    File size: maximum 1MB
+                                                    <br>File extension: .JPG, .JPEG, .PNG
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-                            </div>
+                            </form>                    
                         </div>
                         <c:if test="${sessionScope.user.role eq 2}">
                             <div class="widget mt-30">
@@ -248,13 +240,20 @@
                                         Cập nhật và quản lý hồ sơ Shop của bạn
                                     </div>
                                 </div>
-                                <div class="bottom">
-                                    <div class="profile-table" style="font-size: 15px;">
-                                        <form action="shopprofile" method="post">
+                                <form action="shopprofile" method="post" enctype="multipart/form-data">
+                                    <div class="bottom">
+                                        <div class="profile-table" style="font-size: 15px;">
+
                                             <table width="550" height="400">
                                                 <tr>
                                                     <td>Tên Shop</td>
                                                     <td><input type="text" size="40" name="sname" value="${sessionScope.shop.shop_name}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>CCCD</td>
+                                                    <td> 
+                                                        <input type="text" size="40" name="CCCD" value="${sessionScope.shop.CCCD}" disabled>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Mô tả Shop</td>
@@ -279,34 +278,34 @@
                                                     </td>
                                                 </tr>
                                             </table>
-                                        </form>
-                                    </div>
-                                    <div class="profile-avatar">
-                                        <div class="avatar">
-                                            <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
-                                                <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg">
-                                                <input type="file" accept=".jpg,.jpeg,.png" hidden="">
-                                            </span>
-                                            <button style="color: #000;
-                                                    position: relative;
-                                                    overflow: visible;
-                                                    background: #fff;
-                                                    height: 40px;
-                                                    padding: 0 10px;
-                                                    margin-bottom: 1.25rem;
-                                                    min-width: 70px;
-                                                    max-width: 220px;
-                                                    border: 1px solid rgba(0,0,0,.8);" type="button">Select image</button>
-                                            <div class="des" style="color: rgba(0,0,0,.8);">
-                                                <div>
-                                                    File size: maximum 1MB
-                                                    <br>File extension: .JPG, .JPEG, .PNG
+
+                                        </div>
+                                        <div class="profile-avatar">
+                                            <div class="avatar">
+                                                <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
+                                                    <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="${sessionScope.shop.shop_img}">
+                                                    <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upLogo" name="logo">
+                                                </span>
+                                                <button id="lBtn" style="color: #000;
+                                                        position: relative;
+                                                        overflow: visible;
+                                                        background: #fff;
+                                                        height: 40px;
+                                                        padding: 0 10px;
+                                                        margin-bottom: 1.25rem;
+                                                        min-width: 70px;
+                                                        max-width: 220px;
+                                                        border: 1px solid rgba(0,0,0,.8);" type="button">Select image</button>
+                                                <div class="des" style="color: rgba(0,0,0,.8);">
+                                                    <div>
+                                                        File size: maximum 1MB
+                                                        <br>File extension: .JPG, .JPEG, .PNG
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </c:if>
                     </div>
@@ -314,6 +313,16 @@
             </div>
         </section>
         <jsp:include page="footer.jsp"></jsp:include>
-
+        <script>
+            // Execute when the custom button is clicked
+            document.getElementById('uBtn').addEventListener('click', function () {
+                // Trigger the click event of the hidden file input
+                document.getElementById('upUImg').click();
+            });
+            document.getElementById('lBtn').addEventListener('click', function () {
+                // Trigger the click event of the hidden file input
+                document.getElementById('upLogo').click();
+            });
+        </script>
     </body>
 </html>

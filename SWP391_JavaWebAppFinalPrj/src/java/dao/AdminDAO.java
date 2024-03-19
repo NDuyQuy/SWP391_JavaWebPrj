@@ -7,7 +7,7 @@ import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import model.Category;
+import java.util.Locale.Category;
 /**
  *
  * @author DELL
@@ -32,8 +32,8 @@ public class AdminDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String Name = rs.getString("name").trim();
-                Category c = new Category(id, Name);
-                result.add(c);                
+                //Category c = new Category(id, Name);
+                //result.add(c);                
             }
             SQLConnection.closeConnection(con);
         } catch (Exception e) {

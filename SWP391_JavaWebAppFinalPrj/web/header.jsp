@@ -100,7 +100,7 @@
                                     <ul>
                                         <c:forEach var="cate" items="${sessionScope.main_category_list}">
                                             <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
-                                            </c:forEach>
+                                        </c:forEach>
                                     </ul>
                                 </c:if>
 
@@ -187,9 +187,9 @@
                                     </c:if>
                                     <c:if test="${sessionScope.user.role == 2}">
                                         <li class="d-notification-icon">
-                                            <a href="#" class="text-decoration-none">
+                                            <a href="seller/handle_waiting_order.jsp" class="text-decoration-none">
                                                 <i class="fas fa-bell"></i>
-                                                <span class="badge badge-pill badge-danger position-absolute top-0 end-0">${sessionScope.noti}</span>
+                                                <span class="badge badge-pill badge-danger position-absolute top-0 end-0">${sessionScope.noti.size()}</span>
                                             </a>
                                         </li>
                                     </c:if>

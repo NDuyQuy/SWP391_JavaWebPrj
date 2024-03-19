@@ -17,7 +17,7 @@ public class SellersDao {
    
     private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_name],[CCCD] FROM [shops] WHERE [shop_id]=?";
     private static final String GETALLSHOP = "Select [shop_id],[shop_name],[shop_img],[shop_description] from [shops]";
-    
+    private static final String UPDATESHOPINFO = "UPDATE [shops] SET [shop_name] = ?,[shop_description] = ?,[shop_img] = ? WHERE [shop_id] = ?";
     //SHOP CATEGORY RELATED SQL STATEMENT 
     private static final String GETSHOPCATEGORIES = "SELECT s.[id], s.[name],m.[name],m.[id] "
             + "FROM [shopcategory] s inner join [maincategory] m on s.[maincate_id] = m.[id] WHERE [shop_id]=?";
@@ -26,9 +26,9 @@ public class SellersDao {
     private static final String DELETESHOPCATEGORY = "DELETE [shopcategory] WHERE [id]=?";
     
     //PRODUCTS RELATED SQL STATEMENT
-    private static final String CREATEPRODUCT = "INSERT [products](shop_id,mcate_id,description,created_date,name,price,"
-            + "img,quantity) VALUES (?,?,?,GETDATE(),?,?,?,?)";
-    private static final String EDITPRODUCT = "UPDATE [products] SET  [mcate_id]=?, [description]=?, [name]=?, [price]=?, "
+    private static final String CREATEPRODUCT = "INSERT [products](shop_id,[scate_id],description,name,price,"
+            + "img,quantity) VALUES (?,?,?,?,?,?,?)";
+    private static final String EDITPRODUCT = "UPDATE [products] SET  [scate_id]=?, [description]=?, [name]=?, [price]=?, "
             + "[img]=?, quantity=? WHERE [product_id]=?";
     private static final String DELETEPRODUCT = "DELETE [products] WHERE [product_id] = ?";
     
@@ -42,11 +42,20 @@ public class SellersDao {
     private static final String EDITVOUCHER = "UPDATE [vouchers] SET [code]=?, [discount_amount]=?, [start_date]=?, [expire_date]=?, "
             + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
-    //CUSTOM ORDER REALTED SQL STATEMENT
-        //UPDATE CUSTOM ORDER COMPLETE PROCESS
-    private static final String UPDATESTATUS = "UPDATE [order] SET [status]=? WHERE [id]=?";
-    private static final String UPDATECOMPLETEPROCESS = "INSERT INTO [custom_order_detail]([customorder_id],[process_img],[process_video],[description]) VALUES(?,?,?,?)";
+    //CUSTOM ORDER REALTED SQL STATEMENt
     
+    public static void updateShopInfo(Shops shop){
+        PreparedStatement ptm = null;
+        try(Connection con=SQLConnection.getConnection()){
+            ptm = con.prepareStatement(UPDATESHOPINFO);
+            ptm.setNString(1,shop.getShop_name());
+            ptm.setNString(2,shop.getDescription());
+            ptm.setNString(3,shop.getShop_img());
+            ptm.setInt(4, shop.getShop_id());
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
     public static Shops getShopById(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
@@ -125,7 +134,7 @@ public class SellersDao {
             ptm = con.prepareStatement(CREATESHOPCATEGORY);
             ptm.setInt(1, maincate_id);
             ptm.setInt(2, shop_id);
-            ptm.setString(3, name);
+            ptm.setNString(3, name);
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,7 +147,7 @@ public class SellersDao {
             ptm = con.prepareStatement(EDITSHOPCATEGORY);
             ptm.setInt(2, maincate_id);
             ptm.setInt(3, id);
-            ptm.setString(1, name);
+            ptm.setNString(1, name);
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,6 +183,8 @@ public class SellersDao {
                 Date expire_date = rs.getDate("expire_date");
                 String description = rs.getString("description");
                 voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
+                voucher.setUse_count(use_count);
+                voucher.setShop_id(shop_id);
                 vouchers.add(voucher);
             }
         }catch (Exception e) {
@@ -198,11 +209,14 @@ public class SellersDao {
                 Date expire_date = (Date)rs.getDate("expire_date");
                 int type = rs.getInt("type");
                 int min_require = rs.getInt("min_require");
-                String description = rs.getString("description").trim();
+                String description = rs.getString("description");
                 int shop_id = rs.getInt("shop_id") ;
                 int product_id = rs.getInt("product_id") ;
                 int use_count = rs.getInt("use_count");
                 voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
+                voucher.setUse_count(use_count);
+                voucher.setShop_id(shop_id);
+                voucher.setProduct_id(product_id);
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -213,12 +227,12 @@ public class SellersDao {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CREATEVOUCHER);
-            ptm.setString(1, voucher.getCode());
+            ptm.setNString(1, voucher.getCode());
             ptm.setInt(2, voucher.getDiscount_amount());
             ptm.setDate(3, (Date) voucher.getStart_date());
             ptm.setDate(4, (Date) voucher.getExpire_date());
             ptm.setInt(5, voucher.getType());
-            ptm.setString(6, voucher.getDescription());
+            ptm.setNString(6, voucher.getDescription());
             ptm.setInt(7, voucher.getShop_id());
             ptm.setInt(8, voucher.getProduct_id());
             ptm.setInt(9, voucher.getUse_count());
@@ -232,12 +246,12 @@ public class SellersDao {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(EDITVOUCHER);
-            ptm.setString(1, voucher.getCode());
+            ptm.setNString(1, voucher.getCode());
             ptm.setInt(2, voucher.getDiscount_amount());
             ptm.setDate(3, (Date) voucher.getStart_date());
             ptm.setDate(4, (Date) voucher.getExpire_date());
             ptm.setInt(5, voucher.getType());
-            ptm.setString(6, voucher.getDescription());
+            ptm.setNString(6, voucher.getDescription());
             ptm.setInt(7, voucher.getShop_id());
             ptm.setInt(8, voucher.getProduct_id());
             ptm.setInt(9, voucher.getUse_count());
@@ -270,11 +284,11 @@ public class SellersDao {
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CREATEPRODUCT);
             ptm.setInt(1, shop_id);
-            ptm.setInt(2, product.getShop_id());
-            ptm.setString(3, product.getDescription());
-            ptm.setString(4, product.getName());
+            ptm.setInt(2, product.getScate_id());
+            ptm.setNString(3, product.getDescription());
+            ptm.setNString(4, product.getName());
             ptm.setInt(5, (int)product.getMoney());
-            ptm.setString(6, product.getImg());
+            ptm.setNString(6, product.getImg());
             ptm.setInt(7, product.getQuantity());
             ptm.executeUpdate();
         }catch(Exception e){
@@ -285,11 +299,11 @@ public class SellersDao {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(EDITPRODUCT);
-            ptm.setInt(1, product.getShop_id());
-            ptm.setString(2, product.getDescription());
-            ptm.setString(3, product.getName());
+            ptm.setInt(1, product.getScate_id());
+            ptm.setNString(2, product.getDescription());
+            ptm.setNString(3, product.getName());
             ptm.setInt(4, (int)product.getMoney());
-            ptm.setString(5, product.getImg());
+            ptm.setNString(5, product.getImg());
             ptm.setInt(6, product.getQuantity());
             ptm.setInt(7, product.getProduct_id());
             ptm.executeUpdate();
@@ -310,7 +324,11 @@ public class SellersDao {
     
     public static void main(String[] args) {
         //getShopVouchers(1).forEach(System.out::println);
-        getShopProducts(1).forEach(System.out::println);
+        //getShopProducts(1).forEach(System.out::println);
+        Vouchers vo = getVoucherByID(9);
+        vo.setDescription("Voucher giảm giá sốc chưa từng có.");
+        editShopVoucher(vo);
+        System.out.println(getVoucherByID(9));
     }
     
 }
