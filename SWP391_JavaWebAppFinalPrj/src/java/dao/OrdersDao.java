@@ -23,7 +23,7 @@ public class OrdersDao {
     private static final String CREATECUSTOMORDER = "INSERT INTO [orders]([shop_id],[total],[status],[type]) VALUES (?,?,'wait for customer accept',?)";
     private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='', ";
     
-    private static Orders getOrderObject(ResultSet rs) throws SQLException{
+    public static Orders getOrderObject(ResultSet rs) throws SQLException{
         int order_id = rs.getInt("order_id");
         int customer_id = rs.getInt("customer_id");
         int shop_id = rs.getInt("shop_id");

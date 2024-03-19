@@ -27,7 +27,7 @@ public class Vouchers {
     public Vouchers() {
     }
 
-    public Vouchers(int voucher_id, String code, int discount_amount, Date start_date, Date expire_date, int type, int min_require, String description) {
+    public Vouchers(int voucher_id, String code, int discount_amount, Date start_date, Date expire_date, int type, int min_require, String description, int use_count) {
         this.voucher_id = voucher_id;
         this.code = code;
         this.discount_amount = discount_amount;
@@ -36,6 +36,7 @@ public class Vouchers {
         this.type = type;
         this.min_require = min_require;
         this.description = description;
+        this.use_count = use_count;
     }
 
     public Vouchers(int voucher_id, String code, int discount_amount, Date start_date, Date expire_date, int type, int min_require, String description, int shop_id, int use_count) {

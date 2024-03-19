@@ -36,7 +36,7 @@ create table [messages]
 	[shop_id] int foreign key references [shops]([shop_id]) ,
 	[customer_id] int foreign key references [users]([id]) ,
 	[time_stamp] datetime default GETDATE(),
-	[message_status] tinyint ,
+	[message_status] tinyint , /****** 0: sent - shop; 1: seen by user - shop; 2: sent - user; 3: seen by shop - user; -1: deleted - shop; -2: deleted - user ******/
 	[content] text
 )
 create table maincategory
@@ -174,3 +174,4 @@ create table report_detail
 	[created_date] datetime default GETDATE(),
 	[reason] text
 )
+

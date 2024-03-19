@@ -88,6 +88,18 @@
         <servlet-name>Checkout</servlet-name>
         <servlet-class>controller.Checkout</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ChatController</servlet-name>
+        <servlet-class>controller.ChatController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoadChatConntroller</servlet-name>
+        <servlet-class>controller.LoadChatConntroller</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShippingUnitController</servlet-name>
+        <servlet-class>controller.ShippingUnitController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -176,6 +188,18 @@
     <servlet-mapping>
         <servlet-name>Checkout</servlet-name>
         <url-pattern>/Checkout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChatController</servlet-name>
+        <url-pattern>/ChatController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadChatConntroller</servlet-name>
+        <url-pattern>/LoadChatConntroller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShippingUnitController</servlet-name>
+        <url-pattern>/ShippingUnitController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

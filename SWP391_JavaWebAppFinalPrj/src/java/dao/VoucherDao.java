@@ -30,8 +30,9 @@ public class VoucherDao {
     private static final String DELETE_VOUCHER = "DELETE FROM vouchers WHERE voucher_id = ?";
     private static final String GET_ALL_VOUCHERS = "SELECT * FROM vouchers";
     private static final String GET_VOUCHER_BY_ID = "SELECT * FROM vouchers WHERE voucher_id = ?";
+    private static final String GET_SYSTEM_VOUCHER = "SELECT * FROM vouchers WHERE type = ?";
 
-    public void addVoucher(Vouchers voucher) {
+    public static void addVoucher(Vouchers voucher) {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement st = con.prepareStatement(ADD_VOUCHER)) {
             st.setString(1, voucher.getCode());
@@ -50,7 +51,7 @@ public class VoucherDao {
         }
     }
 
-    public void updateVoucher(Vouchers voucher) {
+    public static void updateVoucher(Vouchers voucher) {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement st = con.prepareStatement(UPDATE_VOUCHER)) {
             st.setString(1, voucher.getCode());
@@ -70,7 +71,7 @@ public class VoucherDao {
         }
     }
 
-    public void deleteVoucher(int voucherId) throws ClassNotFoundException {
+    public static void deleteVoucher(int voucherId) throws ClassNotFoundException {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement st = con.prepareStatement(DELETE_VOUCHER)) {
             st.setInt(1, voucherId);
@@ -81,7 +82,7 @@ public class VoucherDao {
         }
     }
 
-    public List<Vouchers> getAllVouchers() throws ClassNotFoundException {
+    public static List<Vouchers> getAllVouchers() throws ClassNotFoundException {
         List<Vouchers> vouchers = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement st = con.prepareStatement(GET_ALL_VOUCHERS);
@@ -95,8 +96,26 @@ public class VoucherDao {
         }
         return vouchers;
     }
+    
+    public static ArrayList<Vouchers> getSystemVouchers() throws ClassNotFoundException {
+        ArrayList<Vouchers> vouchers = new ArrayList<>();
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement st = con.prepareStatement(GET_SYSTEM_VOUCHER)) {
+                    st.setInt(1, 0);
+                    ResultSet rs = st.executeQuery();
+                    while (rs.next()) {
+                        Vouchers voucher = extractVoucherFromResultSet(rs);
+                        vouchers.add(voucher);
+                    }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vouchers;
+    }
+    
+    
 
-    public Vouchers getVoucherById(int voucherId) {
+    public static Vouchers getVoucherById(int voucherId) {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement st = con.prepareStatement(GET_VOUCHER_BY_ID)) {
             st.setInt(1, voucherId);
@@ -111,7 +130,7 @@ public class VoucherDao {
         return null;
     }
 
-    private Vouchers extractVoucherFromResultSet(ResultSet rs) throws SQLException {
+    private static Vouchers extractVoucherFromResultSet(ResultSet rs) throws SQLException {
         int voucherId = rs.getInt("voucher_id");
         String code = rs.getString("code");
         int discountAmount = rs.getInt("discount_amount");
@@ -125,7 +144,7 @@ public class VoucherDao {
         return new Vouchers(voucherId, code, discountAmount, start, end, type, minRequire, description, shopId, useCount);
     }
 
-    public List<Vouchers> getVouchersByShopId(int shopId) {
+    public static List<Vouchers> getVouchersByShopId(int shopId) {
         List<Vouchers> vouchers = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement st = con.prepareStatement("SELECT * FROM vouchers WHERE shop_id = ?")) {
@@ -142,7 +161,7 @@ public class VoucherDao {
         return vouchers;
     }
 
-    public List<Vouchers> getVouchersByType(int voucherType) {
+    public static List<Vouchers> getVouchersByType(int voucherType) {
         List<Vouchers> vouchers = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement st = con.prepareStatement("SELECT * FROM vouchers WHERE type = ?")) {

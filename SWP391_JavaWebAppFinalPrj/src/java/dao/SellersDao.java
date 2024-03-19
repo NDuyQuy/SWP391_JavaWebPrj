@@ -177,7 +177,7 @@ public class SellersDao {
                 Date start_date = rs.getDate("start_date");
                 Date expire_date = rs.getDate("expire_date");
                 String description = rs.getString("description");
-                voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
+                voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description, shop_id, use_count);
                 vouchers.add(voucher);
             }
         }catch (Exception e) {
@@ -205,7 +205,7 @@ public class SellersDao {
                 String description = rs.getString("description").trim();
                 int shop_id = rs.getInt("shop_id") ;
                 int use_count = rs.getInt("use_count");
-                voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
+                voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description, shop_id, use_count);
             }
         }catch (Exception e) {
             e.printStackTrace();
