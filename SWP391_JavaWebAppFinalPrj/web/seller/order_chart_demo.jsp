@@ -6,6 +6,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,11 +21,11 @@
         <div class="row justify-content-between" style="margin: 10px;">
             <form action="ordercontroller">
                 <label for="month_year">Khung thời gian</label>
-                <input id="month_year" name="month_year" type="month"/>
+                <input id="month_year" name="month_year" type="month" value="${fn:substring(requestScope.month.toString(),0,7)}"/>
                 <button type="submit">Đổi</button>
             </form>
         </div>
-        <h1>Tổng quan</h1>
+        <h2>Tổng quan tháng ${requestScope.month.getMonthValue()} năm ${month.getYear()}</h2>
         <jsp:useBean id="statistics" scope="request" class="java.util.ArrayList" />
         <c:if test="${statistics.size() gt 0}">
             <table class="table table-bordered">
@@ -42,7 +43,7 @@
             </table>
         </c:if>
 
-        <h1>Biểu đồ</h1>
+        <h2>Biểu đồ lượng order nhận được một ngày trong tháng</h2>
         <div style="width: 75%;">
             <canvas id="scatterChart"></canvas>
         </div>

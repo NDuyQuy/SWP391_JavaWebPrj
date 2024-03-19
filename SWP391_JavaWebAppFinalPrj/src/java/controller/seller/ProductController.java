@@ -95,7 +95,7 @@ public class ProductController extends HttpServlet {
                         imgPaths.set(i,prefix+File.separator+imgPaths.get(i));
                     }
                     request.getSession().setAttribute("imgs", imgPaths);
-
+                    
                     response.sendRedirect(url);
                     //request.getRequestDispatcher(url).forward(request, response);
                 }

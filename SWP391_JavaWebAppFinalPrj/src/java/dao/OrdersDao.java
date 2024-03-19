@@ -26,7 +26,7 @@ public class OrdersDao {
     private static final String GETCOMPLETEORDERCOUNTINMONTHOFSHOP = "SELECT COUNT(order_id) as [count] FROM [orders] "
             + "WHERE [shop_id] = ? AND MONTH(order_date) = ? AND YEAR(order_date) = ? AND [status] = N'đã nhận'";
     private static final String GETTOTALPRODUCTSELL = "EXEC GetTotalProductSell @ShopId = ?, @Month = ?, @Year = ?";
-    private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status]=N'chờ người bán xác nhận'";
+    private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status] LIKE N'%chờ người bán xác nhận%'";
     
     private static final String GETCUSTOMORDERS = "SELECT co.*,o.status,total FROM [custom_order] co join [orders] o on co.id = o.order_id WHERE o.shop_id = ?";
     private static final String CREATECUSTOMORDER = "EXEC CREATECUSTOMORDERS @ShopId = ?, @Price=?,@ProductName=?, @Deadline = ?";
@@ -255,9 +255,10 @@ public class OrdersDao {
             ptm.execute();
             ptm = con.prepareStatement(UPDATE_PROCESS);
             ptm.setInt(1, cod.getCustomorder_id());
-            ptm.setNString(1, cod.getProcess_img());
-            ptm.setNString(1, cod.getProcess_video());
-            ptm.setNString(1, cod.getDescription());
+            ptm.setNString(2, cod.getProcess_img());
+            ptm.setNString(3, cod.getProcess_video());
+            ptm.setNString(4, cod.getDescription());
+            ptm.execute();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -309,13 +310,40 @@ public class OrdersDao {
                 ods.add(od);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return ods;
     }
-    
+    public static void acceptOrder(int unit_id, int order_id){
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement("UPDATE [orders]"
+                    + "SET [status]=N'đơn hàng đang được chuyển cho shippingunit', [shippingunit_id]=?  WHERE [order_id]=?");
+            statement.setInt(1, unit_id);
+            statement.setInt(2, order_id);
+            statement.executeUpdate();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void cancelOrders(int order_id, String reason){
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement("UPDATE [orderdetail]"
+                    + "SET [cancel_reason]=? WHERE [orderID]=?");
+            statement.setInt(2, order_id);
+            statement.setNString(1, reason);
+            statement.executeUpdate();
+            statement = con.prepareStatement("UPDATE [orders] SET [status] = N'Đơn hàng đã bị người bán hủy' WHERE [order_id]=?");
+            statement.setInt(1, order_id);
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
+        cancelOrders(1, "hết hàng");
         LocalDate date = LocalDate.of(2024, 3, 17);
-        getOrderDetail(11).forEach(System.out::println);
+        //getOrderDetail(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);
         //getOrdersCountByHour(1, date).entrySet().forEach(System.out::println);

@@ -80,6 +80,7 @@ public class OrderController extends HttpServlet {
             }
             Map<Integer, Integer> orderCounts = OrdersDao.getOrdersCountADateInMonth(shop_id, date.getMonthValue(), date.getYear());
             // Set JSON data as request attribute
+            request.setAttribute("month", date);
             request.setAttribute("dim", daysInMonth);
             request.setAttribute("jsonData", getCharValueJsonString(orderCounts));
             request.setAttribute("statistics", getStatistic(date, shop_id));

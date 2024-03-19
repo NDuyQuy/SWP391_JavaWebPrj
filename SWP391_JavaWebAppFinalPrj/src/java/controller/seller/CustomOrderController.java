@@ -6,15 +6,15 @@
 package controller.seller;
 
 import dao.OrdersDao;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Date;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +25,7 @@ import model.*;
  *
  * @author ASUS
  */
-@WebServlet(name = "CustomOrderController", urlPatterns = {"/CustomOrderController"})
+@MultipartConfig
 public class CustomOrderController extends HttpServlet {
 
     /**
@@ -45,7 +45,7 @@ public class CustomOrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CustomOrderController</title>");            
+            out.println("<title>Servlet CustomOrderController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet CustomOrderController at " + request.getContextPath() + "</h1>");
@@ -70,16 +70,16 @@ public class CustomOrderController extends HttpServlet {
         try {
             int user_id = ((Users) request.getSession().getAttribute("user")).getId();
             String open = request.getParameter("open");
-            if(open!=null){
+            if (open != null) {
                 int order_id = Integer.parseInt(request.getParameter("o_id"));
-                request.setAttribute("orderID", order_id);
-                url = "/seller/update_customorder_process.jsp";
-            }else{
+                request.getSession().setAttribute("orderID", order_id);
+                url = "seller/update_customorder_process.jsp";
+                response.sendRedirect(url);
+            } else {
                 //GET CUSTOM ORDERS LIST 
                 request.setAttribute("c_o_l", OrdersDao.getCustomOrderOfShop(user_id));
+                request.getRequestDispatcher(url).forward(request, response);
             }
-            
-            request.getRequestDispatcher(url).forward(request, response);
         } catch (Exception e) {
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
@@ -99,17 +99,19 @@ public class CustomOrderController extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String url = "/seller/custom_order_management.jsp";
-        try {
-            int user_id = ((Users) request.getSession().getAttribute("user")).getId();
-            String act = request.getParameter("act");
-            if(act.equals("add")){
+        String act = request.getParameter("act");
+        Users users = (Users) request.getSession().getAttribute("user");
+        if(users==null){
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            url = "/login.jsp";
+        }else{
+            int user_id = users.getId();
+            request.setAttribute("c_o_l", OrdersDao.getCustomOrderOfShop(user_id));
+            if (act.equals("add")) {
                 addNewCustomOrder(request, user_id);
-            }else{
+            } else {
                 updateProcess(request, user_id);
             }
-        } catch (NullPointerException e) {
-            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
         request.getRequestDispatcher(url).forward(request, response);
     }
@@ -123,38 +125,44 @@ public class CustomOrderController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-    private void addNewCustomOrder(HttpServletRequest request, int shop_id)throws ServletException, IOException {
+
+    private void addNewCustomOrder(HttpServletRequest request, int shop_id) throws ServletException, IOException {
         String productName = request.getParameter("productName");
         int price = Integer.parseInt(request.getParameter("price"));
         Date deadline = Date.valueOf(request.getParameter("ecd"));
         OrdersDao.createCustomOrder(shop_id, price, productName, deadline);
     }
+
     private void updateProcess(HttpServletRequest request, int shop_id) throws ServletException, IOException {
         String order_id = request.getParameter("orderId");
         int orderId = Integer.parseInt(order_id);
-        String upLoadDir = getUploadDir(shop_id, shop_id);
+        String upLoadDir = getUploadDir(orderId);
+        String imgPath = null; String videoPath = null;
         Part img_part = request.getPart("productImg");
         Part video_part = request.getPart("productVideo");
         try {
-            img_part.write(upLoadDir+"/"+img_part.getSubmittedFileName());
-            video_part.write(upLoadDir+"/"+video_part.getSubmittedFileName());
+            img_part.write(upLoadDir + "\\" + img_part.getSubmittedFileName());
+            imgPath = upLoadDir + "\\" + img_part.getSubmittedFileName();
+            video_part.write(upLoadDir + "\\" + video_part.getSubmittedFileName());
         } catch (IOException e) {
+            e.printStackTrace();
         }
         String description = request.getParameter("description");
         String status = request.getParameter("status");
         CustomOrderDetail cod = new CustomOrderDetail(shop_id, order_id, order_id, description);
         OrdersDao.updateCustomOrderProcessDetai(cod, status);
     }
-    
-    private String getUploadDir(int order_id, int shop_id) throws IOException{
+
+    private String getUploadDir(int order_id) throws IOException {
+        String id = UUID.randomUUID().toString();
         // Create the directory structure if it doesn't exist
-        String uploadPath = Paths.get(getServletContext().getRealPath(""),"img", "seller",
-                String.valueOf(shop_id), String.valueOf(order_id), LocalDate.now().toString())
-                        .toString();
-        // IF DIR EXISTS RANDOM AGAIN TO UNTIL DIR DONT EXISTS
-        if(Files.exists(Paths.get(uploadPath))) Files.createDirectories(Paths.get(uploadPath));
+        String uploadPath = Paths.get(getServletContext().getRealPath(""), "img", "custom_order",
+                String.valueOf(order_id), id)
+                .toString();
+        if (!Files.exists(Paths.get(uploadPath))) {
+            Files.createDirectories(Paths.get(uploadPath));
+        }
         return uploadPath;
     }
-    
+
 }

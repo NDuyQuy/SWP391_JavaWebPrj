@@ -187,7 +187,7 @@
                                     </c:if>
                                     <c:if test="${sessionScope.user.role == 2}">
                                         <li class="d-notification-icon">
-                                            <a href="seller/handle_waiting_order.jsp" class="text-decoration-none">
+                                            <a href="OrderDetail" class="text-decoration-none">
                                                 <i class="fas fa-bell"></i>
                                                 <span class="badge badge-pill badge-danger position-absolute top-0 end-0">${sessionScope.noti.size()}</span>
                                             </a>

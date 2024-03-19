@@ -95,7 +95,6 @@ public class LoginController extends HttpServlet {
                         request.getSession().setAttribute("shop", shop);
                         int numberOfWaitingOrders = OrdersDao.getWaitingOrders(u.getId()).size();
                         request.getSession().setAttribute("noti",OrdersDao.getWaitingOrders(u.getId()));
-                        request.getSession().setAttribute("sunits", OrdersDao.getLocalShippingUnits(u.getAddress()));
                         break;
                     case 3:
                         request.getSession().setAttribute("Admin", 1);
