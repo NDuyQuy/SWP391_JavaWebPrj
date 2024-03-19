@@ -76,16 +76,16 @@ public class AdminServlet extends HttpServlet {
             }
             else if(action.equals("AddNewVoucher")) {
                 Continue = false;
-                String code = request.getParameter("vouchercode");
-                int discount = Integer.parseInt(request.getParameter("amount"));
-                String unit = request.getParameter("unit");
-                if (unit.equals("VND")) code = "VA" + code;
-                else if (unit.equals("Percent")) code = "PC" + code;
+                String code = request.getParameter("voucher_code");
+                int discount = Integer.parseInt(request.getParameter("discount_amount"));
+                String unit = request.getParameter("promotion_type");
+                if (unit.equals("Mv")) code = "Mv" + code;
+                else if (unit.equals("Pv")) code = "Pv" + code;
                 Date start_date = Date.valueOf(request.getParameter("start_date"));
                 Date expire_date = Date.valueOf(request.getParameter("expire_date"));
                 int type = 0;
-                int min = Integer.parseInt(request.getParameter("min"));
-                int count = Integer.parseInt(request.getParameter("count"));
+                int min = Integer.parseInt(request.getParameter("min_require"));
+                int count = Integer.parseInt(request.getParameter("use_count"));
                 String description = request.getParameter("description");
                 Vouchers v = new Vouchers(-1, code, discount, start_date, expire_date, type, min, description, count);
                 VoucherDao.addVoucher(v);
@@ -104,18 +104,19 @@ public class AdminServlet extends HttpServlet {
             }
             else if(action.equals("EditVoucher")) {
                 Continue = false;
-                int id = Integer.parseInt(request.getParameter("voucherId"));
-                String code = request.getParameter("vouchercode");
-                int discount = Integer.parseInt(request.getParameter("amount"));
-                String unit = request.getParameter("unit");
-                if (unit.equals("VND")) code = "VA" + code;
-                else if (unit.equals("Percent")) code = "PC" + code;
+                int voucher_id = Integer.parseInt(request.getParameter("voucher_id"));
+                String code = request.getParameter("voucher_code");
+                int discount = Integer.parseInt(request.getParameter("discount_amount"));
+                String unit = request.getParameter("promotion_type");
+                if (unit.equals("Mv")) code = "Mv" + code;
+                else if (unit.equals("Pv")) code = "Pv" + code;
+                Date start_date = Date.valueOf(request.getParameter("start_date"));
                 Date expire_date = Date.valueOf(request.getParameter("expire_date"));
                 int type = 0;
-                int min = Integer.parseInt(request.getParameter("min"));
-                int count = Integer.parseInt(request.getParameter("count"));
+                int min = Integer.parseInt(request.getParameter("min_require"));
+                int count = Integer.parseInt(request.getParameter("use_count"));
                 String description = request.getParameter("description");
-                Vouchers v = new Vouchers(id, code, discount, null, expire_date, type, min, description, count);
+                Vouchers v = new Vouchers(voucher_id, code, discount, start_date, expire_date, type, min, description, count);
                 VoucherDao.updateVoucher(v);
                 url = "/AdminVoucher.jsp";
             }
@@ -126,7 +127,7 @@ public class AdminServlet extends HttpServlet {
                 url = "/AdminVoucher.jsp";
             }
             else if(action.equals("ViewRefund")) {
-                ArrayList<RefundRequest> RefundList = AdminDAO.Get_Refund_List();
+                ArrayList<RefundsnReturns> RefundList = AdminDAO.Get_Refund_List();
                 if (RefundList != null) {
                     session.setAttribute("RL", RefundList);
                 }
@@ -139,7 +140,7 @@ public class AdminServlet extends HttpServlet {
                 url = "/AdminRefund.jsp";
             }
             else if(action.equals("ViewBan")) {
-                ArrayList<ReportedUser> BanList = AdminDAO.Get_Report_List();
+                ArrayList<ReportDetail> BanList = AdminDAO.Get_Report_List();
                 if (BanList != null) {
                     session.setAttribute("BL", BanList);
                 }
@@ -169,11 +170,11 @@ public class AdminServlet extends HttpServlet {
                     status = 3;
                     bandays = 0;
                 }
-                AdminDAO.Apply_Ban(id, status, bandays);
+                AdminDAO.Update_Ban(id, status, bandays);
                 url = "/AdminBan.jsp";
             }
             else if(action.equals("ViewApproveRequest")) {
-                ArrayList<SellerRequest> requestList = AdminDAO.Get_Approve_List();
+                ArrayList<ApproveRequest> requestList = AdminDAO.Get_Approve_Request();
                 if (requestList != null) {
                     session.setAttribute("SL", requestList);
                 }
@@ -181,13 +182,13 @@ public class AdminServlet extends HttpServlet {
             else if(action.equals("AcceptSeller")) {
                 Continue = false;
                 int id = Integer.parseInt(request.getParameter("ID"));
-                AdminDAO.Approve_Seller(id, true);
+                AdminDAO.Accept_Approve_Request(id);
                 url = "/AdminApprove.jsp";
             }
             else if(action.equals("DeclineSeller")) {
                 Continue = false;
                 int id = Integer.parseInt(request.getParameter("ID"));
-                AdminDAO.Approve_Seller(id, true);
+                AdminDAO.Decline_Approve_Request(id);
                 url = "/AdminApprove.jsp";
             }
         }

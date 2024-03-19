@@ -74,16 +74,15 @@
                             <tbody> 
                                 <c:forEach var="s" items="${sessionScope.SL}">
                                     <tr> 
-                                        <td><c:out value="${s.userName}"/></td>
-                                        <td><c:out value="${s.fullname}"/></td>
-                                        <td><c:out value="${s.shopName}"/></td>
-                                        <td><c:out value="${s.createDate}"/></td>
-                                        <td><c:out value="${s.requestDate}"/></td>
+                                        <td><c:out value="${s.user_id}"/></td>
+                                        <td><c:out value="${s.user.username}"/></td>
+                                        <td><c:out value="${s.shopname}"/></td>
+                                        <td><c:out value="${s.description}"/></td>
                                         <td>
                                             <!-- Edit link with data-id attribute -->
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" data-id="${s.getUserId()}" href="AdminServlet?Action=AcceptSeller&ID=${s.userId}">Accept</a>
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" data-id="${s.user_id}" href="AdminServlet?Action=AcceptSeller&ID=${s.user_id}">Accept</a>
                                         </td>
-                                        <td><a class="delete-link" style="color: red; cursor: pointer;" data-id="${s.getUserId()}" href="AdminServlet?Action=DeclineSeller&ID=${s.userId}">Decline</a></td>
+                                        <td><a class="delete-link" style="color: red; cursor: pointer;" data-id="${s.user_id}" href="AdminServlet?Action=DeclineSeller&ID=${s.user_id}">Decline</a></td>
                                     </tr>
                                 </c:forEach>
 

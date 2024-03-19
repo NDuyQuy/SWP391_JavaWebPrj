@@ -67,11 +67,9 @@
                     <div>
                         <table class="table table-bordered">
                             <thead>
-                                <tr> 
-                                    <th>Username</th> 
-                                    <th>Email</th>
-                                    <th>Status</th>
+                                <tr>
                                     <th>Shop name</th>
+                                    <th>Status</th>
                                     <th>Report By</th>
                                     <th>Report Count</th>
                                     <th></th>
@@ -80,15 +78,13 @@
                             <tbody> 
                                 <c:forEach var="s" items="${sessionScope.BL}">
                                     <tr> 
-                                        <td><c:out value="${s.userName}"/></td>
-                                        <td><c:out value="${s.email}"/></td>
-                                        <td><c:out value="${s.status}"/></td>
-                                        <td><c:out value="${s.shopname}"/></td>
-                                        <td><c:out value="${s.reportBy}"/></td>
-                                        <td><c:out value="${s.count}"/></td>
+                                        <td><c:out value="${s.reported_shop.shop_name}"/></td>
+                                        <td><c:out value="${s.reported_shop.ban_status}"/></td>
+                                        <td><c:out value="${s.reporter.username}"/></td>
+                                        <td><c:out value="${s.reported_shop.shop_reported_count}"/></td>
                                         <td>
                                             <!-- Edit link with data-id attribute -->
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" data-id="${s.userID}" onclick="openPopup('edit',${s.userID},'${s.userName}','${s.reportBy}','${s.date}','${s.reason}','${s.detail}')">Choose Action</a>
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" data-id="${s.shop_id}" onclick="openPopup('edit',${s.shop_id},'${s.reported_shop.shop_name}','${s.reporter.username}','${s.created_date}','${s.text}')">Choose Action</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -114,11 +110,10 @@
                                         <div class="form-group">
                                             <!-- Hidden input to store the category ID -->
                                             <input type="hidden" name="userId" id="userId">
-                                            <p>User: </p><p id="user"></p><br>
+                                            <p>Shop Name: </p><p id="shopName"></p><br>
                                             <p>Report By: </p><p id="reportBy"></p><br>
                                             <p>Time: </p><p id="date"></p><br>
                                             <p>Reason: </p><p id="reason"></p><br>
-                                            <p>Detail: </p><p id="detail"></p><br>
                                             <input type="radio" id="activeUser" name="banAction" value="0">
                                             <label for="activeUser">Activate User</label><br>
                                             <input type="radio" id="ban7" name="banAction" value="7">
@@ -155,14 +150,13 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <!-- JavaScript to control the display of the popups -->
         <script>
-            function openPopup(type, userId, userName, reportBy, date, reason, detail) {
+            function openPopup(type, userId, shopName, reportBy, date, reason) {
                 if (type === 'edit') {
                     document.getElementById('userId').setAttribute('value', userId);
-                    document.getElementById('user').innerHTML = userName;
+                    document.getElementById('shopName').innerHTML = shopName;
                     document.getElementById('reportBy').innerHTML = reportBy;
                     document.getElementById('date').innerHTML = date;
                     document.getElementById('reason').innerHTML = reason;
-                    document.getElementById('detail').innerHTML = detail;
                 }
                 $('#' + type + 'Popup').modal('show');
             }

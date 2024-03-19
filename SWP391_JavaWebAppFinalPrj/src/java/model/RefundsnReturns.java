@@ -20,6 +20,16 @@ public class RefundsnReturns {
     public RefundsnReturns() {
     }
 
+    public RefundsnReturns(int id, int orderdetail_id, String reason, int status, String img) {
+        this.id = id;
+        this.orderdetail_id = orderdetail_id;
+        this.reason = reason;
+        this.status = status;
+        this.img = img;
+    }
+    
+    
+
     public int getId() {
         return id;
     }
