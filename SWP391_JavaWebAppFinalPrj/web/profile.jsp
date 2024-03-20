@@ -206,7 +206,7 @@
                                         <div class="avatar">
                                             <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
                                                 <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="${user.img}">
-                                                <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upUImg" >
+                                                <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upUImg" name="avatar" >
                                             </span>
                                             <button id="uBtn" style="color: #000;
                                                     position: relative;

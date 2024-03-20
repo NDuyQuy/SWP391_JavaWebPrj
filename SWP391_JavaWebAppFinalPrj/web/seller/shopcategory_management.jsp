@@ -73,7 +73,7 @@
                                         <td><c:out value="${s.maincategory.name}"/></td>
                                         <td>
                                             
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" onclick="openPopup('edit',${s.id},${s.name})">Edit</a>
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" onclick="openPopup('edit','${s.id}','${s.name}')">Edit</a>
                                         </td>
                                         <td>
                                             <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${s.id})">Delete</a>

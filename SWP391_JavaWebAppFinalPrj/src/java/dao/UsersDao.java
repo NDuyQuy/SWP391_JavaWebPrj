@@ -19,7 +19,7 @@ public class UsersDao {
     private static final String CHECKLOGIN = "SELECT [fullname] FROM [users] WHERE [username]=? and [password]=?";
     private static final String CHECKLOGINBYEMAIL = "SELECT [fullname] FROM [users] WHERE [email]=? and [password]=?";
     private static final String REGISTER = "INSERT INTO [users](username,password,email) values (?,?,?)";
-    private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET fullname = ?, phone = ?, address = ? WHERE username = ?";
+    private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET img = ?, fullname = ?, phone = ?, address = ? WHERE username = ?";
     private static final String RESETPASSWORD = "UPDATE [users] SET password = ? WHERE email = ?";
     private static final String GETUSERSINFOBYUSERNAME = "SELECT [id], [fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [username] = ?";
     private static final String GETUSERSINFOBYEMAIL = "SELECT [id], [username],[fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [email] = ?";
@@ -33,8 +33,8 @@ public class UsersDao {
         ResultSet rs = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CHECKLOGIN);
-            ptm.setString(1, username);
-            ptm.setString(2, password);
+            ptm.setNString(1, username);
+            ptm.setNString(2, password);
             rs = ptm.executeQuery();
             if (rs.next()) {
                 checked = true;
@@ -52,8 +52,8 @@ public class UsersDao {
         ResultSet rs = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CHECKLOGINBYEMAIL);
-            ptm.setString(1, email);
-            ptm.setString(2, password);
+            ptm.setNString(1, email);
+            ptm.setNString(2, password);
             rs = ptm.executeQuery();
             if (rs.next()) {
                 checked = true;
@@ -75,25 +75,26 @@ public class UsersDao {
                 throw new Exception("This username have already exist!");
             }
             ptm = con.prepareStatement(REGISTER);
-            ptm.setString(1, username);
-            ptm.setString(2, password);
-            ptm.setString(3, email);
+            ptm.setNString(1, username);
+            ptm.setNString(2, password);
+            ptm.setNString(3, email);
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void updateProfile(String fullname, String phone, String address, String username) {
+    public static void updateProfile(Users users) {
         PreparedStatement ptm = null;
         //edit users profile which include fullname, phone, address
         //username is for detection
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(UPDATEUSERSPROFILE);
-            ptm.setString(1, fullname);
-            ptm.setString(2, phone);
-            ptm.setString(3, address);
-            ptm.setString(4, username);
+            ptm.setNString(1, users.getImg());
+            ptm.setNString(2, users.getFullname());
+            ptm.setNString(3, users.getPhone());
+            ptm.setNString(4, users.getAddress());
+            ptm.setNString(5, users.getUsername());
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,8 +107,8 @@ public class UsersDao {
         //username is for detection
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(RESETPASSWORD);
-            ptm.setString(1, password);
-            ptm.setString(2, email);
+            ptm.setNString(1, password);
+            ptm.setNString(2, email);
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,7 +121,7 @@ public class UsersDao {
         Users user = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(GETUSERSINFOBYUSERNAME);
-            ptm.setString(1, username);
+            ptm.setNString(1, username);
             rs = ptm.executeQuery();
             if (rs.next()) {
                 //NOTE 
@@ -130,12 +131,12 @@ public class UsersDao {
                 HOWEVER, IF THE STRING RETURN IS NULL THEN THE TRIM METHOD WILL CAUSE EXCEPTION SO I DO AS BELOW
                  */
                 int id = rs.getInt("id");
-                String fullname = rs.getString("fullname") == null ? null : rs.getString("fullname").trim();
-                String email = rs.getString("email");
-                String phone = rs.getString("phone") == null ? null : rs.getString("phone").trim();
-                String adress = rs.getString("address") == null ? null : rs.getString("address").trim();
+                String fullname = rs.getNString("fullname") == null ? null : rs.getNString("fullname").trim();
+                String email = rs.getNString("email");
+                String phone = rs.getNString("phone") == null ? null : rs.getNString("phone").trim();
+                String adress = rs.getNString("address") == null ? null : rs.getNString("address").trim();
                 int role = rs.getInt("role");
-                String img = rs.getString("img");
+                String img = rs.getNString("img");
                 user = new Users(id, username, email, phone, fullname, adress, role, img);
             }
         } catch (Exception e) {
@@ -150,16 +151,16 @@ public class UsersDao {
         Users user = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(GETUSERSINFOBYEMAIL);
-            ptm.setString(1, email);
+            ptm.setNString(1, email);
             rs = ptm.executeQuery();
             if (rs.next()) {
                 int id = rs.getInt(1);
-                String fullname = rs.getString("fullname") == null ? null : rs.getString("fullname").trim();
-                String username = rs.getString("username");
-                String phone = rs.getString("phone") == null ? null : rs.getString("phone").trim();
-                String adress = rs.getString("address") == null ? null : rs.getString("address").trim();
+                String fullname = rs.getNString("fullname") == null ? null : rs.getNString("fullname").trim();
+                String username = rs.getNString("username");
+                String phone = rs.getNString("phone") == null ? null : rs.getNString("phone").trim();
+                String adress = rs.getNString("address") == null ? null : rs.getNString("address").trim();
                 int role = rs.getInt("role");
-                String img = rs.getString("img");
+                String img = rs.getNString("img");
                 user = new Users(id, username, email, phone, fullname, adress, role, img);
             }
         } catch (Exception e) {
@@ -174,8 +175,8 @@ public class UsersDao {
         //username is for detection
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CHANGEPASSWORD);
-            ptm.setString(1, newpass);
-            ptm.setString(2, username);
+            ptm.setNString(1, newpass);
+            ptm.setNString(2, username);
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,8 +193,8 @@ public class UsersDao {
             rs = ptm.executeQuery();
             if (rs.next()) {
                 user.setId(id);
-                user.setUsername(rs.getString("username").trim());
-                user.setAddress(rs.getString("address") == null ? null : rs.getString("address").trim());
+                user.setUsername(rs.getNString("username").trim());
+                user.setAddress(rs.getNString("address") == null ? null : rs.getNString("address").trim());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,6 +205,7 @@ public class UsersDao {
     public static void main(String[] args) {
         //register("a", "1", "A@gmail.com");
         //System.out.println(checkLoginByEmail("A@gmail.com", "1"));
-        System.out.println(getUserInfoByUsername("A"));
+        //System.out.println(getUserInfoByUsername("A"));
+        
     }
 }

@@ -53,7 +53,7 @@
                                 <label for="category">Thuộc danh mục:</label>
                                 <select class="form-control" id="category" name="category" >
                                     <!-- Add your category options here -->
-                                    <c:forEach var="c" items="${requestScope.main_category_list}">
+                                    <c:forEach var="c" items="${sessionScope.SCategoryList}">
                                         <option value="${c.id}" ${(product.scate_id == c.id) ? 'selected' : ''}>${c.name}</option>
                                     </c:forEach>
                                 </select>

@@ -5,16 +5,19 @@
  */
 package controller;
 
+import dao.SellersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import model.Shops;
 import model.Users;
 
 /**
@@ -22,6 +25,7 @@ import model.Users;
  * @author ASUS
  */
 @WebServlet(name = "ShopProfileController", urlPatterns = {"/shopprofile"})
+@MultipartConfig
 public class ShopProfileController extends HttpServlet {
 
     /**
@@ -62,7 +66,7 @@ public class ShopProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("profile.jsp").forward(request, response);
     }
 
     /**
@@ -76,16 +80,37 @@ public class ShopProfileController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String shop_name = request.getParameter("sname");
         String description = request.getParameter("des");
         try {
             int shop_id = ((Users)request.getSession().getAttribute("user")).getId();
             Part p = request.getPart("logo");
+            String upLoadDir = null;
             if(p!=null){
-                String upLoadDir = getDir(shop_id) + "/logo.jpg";
-                p.write(upLoadDir);
+                if(p.getSize()>0){
+                    upLoadDir = getDir(shop_id) + "\\logo.jpg";
+                    p.write(upLoadDir);
+                }
             }
+            if(upLoadDir!=null){
+                Shops shops = (Shops) request.getSession().getAttribute("shop");
+                upLoadDir = upLoadDir.replace(getServletContext().getRealPath(""), "");
+                upLoadDir = upLoadDir.replaceAll("\\\\", "/");
+                shops.setShop_img(upLoadDir);
+                shops.setDescription(description);
+                shops.setShop_name(shop_name);
+                SellersDao.updateShopInfo(shops);
+            }else{
+                Shops shop = (Shops) request.getSession().getAttribute("shop");
+                shop.setDescription(description);
+                shop.setShop_name(shop_name);
+                SellersDao.updateShopInfo(shop);
+            }
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+            
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,8 +124,7 @@ public class ShopProfileController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
     private String getDir(int user_id) throws IOException{
-        String uploadPath = Paths.get(getServletContext().getRealPath(""),"img", "user","shop_logo",String.valueOf(user_id)).toString();
-        
+        String uploadPath = Paths.get(getServletContext().getRealPath(""),"img", "users","shop_logo",String.valueOf(user_id)).toString();
         // IF DIR EXISTS RANDOM AGAIN TO UNTIL DIR DONT EXISTS
         if(!Files.exists(Paths.get(uploadPath))) Files.createDirectories(Paths.get(uploadPath));
         else Files.delete(Paths.get(uploadPath,"logo.jpg"));

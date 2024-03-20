@@ -141,15 +141,20 @@ public class CustomOrderController extends HttpServlet {
         Part img_part = request.getPart("productImg");
         Part video_part = request.getPart("productVideo");
         try {
-            img_part.write(upLoadDir + "\\" + img_part.getSubmittedFileName());
-            imgPath = upLoadDir + "\\" + img_part.getSubmittedFileName();
-            video_part.write(upLoadDir + "\\" + video_part.getSubmittedFileName());
+            img_part.write(upLoadDir + "\\" + "img.png");
+            imgPath = upLoadDir.replace(getServletContext().getRealPath(""), "") + "\\" + "img.png";
+            imgPath = imgPath.replace("\\", "/");
+            
+            video_part.write(upLoadDir + "\\" + "video.mp4");
+            videoPath = upLoadDir.replace(getServletContext().getRealPath(""), "") + "\\" + "video.mp4";
+            
+            videoPath = videoPath.replace("\\", "/");
         } catch (IOException e) {
             e.printStackTrace();
         }
         String description = request.getParameter("description");
         String status = request.getParameter("status");
-        CustomOrderDetail cod = new CustomOrderDetail(shop_id, order_id, order_id, description);
+        CustomOrderDetail cod = new CustomOrderDetail(orderId, imgPath, videoPath, description);
         OrdersDao.updateCustomOrderProcessDetai(cod, status);
     }
 
@@ -157,8 +162,14 @@ public class CustomOrderController extends HttpServlet {
         String id = UUID.randomUUID().toString();
         // Create the directory structure if it doesn't exist
         String uploadPath = Paths.get(getServletContext().getRealPath(""), "img", "custom_order",
-                String.valueOf(order_id), id)
+                String.valueOf(order_id), id.substring(0,6))
                 .toString();
+        while (Files.exists(Paths.get(uploadPath))) {            
+            id = UUID.randomUUID().toString();
+            uploadPath = Paths.get(getServletContext().getRealPath(""), "img", "custom_order",
+                String.valueOf(order_id), id.substring(0,6))
+                .toString();
+        }
         if (!Files.exists(Paths.get(uploadPath))) {
             Files.createDirectories(Paths.get(uploadPath));
         }

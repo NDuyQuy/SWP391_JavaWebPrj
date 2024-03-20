@@ -114,7 +114,7 @@
                             <select class="form-control" id="product_applied" name="product_applied" required >
                                 <option>Chọn sản phẩm áp dụng</option>
                                 <c:forEach var="p" items="${requestScope.productList}">
-                                    <option value="${p.product_id}">${p.name}</option>
+                                    <option value="${p.product_id}" ${p.product_id eq voucher.product_id ? 'selected' : ''}>${p.name}</option>
                                 </c:forEach>
                             </select>
                         </div>

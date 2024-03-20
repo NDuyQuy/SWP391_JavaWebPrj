@@ -6,13 +6,16 @@
 package controller;
 
 import dao.UsersDao;
-import static dao.UsersDao.updateProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 //import static jdk.nashorn.internal.runtime.regexp.joni.constants.AsmConstants.S;
 import model.Users;
 
@@ -20,6 +23,7 @@ import model.Users;
  *
  * @author ASUS
  */
+@MultipartConfig
 public class ProfileController extends HttpServlet {
 
     /**
@@ -74,22 +78,35 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         try {
             String fname = request.getParameter("fname");
             String addr = request.getParameter("addr");
             String phone = request.getParameter("phone");
             Users u =((Users) request.getSession().getAttribute("user"));
-            String uname = u.getUsername();
-            UsersDao.updateProfile(fname, phone, addr, uname);
             //Change user data
-            u.setFullname(fname);
-            u.setAddress(addr);
-            u.setPhone(phone);
+            u.setFullname(fname);u.setAddress(addr);u.setPhone(phone);
+            Part p = request.getPart("avatar");
+            String uploadDir = null;
+            if(p!=null){  
+                if(p.getSize()>0){
+                    uploadDir = getDir(u.getId())+"\\avatar.jpg";
+                    p.write(uploadDir);
+                }
+            }
+            if(uploadDir!=null){
+                uploadDir = uploadDir.replace(getServletContext().getRealPath(""), "");
+                uploadDir = uploadDir.replaceAll("\\\\", "/");
+                u.setImg(uploadDir);
+            }
+            UsersDao.updateProfile(u);
             //Add user again into session
             request.getSession().setAttribute("user", u);
             //forward again profile
             request.getRequestDispatcher("/profile.jsp").forward(request, response);
         } catch (Exception e) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }
 
@@ -102,5 +119,11 @@ public class ProfileController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    private String getDir(int user_id) throws IOException{
+        String uploadPath = Paths.get(getServletContext().getRealPath(""),"img", "users","user_avatar",String.valueOf(user_id)).toString();
+        // IF DIR EXISTS RANDOM AGAIN TO UNTIL DIR DONT EXISTS
+        if(!Files.exists(Paths.get(uploadPath))) Files.createDirectories(Paths.get(uploadPath));
+        else Files.delete(Paths.get(uploadPath,"avatar.jpg"));
+        return uploadPath;
+    }
 }
