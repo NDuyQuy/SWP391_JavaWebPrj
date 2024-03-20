@@ -73,5 +73,7 @@ public class CartDetailDao {
         }
         return cart;
     }
-    
+    public static void main(String[] args) {
+        GetCartOfUser(6).forEach(System.out::println);
+    }
 }

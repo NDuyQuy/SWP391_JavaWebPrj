@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.*;
+import dao.*;
 
 /**
  *
@@ -58,12 +60,19 @@ public class UpdateQuantityServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /*
-        User user = (User) request.getSession().getAttribute("user");
-        int userId = user.getUserID();
-
+        
+        Users user = (Users) request.getSession().getAttribute("user");
+        if(user==null){
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+        }else{
+            int userId = user.getId();
+            int productId = Integer.parseInt(request.getParameter("id"));
+            
+        }
+        int userId = user.getId();
         int productId = Integer.parseInt(request.getParameter("id"));
-
+        int quantity =  Integer.parseInt(request.getParameter("id"));
         String action = request.getParameter("action");
         int quantityChange = 0;
 
@@ -79,7 +88,7 @@ public class UpdateQuantityServlet extends HttpServlet {
 
         CartDao cartDao = new CartDaoImpl();
         cartDao.updateCartItemQuantity(userId, productId, quantityChange);
-        response.sendRedirect("Cart");*/
+        response.sendRedirect("Cart");
         
     }
 

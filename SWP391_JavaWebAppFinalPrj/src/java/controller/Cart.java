@@ -5,12 +5,18 @@
  */
 package controller;
 
+import dao.CartDetailDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.CartDetail;
+import model.Users;
 
 /**
  *
@@ -56,11 +62,22 @@ public class Cart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /*
+        
         // Lấy thông tin người dùng từ session
-        User user = (User) request.getSession().getAttribute("user");
-
-      
+        Users user = (Users) request.getSession().getAttribute("user");
+        if(user==null){
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+        }else{
+            List<CartDetail> cart = CartDetailDao.GetCartOfUser(user.getId());
+            // GROUP BY NAME
+            Map<String, List<CartDetail>> cartGroup = cart.stream().collect(
+                    Collectors.groupingBy(c->c.getProduct().getShop().getShop_name())
+            );
+            request.setAttribute("cartGroup", cartGroup);
+            request.getRequestDispatcher("/cart.jsp").forward(request, response);
+        }
+        /*
         if (user != null) {
             List<CartItem> cartItems = CartDaoImpl.getCartItems(user.getUserID());
             Map<String, List<CartItem>> groupedByShop = cartItems.stream()

@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
-<%@ page import="model.CartItem" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="model.CartDetail" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="dao.UsersDao" %>
-<%@ page import="model.User" %>
+<%@ page import="model.Users" %>
 
 <html class="no-js" lang="zxx">
 
@@ -36,38 +36,39 @@
     </head>
     <body>
 
-        <jsp:include page="header.jsp"></jsp:include>
 
-
-
-            <main>
-
-                <!-- breadcrumb-area-start -->
-                <section class="breadcrumb-area" data-background="img/bg/page-title.png">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="breadcrumb-text text-center">
-                                    <h1>Shoping Cart</h1>
-                                    <ul class="breadcrumb-menu">
-                                        <li><a href="index.html">home</a></li>
-                                        <li><span>Cart</span></li>
-                                    </ul>
-                                </div>
+        <main>
+            <!-- breadcrumb-area-start -->
+            <section class="breadcrumb-area" data-background="img/bg/page-title.png">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="breadcrumb-text text-center">
+                                <h1>Shoping Cart</h1>
+                                <ul class="breadcrumb-menu">
+                                    <li><a href="Home">home</a></li>
+                                    <li><span>Cart</span></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                </section>
-                <!-- breadcrumb-area-end -->
+                </div>
+            </section>
+            <!-- breadcrumb-area-end -->
 
-                <section class="cart-area pt-100 pb-100">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-12">
-                                <form action="UpdateQuantityServlet" method="post">
-                                    <div class="table-content table-responsive">
-                                        <table class="table">
-                                            <thead>
+            <section class="cart-area pt-100 pb-100">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <form action="UpdateQuantityServlet" method="post">
+                                <div class="table-content table-responsive">
+                                    <table class="table table-bordered" >
+                                        <tbody>
+                                            <jsp:useBean id="cartGroup" class="java.util.HashMap" scope="request" />
+                                            <c:forEach var="entry" items="${cartGroup}">
+                                                <tr>
+                                                    <td colspan="7" class="shop-name text-left" style="background: #CCC"><b>${entry.key}</b></td>
+                                                </tr>
                                                 <tr>
                                                     <th class="product-checkbox"></th>
                                                     <th class="product-thumbnail">Images</th>
@@ -77,16 +78,6 @@
                                                     <th class="product-subtotal">Total</th>
                                                     <th class="product-remove">Remove</th>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                            <jsp:useBean id="cartGroup" class="java.util.HashMap" scope="request" />
-
-                                            <c:forEach var="entry" items="${cartGroup}">
-                                                <tr>
-                                                    <!-- < <td>${entry.key}</td> -->
-                                                    <td colspan="7" class="shop-name">${entry.key}</td>
-                                                </tr>
-
                                                 <c:set var="totalPrice" value="0" /> 
                                                 <!-- Iterate over the ArrayList values for the current key -->
                                                 <c:forEach var="value" items="${entry.value}">
@@ -96,127 +87,56 @@
                                                             <input type="checkbox" class="itemCheckbox" />
                                                         </td>
                                                         <td class="product-thumbnail">
-                                                            <a href="#"><img src="${value.product.productImg}" alt=""></a>
+                                                            <a href="#"><img src="${value.product.img}/1.jpg" alt=""></a>
                                                         </td>
                                                         <td class="product-name">
-                                                            <a href="#">${value.product.productName}</a>
+                                                            <a href="#">${value.product.name}</a>
                                                         </td>
                                                         <td class="product-price">
-                                                            <span class="amount">${value.product.price}</span>
+                                                            <span class="amount">${value.product.money}</span>
                                                         </td>
                                                         <td class="product-quantity">
-                                                            <!--
-                                                            <input type="hidden" name="productId" value="${value.product.productID}">
-                                                            <button type="submit" name="action" value="decrease">-</button>
-                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="0">
-                                                            <button type="submit" name="action" value="increase">+</button>
-                                                            -->
-                                                            <buton<a href="UpdateQuantityServlet?id=${value.product.productID}&action=increase">+</a>
-                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="0">
-                                                <buton><a href="UpdateQuantityServlet?id=${value.product.productID}&action=decrease">-</a></buton>
+                                                            <a href="UpdateQuantityServlet?id=${value.product.product_id}&action=increase"><b style="color: blue">+</b></a>
+                                                            <input class="text-center"type="number" name="quantity" value="${value.quantity}" min="0" max="${value.product.quantity}">
+                                                            <buton><a href="UpdateQuantityServlet?id=${value.product.product_id}&action=decrease"><b style="color: blue">-</b></a>
                                                         </td>
-                                                        <td class="product-subtotal">
-                                                            <span class="amount">${value.product.price * value.quantity}</span>
-                                                        </td>
-                                                        <td class="product-remove">
-                                                            <button type="submit"><a href="UpdateQuantityServlet?id=${value.product.productID}&action=remove">X</a></button>
-                                                        </td>
-
-                                                    </tr>
-                                                </c:forEach>
-                                                <c:set var="totalPrice" value="${totalPrice + (cartItem.product.price * cartItem.quantity)}" />
-                                            </c:forEach>
-
-
-
-                                            <!--
-                                            <c:forEach var="cartItem" items="${requestScope.cartItems}">
-                                                <tr>
-                                                    <td colspan="7" class="shop-name">${cartItem.shop.shopName}</td>
-                                                </tr>
-                                                <tr>
-
-                                                    <td class="product-checkbox">
-                                                        <input type="checkbox" class="itemCheckbox" />
-                                                    </td>
-                                                    <td class="product-thumbnail">
-                                                        <a href="#"><img src="${cartItem.product.productImg}" alt=""></a>
-                                                    </td>
-                                                    <td class="product-name">
-                                                        <a href="#">${cartItem.product.productName}</a>
-                                                    </td>
-                                                    <td class="product-price">
-                                                        <span class="amount">${cartItem.product.price}</span>
-                                                    </td>
-                                                    <td class="product-quantity">
-                                                        <input type="hidden" name="productId" value="${cartItem.product.productID}">
-                                                        <button type="submit" name="action" value="decrease">-</button>
-                                                        <input type="number" name="quantity" value="${cartItem.quantity}" min="0">
-                                                        <button type="submit" name="action" value="increase">+</button>
-                                                    </td>
                                                     <td class="product-subtotal">
-                                                        <span class="amount">${cartItem.product.price * cartItem.quantity}</span>
+                                                        <span class="amount">${value.product.money * value.quantity}</span>
                                                     </td>
                                                     <td class="product-remove">
-                                                        <button type="submit" name="action" value="remove">X</button>
+                                                        <button type="submit"><a href="UpdateQuantityServlet?id=${value.product.product_id}&action=remove">X</a></button>
                                                     </td>
-                                                </tr>
-                                                <c:set var="totalPrice" value="${totalPrice + (cartItem.product.price * cartItem.quantity)}" />
+                                                    </tr>
+                                                </c:forEach>
                                             </c:forEach>
-                                            -->
-                                        </tbody>
 
-                                        <script>
-                                            function updateTotal() {
-                                                var total = 0;
-                                                var checkboxes = document.getElementsByClassName('itemCheckbox');
+                                            </tbody>
 
-                                                for (var i = 0; i < checkboxes.length; i++) {
-                                                    if (checkboxes[i].checked) {
-                                                        var row = checkboxes[i].closest('tr');
-                                                        var subtotal = parseFloat(row.querySelector('.product-subtotal .amount').innerText);
-                                                        total += subtotal;
-                                                    }
-                                                }
-
-                                                document.getElementById('totalPrice').innerText = total.toFixed(2);
-                                            }
-
-                                            // Gọi hàm khi trang được tải   
-                                            window.onload = updateTotal;
-
-                                            // Gán hàm cho sự kiện click của checkbox
-                                            var checkboxes = document.getElementsByClassName('itemCheckbox');
-                                            for (var i = 0; i < checkboxes.length; i++) {
-                                                checkboxes[i].addEventListener('click', updateTotal);
-                                            }
-                                        </script>
                                     </table>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-md-5 ml-auto">
                                         <div class="cart-page-total">
                                             <h2>Cart totals</h2>
                                             <ul class="mb-20">
-
                                                 <li>Total <span id="totalPrice">0.00</span></li>
                                             </ul>
-                                            <a class="btn theme-btn" href="#">Proceed to checkout</a>
+                                            <a class="btn theme-btn" onclick="proceedToCheckout()">Proceed to checkout</a>
                                         </div>
                                     </div>
                                 </div>
+
                             </form>
 
                         </div>
                     </div>
-                   
+
                 </div>
             </section>
             <!-- Cart Area End-->
 
         </main>
-
-        <jsp:include page="footer.jsp"></jsp:include>
 
         <!-- Fullscreen search -->
         <div class="search-wrap">
@@ -235,7 +155,60 @@
 
 
 
+        <script>
+            function updateTotal() {
+                var total = 0;
+                var checkboxes = document.getElementsByClassName('itemCheckbox');
 
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        var row = checkboxes[i].closest('tr');
+                        var subtotal = parseFloat(row.querySelector('.product-subtotal .amount').innerText);
+                        total += subtotal;
+                    }
+                }
+
+                document.getElementById('totalPrice').innerText = total.toFixed(2);
+            }
+            // Gọi hàm khi trang được tải   
+            window.onload = updateTotal;
+
+            // Gán hàm cho sự kiện click của checkbox
+            var checkboxes = document.getElementsByClassName('itemCheckbox');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].addEventListener('click', updateTotal);
+            }
+
+            function proceedToCheckout() {
+                var selectedItems = [];
+
+                var checkboxes = document.getElementsByClassName('itemCheckbox');
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        var productId = checkboxes[i].getAttribute('data-product-id');
+                        selectedItems.push(productId);
+                    }
+                }
+
+                if (selectedItems.length > 0) {
+                    document.getElementById('selectedItemsInput').value = selectedItems.join(',');
+                    document.getElementById('checkoutForm').submit();
+                } else {
+                    alert("Please select at least one item before proceeding to checkout.");
+                }
+            }
+            function updateQuantityOnEnter(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+
+                    var productId = event.target.getAttribute('data-product-id');
+                    var newQuantity = event.target.value;
+
+                    // Gửi yêu cầu cập nhật số lượng mới đến servlet
+                    window.location.href = "UpdateQuantityServlet?id=" + productId + "&action=update&quantity=" + newQuantity;
+                }
+            }
+        </script>
         <!-- JS here -->
         <script src="js/vendor/jquery-1.12.4.min.js"></script>
         <script src="js/jquery-ui.js"></script>
