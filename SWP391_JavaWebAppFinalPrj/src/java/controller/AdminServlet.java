@@ -49,7 +49,7 @@ public class AdminServlet extends HttpServlet {
             else if (action.equals("AddCategory")) {
                 Continue = false;
                 String Name = request.getParameter("categoryName");
-                String Description = request.getParameter("description");
+                String Description = request.getParameter("categoryDescription");
                 AdminDAO.Add_Main_Category(Name, Description);
                 url = "/AdminCategory.jsp";
             }
@@ -57,7 +57,7 @@ public class AdminServlet extends HttpServlet {
                 Continue = false;
                 String Name = request.getParameter("categoryName");
                 int id = Integer.parseInt(request.getParameter("categoryId"));
-                String Description = request.getParameter("description");
+                String Description = request.getParameter("categoryDescription");
                 MainCategory mainct = new MainCategory(id, Name, Description);
                 AdminDAO.Update_Main_Category(mainct);
                 url = "/AdminCategory.jsp";
@@ -87,8 +87,8 @@ public class AdminServlet extends HttpServlet {
                 int min = Integer.parseInt(request.getParameter("min_require"));
                 int count = Integer.parseInt(request.getParameter("use_count"));
                 String description = request.getParameter("description");
-                Vouchers v = new Vouchers(-1, code, discount, start_date, expire_date, type, min, description, count);
-                VoucherDao.addVoucher(v);
+                Vouchers v = new Vouchers(-1, code, discount, start_date, expire_date, type, min, description, 0, count);
+                VoucherDao.addVoucher(v, true);
                 url = "/AdminVoucher.jsp";
             }
             else if(action.equals("GetMainVoucher")) {

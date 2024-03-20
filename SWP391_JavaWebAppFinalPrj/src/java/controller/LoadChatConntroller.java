@@ -121,6 +121,7 @@ public class LoadChatConntroller extends HttpServlet {
     public String showChatList(ArrayList<Shops> chatList, int userId) {
         String element = new String();
         int i = 0;
+        boolean b = true;
         while (i < chatList.size()) {
             String chatMember = "<li>\n" +
 "                                    <div class=\"d-flex bd-highlight\" id=\"shopID_[shopId]\" onclick=\"changeChat([shopId])\">\n" +
@@ -139,10 +140,10 @@ public class LoadChatConntroller extends HttpServlet {
 "                                </li>\n";
             ArrayList<Messages> chat = MessageDao.GetMessageList(chatList.get(i).getShop_id(), userId);
             Messages recentChat = chat.get(chat.size() - 1);
-            chatMember.replace("[shop_img]", chatList.get(i).getShop_img());
-            chatMember.replace("[chat_name]", chatList.get(i).getShop_name());
-            chatMember.replace("[recent_chat]", recentChat.getContent());
-            chatMember.replace("[shopId]", Integer.toString(chatList.get(i).getShop_id()));
+            chatMember = chatMember.replace("[shop_img]", chatList.get(i).getShop_img());
+            chatMember = chatMember.replace("[chat_name]", chatList.get(i).getShop_name());
+            chatMember = chatMember.replace("[recent_chat]", recentChat.getContent());
+            chatMember = chatMember.replace("[shopId]", Integer.toString(chatList.get(i).getShop_id()));
             element = element + chatMember;
             i++;
         }

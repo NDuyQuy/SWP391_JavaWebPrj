@@ -6,7 +6,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:include page="/LoadChatConntroller?Action=LoadChatList"/>
 <!DOCTYPE html>
 <html>
     <head>
@@ -208,7 +207,7 @@
                                 </li>
                                 -->
                                 <!-- REAL CHAT LIST HERE -->
-                                ${sessionScope.ChatList}
+                                
                                 
                                 
                             </ui>
@@ -304,12 +303,29 @@
         suggestion.push("${shop.shop_name}");
         </c:forEach>
             
+        function loadChatList() {
+            $.ajax({
+                url: "/LoadChatConntroller",
+                type: "get",
+                data: {
+                    Action="LoadChatList";
+                },
+                success: function(result){
+                    document.getElementById("chatlist").innerHTML = result;
+                },
+                error: function (xhr) {
+                    //Do Something to handle error
+                }
+            });
+        }
+            
         function send_msg() {
             var message = document.getElementById("type_msg").innerHTML;
             $.ajax({
-                url: "/ChatController?Action=SendChat",
+                url: "/ChatController",
                 type: "get",
                 data: {
+                    Action="SendChat";
                     shop_id: thisShopID;
                     messageText: message
                 },
@@ -325,11 +341,12 @@
             
         function changeChat(shopId) {
             clearInterval(myVar);
-            var thisShopID = shopId;
+            thisShopID = shopId;
             $.ajax({
-                url: "/LoadChatConntroller?Action=LoadChat",
+                url: "/LoadChatConntroller",
                 type: "get",
                 data: {
+                    Action="LoadChat";
                     shop_id: thisShopID
                 }
                 success: function(result){
@@ -345,10 +362,12 @@
         }
         
         function checkUnseen() {
+            loadChatList();
             $.ajax({
-                url: "/LoadChatConntroller?Action=LoadChatUnseen",
+                url: "/LoadChatConntroller",
                 type: "get",
                 data: {
+                    Action="LoadChatUnseen";
                     shop_id: thisShopID
                 }
                 success: function(result){

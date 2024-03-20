@@ -72,22 +72,22 @@
                                 <c:forEach var="s" items="${sessionScope.VL}">
                                     <tr> 
                                         <td><c:out value="${s.code}"/></td>
-                                        <td><c:out value="${s.start}"/></td>
-                                        <td><c:out value="${s.end}"/></td>
-                                        <td><c:out value="${s.discount}"/> <c:out value="${s.discount_unit}"/></td>
+                                        <td><c:out value="${s.start_date}"/></td>
+                                        <td><c:out value="${s.expire_date}"/></td>
+                                        <td><c:out value="${s.discount_amount}"/> <c:out value="${s.discount_unit}"/></td>
                                         <td><c:out value="${s.type}"/></td>
                                         <td>
                                             <!-- Edit link with data-id attribute -->
-                                            <a class="edit-link" style="color: blue; cursor: pointer;" href="AdminUpdateVoucher.jsp?id=<c:out value="${s.id}"/>">Edit</a>
+                                            <a class="edit-link" style="color: blue; cursor: pointer;" href="AdminEditVoucher.jsp?id=<c:out value="${s.voucher_id}"/>">Edit</a>
                                         </td>
-                                        <td><a class="delete-link" style="color: red; cursor: pointer;" data-id="${s.getId()}" onclick="openPopup('delete',${s.id})">Delete</a></td>
+                                        <td><a class="delete-link" style="color: red; cursor: pointer;" data-id="${s.getVoucher_id()}" onclick="openPopup('delete',${s.voucher_id})">Delete</a></td>
                                     </tr>
                                 </c:forEach>
 
                             </tbody> 
                         </table>
                     </div>
-                    <a href="AdminNewVoucher.jsp" class="btn btn-primary">
+                    <a href="AdminAddVoucher.jsp" class="btn btn-primary">
                         Add New Voucher
                     </a>
                     

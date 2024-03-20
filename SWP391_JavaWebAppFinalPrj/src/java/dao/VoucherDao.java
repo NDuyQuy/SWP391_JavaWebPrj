@@ -24,7 +24,8 @@ import model.Vouchers;
  * @author LENOVO
  */
 public class VoucherDao {
-
+    private static final String ADD_SYSTEM_VOUCHER = "INSERT INTO vouchers (code, discount_amount, start_date, expire_date, type, min_require, description, use_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    
     private static final String ADD_VOUCHER = "INSERT INTO vouchers (code, discount_amount, start_date, expire_date, type, min_require, description, shop_id, use_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_VOUCHER = "UPDATE vouchers SET code = ?, discount_amount = ?, start_date = ?, expire_date = ?, type = ?, min_require = ?, description = ?, shop_id = ?, use_count = ? WHERE voucher_id = ?";
     private static final String DELETE_VOUCHER = "DELETE FROM vouchers WHERE voucher_id = ?";
@@ -44,6 +45,24 @@ public class VoucherDao {
             st.setString(7, voucher.getDescription());
             st.setInt(8, voucher.getShop_id());
             st.setInt(9, voucher.getUse_count());
+
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void addVoucher(Vouchers voucher, boolean admin) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement st = con.prepareStatement(ADD_SYSTEM_VOUCHER)) {
+            st.setString(1, voucher.getCode());
+            st.setInt(2, voucher.getDiscount_amount());
+            st.setDate(3, voucher.getStart_date());
+            st.setDate(4, voucher.getExpire_date());
+            st.setInt(5, voucher.getType());
+            st.setInt(6, voucher.getMin_require());
+            st.setString(7, voucher.getDescription());
+            st.setInt(8, voucher.getUse_count());
 
             st.executeUpdate();
         } catch (Exception e) {

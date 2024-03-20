@@ -21,6 +21,7 @@ public class Vouchers {
     private int min_require;
     private String description;
     private int shop_id;
+    private String discount_unit;
     private int use_count;
     private Shops shop;
 
@@ -37,6 +38,7 @@ public class Vouchers {
         this.min_require = min_require;
         this.description = description;
         this.use_count = use_count;
+        setDiscount_unit();
     }
 
     public Vouchers(int voucher_id, String code, int discount_amount, Date start_date, Date expire_date, int type, int min_require, String description, int shop_id, int use_count) {
@@ -50,6 +52,7 @@ public class Vouchers {
         this.description = description;
         this.shop_id = shop_id;
         this.use_count = use_count;
+        setDiscount_unit();
     }
     
     public int getVoucher_id() {
@@ -139,6 +142,16 @@ public class Vouchers {
 
     public void setShop(Shops shop) {
         this.shop = shop;
+    }
+
+    public String getDiscount_unit() {
+        return discount_unit;
+    }
+
+    public void setDiscount_unit() {
+        String unit = this.code.substring(0, 2);
+        if (unit.equals("Mv")) this.discount_unit = "VND";
+        else this.discount_unit = "%";
     }
 
     

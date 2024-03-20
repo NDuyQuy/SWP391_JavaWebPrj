@@ -14,15 +14,15 @@ import model.*;
  * @author DELL
  */
 public class MessageDao {
-    private static final String GETMESSAGELISTBY2ID = "SELECT * FROM [dbo].[messages] WHERE [shop_id] = ?, [customer_id] = ?";
+    private static final String GETMESSAGELISTBY2ID = "SELECT * FROM [dbo].[messages] WHERE [shop_id] = ? AND [customer_id] = ?";
     
     private static final String SENDMESSAGE = "INSERT INTO [dbo].[messages]([shop_id], [customer_id], [message_status], [content]) VALUES (?, ?, ?, ?)";
     
-    private static final String UPDATESTATUS = "UPDATE [dbo].[messages] SET [message_status] = ? WHERE [shop_id] = ?, [customer_id] = ?, [message_status] = ?";
+    private static final String UPDATESTATUS = "UPDATE [dbo].[messages] SET [message_status] = ? WHERE [shop_id] = ? AND [customer_id] = ? AND [message_status] = ?";
     
     private static final String DELETEMESSAGE = "UPDATE [dbo].[messages] SET [message_status] = ? WHERE [message_id] = ?";
     
-    private static final String GETUNSEENMESSAGE = "SELECT [message_id], [shop_id], [customer_id], [time_stamp], [message_status], [content] FROM [dbo].[messages] WHERE [shop_id] = ?, [customer_id] = ?, [message_status] = ?";
+    private static final String GETUNSEENMESSAGE = "SELECT [message_id], [shop_id], [customer_id], [time_stamp], [message_status], [content] FROM [dbo].[messages] WHERE [shop_id] = ? AND [customer_id] = ? AND [message_status] = ?";
     
     private static final String GETCHATLIST = "SELECT DISTINCT [shop_id] FROM [dbo].[messages] WHERE [customer_id] = ? ORDER BY [shop_id]";
     
@@ -39,8 +39,8 @@ public class MessageDao {
             rs = ptm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("message_id");
-                String content = rs.getString("name").trim();
-                Timestamp time = rs.getTimestamp("content");
+                String content = rs.getString("content");
+                Timestamp time = rs.getTimestamp("time_stamp");
                 int status = rs.getInt("message_status");
                 Messages m = new Messages(id, shopId, userId, time, status, content);
                 result.add(m);
@@ -139,5 +139,7 @@ public class MessageDao {
         }
         return result;
     }
-    
+    public static void main(String[] args) {
+        GetMessageList(1,3).forEach(System.out::println);
+    }
 }
