@@ -6,9 +6,12 @@
 package controller;
 
 import dao.CartDao;
+import dao.CartDao;
+import dao.SellersDao;
+import dao.VoucherDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,14 +22,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.CartDetail;
+import model.Shops;
 import model.Users;
+import model.Vouchers;
 
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name = "Cart", urlPatterns = {"/Cart"})
-public class Cart extends HttpServlet {
+@WebServlet(name = "Checkout", urlPatterns = {"/Checkout"})
+public class Checkout extends HttpServlet {
+
+    private final CartDao cartDao = new CartDao();
+    private final VoucherDao voucherDao = new VoucherDao();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +53,10 @@ public class Cart extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Cart</title>");
+            out.println("<title>Servlet Checkout</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Cart at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Checkout at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,21 +74,41 @@ public class Cart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         Users user = (Users) request.getSession().getAttribute("user");
+        List<CartDetail> selectedItems = (List<CartDetail>) request.getSession().getAttribute("selectedItems");
 
-        if (user != null) {
-            List<CartDetail> cartItems = CartDao.getCartItems(user.getId());
-            Map<String, List<CartDetail>> groupedByShop = cartItems.stream()
-                    .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShop_name()));
-            request.setAttribute("cartItems", cartItems);
+        if (selectedItems != null && !selectedItems.isEmpty()) {
+
+            //Map<String, List<CartDetail>> groupedByShop = selectedItems.stream().collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShop_name()));
+
+            /*for (Map.Entry<String, List<CartDetail>> entry : groupedByShop.entrySet()) {
+            String shopName = entry.getKey();
+            List<CartDetail> shopItems = entry.getValue();
+            
+            // Lấy danh sách voucher của cửa hàng
+            List<Vouchers> vouchers = VoucherDao.getVouchersByCondition(shopName);
+            if (!vouchers.isEmpty()) {
+            String voucherListName = "vouchers_" + shopName.substring(0, 1);
+            request.setAttribute("vouchers_" + shopName, vouchers);
+            }
+            
+            }
+            
+            request.setAttribute("selectedItems", selectedItems);
             request.setAttribute("cartGroup", groupedByShop);
+            
+            // Tiếp tục xử lý trang Checkout
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/checkout.jsp");
+            dispatcher.forward(request, response);*/
+            Map<List<CartDetail>, List<Vouchers>> map = new HashMap<>();
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cart.jsp");
-            dispatcher.forward(request, response);
+            // Iterate over the vouchers list
+            
+
         } else {
-
-            response.sendRedirect("login.jsp");
+            // Xử lý trường hợp không có sản phẩm nào được chọn
+            // Có thể điều hướng hoặc hiển thị thông báo lỗi
+            response.sendRedirect("cart.jsp");
         }
     }
 
@@ -95,42 +123,24 @@ public class Cart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Users user = (Users) request.getSession().getAttribute("user");
+        /// Lấy danh sách sản phẩm đã chọn từ request parameter
+        /* String selectedProductIds = request.getParameter("selectedProductIds");
 
-        if (user != null) {
-            List<CartDetail> cartItems = CartDao.getCartItems(user.getId());
+    if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
+        String[] selectedIdsArray = selectedProductIds.split(",");
+        
+        // Thực hiện các bước thanh toán với danh sách sản phẩm đã chọn
+        // (ví dụ: tạo đơn đặt hàng, giảm số lượng sản phẩm từ kho, v.v.)
+        
+        // Điều hướng hoặc hiển thị thông báo thanh toán thành công
+        response.sendRedirect("payment-success.jsp");
+    } else {
+        // Xử lý trường hợp khi không có sản phẩm nào được chọn
+        // Có thể điều hướng hoặc hiển thị thông báo lỗi
+        response.sendRedirect("cart.jsp");
+    }*/
 
-            // Process selected items
-            String selectedProductIds = request.getParameter("selectedProductIds");
-
-            if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
-                String[] selectedIdsArray = selectedProductIds.split(",");
-                List<CartDetail> selectedItems = new ArrayList<>();
-
-                for (String selectedId : selectedIdsArray) {
-                    int productId = Integer.parseInt(selectedId);
-
-                    for (CartDetail cartItem : cartItems) {
-                        if (cartItem.getProduct().getProduct_id() == productId) {
-                            selectedItems.add(cartItem);
-                            break;
-                        }
-                    }
-                }
-
-                // Save selected items to session
-                request.getSession().setAttribute("selectedItems", selectedItems);
-
-                // Redirect to CheckoutServlet
-                response.sendRedirect("Checkout");
-            } else {
-                // Handle the case when no items are selected
-                // You can redirect or show an error message
-                response.sendRedirect("cart.jsp");
-            }
-        } else {
-            response.sendRedirect("login.jsp");
-        }
+        // Lấy danh sách sản phẩm đã chọn từ session
     }
 
     /**

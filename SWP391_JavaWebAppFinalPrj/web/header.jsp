@@ -142,7 +142,7 @@
                                                 </li>
                                                 <c:if test="${sessionScope.user.role eq 1}">
                                                     <li>
-                                                        <a href="#">Đơn mua</a>
+                                                        <a href="OrderListController">Đơn mua</a>
                                                     </li>
                                                 </c:if>
                                                 <li>
@@ -180,6 +180,11 @@
                                                         <a href="#">
                                                             <i class="far fa-trash-alt"></i>
                                                         </a>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="checkout-link">
+                                                        <a href="Cart">Xem giỏ hàng</a>
                                                     </div>
                                                 </li>
                                             </ul>

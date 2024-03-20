@@ -1,18 +1,16 @@
-<%-- 
-    Document   : cart
-    Created on : Feb 26, 2024, 9:48:59 PM
-    Author     : LENOVO
---%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:useBean id="user" scope="session" class="model.User" />
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="model.CartDetail" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="dao.UsersDao" %>
+<%@ page import="model.Users" %>
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="zxx">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Co.Handmade</title>
+        <title>Co.Handmade </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -34,81 +32,134 @@
         <link rel="stylesheet" href="css/default.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
-        <link rel="stylesheet" href="css/png.css"/>
-        <style>
-            .profile-area, .footer-area{
-                background-color: #f6f6f6;
-            }
-            .bottom{
-                display: flex;
-                flex-direction: row;
-                align-items: flex-start;
-            }
-            .profile-avatar{
-                padding-left: 20px;
-                overflow: hidden;
-                border-left: 1px solid #eaedff;
-                justify-content: center;
-                display: flex;
-
+        <link rel="stylesheet" href="css/png.css">
+        <<script>
+            function redirectToOrderDetail(orderId) {
+                console.log('Redirecting to OrderDetailServlet with orderId:', orderId);
+                window.location.href = 'OrderDetailServlet?orderId=' + orderId;
             }
 
-            .profile-avatar:nth-child{
-                padding-top: 40px;
+            function openConfirmModal(orderId) {
+                currentOrderId = orderId;
+                $('#confirmModal').modal('show');
             }
-            .avatar{
-                flex-direction: column;
-                align-items: center;
-                display: flex;
+
+            function confirmReceived() {
+                // Set the form action and orderId input value
+                $('#confirmForm').attr('action', 'UpdateOrderStatusServlet'); 
+                $('#orderIdInput').val(currentOrderId);
+
+                // Submit the form
+                $('#confirmForm').submit();
+
+                // Close the modal
+                $('#confirmModal').modal('hide');
             }
-            .bottom{
-                margin-top: 20px;
-            }
-            .cat dd{
-                margin-left: 20px;
-            }
-            .avatar-img{
-                width: 100%;
-                height: 100%;
-                background-position: 50%;
-                background-size: cover;
-                background-repeat: no-repeat;
-                cursor: pointer;
-            }
-        </style>
+        </script>
+
     </head>
     <body>
-
-        <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
-        <div class="order">
-        <img src="path/to/product_image.jpg" alt="Product Image" width="100">
-        <h3>Tên Shop: Shop ABC</h3>
-        <p>Tên Sản Phẩm: Sản Phẩm 1</p>
-        <p>Tổng Tiền: 120,000 VND</p>
-        <button onclick="viewOrderDetails(1)">Xem Chi Tiết</button>
-        <button onclick="contactSeller(1)">Liên Hệ Người Bán</button>
-        <button onclick="cancelOrder(1)">Hủy Đơn Hàng</button>
-    </div>
+            <form id="confirmForm" method="post" style="display: none;">
+                <input type="hidden" name="orderId" id="orderIdInput" />
+                <input type="hidden" name="newStatus" value="đã nhận" />
+            </form>
+            <main>
+                <!-- breadcrumb-area-start -->
+                <section class="breadcrumb-area" data-background="img/bg/page-title.png">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="breadcrumb-text text-center">
+                                    <h1>Đơn hàng của bạn</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- breadcrumb-area-end -->
 
-    <!-- Thêm các đơn hàng khác nếu cần -->
+                <!-- login Area Strat-->
+                <section class="order-list">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="order" items="${orders}">
+                                        <tr >
+                                            <td onclick="redirectToOrderDetail(${order.getOrder_id()})" style="cursor: pointer;">${order.getOrder_id()}</td>
+                                            <td onclick="redirectToOrderDetail(${order.getOrder_id()})" style="cursor: pointer;">${order.getTotal()}</td>
+                                            <td onclick="redirectToOrderDetail(${order.getOrder_id()})" style="cursor: pointer;">${order.getStatus()}</td>
+                                            <td>
 
-    <script>
-        function viewOrderDetails(orderId) {
-            window.location.href = '/orderDetails.html?orderId=' + orderId;
-        }
+                                                <button>Liên hệ với người bán</button>
+                                            </td>
+                                            <td>
+                                                <!-- Nút "Đã nhận hàng" - hiển thị nếu trạng thái là "da giao hang" -->
+                                                <c:if test="${order.status.trim() eq 'đã giao hàng'}">
+                                                    <button onclick="openConfirmModal(${order.getOrder_id()})">Đã nhận hàng</button>
+                                                </c:if>
 
-        function contactSeller(orderId) {
-            // Xử lý liên hệ người bán
-            console.log('Liên hệ người bán cho đơn hàng ' + orderId);
-        }
+                                                <!-- Nút Đánh giá" - hiển thị nếu trạng thái là "da nhan hang" -->
+                                                <c:if test="${order.status.trim() eq 'đã nhận'}">
+                                                    <button>Đánh giá</button>
+                                                </c:if>
 
-        function cancelOrder(orderId) {
-            // Xử lý hủy đơn hàng
-            console.log('Hủy đơn hàng ' + orderId);
-        }
-    </script>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- login Area End-->
 
+            <!-- Bootstrap JS and jQuery -->
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmModalLabel">Xác nhận Đã nhận hàng</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Bạn có chắc chắn muốn đánh dấu Đã nhận hàng cho đơn hàng này?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy bỏ</button>
+                            <button type="button" class="btn btn-primary" onclick="confirmReceived()">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <jsp:include page="footer.jsp"></jsp:include>
+        <!-- Bootstrap JS and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
     </body>

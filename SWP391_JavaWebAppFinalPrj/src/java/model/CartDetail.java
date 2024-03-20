@@ -10,13 +10,28 @@ package model;
  * @author ASUS
  */
 public class CartDetail {
+
     private int user_id;
     private int product_id;
     private int quantity;
     private Users user;
     private Products product;
+    private Shops shop;
 
     public CartDetail() {
+    }
+
+    public CartDetail(int quantity, Products product) {
+        this.quantity = quantity;
+        this.product = product;
+    }
+
+    public CartDetail(int user_id, int product_id, int quantity, Products product) {
+        this.user_id = user_id;
+        this.product_id = product_id;
+        this.quantity = quantity;
+
+        this.product = product;
     }
 
     public int getUser_id() {
@@ -58,7 +73,15 @@ public class CartDetail {
     public void setProduct(Products product) {
         this.product = product;
     }
-    
+
+    public Shops getShop() {
+        return shop;
+    }
+
+    public void setShop(Shops shop) {
+        this.shop = shop;
+    }
+
     @Override
     public String toString() {
         return "Cartdetail{" + "user_id=" + user_id + ", product_id=" + product_id + ", quantity=" + quantity + '}';

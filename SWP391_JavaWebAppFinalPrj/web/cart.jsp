@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="model.CartItem" %>
+<%@ page import="model.CartDetail" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="dao.UsersDao" %>
-<%@ page import="model.User" %>
+<%@ page import="model.Users" %>
 
 <html class="no-js" lang="zxx">
 
@@ -33,6 +33,27 @@
         <link rel="stylesheet" href="css/default.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
+<script>
+    function proceedToCheckout() {
+        var selectedItems = [];
+
+        var checkboxes = document.getElementsByClassName('itemCheckbox');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                var productId = checkboxes[i].getAttribute('data-product-id');
+                selectedItems.push(productId);
+            }
+        }
+
+        if (selectedItems.length > 0) {
+            document.getElementById('selectedItemsInput').value = selectedItems.join(',');
+            document.getElementById('checkoutForm').submit();
+        } else {
+            alert("Please select at least one item before proceeding to checkout.");
+        }
+    }
+</script>
+
     </head>
     <body>
 
@@ -64,7 +85,8 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                <form action="UpdateQuantityServlet" method="post">
+                                <form id="checkoutForm" action="Cart" method="post">
+    <input type="hidden" id="selectedItemsInput" name="selectedProductIds" />
                                     <div class="table-content table-responsive">
                                         <table class="table">
                                             <thead>
@@ -93,78 +115,54 @@
                                                     <tr>
                                                         <!-- Display the values in each row -->
                                                         <td class="product-checkbox">
-                                                            <input type="checkbox" class="itemCheckbox" />
+                                                            <input type="checkbox" class="itemCheckbox" data-product-id="${value.product.product_id}" />
                                                         </td>
                                                         <td class="product-thumbnail">
-                                                            <a href="#"><img src="${value.product.productImg}" alt=""></a>
+                                                            <a href="#"><img src="${value.product.img}" alt=""></a>
                                                         </td>
                                                         <td class="product-name">
-                                                            <a href="#">${value.product.productName}</a>
+                                                            <a href="#">${value.product.name}</a>
                                                         </td>
                                                         <td class="product-price">
-                                                            <span class="amount">${value.product.price}</span>
+                                                            <span class="amount">${value.product.money}</span>
                                                         </td>
                                                         <td class="product-quantity">
-                                                            <!--
-                                                            <input type="hidden" name="productId" value="${value.product.productID}">
-                                                            <button type="submit" name="action" value="decrease">-</button>
-                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="0">
-                                                            <button type="submit" name="action" value="increase">+</button>
-                                                            -->
-                                                            <buton<a href="UpdateQuantityServlet?id=${value.product.productID}&action=increase">+</a>
-                                                            <input type="number" name="quantity" value="${value.product.quantity}" min="0">
-                                                <buton><a href="UpdateQuantityServlet?id=${value.product.productID}&action=decrease">-</a></buton>
-                                                        </td>
-                                                        <td class="product-subtotal">
-                                                            <span class="amount">${value.product.price * value.quantity}</span>
-                                                        </td>
-                                                        <td class="product-remove">
-                                                            <button type="submit"><a href="UpdateQuantityServlet?id=${value.product.productID}&action=remove">X</a></button>
-                                                        </td>
+                                                <buton><a href="UpdateQuantityServlet?id=${value.product.product_id}&action=decrease">-</a></buton>
+                                                <input type="text" class="quantityInput" data-product-id="${value.product.product_id}" value="${value.product.quantity}" min="0" onkeypress="updateQuantityOnEnter(event)">
 
-                                                    </tr>
-                                                </c:forEach>
-                                                <c:set var="totalPrice" value="${totalPrice + (cartItem.product.price * cartItem.quantity)}" />
-                                            </c:forEach>
+                                                <buton><a href="UpdateQuantityServlet?id=${value.product.product_id}&action=increase">+</a></buton>
+                                                </td>
+                                                <td class="product-subtotal">
+                                                    <span class="amount">${value.product.money * value.quantity}</span>
+                                                </td>
+                                                <td class="product-remove">
+                                                    <button type="submit"><a href="UpdateQuantityServlet?id=${value.product.product_id}&action=remove">X</a></button>
+                                                </td>
 
-
-
-                                            <!--
-                                            <c:forEach var="cartItem" items="${requestScope.cartItems}">
-                                                <tr>
-                                                    <td colspan="7" class="shop-name">${cartItem.shop.shopName}</td>
                                                 </tr>
-                                                <tr>
-
-                                                    <td class="product-checkbox">
-                                                        <input type="checkbox" class="itemCheckbox" />
-                                                    </td>
-                                                    <td class="product-thumbnail">
-                                                        <a href="#"><img src="${cartItem.product.productImg}" alt=""></a>
-                                                    </td>
-                                                    <td class="product-name">
-                                                        <a href="#">${cartItem.product.productName}</a>
-                                                    </td>
-                                                    <td class="product-price">
-                                                        <span class="amount">${cartItem.product.price}</span>
-                                                    </td>
-                                                    <td class="product-quantity">
-                                                        <input type="hidden" name="productId" value="${cartItem.product.productID}">
-                                                        <button type="submit" name="action" value="decrease">-</button>
-                                                        <input type="number" name="quantity" value="${cartItem.quantity}" min="0">
-                                                        <button type="submit" name="action" value="increase">+</button>
-                                                    </td>
-                                                    <td class="product-subtotal">
-                                                        <span class="amount">${cartItem.product.price * cartItem.quantity}</span>
-                                                    </td>
-                                                    <td class="product-remove">
-                                                        <button type="submit" name="action" value="remove">X</button>
-                                                    </td>
-                                                </tr>
-                                                <c:set var="totalPrice" value="${totalPrice + (cartItem.product.price * cartItem.quantity)}" />
                                             </c:forEach>
-                                            -->
+                                            <c:set var="totalPrice" value="${totalPrice + (cartItem.product.money * cartItem.quantity)}" />
+                                        </c:forEach>
+
+
+
+
                                         </tbody>
+                                       
+                                        <script>
+                                            function updateQuantityOnEnter(event) {
+                                                if (event.key === 'Enter') {
+                                                    event.preventDefault();
+
+                                                    var productId = event.target.getAttribute('data-product-id');
+                                                    var newQuantity = event.target.value;
+
+                                                    // Gửi yêu cầu cập nhật số lượng mới đến servlet
+                                                    window.location.href = "UpdateQuantityServlet?id=" + productId + "&action=update&quantity=" + newQuantity;
+                                                }
+                                            }
+
+                                        </script>
 
                                         <script>
                                             function updateTotal() {
@@ -191,25 +189,30 @@
                                                 checkboxes[i].addEventListener('click', updateTotal);
                                             }
                                         </script>
+
+
                                     </table>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-md-5 ml-auto">
                                         <div class="cart-page-total">
                                             <h2>Cart totals</h2>
                                             <ul class="mb-20">
-
                                                 <li>Total <span id="totalPrice">0.00</span></li>
                                             </ul>
-                                            <a class="btn theme-btn" href="#">Proceed to checkout</a>
+                                            <button type="button" class="btn theme-btn" onclick="proceedToCheckout()">Proceed to checkout</button>
+
                                         </div>
                                     </div>
                                 </div>
+
+
                             </form>
 
                         </div>
                     </div>
-                   
+
                 </div>
             </section>
             <!-- Cart Area End-->
