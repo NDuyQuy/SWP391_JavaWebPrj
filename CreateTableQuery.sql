@@ -2,6 +2,7 @@ use master
 go
 
 CREATE DATABASE SWP391_FinalPrjDB 
+go
 
 use SWP391_FinalPrjDB
 go
@@ -36,7 +37,7 @@ create table [messages]
 	[shop_id] int foreign key references [shops]([shop_id]) ,
 	[customer_id] int foreign key references [users]([id]) ,
 	[time_stamp] datetime default GETDATE(),
-	[message_status] tinyint , /****** 0: sent - shop; 1: seen by user - shop; 2: sent - user; 3: seen by shop - user; -1: deleted - shop; -2: deleted - user ******/
+	[message_status] tinyint ,
 	[content] text
 )
 create table maincategory
@@ -86,6 +87,7 @@ create table vouchers
 	[min_require] int ,
 	[description] text ,
 	[shop_id] int foreign key references [shops]([shop_id]),
+	[product_id] int foreign key references [products]([product_id]),
 	[use_count] int 
 )
 create table shippingunits
@@ -174,4 +176,3 @@ create table report_detail
 	[created_date] datetime default GETDATE(),
 	[reason] text
 )
-

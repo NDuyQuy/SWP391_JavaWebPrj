@@ -6,6 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:include page="/LoadChatConntroller?Action=LoadChatList"/>
 <!DOCTYPE html>
 <html>
     <head>
@@ -165,56 +166,51 @@
             <div class="row">
                 <div class="col-lg-3 col-xl-3 chat" style="padding-right: 0; padding-left: 0;"><div class="card mb-sm-3 mb-md-0 contacts_card">
                         
-                        <!--SEARCH BAR-->
-                        
+                        <!--SEARCH BAR: Cancelled-->
+                        <!--
                         <div class="card-header" style="background: #fff">
                             <div class="input-group">
-                                <input type="text" placeholder="Tìm kiếm..." name="" class="form-control search">
+                                <input type="text" placeholder="Tìm kiếm..." name="SearchTextbox" class="form-control search" onfocus="checkTextField()">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
                                 </div>
                             </div>
                         </div>
-                        
+                        -->
 <!--DISPLAY SENDER LIST-->
-
+                        
                         <div class="card-body contacts_body">
-                            <ui class="contacts">
-                                
-                                <!--SENDER SELECTED, CURRENTLY DISPLAYING THIS SENDER'S CHAT MESSAGE-->
+                            <ui class="contacts" id="chatlist">
+                                <!--
                                 <li class="active">
-                                    <div class="d-flex bd-highlight">
+                                    <div class="d-flex bd-highlight" onclick="">
                                         
-                                        <!--IMAGE OF SENDER-->
                                         <div class="img_cont">
                                             <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img">
                                         </div>
                                         <div class="user_info">
-                                            <!--NAME OF SENDER-->
                                             <span>A</span>
-                                            <!--MOST RECENT MESSAGE-->
                                             <p>text</p>
                                         </div>
                                     </div>
                                 </li>
-                                
-                                <!--OTHER SENDER-->
                                 <li>
-                                    <div class="d-flex bd-highlight">
+                                    <div class="d-flex bd-highlight" onclick="changeChat()">
                                         
-                                        <!--IMAGE OF SENDER-->
                                         <div class="img_cont">
                                             <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img">
                                         </div>
                                         <div class="user_info">
-                                            <!--NAME OF SENDER-->
                                             <span>B</span> 
-                                            <!--MOST RECENT MESSAGE-->
                                             <p>text</p>
                                         </div>
                                     </div>
                                 </li>
-
+                                -->
+                                <!-- REAL CHAT LIST HERE -->
+                                ${sessionScope.ChatList}
+                                
+                                
                             </ui>
                         </div>
                         <div class="card-footer"></div>
@@ -245,49 +241,20 @@
                                 <!--LIST ACTIONS HERE-->
                                 <ul>
                                     <li></li>
-                                    <li></li>
+                                    <li><!--VIEW SHOP IF SENDER IS SELLER--></li>
                                 </ul>
                             </div>
                             
                         </div>
                         
 <!--DISPLAY MESSAGE-->
-                        <div class="card-body msg_card_body">
+                        <div class="card-body" id="msg_card_body">
                             
-                            <!--MESSAGE OF SENDER-->
-                            <div class="d-flex justify-content-start mb-4">
-                                <!--IMAGE OF SENDER-->
-                                <div class="img_cont_msg">
-                                    <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img_msg">
-                                </div>
-                                <div class="msg_cotainer">
-                                    
-                                    <!--CONTENT OF MESSAGE-->
-                                    HI
-                                    
-                                    <!--TIME RECEIVE MESSAGE-->
-                                    <span class="msg_time">5:57</span>
-                                </div>
-                            </div>
                             
-                            <!--MESSAGE OF RECEIVER-->
-                            <div class="d-flex justify-content-end mb-4">
-                                <div class="msg_cotainer_send">
-                                    
-                                    <!--CONTENT OF MESSAGE-->
-                                    HI
-                                    
-                                    <!--TIME SEND MESSAGE-->
-                                    <span class="msg_time_send">5:57</span>
-                                </div>
-                                <!--IMAGE OF RECEIVER-->
-                                <div class="img_cont_msg">
-                                    <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" class="rounded-circle user_img_msg">
-                                </div>
-                            </div>
-                            
+                            <div id="endOfChatBox"></div>
                         </div>
-
+                        
+                        
 <!--MESSAGE INPUT BOX-->
                         <div class="card-footer">
                             <div class="input-group">
@@ -298,10 +265,10 @@
                                 </div>
                                 
                                 <!--TYPE MESSAGE HERE-->
-                                <textarea name="" class="form-control type_msg" placeholder="Nhập nội dung tin nhắn..."></textarea>
+                                <textarea name="" class="form-control" id="type_msg" placeholder="Nhập nội dung tin nhắn..."></textarea>
                                 
                                 <!--SEND BUTTON-->
-                                <div class="input-group-append">
+                                <div class="input-group-append" onclick="send_msg()">
                                     <span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
                                 </div>
                             </div>
@@ -330,105 +297,69 @@
     <script src="js/main.js"></script>
     <script>
         var suggestion = [];
-        <c:forEach var="scate" items="${sessionScope.shop_category_list}">
-        suggestion.push("${scate.name}");
+        let myVar = setInterval(checkUnseen(), 2500);
+        let thisShopID = -1;
+        
+        <c:forEach var="shop" items="${sessionScope.ShopList}">
+        suggestion.push("${shop.shop_name}");
         </c:forEach>
-        function autocomplete(inp, arr) {
-            var currentFocus;
-            inp.addEventListener("input", function (e) {
-                var a, s, b, i, val = this.value;
-                closeAllLists();
-                if (!val) {
-                    return false;
-                }
-                currentFocus = -1;
-                a = document.createElement("DIV");
-                a.setAttribute("id", this.id + "autocomplete-list");
-                a.setAttribute("class", "autocomplete-items");
-                this.parentNode.appendChild(a);
-                s = document.createElement("DIV");
-                s.innerHTML = "<span style='color: #fe4536;'> Tìm shop '" + val + "'<span>";
-                s.addEventListener("click", function (e) {
-                    location.href = "SearchShop?kw=" + val;
-                });
-                a.appendChild(s);
-                for (i = 0; i < arr.length; i++) {
-                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-                        b = document.createElement("DIV");
-                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-                        b.innerHTML += arr[i].substr(val.length);
-                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                        b.addEventListener("click", function (e) {
-                            location.href = "SearchProduct?kw=" + this.getElementsByTagName("input")[0].value;
-                            closeAllLists();
-                        });
-                        a.appendChild(b);
-                    }
+            
+        function send_msg() {
+            var message = document.getElementById("type_msg").innerHTML;
+            $.ajax({
+                url: "/ChatController?Action=SendChat",
+                type: "get",
+                data: {
+                    shop_id: thisShopID;
+                    messageText: message
+                },
+                success: function(result){
+                    document.getElementById("endOfChatBox").outerHTML = result;
+                },
+                error: function (xhr) {
+                    //Do Something to handle error
                 }
             });
-            inp.addEventListener("keydown", function (e) {
-                var x = document.getElementById(this.id + "autocomplete-list");
-                if (x)
-                    x = x.getElementsByTagName("div");
-                if (e.keyCode == 40) {
-                    currentFocus++;
-                    addActive(x);
-                } else if (e.keyCode == 38) {
-                    currentFocus--;
-                    addActive(x);
-                } else if (e.keyCode == 13) {
-                    e.preventDefault();
-                    if (currentFocus > -1) {
-                        if (x)
-                            x[currentFocus].click();
-                    }
-                }
-            });
-            function addActive(x) {
-                if (!x)
-                    return false;
-                removeActive(x);
-                if (currentFocus >= x.length)
-                    currentFocus = 0;
-                if (currentFocus < 0)
-                    currentFocus = (x.length - 1);
-                x[currentFocus].classList.add("autocomplete-active");
-            }
-            function removeActive(x) {
-                for (var i = 0; i < x.length; i++) {
-                    x[i].classList.remove("autocomplete-active");
-                }
-            }
-            function closeAllLists(elmnt) {
-                var x = document.getElementsByClassName("autocomplete-items");
-                for (var i = 0; i < x.length; i++) {
-                    if (elmnt != x[i] && elmnt != inp) {
-                        x[i].parentNode.removeChild(x[i]);
-                    }
-                }
-            }
-            document.addEventListener("click", function (e) {
-                closeAllLists(e.target);
-            });
+            
         }
-
-        autocomplete(document.getElementById("myInput"), suggestion);
-
-        var input = document.getElementById("myInput");
-        input.addEventListener("keydown", function (event) {
-            if (event.keyCode == 13) {
-                event.preventDefault();
-                document.getElementById("btn-search").click();
-            }
-        });
-
-        function checkTextField() {
-            if ($.trim($('#myInput').val()) !== "")
-            {
-                $('#btn-search').removeAttr("disabled");
-            } else {
-                $("#btn-search").prop("disabled", true);
-            }
+            
+        function changeChat(shopId) {
+            clearInterval(myVar);
+            var thisShopID = shopId;
+            $.ajax({
+                url: "/LoadChatConntroller?Action=LoadChat",
+                type: "get",
+                data: {
+                    shop_id: thisShopID
+                }
+                success: function(result){
+                    document.getElementById("msg_card_body").innerHTML = document.getElementById("endOfChatBox").outerHTML;
+                    document.getElementById("endOfChatBox").outerHTML = result;
+                }
+                error: function (xhr) {
+                    //Do Something to handle error
+                }
+            });
+            
+            myVar = setInterval(checkUnseen(), 2500);
+        }
+        
+        function checkUnseen() {
+            $.ajax({
+                url: "/LoadChatConntroller?Action=LoadChatUnseen",
+                type: "get",
+                data: {
+                    shop_id: thisShopID
+                }
+                success: function(result){
+                    document.getElementById("endOfChatBox").outerHTML = result;
+                }
+                error: function (xhr) {
+                    //Do Something to handle error
+                }
+            });
+            
+            
         }
     </script>
 </html>

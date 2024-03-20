@@ -14,7 +14,7 @@ import model.*;
  * @author DELL
  */
 public class MessageDao {
-    private static final String GETMESSAGELISTBY2ID = "SELECT [message_id], [shop_id], [customer_id], [time_stamp], [message_status], [content] FROM [dbo].[messages] WHERE [shop_id] = ?, [customer_id] = ?";
+    private static final String GETMESSAGELISTBY2ID = "SELECT * FROM [dbo].[messages] WHERE [shop_id] = ?, [customer_id] = ?";
     
     private static final String SENDMESSAGE = "INSERT INTO [dbo].[messages]([shop_id], [customer_id], [message_status], [content]) VALUES (?, ?, ?, ?)";
     
@@ -25,6 +25,8 @@ public class MessageDao {
     private static final String GETUNSEENMESSAGE = "SELECT [message_id], [shop_id], [customer_id], [time_stamp], [message_status], [content] FROM [dbo].[messages] WHERE [shop_id] = ?, [customer_id] = ?, [message_status] = ?";
     
     private static final String GETCHATLIST = "SELECT DISTINCT [shop_id] FROM [dbo].[messages] WHERE [customer_id] = ? ORDER BY [shop_id]";
+    
+    
     
     public static ArrayList<Messages> GetMessageList(int shopId, int userId) {
         ArrayList<Messages> result = new ArrayList<Messages>();
