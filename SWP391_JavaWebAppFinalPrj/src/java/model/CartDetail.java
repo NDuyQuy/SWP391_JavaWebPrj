@@ -19,6 +19,12 @@ public class CartDetail {
     public CartDetail() {
     }
 
+    public CartDetail(int user_id, int product_id, int quantity) {
+        this.user_id = user_id;
+        this.product_id = product_id;
+        this.quantity = quantity;
+    }
+
     public int getUser_id() {
         return user_id;
     }

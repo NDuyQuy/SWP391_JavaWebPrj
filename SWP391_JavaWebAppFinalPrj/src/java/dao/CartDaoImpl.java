@@ -80,6 +80,16 @@ public class CartDaoImpl implements CartDao {
             e.printStackTrace();
         }
     }
+    @Override
+    public void clearCart(int userId) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement ptm = con.prepareStatement(CLEAR_CART)) {
+            ptm.setInt(1, userId);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /*
     public static List<CartItem> getCartItems(int userId) {
@@ -128,16 +138,7 @@ public class CartDaoImpl implements CartDao {
         return cartItems;
     }
 
-    @Override
-    public void clearCart(int userId) {
-        try (Connection con = SQLConnection.getConnection();
-                PreparedStatement ptm = con.prepareStatement(CLEAR_CART)) {
-            ptm.setInt(1, userId);
-            ptm.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
 
     public static void main(String[] args) {
         int userId = 27;
@@ -160,9 +161,4 @@ public class CartDaoImpl implements CartDao {
         }
     }
     */
-
-    @Override
-    public void clearCart(int userId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
