@@ -226,7 +226,6 @@ public class ProductController extends HttpServlet {
                 String finalPath = Paths.get(uploadPath,fileName).toString();
                 if (part.getSize() > 0) {
                     part.write(finalPath);
-                    
                 }
                 boolean isExists = Files.exists(Paths.get(finalPath));
                 if(!isExists){
