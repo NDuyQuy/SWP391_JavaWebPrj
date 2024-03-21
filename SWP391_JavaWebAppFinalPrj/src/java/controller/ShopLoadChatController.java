@@ -4,8 +4,10 @@
  */
 package controller;
 
+import static controller.LoadChatConntroller.showUnseenChat;
 import dao.MessageDao;
 import dao.SellersDao;
+import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -23,7 +25,7 @@ import model.Users;
  *
  * @author DELL
  */
-public class LoadChatConntroller extends HttpServlet {
+public class ShopLoadChatController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,31 +47,31 @@ public class LoadChatConntroller extends HttpServlet {
             PrintWriter out = response.getWriter();
             String action = request.getParameter("Action");
             Users u = (Users)session.getAttribute("user");
-            int userId = u.getId();
+            int shopId = u.getId();
             
             
             if(action.equals("LoadChatList")) {
-                ArrayList<Shops> chatList = MessageDao.GetChatList(userId);
-                String chatListDiv = showChatList(chatList, userId);
+                ArrayList<Users> chatList = MessageDao.GetUserList(shopId);
+                String chatListDiv = showChatList(chatList, shopId);
                 session.setAttribute("ChatList", chatListDiv);
                 session.setAttribute("ShopList", chatList);
                 out.println(chatListDiv);
             }
             else if(action.equals("LoadChat")) {
-                int shop_id = Integer.parseInt(request.getParameter("shop_id"));
-                String chatBoxDiv = showChatBox(shop_id, userId);
+                int user_id = Integer.parseInt(request.getParameter("user_id"));
+                String chatBoxDiv = showChatBox(shopId, user_id);
                 session.setAttribute("ChatBoxContent", chatBoxDiv);
                 out.println(chatBoxDiv);
             }
             else if(action.equals("LoadChatUnseen")) {
-                int shop_id = Integer.parseInt(request.getParameter("shop_id"));
-                String chatBoxDiv = showUnseenChat(shop_id, userId);
+                int user_id = Integer.parseInt(request.getParameter("user_id"));
+                String chatBoxDiv = showUnseenChat(shopId, user_id);
                 session.setAttribute("ChatBoxContent", chatBoxDiv);
                 out.println(chatBoxDiv);
             }
             else if(action.equals("LoadChatInfo")) {
-                int shop_id = Integer.parseInt(request.getParameter("shop_id"));
-                String InfoDiv = loadChatInfo(shop_id);
+                int user_id = Integer.parseInt(request.getParameter("user_id"));
+                String InfoDiv = loadChatInfo(user_id);
                 out.println(InfoDiv);
             }
         }
@@ -80,9 +82,6 @@ public class LoadChatConntroller extends HttpServlet {
             //httpResponse.sendRedirect(httpRequest.getContextPath() + url);
             System.out.println("Loading...");
         }
-        
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -123,18 +122,18 @@ public class LoadChatConntroller extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    public String showChatList(ArrayList<Shops> chatList, int userId) {
+    
+    public static String showChatList(ArrayList<Users> chatList, int shopId) {
         String element = new String();
         int i = 0;
         boolean b = true;
         while (i < chatList.size()) {
             String chatMember = "<li>\n" +
-"                                    <div class=\"d-flex bd-highlight\" id=\"shopID_[shopId]\" onclick=\"changeChat([shopId])\">\n" +
+"                                    <div class=\"d-flex bd-highlight\" id=\"userID_[userId]\" onclick=\"changeChat([userId])\">\n" +
 "                                        \n" +
 "                                        <!--IMAGE OF SENDER-->\n" +
 "                                        <div class=\"img_cont\">\n" +
-"                                            <img src=\"[shop_img]\" class=\"rounded-circle user_img\">\n" +
+"                                            <img src=\"[users_img]\" class=\"rounded-circle user_img\">\n" +
 "                                        </div>\n" +
 "                                        <div class=\"user_info\">\n" +
 "                                            <!--NAME OF SENDER-->\n" +
@@ -144,12 +143,12 @@ public class LoadChatConntroller extends HttpServlet {
 "                                        </div>\n" +
 "                                    </div>\n" +
 "                                </li>\n";
-            ArrayList<Messages> chat = MessageDao.GetMessageList(chatList.get(i).getShop_id(), userId);
+            ArrayList<Messages> chat = MessageDao.GetMessageList(shopId, chatList.get(i).getId());
             Messages recentChat = chat.get(chat.size() - 1);
-            chatMember = chatMember.replace("[shop_img]", chatList.get(i).getShop_img());
-            chatMember = chatMember.replace("[chat_name]", chatList.get(i).getShop_name());
+            chatMember = chatMember.replace("[users_img]", chatList.get(i).getImg());
+            chatMember = chatMember.replace("[chat_name]", chatList.get(i).getUsername());
             chatMember = chatMember.replace("[recent_chat]", recentChat.getContent());
-            chatMember = chatMember.replace("[shopId]", Integer.toString(chatList.get(i).getShop_id()));
+            chatMember = chatMember.replace("[userId]", Integer.toString(chatList.get(i).getId()));
             element = element + chatMember;
             i++;
         }
@@ -158,15 +157,15 @@ public class LoadChatConntroller extends HttpServlet {
     
     public String showChatBox(int shopId, int userId) {
         String element = new String();
+        MessageDao.SeenMessage(shopId, userId, 2);
         ArrayList<Messages> chat = MessageDao.GetMessageList(shopId, userId);
         int i = 0;
-        MessageDao.SeenMessage(shopId, userId, 0);
         while (i < chat.size()) {
             String member = new String();
             int side = chat.get(i).getMessage_status();
             Timestamp t = chat.get(i).getTime_stamp();
             String time = t.toString().substring(0, 16);
-            if (side == 1 || side == 0) {
+            if (side == 3 || side == 2) {
                 member = "<div class=\"d-flex justify-content-start mb-4\">\n" +
 "                                <!--IMAGE OF SENDER-->\n" +
 "                                <div class=\"img_cont_msg\">\n" +
@@ -181,9 +180,9 @@ public class LoadChatConntroller extends HttpServlet {
 "                                    <span class=\"msg_time\">[Time]</span>\n" +
 "                                </div>\n" +
 "                            </div>";
-                member = member.replace("[img]", chat.get(i).getShop().getShop_img());
+                member = member.replace("[img]", chat.get(i).getCustomer().getImg());
             }
-            else if (side == 3 || side == 2) {
+            else if (side == 0 || side == 1) {
                 member = "<div class=\"d-flex justify-content-end mb-4\">\n" +
 "                                <div class=\"msg_cotainer_send\" id=\"mid_[MessageID]\">\n" +
 "                                    \n" +
@@ -198,7 +197,7 @@ public class LoadChatConntroller extends HttpServlet {
 "                                    <img src=\"[img]\" class=\"rounded-circle user_img_msg\">\n" +
 "                                </div>\n" +
 "                            </div>";
-                member = member.replace("[img]", chat.get(i).getCustomer().getImg());
+                member = member.replace("[img]", chat.get(i).getShop().getShop_img());
             }
             member = member.replace("[MessageID]", Integer.toString(chat.get(i).getMessage_id()));
             member = member.replace("[Content]", chat.get(i).getContent());
@@ -210,17 +209,17 @@ public class LoadChatConntroller extends HttpServlet {
         return element;
     }
     
-    public static String showUnseenChat(int shopId, int userId) {
+    public String showUnseenChat(int shopId, int userId) {
         String element = new String();
-        ArrayList<Messages> chat = MessageDao.GetUnseenMessage(shopId, userId, 0);
-        MessageDao.SeenMessage(shopId, userId, 0);
+        ArrayList<Messages> chat = MessageDao.GetUnseenMessage(shopId, userId, 2);
+        MessageDao.SeenMessage(shopId, userId, 2);
         int i = 0;
         while (i < chat.size()) {
             String member = new String();
             int side = chat.get(i).getMessage_status();
             Timestamp t = chat.get(i).getTime_stamp();
             String time = t.toString().substring(0, 16);
-            if (side == 0) {
+            if (side == 2) {
                 member = "<div class=\"d-flex justify-content-start mb-4\">\n" +
 "                                <!--IMAGE OF SENDER-->\n" +
 "                                <div class=\"img_cont_msg\">\n" +
@@ -235,7 +234,7 @@ public class LoadChatConntroller extends HttpServlet {
 "                                    <span class=\"msg_time\">[Time]</span>\n" +
 "                                </div>\n" +
 "                            </div>";
-                member = member.replace("[img]", chat.get(i).getShop().getShop_img());
+                member = member.replace("[img]", chat.get(i).getCustomer().getImg());
             }
             member = member.replace("[MessageID]", Integer.toString(chat.get(i).getMessage_id()));
             member = member.replace("[Content]", chat.get(i).getContent());
@@ -247,39 +246,30 @@ public class LoadChatConntroller extends HttpServlet {
         return element;
     }
     
-    public String loadChatInfo(int shopId) {
+    public String loadChatInfo(int userId) {
         String element = new String();
         element = "<div class=\"d-flex bd-highlight\">\n" +
 "                                \n" +
 "                                <!--IMAGE OF SENDER-->\n" +
 "                                <div class=\"img_cont\">\n" +
-"                                    <img src=\"[shop_img]\" class=\"rounded-circle user_img\">\n" +
+"                                    <img src=\"[user_img]\" class=\"rounded-circle user_img\">\n" +
 "                                </div>\n" +
 "                                <div class=\"user_info\">\n" +
 "                                    <!--NAME OF SENDER-->\n" +
-"                                    <span>[shopname]</span>\n" +
+"                                    <span>[username]</span>\n" +
 "                                </div>\n" +
 "                            </div>\n" +
-"                            \n" +
-"                            <!--MENU OF ACTIONS THAT CAN IMPLEMENT TO SENDER, IF NEEDED. EX: REPORT, VIEW SHOP IF SENDER IS SELLER-->\n" +
-"                            <span id=\"action_menu_btn\"><i class=\"fas fa-ellipsis-v\"></i></span>\n" +
-"                            <div class=\"action_menu\">\n" +
-"                                \n" +
-"                                <!--LIST ACTIONS HERE-->\n" +
-"                                <ul>\n" +
-"                                    <li><a href=\"ShopDetail?id=[shopId]\">Xem thông tin của shop</a></li>\n" +
-"                                </ul>\n" +
-"                            </div>";
-        element = element.replace("[shopId]", Integer.toString(shopId));
-        element = element.replace("[shopname]", SellersDao.getShopById(shopId).getShop_name());
-        element = element.replace("[shop_img]", SellersDao.getShopById(shopId).getShop_img());
+"                            \n";
+        element = element.replace("[username]", UsersDao.getUserById(userId).getUsername());
+        element = element.replace("[user_img]", UsersDao.getUserById(userId).getImg());
         return element;
     }
     
-    /*
     public static void main(String args[]) {
-        String div = showUnseenChat(1, 3);
+        ArrayList<Users> chatList = MessageDao.GetUserList(1);
+        
+        String div = showChatList(chatList, 1);
         System.out.println(div);
     }
-    */
+    
 }

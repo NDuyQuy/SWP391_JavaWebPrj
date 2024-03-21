@@ -22,9 +22,11 @@ public class MessageDao {
     
     private static final String DELETEMESSAGE = "UPDATE [dbo].[messages] SET [message_status] = ? WHERE [message_id] = ?";
     
-    private static final String GETUNSEENMESSAGE = "SELECT [message_id], [shop_id], [customer_id], [time_stamp], [message_status], [content] FROM [dbo].[messages] WHERE [shop_id] = ? AND [customer_id] = ? AND [message_status] = ?";
+    private static final String GETUNSEENMESSAGE = "SELECT * FROM [dbo].[messages] WHERE [shop_id] = ? AND [customer_id] = ? AND [message_status] = ?";
     
     private static final String GETCHATLIST = "SELECT DISTINCT [shop_id] FROM [dbo].[messages] WHERE [customer_id] = ? ORDER BY [shop_id]";
+    
+    private static final String GETUSERCHATLIST = "SELECT DISTINCT [customer_id] FROM [dbo].[messages] WHERE [shop_id] = ? ORDER BY [customer_id]";
     
     
     
@@ -43,6 +45,8 @@ public class MessageDao {
                 Timestamp time = rs.getTimestamp("time_stamp");
                 int status = rs.getInt("message_status");
                 Messages m = new Messages(id, shopId, userId, time, status, content);
+                m.setShop(SellersDao.getShopById(shopId));
+                m.setCustomer(UsersDao.getUserById(userId));
                 result.add(m);
             }
             SQLConnection.closeConnection(con);
@@ -64,9 +68,11 @@ public class MessageDao {
             rs = ptm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("message_id");
-                String content = rs.getString("name").trim();
-                Timestamp time = rs.getTimestamp("content");
+                String content = rs.getString("content").trim();
+                Timestamp time = rs.getTimestamp("time_stamp");
                 Messages m = new Messages(id, shopId, userId, time, status, content);
+                m.setShop(SellersDao.getShopById(shopId));
+                m.setCustomer(UsersDao.getUserById(userId));
                 result.add(m);
             }
             SQLConnection.closeConnection(con);
@@ -139,6 +145,27 @@ public class MessageDao {
         }
         return result;
     }
+    
+    public static ArrayList<Users> GetUserList(int id) {
+        ArrayList<Users> result = new ArrayList<Users>();
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETUSERCHATLIST);
+            ptm.setInt(1, id);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                int userid = rs.getInt("customer_id");
+                Users u = UsersDao.getUserById(userid);
+                result.add(u);
+            }
+            SQLConnection.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
     public static void main(String[] args) {
         GetMessageList(1,3).forEach(System.out::println);
     }

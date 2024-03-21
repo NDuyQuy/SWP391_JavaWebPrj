@@ -15,14 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Messages;
-import model.Shops;
 import model.Users;
 
 /**
  *
  * @author DELL
  */
-public class ChatController extends HttpServlet {
+public class ShopChatController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,7 +35,7 @@ public class ChatController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = "/chat.jsp";
+        String url = "/shopchat.jsp";
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = request.getSession();
@@ -44,14 +43,14 @@ public class ChatController extends HttpServlet {
             PrintWriter out = response.getWriter();
             String action = request.getParameter("Action");
             Users u = (Users)session.getAttribute("user");
-            int userId = u.getId();
+            int shopId = u.getId();
             
             
             if(action.equals("SendChat")) {
-                int shop_id = Integer.parseInt(request.getParameter("shop_id"));
+                int user_id = Integer.parseInt(request.getParameter("user_id"));
                 String message = request.getParameter("messageText");
-                MessageDao.SendMessage(shop_id, userId, 2, message);
-                String chatDiv = ShowSendChat(message, shop_id, userId);
+                MessageDao.SendMessage(shopId, user_id, 0, message);
+                String chatDiv = ShowSendChat(message, shopId, user_id);
                 out.println(chatDiv);
             }
         }
@@ -62,8 +61,6 @@ public class ChatController extends HttpServlet {
             //httpResponse.sendRedirect(httpRequest.getContextPath() + url);
             System.out.println("Loading...");
         }
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -124,12 +121,11 @@ public class ChatController extends HttpServlet {
 "                                    <img src=\"[img]\" class=\"rounded-circle user_img_msg\">\n" +
 "                                </div>\n" +
 "                            </div>";
-        member = member.replace("[img]", chat.get(chat.size() - 1).getCustomer().getImg());
+        member = member.replace("[img]", chat.get(chat.size() - 1).getShop().getShop_img());
         member = member.replace("[MessageID]", Integer.toString(chat.get(chat.size() - 1).getMessage_id()));
         member = member.replace("[Content]", chat.get(chat.size() - 1).getContent());
         member = member.replace("[Time]", time);
         member = member + "<div id=\"endOfChatBox\"></div>";
         return member;
     }
-    
 }

@@ -1,8 +1,9 @@
 <%-- 
-    Document   : chat
-    Created on : Mar 18, 2024, 3:26:37 PM
-    Author     : hien
+    Document   : shopchat
+    Created on : Mar 21, 2024, 8:34:19 PM
+    Author     : DELL
 --%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -249,11 +250,11 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <script>
-            let thisShopID = -1;
+            let thisUserID = -1;
 
             function loadChatList() {
                 $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                    url: "/SWP391_JavaWebAppFinalPrj/ShopLoadChatController",
                     type: "POST",
                     data: {
                         Action: "LoadChatList"
@@ -270,11 +271,11 @@
             function send_msg() {
                 var message = document.getElementById("type_msg").value;
                 $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/ChatController",
+                    url: "/SWP391_JavaWebAppFinalPrj/ShopChatController",
                     type: "POST",
                     data: {
                         Action: "SendChat",
-                        shop_id: thisShopID,
+                        user_id: thisUserID,
                         messageText: message
                     },
                     success: function(result){
@@ -288,14 +289,14 @@
                 });
             }
 
-            function changeChat(shopId) {
-                thisShopID = shopId;
+            function changeChat(userId) {
+                thisUserID = userId;
                 $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                    url: "/SWP391_JavaWebAppFinalPrj/ShopLoadChatController",
                     type: "POST",
                     data: {
                         Action: "LoadChat",
-                        shop_id: thisShopID
+                        user_id: thisUserID
                     },
                     success: function(result){
                         var messageBox = document.getElementById("msg_card_body");
@@ -310,13 +311,13 @@
 
             function checkUnseen() {
                 loadChatList();
-                if (thisShopID !== -1) {
+                if (thisUserID !== -1) {
                     $.ajax({
-                        url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                        url: "/SWP391_JavaWebAppFinalPrj/ShopLoadChatController",
                         type: "POST",
                         data: {
                             Action: "LoadChatUnseen",
-                            shop_id: thisShopID
+                            user_id: thisUserID
                         },
                         success: function(result){
                             var endBox = document.getElementById("endOfChatBox");
@@ -331,11 +332,11 @@
             
             function loadChatInfo() {
                 $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                    url: "/SWP391_JavaWebAppFinalPrj/ShopLoadChatController",
                     type: "POST",
                     data: {
                         Action: "LoadChatInfo",
-                        shop_id: thisShopID
+                        user_id: thisUserID
                     },
                     success: function(result){
                         var infoBox = document.getElementById("msg_head");

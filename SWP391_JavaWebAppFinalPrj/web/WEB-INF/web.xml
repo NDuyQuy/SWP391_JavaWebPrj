@@ -100,6 +100,14 @@
         <servlet-name>ShippingUnitController</servlet-name>
         <servlet-class>controller.ShippingUnitController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShopLoadChatController</servlet-name>
+        <servlet-class>controller.ShopLoadChatController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShopChatController</servlet-name>
+        <servlet-class>controller.ShopChatController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -183,7 +191,6 @@
     <servlet-mapping>
         <servlet-name>SearchShopServlet</servlet-name>
         <url-pattern>/SearchShop</url-pattern>
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; guest_n_customer_layout
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Checkout</servlet-name>
@@ -200,6 +207,14 @@
     <servlet-mapping>
         <servlet-name>ShippingUnitController</servlet-name>
         <url-pattern>/ShippingUnitController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopLoadChatController</servlet-name>
+        <url-pattern>/ShopLoadChatController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopChatController</servlet-name>
+        <url-pattern>/ShopChatController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
