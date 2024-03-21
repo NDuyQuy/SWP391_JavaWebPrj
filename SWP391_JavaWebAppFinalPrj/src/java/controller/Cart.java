@@ -8,6 +8,7 @@ package controller;
 import dao.CartDetailDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,7 +63,6 @@ public class Cart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
         // Lấy thông tin người dùng từ session
         Users user = (Users) request.getSession().getAttribute("user");
         if(user==null){
@@ -77,20 +77,6 @@ public class Cart extends HttpServlet {
             request.setAttribute("cartGroup", cartGroup);
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
         }
-        /*
-        if (user != null) {
-            List<CartItem> cartItems = CartDaoImpl.getCartItems(user.getUserID());
-            Map<String, List<CartItem>> groupedByShop = cartItems.stream()
-                .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShopName()));
-            request.setAttribute("cartItems", cartItems);
-            request.setAttribute("cartGroup", groupedByShop);
-          
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cart.jsp");
-            dispatcher.forward(request, response);
-        } else {
-            
-            response.sendRedirect("login.jsp");
-        }*/
     }
     
 
@@ -105,7 +91,42 @@ public class Cart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Users user = (Users) request.getSession().getAttribute("user");
+
+        if (user != null) {
+            List<CartDetail> cartItems = CartDetailDao.GetCartOfUser(user.getId());
+
+            // Process selected items
+            String selectedProductIds = request.getParameter("selectedProductIds");
+            if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
+                String[] selectedIdsArray = selectedProductIds.split(",");
+                List<CartDetail> selectedItems = new ArrayList<>();
+
+                for (String selectedId : selectedIdsArray) {
+                    int productId = Integer.parseInt(selectedId);
+
+                    for (CartDetail cartItem : cartItems) {
+                        if (cartItem.getProduct().getProduct_id() == productId) {
+                            selectedItems.add(cartItem);
+                            break;
+                        }
+                    }
+                }
+
+                // Save selected items to session
+                request.getSession().setAttribute("selectedItems", selectedItems);
+
+                // Redirect to CheckoutServlet
+                response.sendRedirect("Checkout");
+            } else {
+                // Handle the case when no items are selected
+                // You can redirect or show an error message
+                response.sendRedirect("cart.jsp");
+            }
+        } else {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+        }
     }
 
     /**

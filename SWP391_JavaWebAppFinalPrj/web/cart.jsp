@@ -36,7 +36,7 @@
     </head>
     <body>
 
-
+        <jsp:include page="header.jsp"></jsp:include>
         <main>
             <!-- breadcrumb-area-start -->
             <section class="breadcrumb-area" data-background="img/bg/page-title.png">
@@ -55,12 +55,14 @@
                 </div>
             </section>
             <!-- breadcrumb-area-end -->
-
+            
+            <!-- Cart Area Start -->
             <section class="cart-area pt-100 pb-100">
                 <div class="container">
                     <div class="row">
                         <div class="col-12">
-                            <form action="UpdateQuantityServlet" method="post">
+                            <form id="checkoutForm" action="Cart" method="post">
+                                <input type="hidden" id="selectedItemsInput" name="selectedProductIds" />
                                 <div class="table-content table-responsive">
                                     <table class="table table-bordered" >
                                         <tbody>
@@ -81,10 +83,10 @@
                                                 <c:set var="totalPrice" value="0" /> 
                                                 <!-- Iterate over the ArrayList values for the current key -->
                                                 <c:forEach var="value" items="${entry.value}">
-                                                    <tr>
+                                                    <tr onclick="chooseProduct()">
                                                         <!-- Display the values in each row -->
                                                         <td class="product-checkbox">
-                                                            <input type="checkbox" class="itemCheckbox" />
+                                                            <input type="checkbox" class="itemCheckbox" data-product-id="${value.product.product_id}"/>
                                                         </td>
                                                         <td class="product-thumbnail">
                                                             <a href="#"><img src="${value.product.img}/1.jpg" alt=""></a>
@@ -96,20 +98,20 @@
                                                             <span class="amount">${value.product.money}</span>
                                                         </td>
                                                         <td class="product-quantity">
-                                                            <a href="UpdateQuantityServlet?id=${value.product.product_id}&action=increase"><b style="color: blue">+</b></a>
-                                                            <input class="text-center"type="number" name="quantity" value="${value.quantity}" min="0" max="${value.product.quantity}">
-                                                            <buton><a href="UpdateQuantityServlet?id=${value.product.product_id}&action=decrease"><b style="color: blue">-</b></a>
+                                                            <a href="UpdateQuantityServlet?id=${value.product.product_id}&quantity=${value.quantity + 1}"><b style="color: blue">+</b></a>
+                                                            <input class="text-center"type="number" name="quantity" value="${value.quantity}" data-product-id="${value.product.product_id}"
+                                                                   min="0" max="${value.product.quantity}" onkeypress="updateQuantityOnEnter(event)">
+                                                            <buton><a href="UpdateQuantityServlet?id=${value.product.product_id}&quantity=${value.quantity - 1}"><b style="color: blue">-</b></a>
                                                         </td>
                                                     <td class="product-subtotal">
                                                         <span class="amount">${value.product.money * value.quantity}</span>
                                                     </td>
                                                     <td class="product-remove">
-                                                        <button type="submit"><a href="UpdateQuantityServlet?id=${value.product.product_id}&action=remove">X</a></button>
+                                                        <a class="btn btn-danger btn-sm"href="UpdateQuantityServlet?id=${value.product.product_id}&action=remove">X</a>
                                                     </td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:forEach>
-
                                             </tbody>
 
                                     </table>
@@ -137,25 +139,11 @@
             <!-- Cart Area End-->
 
         </main>
-
-        <!-- Fullscreen search -->
-        <div class="search-wrap">
-            <div class="search-inner">
-                <i class="fas fa-times search-close" id="search-close"></i>
-                <div class="search-cell">
-                    <form method="get">
-                        <div class="search-field-holder">
-                            <input type="search" class="main-search-input" placeholder="Search Entire Store...">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> <!-- end fullscreen search -->
-
-
-
-
+        <jsp:include page="footer.jsp"></jsp:include>
         <script>
+            function chooseProduct(){
+                var checkbox = document.getElementById("");
+            }
             function updateTotal() {
                 var total = 0;
                 var checkboxes = document.getElementsByClassName('itemCheckbox');
@@ -172,7 +160,6 @@
             }
             // Gọi hàm khi trang được tải   
             window.onload = updateTotal;
-
             // Gán hàm cho sự kiện click của checkbox
             var checkboxes = document.getElementsByClassName('itemCheckbox');
             for (var i = 0; i < checkboxes.length; i++) {
@@ -205,7 +192,7 @@
                     var newQuantity = event.target.value;
 
                     // Gửi yêu cầu cập nhật số lượng mới đến servlet
-                    window.location.href = "UpdateQuantityServlet?id=" + productId + "&action=update&quantity=" + newQuantity;
+                    window.location.href = "UpdateQuantityServlet?id=" + productId + "&quantity=" + newQuantity;
                 }
             }
         </script>

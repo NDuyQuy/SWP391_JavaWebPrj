@@ -22,7 +22,7 @@ public class CartDetailDao {
     private static final String REMOVE_FROM_CART = "DELETE FROM cartdetail WHERE user_id = ? AND product_id = ?";
     private static final String GET_CART_ITEMS = "SELECT * FROM [cartdetail] WHERE [user_id] = ?";
     private static final String CLEAR_CART = "DELETE FROM cartdetail WHERE user_id = ?";
-    
+    private static final String REMOVE_PRODUCT_FROM_CART = "DELETE FROM [cartdetail] WHERE [user_id]=? AND [product_id]=?";
     public static void AddToCart(int user_id, int product_id, int quantity){
         try(Connection con = SQLConnection.getConnection()){
             PreparedStatement statement = con.prepareStatement(ADD_TO_CART);
@@ -50,6 +50,16 @@ public class CartDetailDao {
         try(Connection con = SQLConnection.getConnection()){
             PreparedStatement statement = con.prepareStatement(CLEAR_CART);
             statement.setInt(1, user_id);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void RemoveAProduct(int user_id, int product_id){
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement(REMOVE_PRODUCT_FROM_CART);
+            statement.setInt(1, user_id);
+            statement.setInt(2, product_id);
             statement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

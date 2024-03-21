@@ -5,22 +5,23 @@
  */
 package controller;
 
+import dao.VouchersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 import model.*;
-import dao.*;
-
+import java.util.stream.Collectors;
 /**
  *
- * @author LENOVO
+ * @author ASUS
  */
-public class UpdateQuantityServlet extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
+@WebServlet(name = "Checkout", urlPatterns = {"/Checkout"})
+public class Checkout extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +40,10 @@ public class UpdateQuantityServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateQuantityServlet</title>");
+            out.println("<title>Servlet Checkout</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateQuantityServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Checkout at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,29 +61,41 @@ public class UpdateQuantityServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         Users user = (Users) request.getSession().getAttribute("user");
-        if (user == null) {
+        List<CartDetail> selectedItems = (List<CartDetail>) request.getSession().getAttribute("selectedItems");
+
+        if (selectedItems != null && !selectedItems.isEmpty()) {
+
+            Map<String, List<CartDetail>> cartGroup = selectedItems.stream().collect(
+                    Collectors.groupingBy(c->c.getProduct().getShop().getShop_name())
+            );
+            
+            Map<List<Vouchers>,List<CartDetail>> newCartGroup = new HashMap<>();
+            for (Map.Entry<String, List<CartDetail>> entry : cartGroup.entrySet()) {
+            String shopName = entry.getKey();
+            //GET THE SHOP ITEM
+            List<CartDetail> shopItems = entry.getValue();
+            // Lấy danh sách voucher của cửa hàng
+            List<Vouchers> vouchers = VouchersDao.getVouchersByCondition(shopName);
+            
+            newCartGroup.put(vouchers, shopItems);
+            }
+            
+            request.setAttribute("selectedItems", selectedItems);
+            request.setAttribute("cartGroup", newCartGroup);
+            
+            // Tiếp tục xử lý trang Checkout
+            request.getRequestDispatcher("/checkout.jsp").forward(request, response);
+            
+            // Iterate over the vouchers list
+            
+
+        } else {
+            // Xử lý trường hợp không có sản phẩm nào được chọn
+            // Có thể điều hướng hoặc hiển thị thông báo lỗi
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
-        } else {
-            int userId = user.getId();
-            String action = request.getParameter("action");
-            if (action != null) {
-                if (action.equals("remove")) {
-                    int productId = Integer.parseInt(request.getParameter("id"));
-                    CartDetailDao.RemoveAProduct(userId, productId);
-                } else {
-                    CartDetailDao.ClearCartOfUser(userId);
-                }
-            } else {
-                int productId = Integer.parseInt(request.getParameter("id"));
-                int quantity = Integer.parseInt(request.getParameter("quantity"));
-                CartDetailDao.UpdateCartProductQuantity(quantity, userId, productId);
-            }
-            response.sendRedirect("Cart");
         }
-
     }
 
     /**
@@ -96,7 +109,6 @@ public class UpdateQuantityServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         processRequest(request, response);
     }
 
