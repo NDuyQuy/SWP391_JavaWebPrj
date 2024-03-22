@@ -74,6 +74,7 @@ public class LoginController extends HttpServlet {
         String url = "";
         String username = "", password="";
         String rm = request.getParameter("rm");
+        
         try {
             username = request.getParameter("username");
             password = request.getParameter("password");
@@ -84,6 +85,9 @@ public class LoginController extends HttpServlet {
                 u.setPassword(password);
                 // add user into session scope
                 request.getSession().setAttribute("user", u);
+                if(rm.equals("on")){
+                    request.getSession().setMaxInactiveInterval(24 * 60 * 60);
+                }
                 int role = u.getRole();
                 //switch the url 
                 switch (role) {
