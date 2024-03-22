@@ -162,5 +162,7 @@ public class Vouchers {
     public String toString() {
         return "Vouchers{" + "voucher_id=" + voucher_id + ", code=" + code + ", discount_amount=" + discount_amount + ", start_date=" + start_date + ", expire_date=" + expire_date + ", type=" + type + ", min_require=" + min_require + ", description=" + description + ", shop_id=" + shop_id + ", product_id=" + product_id + ", use_count=" + use_count + '}';
     }
-    
+    private String doNothing(){
+        return "donothing";
+    }
 }
