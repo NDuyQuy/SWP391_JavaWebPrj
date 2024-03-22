@@ -37,7 +37,7 @@
         <link rel="stylesheet" href="css/png.css"/>
         <style>
             .profile-area, .footer-area{
-                background-color: #f6f6f6;
+                background: rgba(0, 0, 0, 0.05);
             }
             .bottom{
                 display: flex;
@@ -182,7 +182,7 @@
                                                 <td> 
                                                     <c:set var="mail" value="${user.email}"/>
                                                     <c:set var="bf_mail" value="${fn:substringBefore(mail, '@')}"/>
-                                                    <span name="email">${mail.subSequence(0,2)}${fn:substring(bf_mail, 2, fn:length(bf_mail)).replaceAll("[\\W\\w]","*")}@${fn:substringAfter(mail,'@')}</span></td>
+                                                    <span name="email">${fn:length(bf_mail) <= 2 ? "" : mail.subSequence(0,2)}${fn:length(bf_mail) <= 2 ? bf_mail : fn:substring(bf_mail, 2, fn:length(bf_mail)).replaceAll("[\\W\\w]","*")}@${fn:substringAfter(mail,'@')}</span></td>
                                             </tr>
                                             <tr>
                                                 <td>Số điện thoại</td>

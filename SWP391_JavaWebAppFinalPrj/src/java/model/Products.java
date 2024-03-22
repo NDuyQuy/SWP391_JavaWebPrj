@@ -21,8 +21,8 @@ public class Products {
     private int money;
     private String img;
     private int quantity;
-    public Shops shop;
-    public ShopCategory shopCategory;
+    private Shops shop;
+    private ShopCategory shopCategory;
 
     public Products() {
     }
@@ -119,6 +119,22 @@ public class Products {
         this.quantity = quantity;
     }
 
+    public Shops getShop() {
+        return shop;
+    }
+
+    public void setShop(Shops shop) {
+        this.shop = shop;
+    }
+
+    public ShopCategory getShopCategory() {
+        return shopCategory;
+    }
+
+    public void setShopCategory(ShopCategory shopCategory) {
+        this.shopCategory = shopCategory;
+    }
+    
     @Override
     public String toString() {
         return "Products{" + "product_id=" + product_id + ", shop_id=" + shop_id + ", scate_id=" + scate_id + ", description=" + description + ", createdDate=" + createdDate + ", name=" + name + ", money=" + money + ", img=" + img + ", quantity=" + quantity + '}';

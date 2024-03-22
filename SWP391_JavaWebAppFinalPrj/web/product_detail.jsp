@@ -60,41 +60,7 @@
                 }
             </c:forEach>
 
-            .rate {
-                float: left;
-                height: 46px;
-                padding: 0 10px;
-            }
-            .rate:not(:checked) > input {
-                position:absolute;
-                top:-9999px;
-            }
-            .rate:not(:checked) > label {
-                float:right;
-                width:1em;
-                overflow:hidden;
-                white-space:nowrap;
-                cursor:pointer;
-                font-size:30px;
-                color:#ccc;
-            }
-            .rate:not(:checked) > label:before {
-                content: '★ ';
-            }
-            .rate > input:checked ~ label {
-                color: #ffc700;
-            }
-            .rate:not(:checked) > label:hover,
-            .rate:not(:checked) > label:hover ~ label {
-                color: #deb217;
-            }
-            .rate > input:checked + label:hover,
-            .rate > input:checked + label:hover ~ label,
-            .rate > input:checked ~ label:hover,
-            .rate > input:checked ~ label:hover ~ label,
-            .rate > label:hover ~ input:checked ~ label {
-                color: #c59b08;
-            }
+            
         </style>
     </head>
     <body>
@@ -130,14 +96,36 @@
                             <div class="col-xl-6 col-lg-4">
                                 <div class="product-details-img mb-10">
                                     <div class="tab-content" id="myTabContentpro">
-                                        <div class="tab-pane fade show active" id="home" role="tabpanel">
+                                        <div class="tab-pane fade show active" id="img0" role="tabpanel">
                                             <div class="product-large-img">
-                                                <img src="${pr.img}" alt="">
+                                                <img src="${pr_img[0]}" alt="" style="height: 100%; object-fit: cover">
                                         </div>
                                     </div>
+                                    <c:forEach var="img" items="${pr_img}" begin="1" end="2" varStatus="loop">
+                                        <div class="tab-pane fade" id="img${loop.count}" role="tabpanel">
+                                            <div class="product-large-img">
+                                                <img src="${img}" alt="" style="height: 100%; object-fit: cover">
+                                            </div>
+                                        </div>
+                                    </c:forEach>
                                 </div>
                             </div>
-
+                            <c:if test="${pr_img.size() > 1}">
+                                <div class="shop-thumb-tab mb-30">
+                                    <ul class="nav" id="myTab2" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="img0-tab" data-toggle="tab" href="#img0" role="tab" aria-selected="true" style="height: 200px">
+                                                <img src="${pr_img[0]}" alt="" style="width: 100%; height: 100%; object-fit: cover"> </a>
+                                        </li>
+                                        <c:forEach var="img" items="${pr_img}" begin="1" end="2" varStatus="loop">
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="img${loop.count}-tab" data-toggle="tab" href="#img${loop.count}" role="tab" aria-selected="false" style="height: 200px"><img
+                                                        src="${img}" alt="" style="width: 100%; height: 100%; object-fit: cover"></a>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </div>
+                            </c:if>
                         </div>
                         <div class="col-xl-6 col-lg-8">
                             <div class="product-details mb-30 pl-30">
@@ -232,41 +220,42 @@
                                 <div class="tab-content" id="myTabContent2">
                                     <div class="tab-pane fade show active" id="home6" role="tabpanel" aria-labelledby="home-tab6">
                                         <div class="desc-text">
-                                            <p>${pr.description}</p>
+                                            <p style="font-size: 20px">${pr.description}</p>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="profile6" role="tabpanel" aria-labelledby="profile-tab6">
-                                        <div class="desc-text review-text">
+                                        <div class="desc-text review-text" style="max-height: 500px; overflow-y: scroll;">
                                             <div class="product-commnets">
                                                 <c:if test="${sessionScope.ratings_by_product == null || empty sessionScope.ratings_by_product}">
                                                     Chưa có đánh giá nào.
                                                 </c:if>
                                                 <c:forEach var="rating" items="${sessionScope.ratings_by_product}">
-                                                    <div class="product-commnets-list mb-25 pb-15">
+                                                    <div class="product-commnets-list mb-25 pb-15" style="border-bottom: 2px solid #eaedff;">
                                                         <div class="pro-comments-img">
-                                                            <img src="${rating.user.img}" alt="" style="border-radius: 50%;">
+                                                            <img src="${sessionScope.usersDao.getUserById(sessionScope.ordersDao.getOrderByID(sessionScope.orderDetailDao.getOrderDetailById(rating.orderdetail_id).orderID).customer_id).img}" alt="" style="border-radius: 50%;">
                                                         </div>
                                                         <div class="pro-commnets-text">
-                                                            <h4>${rating.user.username} -
-                                                                <span>${rating.timeStamp}</span>
+                                                            <h4 style="font-size: 17px; font-weight: bold;">${sessionScope.usersDao.getUserById(sessionScope.ordersDao.getOrderByID(sessionScope.orderDetailDao.getOrderDetailById(rating.orderdetail_id).orderID).customer_id).username} -
+                                                                <span style="font-size: 14px;"><fmt:formatDate type = "date" value = "${rating.time_stamp}" /></span>
                                                             </h4>
                                                             <div class="pro-rating">
-                                                                <span class="stars-container stars-${rating.score}">★★★★★ </span>
+                                                                <div><span class="stars-container stars-${rating.score * 100}">★★★★★ </span>
+                                                                </div>
+                                                                <p style="font-size: 15px;">${rating.comment}</p>
                                                             </div>
-                                                            <p>${rating.comment}</p>
                                                         </div>
                                                     </div>
                                                 </c:forEach>
+
 
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
-                </div>
             </section>
             <!-- shop-area end -->
 
@@ -297,7 +286,7 @@
                                                 <c:forEach var="pr" items="${plist}">
                                                     <div class="col-lg-4 col-md-4">
                                                         <div class="product-wrapper mb-50">
-                                                            <div class="product-img mb-25">
+                                                            <div class="product-img mb-25" style="height: 350px;">
                                                                 <a href="ProductDetail?product=${pr.product_id}">
                                                                     <img src="${pr.img}" alt="">
                                                                 </a>
@@ -343,7 +332,7 @@
                                 <c:forEach var="prs" items="${product_by_shop}">
                                     <div class="pro-item">
                                         <div class="product-wrapper">
-                                            <div class="product-img mb-25">
+                                            <div class="product-img mb-25" style="height: 350px;">
                                                 <a href="ProductDetail?product=${prs.product_id}">
                                                     <img src="${prs.img}" alt="">
                                                 </a>
@@ -381,67 +370,7 @@
                 </section>
             </c:if>
             <!-- product-area end -->
-            <div class="search-wrap" style="background: rgba(0,0,0,.6);">
-                <div class="search-inner">
-                    <i class="fas fa-times search-close" id="search-close"></i>
-                    <div class="search-cell" style="background: #FFF; width: 45%; margin-left: 27%; height: 66%; border-radius: 5px">
-                        <div class="basic-login" style="border: 0; padding: 50px 70px;">
-                            <h3 class="text-center" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px; margin-bottom: 40px">Đánh giá sản phẩm này</h3>
-                            <form method="post" action="Rating?id=${pr.product_id}">
-                                <table width="550" height="300">
-                                    <tr>
-                                        <td>
-                                            <div class="side-pro-img">
-                                                <a href="ProductDetail?product=${pr.product_id}"><img src="${pr.img}" style="width: 70px;" alt=""></a>
-                                            </div>
-                                        </td>
-                                        <td style="vertical-align: top;">
-                                            <div class="side-pro-content">
-                                                <h5><a href="ProductDetail?product=${pr.product_id}" style="font-weight: bold;">${pr.name}</a></h5>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width: 100%"><span style="color:red;">*</span>Đánh giá</td>
-                                        <td>
-                                            <div class="rate">
-                                                <input type="radio" id="star5" name="rate" value="5" required=""/>
-                                                <label for="star5" title="text">5 stars</label>
-                                                <input type="radio" id="star4" name="rate" value="4" />
-                                                <label for="star4" title="text">4 stars</label>
-                                                <input type="radio" id="star3" name="rate" value="3" />
-                                                <label for="star3" title="text">3 stars</label>
-                                                <input type="radio" id="star2" name="rate" value="2" />
-                                                <label for="star2" title="text">2 stars</label>
-                                                <input type="radio" id="star1" name="rate" value="1" />
-                                                <label for="star1" title="text">1 star</label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span style="color:red;">*</span>Comment</td>
-                                        <td><textarea id="comment" name="comment" rows="3" cols="50" style="border: 2px solid #eaedff; margin-top: 10px" required=""></textarea></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td><button style="color: #fff;
-                                                    position: relative;
-                                                    overflow: visible;
-                                                    background: #fe4536;
-                                                    height: 40px;
-                                                    padding: 0 10px;
-                                                    margin-top: 15px;
-                                                    margin-bottom: 1.25rem;
-                                                    min-width: 70px;
-                                                    max-width: 220px;
-                                                    border: 0;" type="submit">Hoàn thành</button></td>
-                                    </tr>
-                                </table>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <jsp:include page="footer.jsp"></jsp:include>
     </body>
 </html>

@@ -55,7 +55,7 @@
                     <div class="row align-items-center">
                         <div class="col-xl-4 col-lg-6 col-md-6 col-7 col-sm-5 d-flex align-items-center pos-relative">
                             <div class="logo" style="margin-left: 0;">
-                                <a href="Home"><img src="img/logo/coco.png" style="height:60px;width:300px" alt=""></a>
+                                <a href="AdminMainpage.jsp"><img src="img/logo/coco.png" style="height:60px;width:300px" alt=""></a>
                             </div>
                         </div>
                         <div class="col-xl-8 col-lg-6 col-md-6 col-5 col-sm-7 pl-0" style="padding-right: 50px;">
@@ -63,12 +63,12 @@
                                 <ul>
                                     <li class="login-btn">
                                         <c:set var="username" value="${user.userName}"/>
-                                        <a href="profile.jsp" id="userframe" style="border-radius: 30px; text-align: right; padding-right: 20px;background: #fff; border: 1px solid#fe5245;">
+                                        <a href="#" id="userframe" style="border-radius: 30px; text-align: right; padding-right: 20px;background: #fff; border: 1px solid#fe5245;">
                                             <span id="username">${username}&nbsp;&nbsp;</span>
                                             <i class="far fa-user" style=""></i>
                                         </a>
                                         <!--                                        <ul class="submenu">
-                                                                                    <li  style="font-size: 16px;">Chào ${user.userName}<b></b>!</li>
+                                                                                    <li  style="font-size: 16px;">Chào ${user.username}<b></b>!</li>
                                                                                     <li>
                                                                                         <a href="profile.jsp">Hồ sơ Shop</a>
                                                                                     </li>

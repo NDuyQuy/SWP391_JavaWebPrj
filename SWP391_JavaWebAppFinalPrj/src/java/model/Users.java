@@ -23,12 +23,6 @@ public class Users {
     public Users() {
     }
 
-    public Users(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
-
     public Users(int id, String username, String email, String phone, String fullname, String address, int role) {
         this.id = id;
         this.username = username;
@@ -48,6 +42,12 @@ public class Users {
         this.address = address;
         this.role = role;
         this.img = img;
+    }
+
+    public Users(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
     
     public int getId() {

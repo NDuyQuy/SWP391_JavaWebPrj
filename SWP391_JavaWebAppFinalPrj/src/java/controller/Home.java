@@ -5,9 +5,15 @@
 package controller;
 
 import dao.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +46,7 @@ public class Home extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Home</title>");            
+            out.println("<title>Servlet Home</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet Home at " + request.getContextPath() + "</h1>");
@@ -61,21 +67,44 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ArrayList<MainCategory> mcate_list = CategoryDao.getMainCategories();
-        ArrayList<ShopCategory> scate_list = CategoryDao.getShopCategories();
-        ArrayList<Products> newest_products = ProductDao.getNewestProducts();
+        
+        String path = getServletContext().getRealPath("");
+        
         ProductDao pd = new ProductDao();
         SellersDao sd = new SellersDao();
         CategoryDao cd = new CategoryDao();
         UsersDao ud = new UsersDao();
+        OrderDetailDao odd = new OrderDetailDao();
+        OrdersDao od = new OrdersDao();
+
+        ArrayList<MainCategory> mcate_list = cd.getMainCategories();
+        ArrayList<ShopCategory> scate_list = cd.getShopCategories();
+        ArrayList<Products> newest_products = pd.getNewestProducts();
+        ArrayList<Products> top_sellers = pd.getTopSellers();
+        
+        for(Products p : newest_products){
+            String folder = p.getImg();
+            p.setImg(getImagePath(folder));
+        }
+        
+        for(Products p : top_sellers){
+            String folder = p.getImg();
+            p.setImg(getImagePath(folder));
+        }
+
         HttpSession session = request.getSession();
         session.setAttribute("main_category_list", mcate_list);
         session.setAttribute("shop_category_list", scate_list);
         session.setAttribute("newest_products", newest_products);
+        session.setAttribute("topsellers", top_sellers);
+
         session.setAttribute("productDao", pd);
         session.setAttribute("sellersDao", sd);
         session.setAttribute("categoryDao", cd);
         session.setAttribute("usersDao", ud);
+        session.setAttribute("orderDetailDao", odd);
+        session.setAttribute("ordersDao", od);
+        session.setAttribute("fpath", path);
         session.removeAttribute("kw");
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
@@ -103,5 +132,20 @@ public class Home extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    
+    private String getImagePath(String folder){
+        String res = null;
+        List<File> all_img = new ArrayList<>();
+        String fpath = getServletContext().getRealPath("") + folder;
+        try{
+            all_img = Files.walk(Paths.get(fpath))
+                .filter(Files::isRegularFile)
+                .map(Path::toFile)
+                .collect(Collectors.toList());
+            res = all_img.get(0).getPath().replace(getServletContext().getRealPath(""), "");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return res;
+    }
 }

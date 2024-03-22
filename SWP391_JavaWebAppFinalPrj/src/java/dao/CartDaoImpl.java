@@ -5,12 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import model.CartItem;
-import model.Product;
-import dao.ProductDao;
-import static dao.ProductDao.getProductById;
-import java.sql.SQLException;
-import model.Shop;
 
 public class CartDaoImpl implements CartDao {
 
@@ -86,6 +80,16 @@ public class CartDaoImpl implements CartDao {
             e.printStackTrace();
         }
     }
+    @Override
+    public void clearCart(int userId) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement ptm = con.prepareStatement(CLEAR_CART)) {
+            ptm.setInt(1, userId);
+            ptm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /*
     public static List<CartItem> getCartItems(int userId) {
@@ -105,7 +109,7 @@ public class CartDaoImpl implements CartDao {
         }
         return cartItems;
     }
-     */
+     
     public static List<CartItem> getCartItems(int userId) {
         List<CartItem> cartItems = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
@@ -134,16 +138,7 @@ public class CartDaoImpl implements CartDao {
         return cartItems;
     }
 
-    @Override
-    public void clearCart(int userId) {
-        try (Connection con = SQLConnection.getConnection();
-                PreparedStatement ptm = con.prepareStatement(CLEAR_CART)) {
-            ptm.setInt(1, userId);
-            ptm.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
 
     public static void main(String[] args) {
         int userId = 27;
@@ -165,4 +160,5 @@ public class CartDaoImpl implements CartDao {
             }
         }
     }
+    */
 }

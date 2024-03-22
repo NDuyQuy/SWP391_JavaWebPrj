@@ -15,11 +15,17 @@ public class CustomOrder {
     private int id;
     private String product_name;
     private Date expected_complete_date;
-    public Orders order;
+    private Orders order;
 
     public CustomOrder() {
     }
 
+    public CustomOrder(int id, String product_name, Date expected_complete_date) {
+        this.id = id;
+        this.product_name = product_name;
+        this.expected_complete_date = expected_complete_date;
+    }
+    
     public int getId() {
         return id;
     }
@@ -44,6 +50,14 @@ public class CustomOrder {
         this.expected_complete_date = expected_complete_date;
     }
 
+    public Orders getOrder() {
+        return order;
+    }
+
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+    
     @Override
     public String toString() {
         return "CustomOrder{" + "id=" + id + ", product_name=" + product_name + ", expected_complete_date=" + expected_complete_date + '}';

@@ -15,11 +15,11 @@ import model.*;
  * @author hien
  */
 public class CategoryDao {
-    private static final String GETMAINCATEGORYBYID = "Select [name] FROM [maincategory] WHERE [id]=?";
-    private static final String GETSHOPCATEGORYBYID = "Select [maincate_id],[shop_id],[name] FROM [shopcategory] WHERE [id]=?";
-    private static final String GETSHOPCATEGORYBYSHOP = "Select [maincate_id],[id],[name] from [shopcategory] where [shop_id]=?";
-    private static final String GETMAINCATEGORIES = "Select [id],[name] from [maincategory]";
-    private static final String GETSHOPCATEGORIES = "Select [id],[name] from [shopcategory]";
+    private static final String GETMAINCATEGORYBYID = "Select * FROM [maincategory] WHERE [id]=?";
+    private static final String GETSHOPCATEGORYBYID = "Select * FROM [shopcategory] WHERE [id]=?";
+    private static final String GETSHOPCATEGORYBYSHOP = "Select * from [shopcategory] where [shop_id]=?";
+    private static final String GETMAINCATEGORIES = "Select * FROM [maincategory]";
+    private static final String GETSHOPCATEGORIES = "Select * FROM [shopcategory]";
     
     public static MainCategory getMainCategoryById(int id){
         PreparedStatement ptm = null;
@@ -47,13 +47,14 @@ public class CategoryDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                int mc = rs.getInt("maincate_id");
+                int shopcategory_id = rs.getInt("id");
+                int maincategory_id = rs.getInt("maincate_id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
                 int shop_id = rs.getInt("shop_id");
-                String name = rs.getString("name").trim();
-                sc.setId(id);
-                sc.setShop_id(shop_id);
-                sc.setName(name);
-                sc.setMaincate_id(mc);
+                sc = new ShopCategory(shopcategory_id, maincategory_id, shop_id, name, description);
+                sc.setMaincategory(getMainCategoryById(rs.getInt("maincate_id")));
+                sc.setShop((SellersDao.getShopById(shop_id)));
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -70,9 +71,7 @@ public class CategoryDao {
             ptm = con.prepareStatement(GETMAINCATEGORIES);
             rs = ptm.executeQuery();
             while(rs.next()){
-                mc = new MainCategory();
-                mc.setId(rs.getInt("id"));
-                mc.setName(rs.getString("name"));
+                mc = new MainCategory(rs.getInt("id"), rs.getString("name"));
                 cate_list.add(mc);
             }
         }catch(Exception ex){
@@ -99,7 +98,7 @@ public class CategoryDao {
             ex.printStackTrace();
         }
         return cate_list;
-    }    
+    }   
     
     public static ArrayList<ShopCategory> getShopCategoryByShop(int s_id){
         PreparedStatement ptm = null;
@@ -111,16 +110,22 @@ public class CategoryDao {
             ptm.setInt(1, s_id);
             rs = ptm.executeQuery();
             while (rs.next()) {
-                sc = new ShopCategory();
-                sc.setMaincate_id(rs.getInt("maincate_id"));
-                sc.setId(rs.getInt("id"));
-                sc.setShop_id(s_id);
-                sc.setName(rs.getString("name"));
+                int shopcategory_id = rs.getInt("id");
+                int maincategory_id = rs.getInt("maincate_id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                sc = new ShopCategory(shopcategory_id, maincategory_id, s_id, name, description);
+                sc.setMaincategory(getMainCategoryById(rs.getInt("maincate_id")));
+                sc.setShop((SellersDao.getShopById(s_id)));
                 cate_shop.add(sc);
             }
         } catch(Exception ex){
             ex.printStackTrace();
         }
         return cate_shop;
+    }
+    public static void main(String[] args) {
+        getMainCategories().forEach(System.out::println);
+        //System.out.println(getMainCategoryById(2));
     }
 }

@@ -5,9 +5,15 @@
 package controller;
 
 import dao.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +41,12 @@ public class SearchProductServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             request.setCharacterEncoding("utf-8");
+            String path = getServletContext().getRealPath("");
             String keyword = request.getParameter("kw");
             String category = request.getParameter("cate");
             ArrayList<Products> all_product = ProductDao.getAllProducts();
+            
+            
             ArrayList<Products> result = new ArrayList<>();
             if (category != null) {
                 result = ProductDao.getProductsByMainCateId(Integer.parseInt(category));
@@ -61,6 +70,11 @@ public class SearchProductServlet extends HttpServlet {
                     }
                 }
             }
+            
+            for(Products p : result){
+                String folder = p.getImg();
+                p.setImg(getImagePath(folder));
+            }
 
             int page, perPage = 15;
             int numPage = result.size() % perPage == 0 ? result.size() / perPage : result.size() / perPage + 1;
@@ -74,7 +88,7 @@ public class SearchProductServlet extends HttpServlet {
             int last = Math.min(page * perPage, result.size()) - 1;
 
             float max_price = ProductDao.getHighestPrice().getMoney();
-
+                
             request.setAttribute("first", first);
             request.setAttribute("last", last);
             request.setAttribute("num", numPage);
@@ -130,4 +144,19 @@ public class SearchProductServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private String getImagePath(String folder){
+        String res = null;
+        List<File> all_img = new ArrayList<>();
+        String fpath = getServletContext().getRealPath("") + folder;
+        try{
+            all_img = Files.walk(Paths.get(fpath))
+                .filter(Files::isRegularFile)
+                .map(Path::toFile)
+                .collect(Collectors.toList());
+            res = all_img.get(0).getPath().replace(getServletContext().getRealPath(""), "");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return res;
+    }
 }

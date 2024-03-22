@@ -35,6 +35,10 @@
                 color: #fff;
                 margin-left: 23%;
             }
+            
+            .product-img{
+                height: 294px;
+            }
         </style>
     </head>
     <body onload='success_message()'>
@@ -79,12 +83,12 @@
 
                             </div>
                             <div class="product-variant" >
-                                <div class="product-info-list variant-item" style="font-size: 15px">
+                                <div class="product-info-list variant-item" style="font-size: 18px">
                                     <ul>
-                                        <li>Địa chỉ: ${sessionScope.usersDao.getUserById(sh.shop_id).address}</li>
+                                        <li>Địa chỉ: ${sh_address}</li>
                                         <li>
                                             <i class="fa fa-hand-peace" style="color:#FE4536;"></i> ${psize} sản phẩm<span style="width: 70px"></span>
-                                            <span style="width: 150px"><i class="fa fa-comment-alt" style="color:#FE4536;"></i><a href="Chat"> Chat với Shop</a></span>
+                                            <span style="width: 250px"><i class="fa fa-comment-alt" style="color:#FE4536;"></i><a href="Chat"> Chat với Shop</a></span>
                                         </li>
                                     </ul>
                                 </div>
@@ -177,7 +181,7 @@
                                                                 <div class="product-wrapper mb-50">
                                                                     <div class="product-img mb-25">
                                                                         <a href="ProductDetail?product=${sc.product_id}">
-                                                                            <img src="${sc.img}" alt="">
+                                                                            <img src="${sc.img}\1.png" alt="">
                                                                         </a>
                                                                         <div class="product-action text-center">
                                                                             <a href="AddToCart?id=${sc.product_id}" title="Thêm vào giỏ hàng">

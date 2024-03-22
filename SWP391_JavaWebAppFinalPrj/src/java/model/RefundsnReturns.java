@@ -15,7 +15,7 @@ public class RefundsnReturns {
     private String reason;
     private int status;
     private String img;
-    public OrderDetail orderdetail;
+    private OrderDetail orderdetail;
 
     public RefundsnReturns() {
     }
@@ -60,6 +60,14 @@ public class RefundsnReturns {
         this.img = img;
     }
 
+    public OrderDetail getOrderdetail() {
+        return orderdetail;
+    }
+
+    public void setOrderdetail(OrderDetail orderdetail) {
+        this.orderdetail = orderdetail;
+    }
+    
     @Override
     public String toString() {
         return "RefundsnReturns{" + "id=" + id + ", orderdetail_id=" + orderdetail_id + ", reason=" + reason + ", status=" + status + ", img=" + img + '}';

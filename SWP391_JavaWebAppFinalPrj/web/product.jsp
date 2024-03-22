@@ -5,6 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -257,7 +258,7 @@
                                     </ul>
                                 </div>
 
-                                <div class="shop-widget">
+<!--                                <div class="shop-widget">
                                     <h3 class="shop-title">Recent View</h3>
                                     <ul class="shop-sidebar-product">
                                         <c:forEach var="pr" items="${sessionScope.recent_list}">
@@ -281,7 +282,7 @@
                                             </li>
                                         </c:forEach>
                                     </ul>
-                                </div>
+                                </div>-->
 
                                 <div class="shop-widget">
                                     <div class="shop-sidebar-banner">

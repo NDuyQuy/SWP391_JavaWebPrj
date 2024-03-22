@@ -17,7 +17,7 @@
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" media="all">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,900,900i&amp;subset=vietnamese" rel="stylesheet">
-        	<!-- CSS here -->
+        <!-- CSS here -->
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/owl.carousel.min.css">
         <link rel="stylesheet" href="css/animate.min.css">
@@ -99,8 +99,8 @@
                                 <ul>
                                     <c:forEach var="cate" items="${sessionScope.main_category_list}">
                                         <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
-                                    </c:forEach>
-                                    
+                                        </c:forEach>
+
                                 </ul>
                             </div>
                         </div>
@@ -110,7 +110,10 @@
                                     <li class="search-btn">
                                         <form autocomplete="off" action="SearchProduct" class="shop-search">
                                             <div class="autocomplete" style="width: 500px;">
-                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${sessionScope.kw}" oninput="checkTextField()">
+                                                <c:if test="${param.kw == null}">
+                                                    <c:set var="kw" value="${null}"/>
+                                                </c:if>
+                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${kw}" oninput="checkTextField()">
                                             </div>
                                             <button id="btn-search" type="submit" style="height: 50px; width: 50px" disabled="">
                                                 <i class="fa fa-search"></i>
@@ -139,7 +142,7 @@
                                                     <a href="profile.jsp">Tài khoản</a>
                                                 </li>
                                                 <li>
-                                                    <a href="#">Đơn mua</a>
+                                                    <a href="OrderListController">Đơn mua</a>
                                                 </li>
                                                 <li>
                                                     <a href="logout">Đăng xuất</a>
@@ -265,8 +268,8 @@
                     this.parentNode.appendChild(a);
                     s = document.createElement("DIV");
                     s.innerHTML = "<span style='color: #fe4536;'> Tìm shop '" + val + "'<span>";
-                    s.addEventListener("click", function (e){
-                       location.href = "SearchShop?kw=" + val;
+                    s.addEventListener("click", function (e) {
+                        location.href = "SearchShop?kw=" + val;
                     });
                     a.appendChild(s);
                     for (i = 0; i < arr.length; i++) {
@@ -298,6 +301,9 @@
                         if (currentFocus > -1) {
                             if (x)
                                 x[currentFocus].click();
+                        } else {
+                            event.preventDefault();
+                            document.getElementById("btn-search").click();
                         }
                     }
                 });
@@ -330,14 +336,6 @@
             }
 
             autocomplete(document.getElementById("myInput"), suggestion);
-
-            var input = document.getElementById("myInput");
-            input.addEventListener("keydown", function (event) {
-                if (event.keyCode == 13) {
-                    event.preventDefault();
-                    document.getElementById("btn-search").click();
-                }
-            });
 
             function checkTextField() {
                 if ($.trim($('#myInput').val()) !== "")

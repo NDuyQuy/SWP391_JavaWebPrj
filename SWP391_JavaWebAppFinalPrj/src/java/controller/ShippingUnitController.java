@@ -4,32 +4,26 @@
  */
 package controller;
 
+import dao.OrderDetailDao;
+import dao.OrdersDao;
 import dao.ProductDao;
-import dao.RatingDao;
-import dao.SellersDao;
-import java.io.File;
+import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Products;
-import model.Ratings;
+import model.Orders;
+import model.Users;
 
 /**
  *
  * @author hien
  */
-public class ProductDetailController extends HttpServlet {
+public class ShippingUnitController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,10 +42,10 @@ public class ProductDetailController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ProductDetailController</title>");
+            out.println("<title>Servlet ShippingUnitController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ProductDetailController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShippingUnitController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -70,39 +64,27 @@ public class ProductDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String path = getServletContext().getRealPath("");
-            String product = request.getParameter("product");
-            Products pro = ProductDao.getProductById(Integer.parseInt(product));
-            ArrayList<Products> product_by_shop = ProductDao.getProductsByShop(pro.getShop_id());
-            ArrayList<Ratings> ratings_by_product = RatingDao.getRatingsByProduct(pro.getProduct_id());
-            float aver_score = 0;
-            int aver_rate = 0;
-            if (ratings_by_product != null && !ratings_by_product.isEmpty()) {
-                for (Ratings r : ratings_by_product) {
-                    aver_score += r.getScore();
-                }
-                aver_rate = (int) Math.round((aver_score / ratings_by_product.size()) * 100);
-            }
-
-            ListIterator<Products> iter = product_by_shop.listIterator();
-            while (iter.hasNext()) {
-                if (iter.next().getProduct_id() == pro.getProduct_id()) {
-                    iter.remove();
-                }
-            }
-
-            for (Products p : product_by_shop) {
-                String folder = p.getImg();
-                p.setImg(getImagePath(folder).get(0));
-            }
-
+            request.setCharacterEncoding("utf-8");
             HttpSession session = request.getSession();
-            session.setAttribute("aver_rate", aver_rate);
-            session.setAttribute("ratings_by_product", ratings_by_product);
-            session.setAttribute("pr", pro);
-            session.setAttribute("pr_img", getImagePath(pro.getImg()));
-            session.setAttribute("product_by_shop", product_by_shop);
-            request.getRequestDispatcher("product_detail.jsp").forward(request, response);
+            Users su = (Users) session.getAttribute("user");
+            ArrayList<Orders> wait_list = OrdersDao.getOrdersByUnitId(su.getId(), "chờ shipping unit xác nhận");
+            ArrayList<Orders> take_list = OrdersDao.getOrdersByUnitId(su.getId(), "đơn hàng đang được chuyển cho shippingunit");
+            ArrayList<Orders> ship_list = OrdersDao.getOrdersByUnitId(su.getId(), "đang vận chuyển");
+
+            if(wait_list.isEmpty()) session.setAttribute("wait_list", null);
+            else session.setAttribute("wait_list", wait_list);
+            if(take_list.isEmpty()) session.setAttribute("take_list", null);
+            else session.setAttribute("take_list", take_list);
+            if(ship_list.isEmpty())session.setAttribute("ship_list", null);
+            else session.setAttribute("ship_list", ship_list);
+            
+            UsersDao ud = new UsersDao();
+            ProductDao pd = new ProductDao();
+            OrderDetailDao odd = new OrderDetailDao();
+            session.setAttribute("usersDao", ud);
+            session.setAttribute("productDao", pd);
+            session.setAttribute("orderDetailDao", odd);
+            request.getRequestDispatcher("sh_unit_order.jsp").forward(request, response);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -119,7 +101,31 @@ public class ProductDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            request.setCharacterEncoding("utf-8");
+            HttpSession session = request.getSession();
+            Users su = (Users) session.getAttribute("user");
+            int id = Integer.parseInt(request.getParameter("id"));
+            String action = request.getParameter("action");
+            switch (action) {
+                case "accept":
+                    OrdersDao.updateOrderStatus(id, "đơn hàng đang được chuyển cho shippingunit");
+                    break;
+                case "refuse":
+                    OrdersDao.updateOrderStatus(id, "chờ người bán xác nhận-shipping unit từ chối");
+                    break;
+                case "update":
+                    OrdersDao.updateOrderStatus(id, "đang vận chuyển");
+                    break;
+                case "complete":
+                    OrdersDao.updateOrderStatus(id, "đã giao hàng");
+                    break;
+            }
+            
+            response.sendRedirect("ShippingUnit");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -132,21 +138,4 @@ public class ProductDetailController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private ArrayList<String> getImagePath(String folder) {
-        ArrayList<String> res = new ArrayList<>();
-        List<File> all_img = new ArrayList<>();
-        String fpath = getServletContext().getRealPath("") + folder;
-        try {
-            all_img = Files.walk(Paths.get(fpath))
-                    .filter(Files::isRegularFile)
-                    .map(Path::toFile)
-                    .collect(Collectors.toList());
-            for(File f : all_img){
-                res.add(f.getPath().replace(getServletContext().getRealPath(""), ""));
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return res;
-    }
 }

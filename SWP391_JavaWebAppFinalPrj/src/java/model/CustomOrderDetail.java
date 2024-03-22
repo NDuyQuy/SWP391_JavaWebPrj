@@ -17,11 +17,18 @@ public class CustomOrderDetail {
     private String process_video;
     private String description;
     private Date created_date;
-    public CustomOrder customorder;
+    private CustomOrder customorder;
 
     public CustomOrderDetail() {
     }
 
+    public CustomOrderDetail(int customorder_id, String process_img, String process_video, String description) {
+        this.customorder_id = customorder_id;
+        this.process_img = process_img;
+        this.process_video = process_video;
+        this.description = description;
+    }
+    
     public int getCustomorder_id() {
         return customorder_id;
     }
@@ -62,6 +69,14 @@ public class CustomOrderDetail {
         this.created_date = created_date;
     }
 
+    public CustomOrder getCustomorder() {
+        return customorder;
+    }
+
+    public void setCustomorder(CustomOrder customorder) {
+        this.customorder = customorder;
+    }
+    
     @Override
     public String toString() {
         return "CustomOrderDetail{" + "customorder_id=" + customorder_id + ", process_img=" + process_img + ", process_video=" + process_video + ", description=" + description + ", created_date=" + created_date + '}';

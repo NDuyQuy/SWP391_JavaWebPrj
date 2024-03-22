@@ -4,32 +4,20 @@
  */
 package controller;
 
-import dao.CategoryDao;
-import dao.ProductDao;
-import dao.SellersDao;
-import java.io.File;
+import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.Products;
-import model.Shops;
-import model.ShopCategory;
+import model.Users;
 
 /**
  *
  * @author hien
  */
-public class ShopDetailController extends HttpServlet {
+public class BecomeSellerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,23 +31,18 @@ public class ShopDetailController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        int s_id = Integer.parseInt(request.getParameter("id"));
-        Shops shop = SellersDao.getShopById(s_id);
-        ArrayList<Products> plist = ProductDao.getProductsByShop(s_id);
-        
-        for(Products p : plist){
-            String folder = p.getImg();
-            p.setImg(getImagePath(folder));
+        try ( PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet BecomeSellerServlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet BecomeSellerServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        
-        ArrayList<ShopCategory> cate_shop = CategoryDao.getShopCategoryByShop(s_id);
-        HttpSession session = request.getSession();
-        session.setAttribute("sh", shop);
-        session.setAttribute("cate_shop", cate_shop);
-        session.setAttribute("product_by_shop", plist);
-        session.setAttribute("sh_address", shop.getUsers().getAddress());
-        session.setAttribute("psize", plist.size());
-        request.getRequestDispatcher("shop_detail.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -88,7 +71,23 @@ public class ShopDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try{
+            request.setCharacterEncoding("utf-8");
+            Users user = (Users) request.getSession().getAttribute("user");
+            String shop_name = request.getParameter("sname");
+            String cccd = request.getParameter("cccd");
+            String full_name = request.getParameter("fullname");
+            String phone = request.getParameter("phone");
+            String address = request.getParameter("saddr");
+            user.setFullname(full_name);
+            user.setPhone(phone);
+            user.setAddress(address);
+            UsersDao.updateProfile(user);
+            UsersDao.newShop(user.getId(), shop_name, cccd);
+            response.sendRedirect("Home");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -101,19 +100,4 @@ public class ShopDetailController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private String getImagePath(String folder){
-        String res = null;
-        List<File> all_img = new ArrayList<>();
-        String fpath = getServletContext().getRealPath("") + folder;
-        try{
-            all_img = Files.walk(Paths.get(fpath))
-                .filter(Files::isRegularFile)
-                .map(Path::toFile)
-                .collect(Collectors.toList());
-            res = all_img.get(0).getPath().replace(getServletContext().getRealPath(""), "");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return res;
-    }
 }
