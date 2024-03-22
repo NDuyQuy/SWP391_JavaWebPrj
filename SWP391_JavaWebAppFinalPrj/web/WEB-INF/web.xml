@@ -101,6 +101,14 @@
         <servlet-class>controller.LoadChatConntroller</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>RatingController</servlet-name>
+        <servlet-class>controller.RatingController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ReportUserController</servlet-name>
+        <servlet-class>controller.ReportUserController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ShippingUnitController</servlet-name>
         <servlet-class>controller.ShippingUnitController</servlet-class>
     </servlet>
@@ -111,6 +119,10 @@
     <servlet>
         <servlet-name>ShopChatController</servlet-name>
         <servlet-class>controller.ShopChatController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BecomeSellerServlet</servlet-name>
+        <servlet-class>controller.BecomeSellerServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -223,6 +235,22 @@
     <servlet-mapping>
         <servlet-name>ShopChatController</servlet-name>
         <url-pattern>/ShopChatController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RatingController</servlet-name>
+        <url-pattern>/Rating</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReportUserController</servlet-name>
+        <url-pattern>/Report</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShippingUnitController</servlet-name>
+        <url-pattern>/ShippingUnit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BecomeSellerServlet</servlet-name>
+        <url-pattern>/becomeseller</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -69,7 +69,6 @@ public class Ratings {
         this.orderdetail = orderdetail;
     }
     
-
     @Override
     public String toString() {
         return "Ratings{" + "id=" + id + ", orderdetail_id=" + orderdetail_id + ", time_stamp=" + time_stamp + ", score=" + score + ", comment=" + comment + '}';

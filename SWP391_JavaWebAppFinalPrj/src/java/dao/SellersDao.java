@@ -16,7 +16,8 @@ import model.*;
 public class SellersDao {
    
     private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_name],[CCCD] FROM [shops] WHERE [shop_id]=?";
-    private static final String GETALLSHOP = "Select [shop_id],[shop_name],[shop_img],[shop_description] from [shops]";
+    private static final String GETALLSHOP = "Select s.[shop_id],[shop_name],[shop_img],[shop_description] from [shops] s"
+            + " join [users] u on s.[shop_id] = u.[id] where u.[role] = 2";
     private static final String UPDATESHOPINFO = "UPDATE [shops] SET [shop_name] = ?,[shop_description] = ?,[shop_img] = ? WHERE [shop_id] = ?";
     //SHOP CATEGORY RELATED SQL STATEMENT 
     private static final String GETSHOPCATEGORIES = "SELECT s.[id], s.[name],m.[name],m.[id] "
@@ -125,6 +126,7 @@ public class SellersDao {
                 sc.setId(id);   
                 sc.setName(sname);
                 sc.setShop(new Shops(shop_id));
+                sc.setId(id);   sc.setName(sname); sc.setMaincate_id(mcate_id);
                 shopCategories.add(sc);
             }
         }catch (Exception e) {

@@ -9,7 +9,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Co.Handmade</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="site.html">
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" media="all">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,900,900i&amp;subset=vietnamese" rel="stylesheet">
         <!-- CSS here -->
@@ -95,6 +100,7 @@
                                         <li><a href="#"> Chat</a></li>
                                         </c:if>
                                 </ul>
+<<<<<<< HEAD
                                 <c:if test="${user.role != 2}">
                                     <h4>Danh mục</h4>
                                     <ul>
@@ -104,6 +110,15 @@
                                     </ul>
                                 </c:if>
 
+=======
+                                <h4>Danh mục</h4>
+                                <ul>
+                                    <c:forEach var="cate" items="${sessionScope.main_category_list}">
+                                        <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
+                                        </c:forEach>
+
+                                </ul>
+>>>>>>> shipping_unit
                             </div>
                         </div>
                         <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
@@ -112,9 +127,12 @@
                                     <li class="search-btn">
                                         <form autocomplete="off" action="SearchProduct" class="shop-search">
                                             <div class="autocomplete" style="width: 500px;">
-                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${sessionScope.kw}">
+                                                <c:if test="${param.kw == null}">
+                                                    <c:set var="kw" value="${null}"/>
+                                                </c:if>
+                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${kw}" oninput="checkTextField()">
                                             </div>
-                                            <button type="submit" style="height: 50px; width: 50px">
+                                            <button id="btn-search" type="submit" style="height: 50px; width: 50px" disabled="">
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </form>
@@ -138,7 +156,14 @@
                                             <ul class="submenu">
                                                 <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
                                                 <li>
+<<<<<<< HEAD
                                                     <a href="profile.jsp">Hồ sơ của bạn</a>
+=======
+                                                    <a href="profile.jsp">Tài khoản</a>
+                                                </li>
+                                                <li>
+                                                    <a href="OrderListController">Đơn mua</a>
+>>>>>>> shipping_unit
                                                 </li>
                                                 <c:if test="${sessionScope.user.role eq 1}">
                                                     <li>
@@ -205,7 +230,10 @@
         </header>
 
         <script>
-            var suggestion = ["túi xách", "cài áo", "bông tai", "khăn thêu", "áo sơ mi", "áo thun", "áo dài"];
+            var suggestion = [];
+            <c:forEach var="scate" items="${sessionScope.shop_category_list}">
+            suggestion.push("${scate.name}");
+            </c:forEach>
             function autocomplete(inp, arr) {
                 var currentFocus;
                 inp.addEventListener("input", function (e) {
@@ -254,6 +282,9 @@
                         if (currentFocus > -1) {
                             if (x)
                                 x[currentFocus].click();
+                        } else {
+                            event.preventDefault();
+                            document.getElementById("btn-search").click();
                         }
                     }
                 });
@@ -286,6 +317,15 @@
             }
 
             autocomplete(document.getElementById("myInput"), suggestion);
+
+            function checkTextField() {
+                if ($.trim($('#myInput').val()) !== "")
+                {
+                    $('#btn-search').removeAttr("disabled");
+                } else {
+                    $("#btn-search").prop("disabled", true);
+                }
+            }
         </script>
     </body>
 </html>

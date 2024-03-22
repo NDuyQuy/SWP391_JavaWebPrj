@@ -6,10 +6,17 @@ package controller;
 
 import dao.ProductDao;
 import dao.RatingDao;
+import dao.SellersDao;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -63,9 +70,10 @@ public class ProductDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            String path = getServletContext().getRealPath("");
             String product = request.getParameter("product");
             Products pro = ProductDao.getProductById(Integer.parseInt(product));
-            ArrayList<Products> product_by_shop = ProductDao.getProductsByShop(pro.getShop().getUsers().getId());
+            ArrayList<Products> product_by_shop = ProductDao.getProductsByShop(pro.getShop_id());
             ArrayList<Ratings> ratings_by_product = RatingDao.getRatingsByProduct(pro.getProduct_id());
             float aver_score = 0;
             int aver_rate = 0;
@@ -73,7 +81,7 @@ public class ProductDetailController extends HttpServlet {
                 for (Ratings r : ratings_by_product) {
                     aver_score += r.getScore();
                 }
-                aver_rate = (int) Math.round((aver_score/ratings_by_product.size()) * 100);
+                aver_rate = (int) Math.round((aver_score / ratings_by_product.size()) * 100);
             }
 
             ListIterator<Products> iter = product_by_shop.listIterator();
@@ -82,13 +90,20 @@ public class ProductDetailController extends HttpServlet {
                     iter.remove();
                 }
             }
+
+            for (Products p : product_by_shop) {
+                String folder = p.getImg();
+                p.setImg(getImagePath(folder).get(0));
+            }
+
             HttpSession session = request.getSession();
             session.setAttribute("aver_rate", aver_rate);
             session.setAttribute("ratings_by_product", ratings_by_product);
             session.setAttribute("pr", pro);
+            session.setAttribute("pr_img", getImagePath(pro.getImg()));
             session.setAttribute("product_by_shop", product_by_shop);
             request.getRequestDispatcher("product_detail.jsp").forward(request, response);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -117,4 +132,21 @@ public class ProductDetailController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private ArrayList<String> getImagePath(String folder) {
+        ArrayList<String> res = new ArrayList<>();
+        List<File> all_img = new ArrayList<>();
+        String fpath = getServletContext().getRealPath("") + folder;
+        try {
+            all_img = Files.walk(Paths.get(fpath))
+                    .filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .collect(Collectors.toList());
+            for(File f : all_img){
+                res.add(f.getPath().replace(getServletContext().getRealPath(""), ""));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return res;
+    }
 }

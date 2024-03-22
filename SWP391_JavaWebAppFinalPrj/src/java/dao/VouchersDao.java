@@ -23,7 +23,6 @@ public class VouchersDao {
     
     private static final String GET_SYSTEM_VOUCHER = "SELECT * FROM vouchers WHERE type = ?";
     
-    
     private static Vouchers extractVoucher(ResultSet rs) throws SQLException{
         int voucherId = rs.getInt("voucher_id");
         String code = rs.getString("code");
@@ -46,7 +45,6 @@ public class VouchersDao {
     public static Vouchers getVoucherByID(int id){
         return SellersDao.getVoucherByID(id);
     }
-    
     public static ArrayList<Vouchers> getSystemVouchers() throws ClassNotFoundException {
         ArrayList<Vouchers> vouchers = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();

@@ -86,7 +86,7 @@ public class PriceFilterController extends HttpServlet {
             ArrayList<Products> product_list = (ArrayList<Products>) session.getAttribute("product_list");
             ArrayList<Products> result = new ArrayList<>();
             for(Products p : product_list){
-                if(p.getMoney()>= min && p.getMoney() <= max){
+                if(p.getMoney() >= min && p.getMoney() <= max){
                     result.add(p);
                 }
             }

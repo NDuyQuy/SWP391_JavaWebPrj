@@ -5,6 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -35,7 +36,9 @@
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
             <!-- header end -->
+
             <main>
+
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
@@ -112,7 +115,7 @@
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div class="row">
-                                            <c:forEach var="pr" items="${plist}" begin="${requestScope.first}" end="${requestScope.last}">
+                                            <c:forEach var="pr" items="${plist}" begin="${first}" end="${last}">
                                                 <div class="col-lg-4 col-md-4">
                                                     <div class="product-wrapper mb-50">
                                                         <div class="product-img mb-25">
@@ -129,13 +132,12 @@
                                                             </div>
                                                             <div class="sale-tag">
                                                                 <span class="new">new</span>
-                                                                <span class="sale">sale</span>
                                                             </div>
                                                         </div>
                                                         <div class="product-content">
                                                             <div class="pro-cat mb-10">
-                                                                <a href="SearchProduct?cate=${pr.shopCategory.maincategory.name}">${pr.shopCategory.maincategory.name} > </a>
-                                                                <a href="ShopDetail?id=${pr.shop.users.id}#cate${pr.shopCategory.id}" style="color: #525470">${pr.shopCategory.name}</a>
+                                                                <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
+                                                                <a href="ShopDetail?id=${pr.shop_id}#cate${pr.scate_id}" style="color: #525470">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
                                                             </div>
                                                             <h4>
                                                                 <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
@@ -153,7 +155,7 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        <c:forEach var="pr" items="${plist}" begin="${requestScope.first}" end="${requestScope.last}">
+                                        <c:forEach var="pr" items="${plist}" begin="${first}" end="${last}">
                                             <div class="row">
                                                 <div class="col-xl-5">
                                                     <div class="product-wrapper mb-30">
@@ -163,7 +165,6 @@
                                                             </a>
                                                             <div class="sale-tag">
                                                                 <span class="new">new</span>
-                                                                <span class="sale">sale</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -171,15 +172,15 @@
                                                 <div class="col-xl-7">
                                                     <div class="product-content pro-list-content pr-0 mb-50">
                                                         <div class="pro-cat mb-10">
-                                                            <a href="SearchProduct?cate=${pr.shopCategory.maincategory.id}">${pr.shopCategory.maincategory.name} > </a>
-                                                            <a href="#">${pr.shopCategory.maincategory.name}</a>
+                                                            <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
+                                                            <a href="#">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
                                                         </div>
                                                         <h4>
                                                             <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
                                                         </h4>
                                                         <div class="product-meta mb-10">
                                                             <div class="pro-price">
-                                                                <span><fmt:formatNumber value="${pr.price}"/>đ</span>
+                                                                <span><fmt:formatNumber value="${pr.money}"/>đ</span>
                                                                 <!--<span class="old-price">$230.00 USD</span>-->
                                                             </div>
                                                         </div>
@@ -247,16 +248,17 @@
                                         </button>
                                     </form>
                                 </div>
+
                                 <div class="shop-widget">
                                     <h3 class="shop-title">Catergories</h3>
                                     <ul class="shop-link">
                                         <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                            <li><a href="SearchProduct?cate=${cate.categoryID}"><i class="far fa-square"></i> ${cate.categoryName}</a></li>
+                                            <li><a href="SearchProduct?cate=${cate.id}"><i class="far fa-square"></i> ${cate.name}</a></li>
                                             </c:forEach>
                                     </ul>
                                 </div>
 
-                                <div class="shop-widget">
+<!--                                <div class="shop-widget">
                                     <h3 class="shop-title">Recent View</h3>
                                     <ul class="shop-sidebar-product">
                                         <c:forEach var="pr" items="${sessionScope.recent_list}">
@@ -280,7 +282,7 @@
                                             </li>
                                         </c:forEach>
                                     </ul>
-                                </div>
+                                </div>-->
 
                                 <div class="shop-widget">
                                     <div class="shop-sidebar-banner">

@@ -12,6 +12,7 @@ import dao.CategoryDao;
 public class ShopCategory {
     private int id;
     private int shop_id;
+    private int maincate_id;
     private String name;
     private String description;
     private MainCategory maincategory;
@@ -88,6 +89,14 @@ public class ShopCategory {
 
     public void setShop(Shops shop) {
         this.shop = shop;
+    }
+
+    public int getMaincate_id() {
+        return maincate_id;
+    }
+
+    public void setMaincate_id(int maincate_id) {
+        this.maincate_id = maincate_id;
     }
     
 

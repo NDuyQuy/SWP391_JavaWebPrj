@@ -4,8 +4,10 @@
  */
 package controller;
 
-import dao.MessageDao;
-import dao.SUDao;
+import dao.OrderDetailDao;
+import dao.OrdersDao;
+import dao.ProductDao;
+import dao.UsersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -15,12 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Orders;
-import model.Shops;
 import model.Users;
 
 /**
  *
- * @author DELL
+ * @author hien
  */
 public class ShippingUnitController extends HttpServlet {
 
@@ -36,47 +37,18 @@ public class ShippingUnitController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = "/***";
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpSession session = request.getSession();
-        boolean Continue = true;
-        try {
-            String action = session.getAttribute("Action").toString();
-            int id = ((Users)session.getAttribute("User")).getId();
-            if (action.equals("ViewWaitingOrderList")) {
-                ArrayList<Orders> orders = SUDao.GetWaitingOrderList(id);
-                session.setAttribute("OL", orders);
-            }
-            else if (action.equals("ViewAcceptOrderList")) {
-                ArrayList<Orders> orders = SUDao.GetAcceptOrderList(id);
-                session.setAttribute("OL", orders);
-            }
-            else if (action.equals("AcceptOrder")) {
-                Continue = false;
-                int orderId = Integer.parseInt(session.getAttribute("OrderId").toString());
-                SUDao.AcceptOrder(orderId);
-            }
-            else if (action.equals("DeclineOrder")) {
-                Continue = false;
-                int orderId = Integer.parseInt(session.getAttribute("OrderId").toString());
-                SUDao.DeclineOrder(orderId);
-            }
-            else if (action.equals("ShippingOrder")) {
-                Continue = false;
-                int orderId = Integer.parseInt(session.getAttribute("OrderId").toString());
-                SUDao.AcceptOrder(orderId);
-            }
+        try ( PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ShippingUnitController</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ShippingUnitController at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        catch (Exception ex) {
-            System.out.println("Error While Loading...");
-        }
-        finally {
-            if (!Continue) httpResponse.sendRedirect(httpRequest.getContextPath() + url);
-            System.out.println("Loading...");
-        }
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -91,7 +63,31 @@ public class ShippingUnitController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            request.setCharacterEncoding("utf-8");
+            HttpSession session = request.getSession();
+            Users su = (Users) session.getAttribute("user");
+            ArrayList<Orders> wait_list = OrdersDao.getOrdersByUnitId(su.getId(), "chờ shipping unit xác nhận");
+            ArrayList<Orders> take_list = OrdersDao.getOrdersByUnitId(su.getId(), "đơn hàng đang được chuyển cho shippingunit");
+            ArrayList<Orders> ship_list = OrdersDao.getOrdersByUnitId(su.getId(), "đang vận chuyển");
+
+            if(wait_list.isEmpty()) session.setAttribute("wait_list", null);
+            else session.setAttribute("wait_list", wait_list);
+            if(take_list.isEmpty()) session.setAttribute("take_list", null);
+            else session.setAttribute("take_list", take_list);
+            if(ship_list.isEmpty())session.setAttribute("ship_list", null);
+            else session.setAttribute("ship_list", ship_list);
+            
+            UsersDao ud = new UsersDao();
+            ProductDao pd = new ProductDao();
+            OrderDetailDao odd = new OrderDetailDao();
+            session.setAttribute("usersDao", ud);
+            session.setAttribute("productDao", pd);
+            session.setAttribute("orderDetailDao", odd);
+            request.getRequestDispatcher("sh_unit_order.jsp").forward(request, response);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -105,7 +101,31 @@ public class ShippingUnitController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            request.setCharacterEncoding("utf-8");
+            HttpSession session = request.getSession();
+            Users su = (Users) session.getAttribute("user");
+            int id = Integer.parseInt(request.getParameter("id"));
+            String action = request.getParameter("action");
+            switch (action) {
+                case "accept":
+                    OrdersDao.updateOrderStatus(id, "đơn hàng đang được chuyển cho shippingunit");
+                    break;
+                case "refuse":
+                    OrdersDao.updateOrderStatus(id, "chờ người bán xác nhận-shipping unit từ chối");
+                    break;
+                case "update":
+                    OrdersDao.updateOrderStatus(id, "đang vận chuyển");
+                    break;
+                case "complete":
+                    OrdersDao.updateOrderStatus(id, "đã giao hàng");
+                    break;
+            }
+            
+            response.sendRedirect("ShippingUnit");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**

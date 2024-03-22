@@ -6,6 +6,7 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -29,7 +30,14 @@ public class Orders {
     private Users customer;
     private Shops shop;
     private ShippingUnits shippingunit;
+    private List<OrderDetail> orderDetails;
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
 
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
     public Orders() {
     }
 
