@@ -60,7 +60,7 @@
                 }
             </c:forEach>
 
-            
+
         </style>
     </head>
     <body>
@@ -130,8 +130,8 @@
                         <div class="col-xl-6 col-lg-8">
                             <div class="product-details mb-30 pl-30">
                                 <div class="details-cat mb-20">
-                                    <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
-                                    <a href="ShopDetail?id=${pr.shop_id}#cate${pr.scate_id}">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
+                                    <a href="SearchProduct?cate=${pr.shopCategory.maincategory.id}">${pr.shopCategory.maincategory.name} > </a>
+                                    <a href="ShopDetail?id=${pr.shop_id}#cate${pr.scate_id}">${pr.shopCategory.name}</a>
                                 </div>
                                 <h2 class="pro-details-title mb-15">${pr.name}</h2>
                                 <div class="details-price mb-20">
@@ -144,12 +144,12 @@
                                             <li>
                                                 <div class="widget-posts-image">
                                                     <a href="ShopDetail?id=${pr.shop_id}">
-                                                        <img src='${sessionScope.sellersDao.getShopById(pr.shop_id).shop_img}' alt=''>
+                                                        <img src='${pr.shop.shop_img}' alt=''>
                                                     </a>
                                                 </div>
                                                 <div class="widget-posts-body">
-                                                    <a href="ShopDetail?id=${pr.shop_id}"><h6 class="widget-posts-title" style="font-weight: bold;">${sellersDao.getShopById(pr.shop_id).shop_name}</h6></a>
-                                                    <h7>Địa chỉ:<span style="color: #fe4536;"> ${usersDao.getUserById(pr.shop_id).address}</span></h7>
+                                                    <a href="ShopDetail?id=${pr.shop_id}"><h6 class="widget-posts-title" style="font-weight: bold;">${pr.shop.shop_name}</h6></a>
+                                                    <h7>Địa chỉ:<span style="color: #fe4536;"> ${pr.shop.users.address}</span></h7>
                                                 </div>
                                             </li>
                                         </ul>
@@ -191,15 +191,19 @@
                                         <div class="product-details-action">
 
                                             <div class="plus-minus">
-                                                <div class="cart-plus-minus"><input type="text" value="1" /></div>
+                                                <div class="cart-plus-minus">
+                                                    <!-- Input field for quantity -->
+                                                    <input type="number" id="quantityInput" value="1" min="1" />
+                                                </div>
                                             </div>
                                             <div class="details-cart mt-40" style="font-family: 'Montserrat', sans-serif;">
-                                                <button class="btn theme-btn" onclick="location.href = 'AddToCart?id=${pr.product_id}'">Thêm vào giỏ hàng</button>
+                                                <!-- Button to add to cart -->
+                                                <button class="btn theme-btn" onclick="addToCart(${pr.product_id})">Thêm vào giỏ hàng</button>
                                                 <button class="btn theme-btn" onclick="location.href = '#'">Mua ngay</button>
-                                                <!--<a class="search-trigger" href="#"><i class="fa fa-flag" style="display: inline-block; font-size: 25px; color: #fe4536;" title="Tố cáo người dùng này"></i></a>-->
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -288,7 +292,7 @@
                                                         <div class="product-wrapper mb-50">
                                                             <div class="product-img mb-25" style="height: 350px;">
                                                                 <a href="ProductDetail?product=${pr.product_id}">
-                                                                    <img src="${pr.img}" alt="">
+                                                                    <img src="${pr.img}\1.png" alt="">
                                                                 </a>
                                                                 <div class="product-action text-center">
                                                                     <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
@@ -304,8 +308,8 @@
                                                             </div>
                                                             <div class="product-content">
                                                                 <div class="pro-cat mb-10">
-                                                                    <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
-                                                                    <a class="" href="#" style="color: #525470">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
+                                                                    <a href="SearchProduct?cate=${pr.shopCategory.maincategory.id}">${pr.shopCategory.maincategory.name} > </a>
+                                                                    <a class="" href="#" style="color: #525470">${pr.shopCategory.name}</a>
                                                                 </div>
                                                                 <h4>
                                                                     <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
@@ -334,7 +338,7 @@
                                         <div class="product-wrapper">
                                             <div class="product-img mb-25" style="height: 350px;">
                                                 <a href="ProductDetail?product=${prs.product_id}">
-                                                    <img src="${prs.img}" alt="">
+                                                    <img src="${prs.img}\1.png" alt="">
                                                 </a>
                                                 <div class="product-action text-center">
                                                     <a href="AddToCart?id=${prs.product_id}" title="Thêm vào giỏ hàng">
@@ -347,8 +351,8 @@
                                             </div>
                                             <div class="product-content">
                                                 <div class="pro-cat mb-10">
-                                                    <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(prs.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(prs.scate_id).maincate_id).name} > </a>
-                                                    <a href="#" style="color: #525470">${sessionScope.categoryDao.getShopCategoryById(prs.scate_id).name}</a>
+                                                    <a href="SearchProduct?cate=${prs.shopCategory.maincategory.id}">${prs.shopCategory.maincategory.name} > </a>
+                                                    <a href="#" style="color: #525470">${prs.shopCategory.name}</a>
                                                 </div>
                                                 <h4>
                                                     <a href="ProductDetail?product=${prs.product_id}">${prs.name}</a>
@@ -370,7 +374,21 @@
                 </section>
             </c:if>
             <!-- product-area end -->
-            
+
             <jsp:include page="footer.jsp"></jsp:include>
+
+            <script>
+                function addToCart(productId) {
+                    // Get the quantity from the input field
+                    var quantity = document.getElementById("quantityInput").value;
+
+                    // Construct the URL with productId and quantity
+                    var url = 'AddToCart?id=' + productId + '&quantity=' + quantity;
+
+                    // Redirect to the URL
+                    window.location.href = url;
+                }
+            </script>
+
     </body>
 </html>

@@ -39,7 +39,7 @@
     <body>
         <c:set var="V" value="${sessionScope.Vch}" />
         <!-- header start -->
-        <jsp:include page="../header.jsp"></jsp:include>
+        <jsp:include page="../admin_header.jsp"></jsp:include>
             <!-- header end -->
             <main>
                 <div class="container mt-5">

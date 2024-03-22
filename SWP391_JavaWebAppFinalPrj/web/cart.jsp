@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Map" %>
 <%@ page import="model.CartDetail" %>
@@ -89,17 +90,17 @@
                                                             <input type="checkbox" class="itemCheckbox" data-product-id="${value.product.product_id}"/>
                                                         </td>
                                                         <td class="product-thumbnail">
-                                                            <a href="#"><img src="${value.product.img}/1.jpg" alt=""></a>
+                                                            <a href="ProductDetail?product=${value.product.product_id}"><img src="${value.product.img}/1.png" alt=""></a>
                                                         </td>
                                                         <td class="product-name">
-                                                            <a href="#">${value.product.name}</a>
+                                                            <a href="ProductDetail?product=${value.product.product_id}">${value.product.name}</a>
                                                         </td>
                                                         <td class="product-price">
                                                             <span class="amount">${value.product.money}</span>
                                                         </td>
                                                         <td class="product-quantity">
                                                             <a href="UpdateQuantityServlet?id=${value.product.product_id}&quantity=${value.quantity + 1}"><b style="color: blue">+</b></a>
-                                                            <input class="text-center"type="number" name="quantity" value="${value.quantity}" data-product-id="${value.product.product_id}"
+                                                            <input class="text-center"type="text" name="quantity" value="${value.quantity}" data-product-id="${value.product.product_id}"
                                                                    min="0" max="${value.product.quantity}" onkeypress="updateQuantityOnEnter(event)">
                                                             <buton><a href="UpdateQuantityServlet?id=${value.product.product_id}&quantity=${value.quantity - 1}"><b style="color: blue">-</b></a>
                                                         </td>

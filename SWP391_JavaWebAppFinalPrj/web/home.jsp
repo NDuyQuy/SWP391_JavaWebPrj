@@ -129,7 +129,6 @@
                     </div>
                 </section>
                 <!-- banner area end -->
-
                 <!-- product-area start -->
                 <section class="product-area box-90 pt-70 pb-40">
                     <div class="container-fluid">
@@ -244,8 +243,8 @@
                                                                     </div>
                                                                     <div class="product-content">
                                                                         <div class="pro-cat mb-10">
-                                                                            <a href="SearchProduct?cate=${sc.shopCategory.maincategory.id}">${pr.shopCategory.maincategory.name} > </a>
-                                                                            <a href="#" style="color: #525470">${pr.shopCategory.name}</a>
+                                                                            <a href="SearchProduct?cate=${sc.shopCategory.maincategory.id}">${sc.shopCategory.maincategory.name} > </a>
+                                                                            <a href="#" style="color: #525470">${sc.shopCategory.name}</a>
                                                                         </div>
                                                                         <h4>
                                                                             <a href="ProductDetail?product=${sc.product_id}">${sc.name}</a>

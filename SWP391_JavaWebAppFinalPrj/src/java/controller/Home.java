@@ -41,7 +41,7 @@ public class Home extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -67,45 +67,36 @@ public class Home extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String path = getServletContext().getRealPath("");
-        
-        ProductDao pd = new ProductDao();
-        SellersDao sd = new SellersDao();
-        CategoryDao cd = new CategoryDao();
-        UsersDao ud = new UsersDao();
-        OrderDetailDao odd = new OrderDetailDao();
-        OrdersDao od = new OrdersDao();
-
-        ArrayList<MainCategory> mcate_list = cd.getMainCategories();
-        ArrayList<ShopCategory> scate_list = cd.getShopCategories();
-        ArrayList<Products> newest_products = pd.getNewestProducts();
-        ArrayList<Products> top_sellers = pd.getTopSellers();
-        
-        for(Products p : newest_products){
-            String folder = p.getImg();
-            p.setImg(getImagePath(folder));
-        }
-        
-        for(Products p : top_sellers){
-            String folder = p.getImg();
-            p.setImg(getImagePath(folder));
-        }
-
         HttpSession session = request.getSession();
+        ArrayList<MainCategory> mcate_list = CategoryDao.getMainCategories();
+        ArrayList<ShopCategory> scate_list = CategoryDao.getShopCategories();
+        ArrayList<Products> newest_products = ProductDao.getNewestProducts();
+        ArrayList<Products> top_sellers = ProductDao.getTopSellers();
+        newest_products.forEach((p) -> {
+            String folder = p.getImg();
+            p.setImg(getImagePath(folder));
+        });
+
+        top_sellers.forEach((p) -> {
+            String folder = p.getImg();
+            p.setImg(getImagePath(folder));
+        });
         session.setAttribute("main_category_list", mcate_list);
         session.setAttribute("shop_category_list", scate_list);
         session.setAttribute("newest_products", newest_products);
         session.setAttribute("topsellers", top_sellers);
 
-        session.setAttribute("productDao", pd);
-        session.setAttribute("sellersDao", sd);
-        session.setAttribute("categoryDao", cd);
-        session.setAttribute("usersDao", ud);
-        session.setAttribute("orderDetailDao", odd);
-        session.setAttribute("ordersDao", od);
+        session.setAttribute("productDao", new ProductDao());
+        session.setAttribute("sellersDao", new SellersDao());
+        session.setAttribute("categoryDao", new CategoryDao());
+        session.setAttribute("usersDao", new UsersDao());
+        session.setAttribute("orderDetailDao", new OrderDetailDao());
+        session.setAttribute("ordersDao", new OrdersDao());
         session.setAttribute("fpath", path);
         session.removeAttribute("kw");
+        
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
@@ -132,16 +123,16 @@ public class Home extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-    private String getImagePath(String folder){
+
+    private String getImagePath(String folder) {
         String res = null;
         List<File> all_img = new ArrayList<>();
         String fpath = getServletContext().getRealPath("") + folder;
-        try{
+        try {
             all_img = Files.walk(Paths.get(fpath))
-                .filter(Files::isRegularFile)
-                .map(Path::toFile)
-                .collect(Collectors.toList());
+                    .filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .collect(Collectors.toList());
             res = all_img.get(0).getPath().replace(getServletContext().getRealPath(""), "");
         } catch (Exception ex) {
             ex.printStackTrace();

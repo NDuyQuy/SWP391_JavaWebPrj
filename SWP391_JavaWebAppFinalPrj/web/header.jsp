@@ -100,7 +100,6 @@
                                         <li><a href="#"> Chat</a></li>
                                         </c:if>
                                 </ul>
-<<<<<<< HEAD
                                 <c:if test="${user.role != 2}">
                                     <h4>Danh mục</h4>
                                     <ul>
@@ -109,16 +108,6 @@
                                         </c:forEach>
                                     </ul>
                                 </c:if>
-
-=======
-                                <h4>Danh mục</h4>
-                                <ul>
-                                    <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                        <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
-                                        </c:forEach>
-
-                                </ul>
->>>>>>> shipping_unit
                             </div>
                         </div>
                         <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
@@ -156,15 +145,9 @@
                                             <ul class="submenu">
                                                 <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
                                                 <li>
-<<<<<<< HEAD
-                                                    <a href="profile.jsp">Hồ sơ của bạn</a>
-=======
                                                     <a href="profile.jsp">Tài khoản</a>
                                                 </li>
-                                                <li>
-                                                    <a href="OrderListController">Đơn mua</a>
->>>>>>> shipping_unit
-                                                </li>
+                                               
                                                 <c:if test="${sessionScope.user.role eq 1}">
                                                     <li>
                                                         <a href="#">Đơn mua</a>

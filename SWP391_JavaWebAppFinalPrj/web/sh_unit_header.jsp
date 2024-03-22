@@ -93,15 +93,6 @@
                                             <span id="username">${username}&nbsp;&nbsp;</span>
                                             <i class="far fa-user"></i>
                                         </a>
-                                        <!--                                        <ul class="submenu">
-                                                                                    <li  style="font-size: 16px;">Chào ${user.username}<b></b>!</li>
-                                                                                    <li>
-                                                                                        <a href="profile.jsp">Hồ sơ Shop</a>
-                                                                                    </li>
-                                                                                    <li>
-                                                                                        <a href="logout">Đăng xuất</a>
-                                                                                    </li>
-                                                                                </ul>-->
 
                                     </li>
 

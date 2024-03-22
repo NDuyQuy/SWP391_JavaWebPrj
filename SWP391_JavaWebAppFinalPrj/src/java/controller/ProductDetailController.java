@@ -91,11 +91,6 @@ public class ProductDetailController extends HttpServlet {
                 }
             }
 
-            for (Products p : product_by_shop) {
-                String folder = p.getImg();
-                p.setImg(getImagePath(folder).get(0));
-            }
-
             HttpSession session = request.getSession();
             session.setAttribute("aver_rate", aver_rate);
             session.setAttribute("ratings_by_product", ratings_by_product);

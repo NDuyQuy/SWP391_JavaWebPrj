@@ -5,11 +5,13 @@
  */
 package controller;
 
+import dao.CartDetailDao;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Users;
 
 /**
  *
@@ -28,15 +30,17 @@ public class AddToCart extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /*
-        response.setContentType("text/html;charset=UTF-8");
+         response.setContentType("text/html;charset=UTF-8");
         int productId = Integer.parseInt(request.getParameter("id"));
-        HttpSession session = request.getSession();
-         User user = (User) session.getAttribute("user");
-        CartDao cartDao = new CartDaoImpl();
-        cartDao.addToCart(user.getUserID(), productId, 1);
+ 
+        Users user = (Users) request.getSession().getAttribute("user");
+        if(user==null){
+            
+        }else{
+            CartDetailDao.AddToCart(user.getId(), productId, 1);
+        }
         
-        response.sendRedirect("Home");*/
+        response.sendRedirect("Home");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

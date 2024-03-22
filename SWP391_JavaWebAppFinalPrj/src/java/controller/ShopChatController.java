@@ -45,7 +45,6 @@ public class ShopChatController extends HttpServlet {
             Users u = (Users)session.getAttribute("user");
             int shopId = u.getId();
             
-            
             if(action.equals("SendChat")) {
                 int user_id = Integer.parseInt(request.getParameter("user_id"));
                 String message = request.getParameter("messageText");

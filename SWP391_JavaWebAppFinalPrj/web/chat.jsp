@@ -88,20 +88,27 @@
                             <div class="category-menu">
                                 <h4>Kênh bán hàng</h4>
                                 <ul style="margin-bottom: 0;">
-                                    <c:if test="${user.role != 2}">
-                                        <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
-                                        </c:if>
-                                        <c:if test="${user.role == 2}">
-                                        <li><a href="SellerCentre"><i class="flaticon-employee"></i> Shop của tôi</a></li>
-                                        </c:if>
-                                </ul>
-                                <h4>Danh mục</h4>
+                                <c:if test="${user.role != 2}">
+                                    <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
+                                    <h4>Danh mục</h4>
                                 <ul>
                                     <c:forEach var="cate" items="${sessionScope.main_category_list}">
                                         <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
-                                        </c:forEach>
+                                    </c:forEach>
 
                                 </ul>
+                                </c:if>
+                                <c:if test="${user.role == 2}">
+                                    <li><a href="SellerCentre"><i class="flaticon-employee"></i> Shop của tôi</a></li>
+                                    <li><a href="ordercontroller"> Xem tổng quan phân tích bán hàng</a></li>
+                                    <li><a href="productcontroller"> Quản lý sản phẩm của shop</a></li>
+                                    <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
+                                    <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
+                                    <li><a href="CustomOrderController"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
+                                    <li><a href=""> Chat</a></li>
+                                </c:if>
+                                </ul>
+                                
                             </div>
                         </div>
                         <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
@@ -131,22 +138,23 @@
 
                                             </ul>
                                         </c:if>
-                                        <c:if test="${sessionScope.user != null}">
                                             <a href="profile.jsp"><i class="far fa-user"></i></a>
                                             <ul class="submenu" style="margin-left: -150px;">
                                                 <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
                                                 <li>
                                                     <a href="profile.jsp">Tài khoản</a>
                                                 </li>
+                                                
+                                        <c:if test="${sessionScope.user.role eq 1}">
                                                 <li>
                                                     <a href="#">Đơn mua</a>
                                                 </li>
+                                        </c:if>
+                                                
                                                 <li>
                                                     <a href="logout">Đăng xuất</a>
                                                 </li>
                                             </ul>
-                                        </c:if>
-
                                     </li>
 
                                 </ul>
@@ -184,7 +192,6 @@
                             <ui class="contacts" id="chatlist">
                                 
                                 <!-- CHAT LIST HERE -->
-                                
                                 
                                 
                             </ui>

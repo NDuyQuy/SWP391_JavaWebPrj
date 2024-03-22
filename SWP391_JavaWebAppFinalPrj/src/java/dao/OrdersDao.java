@@ -16,6 +16,7 @@ import model.*;
  * @author ASUS
  */
 public class OrdersDao {
+    private static final String GET_ORDERS_BY_UNIT_ID = "Select [order_id],[customer_id],[shop_id],[receiver_name],[receiver_phone],[receiver_address],[order_date] from [orders] where [shippingunit_id] = ? and [status] like ?";
     private static final String GETORDERSBYSHOP = "SELECT * FROM [orders] WHERE [shop_id]=? AND status=N'đã nhận'";
     private static final String GETORDERSBYSHOPANDDATE = "SELECT * FROM [orders] WHERE CONVERT(date, order_date) = ? AND [shop_id]=?";
     private static final String GETORDERSCOUNTBYHOUR = "SELECT DATEPART(HOUR, order_date) AS hour, COUNT(*) AS count FROM [orders] "
@@ -35,7 +36,118 @@ public class OrdersDao {
     private static final String UPDATE_PROCESS = "INSERT INTO [custom_order_detail]([customorder_id],[process_img],[process_video],[description]) VALUES (?,?,?,?)";
     
     private static final String UPDATE_STATUS = "UPDATE [orders] SET [status]=? WHERE [order_id]=?";
+
+    private static final String ADD_ORDER = "INSERT INTO orders (user_id, shippingunit_id, voucher_code, total, shipping_method, payment_method, status, receiver_name, receiver_phone, receiver_address, order_date, cancel_reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String ADD_ORDER_DETAIL = "INSERT INTO orderdetail (order_id, product_id, quantity) VALUES (?, ?, ?)";
+    private static final String GET_ORDER_DETAILS = "SELECT od.*, p.* FROM orderdetail od INNER JOIN products p ON od.product_id = p.product_id WHERE od.order_id = ?";
+    private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE order_id = ?";
+    private static final String GET_ORDERS_BY_USER_ID = "SELECT * FROM orders WHERE customer_id = ?";
+    private static final String GET_ORDER_AND_DETAILS_BY_ID = "SELECT o.*,  p.product_id, p.img, p.name, p.price,  od.quantity, od.id FROM orders o "
+            + "  JOIN orderdetail od ON o.order_id = od.orderID "
+            + "   JOIN products p ON od.productID = p.product_id "
+            + "WHERE o.order_id = ?";
+    private static final String GETORDERIDBYREF_RETID = "Select od.orderID from refundsnreturns rnr join orderdetail od on rnr.orderdetail_id = od.id where rnr.id = ?";
+
+    private static final String CREATE_RETURN_ORDER = "INSERT INTO [orders]([customer_id],[shop_id],[status],[receiver_name],[receiver_phone],[receiver_address],[shippingunit_id],[type]) values (?,?,?,?,?,?,?,3)";
     
+    public List<Orders> getOrdersByUserId(int userId) {
+        List<Orders> orders = new ArrayList<>();
+
+        try ( Connection con = SQLConnection.getConnection();  PreparedStatement getOrdersStmt = con.prepareStatement(GET_ORDERS_BY_USER_ID)) {
+            getOrdersStmt.setInt(1, userId);
+
+            try ( ResultSet rs = getOrdersStmt.executeQuery()) {
+                while (rs.next()) {
+                    Orders order = extractOrderFromResultSet(rs);
+                    if (order != null) {
+                        orders.add(order);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    private Orders extractOrderFromResultSet(ResultSet rs) {
+        try {
+            Orders order = new Orders();
+            order.setOrder_id(rs.getInt("order_id"));
+            // Bạn cần implement phương thức getUserById để lấy thông tin người dùng từ cơ sở dữ liệu
+            order.setCustomer(UsersDao.getUserById(rs.getInt("customer_id")));
+            order.setShop_id(rs.getInt("shop_id"));
+            order.setShipping_cost(rs.getInt("shipping_cost"));
+            order.setTotal(rs.getInt("total"));
+            order.setPayment_method(rs.getString("payment_method"));
+            order.setStatus(rs.getString("status"));
+            order.setReceiver_name(rs.getString("receiver_name"));
+            order.setReceiver_phone(rs.getString("receiver_phone"));
+            order.setReceiver_address(rs.getString("receiver_address"));
+            order.setShipping_method(rs.getString("shipping_method"));
+            order.setShippingunit_id(rs.getInt("shippingunit_id"));
+            order.setOrder_date(rs.getDate("order_date"));
+            order.setType(rs.getInt("type"));
+            return order;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Orders getOrderAndDetailsById(int orderId) {
+        try ( Connection con = SQLConnection.getConnection();  PreparedStatement getOrderAndDetailsStmt = con.prepareStatement(GET_ORDER_AND_DETAILS_BY_ID)) {
+            getOrderAndDetailsStmt.setInt(1, orderId);
+
+            try ( ResultSet rs = getOrderAndDetailsStmt.executeQuery()) {
+                Orders order = null;
+                List<OrderDetail> orderDetails = new ArrayList<>();
+
+                while (rs.next()) {
+                    if (order == null) {
+                        order = extractOrderFromResultSet(rs);
+                    }
+
+                    OrderDetail orderDetail = new OrderDetail();
+                    orderDetail.setId(rs.getInt("id"));
+                    orderDetail.setQuantity(rs.getInt("quantity"));
+
+                    Products product = new Products();
+                    product.setProduct_id(rs.getInt("product_id"));
+                    product.setName(rs.getString("name"));
+                    // product.setMoney(rs.getInt("money"));
+                    product.setImg(rs.getString("img"));
+
+                    orderDetail.setProduct(product);
+                    orderDetails.add(orderDetail);
+                }
+
+                if (order != null) {
+                    order.setOrderDetails(orderDetails);
+                }
+
+                return order;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean updateOrderStatus(int orderId, String newStatus) throws ClassNotFoundException {
+        try ( Connection con = SQLConnection.getConnection();  PreparedStatement updateStatusStmt = con.prepareStatement(UPDATE_STATUS)) {
+            updateStatusStmt.setString(1, newStatus);
+            updateStatusStmt.setInt(2, orderId);
+
+            int affectedRows = updateStatusStmt.executeUpdate();
+
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     
     public static Orders getOrderObject(ResultSet rs) throws SQLException{
         int order_id = rs.getInt("order_id");
@@ -340,9 +452,73 @@ public class OrdersDao {
             e.printStackTrace();
         }
     }
+
+    public static ArrayList<Orders> getOrdersByUnitId(int su_id, String status) {
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Orders ord = null;
+        ArrayList<Orders> orders = new ArrayList<>();
+        try ( Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GET_ORDERS_BY_UNIT_ID);
+            ptm.setInt(1, su_id);
+            ptm.setString(2, status);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                ord = new Orders();
+                ord.setOrder_id(rs.getInt(1));
+                ord.setCustomer_id(rs.getInt(2));
+                ord.setShop_id(rs.getInt(3));
+                ord.setReceiver_name(rs.getString(4).trim());
+                ord.setReceiver_phone(rs.getString(5).trim());
+                ord.setReceiver_address(rs.getString(6).trim());
+                ord.setOrder_date(rs.getDate(7));
+                orders.add(ord);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return orders;
+    }
+
+    public static Orders getOrderByRef_RetId(int id) {
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        Orders order = new Orders();
+        try ( Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETORDERIDBYREF_RETID);
+            ptm.setInt(1, id);
+            rs = ptm.executeQuery();
+            if (rs.next()) {
+                order = getOrderByID(rs.getInt(1));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return order;
+    }
+
+    public static void createReturnOrder(int ref_id) {
+        PreparedStatement ptm = null;
+        Orders order = getOrderByRef_RetId(ref_id);
+        try ( Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(CREATE_RETURN_ORDER);
+            ptm.setInt(1, order.getCustomer_id());
+            ptm.setInt(2, order.getShop_id());
+            ptm.setString(3, "đơn hàng đang được chuyển cho shippingunit");
+            ptm.setString(4, order.getReceiver_name());
+            ptm.setString(5, order.getReceiver_phone());
+            ptm.setString(6, order.getReceiver_address());
+            ptm.setInt(7, order.getShippingunit_id());
+            ptm.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     public static void main(String[] args) {
         cancelOrders(1, "hết hàng");
         LocalDate date = LocalDate.of(2024, 3, 17);
+        
         //getOrderDetail(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);

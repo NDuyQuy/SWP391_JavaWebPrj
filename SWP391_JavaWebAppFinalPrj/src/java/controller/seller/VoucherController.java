@@ -156,8 +156,9 @@ public class VoucherController extends HttpServlet {
             int min_require = Integer.parseInt(request.getParameter("min_require"));
             int use_count = Integer.parseInt(request.getParameter("use_count"));
             String description = request.getParameter("description");
-            int shop_id = Integer.parseInt(request.getParameter("shop_id"));
-            voucher = new Vouchers(id, code, discount_amount, start_date, expire_date, type, min_require, description, shop_id, use_count);
+            int productId = Integer.parseInt(request.getParameter("product_applied"));
+            voucher = new Vouchers(id, code, discount_amount, start_date, expire_date, type, min_require, description, use_count);
+            if(productId!=0) voucher.setProduct_id(productId);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

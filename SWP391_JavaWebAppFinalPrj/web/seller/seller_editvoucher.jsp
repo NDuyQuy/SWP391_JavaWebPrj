@@ -40,7 +40,8 @@
             <!-- header end -->
             <main>
                 <div class="container mt-5">
-                    <form action="sellersvouchercontroller" method="post">
+                    <form id="voucher_form" action="sellersvouchercontroller" method="post">
+
                         <input type="hidden" id ="act" name="act" value="edit">
                         <input type="hidden" id ="voucher_id" name="voucher_id" value="${voucher.voucher_id}">
                     <div class="form-row justify-content-center">
@@ -104,7 +105,7 @@
                     <div class="form-row justify-content-center">
                         <div class="form-group col-md-6">
                             <label for="description">Mô tả</label>
-                            <input type="text" class="form-control" id="description" name="description" value="${voucher.description}" required>
+                            <input type="text" class="form-control" id="description" name="description" value="${voucher.description}" >
                         </div>
                     </div>
 
@@ -112,7 +113,7 @@
                         <div class="form-group col-md-6">
                             <label for="product_applied">Sản phẩm được áp dụng</label>
                             <select class="form-control" id="product_applied" name="product_applied" required >
-                                <option>Chọn sản phẩm áp dụng</option>
+                                <option value="0">Chọn sản phẩm áp dụng</option>
                                 <c:forEach var="p" items="${requestScope.productList}">
                                     <option value="${p.product_id}" ${p.product_id eq voucher.product_id ? 'selected' : ''}>${p.name}</option>
                                 </c:forEach>
@@ -133,14 +134,39 @@
 
         <!-- JS here -->
         <script>
-            document.getElementById('voucherType').addEventListener('change', function () {
-                if (document.getElementById('voucherType').getAttribute("value") === '1') {
-                    document.getElementById('product_applied').setAttribute("disabled") ;
-                } else {
-                    document.getElementById('product_applied').removeAttribute("disabled") ;
-                }
+            $(document).ready(function () {
+                // Handler for voucher_type change event
+                $('#voucher_type').change(function () {
+                    var selectedValue = $(this).val();
+                    if (selectedValue == 1) {
+                        // If Voucher toàn shop is selected, disable the product_applied select box
+                        $('#product_applied').prop('disabled', true);
+                        // Reset product_applied select box to default option
+                        $('#product_applied').val(0);
+                    } else if (selectedValue == 2) {
+                        // If Voucher sản phẩm is selected, enable the product_applied select box
+                        $('#product_applied').prop('disabled', false);
+                    }
+                });
+
+                // Trigger change event on page load to initially set the state of product_applied select box
+                $('#voucher_type').trigger('change');
+            });
+
+            $(document).ready(function () {
+                $('#voucher_form').submit(function (event) {
+                    var voucherType = $('#voucher_type').val();
+                    var productApplied = $('#product_applied').val();
+
+                    // If voucher type is 2 and product applied is 0, show an alert and prevent form submission
+                    if (voucherType == 2 && productApplied == 0) {
+                        alert('Please choose a product for voucher application.');
+                        event.preventDefault(); // Prevent form submission
+                    }
+                });
             });
         </script>
+
         <script src="../js/vendor/jquery-1.12.4.min.js"></script>
         <script src="../js/jquery-ui.js"></script>
         <script src="../js/popper.min.js"></script>

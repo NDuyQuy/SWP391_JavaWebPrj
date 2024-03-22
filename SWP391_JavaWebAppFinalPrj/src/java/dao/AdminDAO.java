@@ -224,6 +224,7 @@ public class AdminDAO {
             if (Status.equals("Waiting")) status = 0;
             else if (Status.equals("Accept")) {
                 status = 1;
+                OrdersDao.createReturnOrder(id);
             }
             else if (Status.equals("Decline")) status = 2;
             

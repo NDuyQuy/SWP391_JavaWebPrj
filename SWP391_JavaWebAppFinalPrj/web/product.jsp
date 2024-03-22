@@ -63,18 +63,18 @@
             <c:if test="${requestScope.filter == null}">
                 <c:set var="plist" value="${sessionScope.product_list}"/>
             </c:if>
-                <!-- shop-area start -->
-                <section class="shop-area pt-100 pb-100">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xl-8 col-lg-8">
-                                <div class="shop-banner mb-50">
-                                    <img src="img/bg/shop-banner.png" alt="">
-                                </div>
-                                <!-- tab filter -->
-                                <div class="row mb-10">
-                                    <div class="col-xl-6 col-lg-6 col-md-6">
-                                        <div class="product-showing mb-40">
+            <!-- shop-area start -->
+            <section class="shop-area pt-100 pb-100">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-8">
+                            <div class="shop-banner mb-50">
+                                <img src="img/bg/shop-banner.png" alt="">
+                            </div>
+                            <!-- tab filter -->
+                            <div class="row mb-10">
+                                <div class="col-xl-6 col-lg-6 col-md-6">
+                                    <div class="product-showing mb-40">
                                         <c:if test="${plist != null}">
                                             <p style="font-family: 'Open Sans', sans-serif; font-weight: bold;">Đang hiện ${first + 1}–${last + 1} trong ${sessionScope.product_list.size()} kết quả</p>
                                         </c:if>
@@ -93,16 +93,16 @@
                                             </li>
                                         </ul>
                                     </div>
-<!--                                    <div class="pro-filter mb-40 f-right">
-                                        <form action="SearchProduct">
-                                            <select name="pro-filter" id="pro-filter">
-                                                <option value="1">Shop By </option>
-                                                <option value="2">New Product </option>
-                                                <option value="3">A to Z Product </option>
-                                                <option value="4">Z to A Product </option>
-                                            </select>
-                                        </form>
-                                    </div>-->
+                                    <!--                                    <div class="pro-filter mb-40 f-right">
+                                                                            <form action="SearchProduct">
+                                                                                <select name="pro-filter" id="pro-filter">
+                                                                                    <option value="1">Shop By </option>
+                                                                                    <option value="2">New Product </option>
+                                                                                    <option value="3">A to Z Product </option>
+                                                                                    <option value="4">Z to A Product </option>
+                                                                                </select>
+                                                                            </form>
+                                                                        </div>-->
                                 </div>
                             </div>
                             <c:if test="${plist == null}">
@@ -122,22 +122,24 @@
                                                             <a href="ProductDetail?product=${pr.product_id}">
                                                                 <img src="${pr.img}" alt="">
                                                             </a>
+                                                            
                                                             <div class="product-action text-center">
-                                                                <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
+                                                                <a href="AddToCart?id=${pr.product_id}&quantity=1" title="Thêm vào giỏ hàng">
                                                                     <i class="flaticon-shopping-cart"></i>
                                                                 </a>
                                                                 <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
                                                                     <i class="flaticon-eye"></i>
                                                                 </a>
                                                             </div>
+
                                                             <div class="sale-tag">
                                                                 <span class="new">new</span>
                                                             </div>
                                                         </div>
                                                         <div class="product-content">
                                                             <div class="pro-cat mb-10">
-                                                                <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
-                                                                <a href="ShopDetail?id=${pr.shop_id}#cate${pr.scate_id}" style="color: #525470">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
+                                                                <a href="SearchProduct?cate=${pr.shopCategory.maincategory.id}">${pr.shopCategory.maincategory.name} > </a>
+                                                                <a href="ShopDetail?id=${pr.shop_id}#cate${pr.scate_id}" style="color: #525470">${pr.shopCategory.name}</a>
                                                             </div>
                                                             <h4>
                                                                 <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
@@ -258,31 +260,31 @@
                                     </ul>
                                 </div>
 
-<!--                                <div class="shop-widget">
-                                    <h3 class="shop-title">Recent View</h3>
-                                    <ul class="shop-sidebar-product">
-                                        <c:forEach var="pr" items="${sessionScope.recent_list}">
-                                            <li>
-                                                <div class="side-pro-img">
-                                                    <a href="ProductDetail?product=${pr.product_id}"><img src="${pr.img}" alt=""></a>
-                                                </div>
-                                                <div class="side-pro-content">
-                                                    <div class="side-pro-rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                    </div>
-                                                    <h5><a href="ProductDetail?product=${pr.product_id}">${pr.name}</a></h5>
-                                                    <div class="side-pro-price">
-                                                        <span><fmt:formatNumber value="${pr.money}"/>đ</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </c:forEach>
-                                    </ul>
-                                </div>-->
+                                <!--                                <div class="shop-widget">
+                                                                    <h3 class="shop-title">Recent View</h3>
+                                                                    <ul class="shop-sidebar-product">
+                                <c:forEach var="pr" items="${sessionScope.recent_list}">
+                                    <li>
+                                        <div class="side-pro-img">
+                                            <a href="ProductDetail?product=${pr.product_id}"><img src="${pr.img}" alt=""></a>
+                                        </div>
+                                        <div class="side-pro-content">
+                                            <div class="side-pro-rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                            <h5><a href="ProductDetail?product=${pr.product_id}">${pr.name}</a></h5>
+                                            <div class="side-pro-price">
+                                                <span><fmt:formatNumber value="${pr.money}"/>đ</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                        </div>-->
 
                                 <div class="shop-widget">
                                     <div class="shop-sidebar-banner">

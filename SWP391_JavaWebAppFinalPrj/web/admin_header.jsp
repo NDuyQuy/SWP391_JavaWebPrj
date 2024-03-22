@@ -62,7 +62,7 @@
                             <div class="header-right f-right">
                                 <ul>
                                     <li class="login-btn">
-                                        <c:set var="username" value="${user.userName}"/>
+                                        <c:set var="username" value="${user.username}"/>
                                         <a href="#" id="userframe" style="border-radius: 30px; text-align: right; padding-right: 20px;background: #fff; border: 1px solid#fe5245;">
                                             <span id="username">${username}&nbsp;&nbsp;</span>
                                             <i class="far fa-user" style=""></i>
@@ -87,6 +87,11 @@
                                                 <span class="bar3" style="background: #fe5245;"></span>
                                             </div>
 
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div style="margin-top: -30px;">
+                                            <a class="logout" href="logout" style="color: #fe5245; text-decoration: underline;">Đăng xuất</a>
                                         </div>
                                     </li>
                                 </ul>

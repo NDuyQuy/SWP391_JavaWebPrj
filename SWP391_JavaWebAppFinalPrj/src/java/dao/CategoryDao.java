@@ -30,6 +30,8 @@ public class CategoryDao {
     
     private static final String GETMAINCATEGORIES = "Select * FROM [maincategory]";
     
+    private static final String GETSHOPCATEGORIES = "Select * FROM [shopcategory]";
+    
     public static MainCategory getMainCategoryById(int id){
         PreparedStatement ptm = null;
         ResultSet rs = null;
@@ -90,6 +92,26 @@ public class CategoryDao {
         }
         return cate_list;
     }
+    
+    public static ArrayList<ShopCategory> getShopCategories(){
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        ShopCategory sc = null;
+        ArrayList<ShopCategory> cate_list = new ArrayList<>();
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(GETSHOPCATEGORIES);
+            rs = ptm.executeQuery();
+            while(rs.next()){
+                sc = new ShopCategory();
+                sc.setId(rs.getInt("id"));
+                sc.setName(rs.getString("name"));
+                cate_list.add(sc);
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return cate_list;
+    } 
     
     public static ArrayList<ShopCategory> getShopCategoryByShop(int s_id){
         PreparedStatement ptm = null;

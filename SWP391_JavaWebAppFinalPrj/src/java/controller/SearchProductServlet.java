@@ -7,7 +7,6 @@ package controller;
 import dao.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.MainCategory;
 import model.Products;
 
 /**
@@ -60,10 +58,10 @@ public class SearchProductServlet extends HttpServlet {
                         if(p.getName().toLowerCase().contains(keyword.toLowerCase())){
                             result.add(p);
                             break;
-                        } else if (CategoryDao.getMainCategoryById(CategoryDao.getShopCategoryById(p.getScate_id()).getMaincate_id()).getName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getMaincategory().getName().contains(kw[i])) {
                             result.add(p);
                             break;
-                        } else if (CategoryDao.getShopCategoryById(p.getScate_id()).getName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getName().contains(kw[i])) {
                             result.add(p);
                             break;
                         }

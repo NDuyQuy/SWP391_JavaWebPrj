@@ -145,8 +145,8 @@
                                                                 </div>
                                                                 <div class="product-content">
                                                                     <div class="pro-cat mb-10">
-                                                                        <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
-                                                                        <a href="#">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
+                                                                        <a href="SearchProduct?cate=${pr.shopCategory.maincategory.id}">${pr.shopCategory.maincategory.name} > </a>
+                                                                        <a href="#">${pr.shopCategory.name}</a>
                                                                     </div>
                                                                     <h4>
                                                                         <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
@@ -197,8 +197,8 @@
                                                                     </div>
                                                                     <div class="product-content">
                                                                         <div class="pro-cat mb-10">
-                                                                            <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(sc.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(sc.scate_id).maincate_id).name} > </a>
-                                                                            <a href="#">${sessionScope.categoryDao.getShopCategoryById(sc.scate_id).name}</a>
+                                                                            <a href="SearchProduct?cate=${sc.shopCategory.maincategory.id}">${sc.shopCategory.maincategory.name}</a> >
+                                                                            <a href="#">${sc.shopCategory.name}</a>
                                                                         </div>
                                                                         <h4>
                                                                             <a href="ProductDetail?product=${sc.product_id}">${sc.name}</a>

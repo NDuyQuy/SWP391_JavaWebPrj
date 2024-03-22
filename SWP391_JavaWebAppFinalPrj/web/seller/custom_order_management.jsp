@@ -68,9 +68,17 @@
                                         <td><c:out value="${c.product_name}"/></td>
                                         <td><c:out value="${c.order.status}"/></td>
                                         <td><c:out value="${c.order.total}"/></td>
-                                        <td>
-                                            <a href="CustomOrderController?open=up&o_id=${c.id}">Cập nhật quá trình</a>
-                                        </td>
+                                        <c:if test="${c.order.status eq 'WAC'}">
+                                            <td>
+                                                <a id="copyLink" data-suffix="${c.id}">Lấy link</a>
+                                            </td>
+                                        </c:if>
+                                        <c:if test="${c.order.status != 'WAC'}">
+                                            <td>
+                                                <a href="CustomOrderController?open=up&o_id=${c.id}">Cập nhật quá trình</a>
+                                            </td>
+                                        </c:if>
+                                        
                                     </tr>
                                 </c:forEach>
                             </tbody> 
@@ -123,6 +131,27 @@
             function closePopup(type) {
                 $('#' + type + 'Popup').modal('hide');
             }
+            document.getElementById('copyLink').addEventListener('click', function(event) {
+                // Prevent the default behavior of the <a> tag
+                event.preventDefault();
+                
+                // Get the link you want to copy
+                var linkToCopy = window.location.href; // You can replace this with the actual link you want to copy
+                var suffix = this.getAttribute('data-suffix');
+                var fullURL = window.location.protocol + '//' + window.location.host + '${pageContext.request.contextPath}/' + 'CustomOrderAcc?id=' + suffix;
+            
+                // Copy the link to the clipboard
+                navigator.clipboard.writeText(fullURL)
+                    .then(function() {
+                        // If successful, display a message
+                        alert('Link is saved to the clipboard: ' + fullURL);
+                    })
+                    .catch(function(err) {
+                        // If unable to copy, display an error message
+                        console.error('Could not copy text: ', err);
+                        alert('Error: Unable to copy link to clipboard.');
+                    });
+            });
         </script>
         <!-- JS here -->
         <script src="js/vendor/jquery-1.12.4.min.js"></script>
