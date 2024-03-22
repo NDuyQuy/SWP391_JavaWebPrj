@@ -107,12 +107,12 @@ public class VoucherController extends HttpServlet {
         try {
             switch (act) {
                 case "create":
-                    voucher = getVoucher(request, response);
+                    voucher = getVoucher(request);
                     voucher.setShop_id(id);
                     SellersDao.createShopVoucher(voucher);
                     break;
                 case "edit":
-                    voucher = getVoucher(request, response);
+                    voucher = getVoucher(request);
                     voucher.setShop_id(id);
                     SellersDao.editShopVoucher(voucher);
                     break;
@@ -140,7 +140,7 @@ public class VoucherController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Vouchers getVoucher(HttpServletRequest request, HttpServletResponse response)
+    private Vouchers getVoucher(HttpServletRequest request)
             throws ServletException, IOException {
         Vouchers voucher = null;
         try {

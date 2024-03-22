@@ -155,7 +155,7 @@ public class CustomOrderController extends HttpServlet {
         String description = request.getParameter("description");
         String status = request.getParameter("status");
         CustomOrderDetail cod = new CustomOrderDetail(orderId, imgPath, videoPath, description);
-        OrdersDao.updateCustomOrderProcessDetai(cod, status);
+        OrdersDao.updateCustomOrderProcessDetail(cod, status);
     }
 
     private String getUploadDir(int order_id) throws IOException {

@@ -246,7 +246,7 @@ public class OrdersDao {
         }
         return list;
     }
-    public static void updateCustomOrderProcessDetai(CustomOrderDetail cod, String status){
+    public static void updateCustomOrderProcessDetail(CustomOrderDetail cod, String status){
         PreparedStatement ptm = null;
         try(Connection con = SQLConnection.getConnection()){
             ptm = con.prepareStatement(UPDATE_STATUS);
@@ -314,7 +314,7 @@ public class OrdersDao {
         }
         return ods;
     }
-    public static void acceptOrder(int unit_id, int order_id){
+    public static void acceptOrder(int unit_id, int order_id){  
         try(Connection con = SQLConnection.getConnection()){
             PreparedStatement statement = con.prepareStatement("UPDATE [orders]"
                     + "SET [status]=N'đơn hàng đang được chuyển cho shippingunit', [shippingunit_id]=?  WHERE [order_id]=?");

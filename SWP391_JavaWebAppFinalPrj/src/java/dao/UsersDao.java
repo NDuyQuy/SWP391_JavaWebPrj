@@ -20,7 +20,7 @@ public class UsersDao {
     private static final String CHECKLOGINBYEMAIL = "SELECT [fullname] FROM [users] WHERE [email]=? and [password]=?";
     private static final String REGISTER = "INSERT INTO [users](username,password,email) values (?,?,?)";
     private static final String UPDATEUSERSPROFILE = "UPDATE [users] SET img = ?, fullname = ?, phone = ?, address = ? WHERE username = ?";
-    private static final String RESETPASSWORD = "UPDATE [users] SET password = ? WHERE email = ?";
+    private static final String RESETPASSWORD = "UPDATE [users] SET password = '123456' WHERE email = ?";
     private static final String GETUSERSINFOBYUSERNAME = "SELECT [id], [fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [username] = ?";
     private static final String GETUSERSINFOBYEMAIL = "SELECT [id], [username],[fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
