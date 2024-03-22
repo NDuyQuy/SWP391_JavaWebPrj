@@ -2,6 +2,7 @@ use master
 go
 
 CREATE DATABASE SWP391_FinalPrjDB 
+go
 
 use SWP391_FinalPrjDB
 go

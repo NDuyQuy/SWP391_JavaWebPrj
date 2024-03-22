@@ -23,6 +23,16 @@ public class ReportDetail {
     public ReportDetail() {
     }
 
+    public ReportDetail(int id, int shop_id, int reporter_id, Date created_date, String text) {
+        this.id = id;
+        this.shop_id = shop_id;
+        this.reporter_id = reporter_id;
+        this.created_date = created_date;
+        this.text = text;
+    }
+    
+    
+
     public int getId() {
         return id;
     }

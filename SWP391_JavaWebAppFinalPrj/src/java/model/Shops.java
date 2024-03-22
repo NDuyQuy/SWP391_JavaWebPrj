@@ -25,6 +25,24 @@ public class Shops{
     public Shops() {
     }
 
+    public Shops(int shop_id) {
+        this.shop_id = shop_id;
+    }
+
+    public Shops(int shop_id, String CCCD, String description, String shop_img, int shop_reported_count, String shop_name, Date ban_time, int ban_status, Users users) {
+        this.shop_id = shop_id;
+        this.CCCD = CCCD;
+        this.description = description;
+        this.shop_img = shop_img;
+        this.shop_reported_count = shop_reported_count;
+        this.shop_name = shop_name;
+        this.ban_time = ban_time;
+        this.ban_status = ban_status;
+        this.users = users;
+    }
+    
+    
+
     public int getShop_id() {
         return shop_id;
     }

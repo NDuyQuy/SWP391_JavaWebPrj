@@ -4,9 +4,8 @@
  */
 package controller;
 
-import dao.CategoryDao;
-import dao.ProductDao;
-import dao.SellersDao;
+import dao.MessageDao;
+import dao.SUDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -15,14 +14,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.*;
-import model.ShopCategory;
+import model.Orders;
+import model.Shops;
+import model.Users;
 
 /**
  *
- * @author hien
+ * @author DELL
  */
-public class ShopDetailController extends HttpServlet {
+public class ShippingUnitController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,18 +36,47 @@ public class ShopDetailController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        int s_id = Integer.parseInt(request.getParameter("id"));
-        Shops shop = SellersDao.getShopById(s_id);
-        ArrayList<Products> plist = ProductDao.getProductsByShop(s_id);
-        ArrayList<ShopCategory> cate_shop = CategoryDao.getShopCategoryByShop(s_id);
-        ProductDao dao = new ProductDao();
-        
+        String url = "/***";
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = request.getSession();
-        session.setAttribute("sh", shop);
-        session.setAttribute("cate_shop", cate_shop);
-        session.setAttribute("product_by_shop", plist);
-        session.setAttribute("productDao", dao);
-        request.getRequestDispatcher("shop_detail.jsp").forward(request, response);
+        boolean Continue = true;
+        try {
+            String action = session.getAttribute("Action").toString();
+            int id = ((Users)session.getAttribute("User")).getId();
+            if (action.equals("ViewWaitingOrderList")) {
+                ArrayList<Orders> orders = SUDao.GetWaitingOrderList(id);
+                session.setAttribute("OL", orders);
+            }
+            else if (action.equals("ViewAcceptOrderList")) {
+                ArrayList<Orders> orders = SUDao.GetAcceptOrderList(id);
+                session.setAttribute("OL", orders);
+            }
+            else if (action.equals("AcceptOrder")) {
+                Continue = false;
+                int orderId = Integer.parseInt(session.getAttribute("OrderId").toString());
+                SUDao.AcceptOrder(orderId);
+            }
+            else if (action.equals("DeclineOrder")) {
+                Continue = false;
+                int orderId = Integer.parseInt(session.getAttribute("OrderId").toString());
+                SUDao.DeclineOrder(orderId);
+            }
+            else if (action.equals("ShippingOrder")) {
+                Continue = false;
+                int orderId = Integer.parseInt(session.getAttribute("OrderId").toString());
+                SUDao.AcceptOrder(orderId);
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Error While Loading...");
+        }
+        finally {
+            if (!Continue) httpResponse.sendRedirect(httpRequest.getContextPath() + url);
+            System.out.println("Loading...");
+        }
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

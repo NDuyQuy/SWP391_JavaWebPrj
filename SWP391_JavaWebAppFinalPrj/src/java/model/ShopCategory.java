@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+import dao.CategoryDao;
 
 /**
  *
@@ -10,7 +11,6 @@ package model;
  */
 public class ShopCategory {
     private int id;
-    private int maincate_id;
     private int shop_id;
     private String name;
     private String description;
@@ -20,28 +20,34 @@ public class ShopCategory {
     public ShopCategory() {
     }
 
+
+    public ShopCategory(int id, int shop_id, String name, String description, MainCategory maincategory, Shops shop) {
+        this.id = id;
+        this.shop_id = shop_id;
+        this.name = name;
+        this.description = description;
+        this.maincategory = maincategory;
+        this.shop = shop;
+    }
+    
+    
+
+
     public ShopCategory(int id, int maincate_id, int shop_id, String name, String description) {
         this.id = id;
-        this.maincate_id = maincate_id;
+        this.maincategory = CategoryDao.getMainCategoryById(maincate_id);
         this.shop_id = shop_id;
         this.name = name;
         this.description = description;
     }
     
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getMaincate_id() {
-        return maincate_id;
-    }
-
-    public void setMaincate_id(int maincate_id) {
-        this.maincate_id = maincate_id;
     }
 
     public int getShop_id() {
@@ -84,9 +90,10 @@ public class ShopCategory {
         this.shop = shop;
     }
     
+
     @Override
     public String toString() {
-        return "ShopCategory{" + "id=" + id + ", maincate_id=" + maincate_id + ", shop_id=" + shop_id + ", name=" + name + ", description=" + description + '}';
+        return "ShopCategory{" + "id=" + id + ", maincate_id=" + ", shop_id=" + shop_id + ", name=" + name + ", description=" + description + '}';
     }
     
 }

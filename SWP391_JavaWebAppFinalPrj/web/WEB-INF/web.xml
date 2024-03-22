@@ -88,6 +88,30 @@
         <servlet-name>CustomOrderController</servlet-name>
         <servlet-class>controller.seller.CustomOrderController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Checkout</servlet-name>
+        <servlet-class>controller.Checkout</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ChatController</servlet-name>
+        <servlet-class>controller.ChatController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoadChatConntroller</servlet-name>
+        <servlet-class>controller.LoadChatConntroller</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShippingUnitController</servlet-name>
+        <servlet-class>controller.ShippingUnitController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShopLoadChatController</servlet-name>
+        <servlet-class>controller.ShopLoadChatController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShopChatController</servlet-name>
+        <servlet-class>controller.ShopChatController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -175,6 +199,30 @@
     <servlet-mapping>
         <servlet-name>CustomOrderController</servlet-name>
         <url-pattern>/CustomOrderController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Checkout</servlet-name>
+        <url-pattern>/Checkout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChatController</servlet-name>
+        <url-pattern>/ChatController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadChatConntroller</servlet-name>
+        <url-pattern>/LoadChatConntroller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShippingUnitController</servlet-name>
+        <url-pattern>/ShippingUnitController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopLoadChatController</servlet-name>
+        <url-pattern>/ShopLoadChatController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShopChatController</servlet-name>
+        <url-pattern>/ShopChatController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

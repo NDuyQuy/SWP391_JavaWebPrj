@@ -24,6 +24,13 @@ public class CartDetail {
         this.product_id = product_id;
         this.quantity = quantity;
     }
+    public CartDetail(int user_id, int product_id, int quantity, Users user, Products product) {
+        this.user_id = user_id;
+        this.product_id = product_id;
+        this.quantity = quantity;
+        this.user = user;
+        this.product = product;
+    }
 
     public int getUser_id() {
         return user_id;

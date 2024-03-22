@@ -15,9 +15,19 @@ import model.*;
  * @author hien
  */
 public class CategoryDao {
+    
+    private static final String CREATESHOPCATEGORY = "INSERT INTO [shopcategory]([maincate_id],[shop_id],[name],[description]) VALUES (?, ?, ?, ?)";
+    
+    private static final String UPDATESHOPCATEGORY = "UPDATE [shopcategory] SET [maincate_id] = ?,[shop_id] = ?,[name] = ?,[description] = ? WHERE [id] = ?";
+    
+    private static final String DELETESHOPCATEGORY = "DELETE [shopcategory] WHERE [id] = ?";
+
     private static final String GETMAINCATEGORYBYID = "Select * FROM [maincategory] WHERE [id]=?";
+    
     private static final String GETSHOPCATEGORYBYID = "Select * FROM [shopcategory] WHERE [id]=?";
+    
     private static final String GETSHOPCATEGORYBYSHOP = "Select * from [shopcategory] where [shop_id]=?";
+    
     private static final String GETMAINCATEGORIES = "Select * FROM [maincategory]";
     
     public static MainCategory getMainCategoryById(int id){
@@ -29,7 +39,9 @@ public class CategoryDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                mc = new MainCategory(id, rs.getString("name").trim());
+                String name = rs.getString("name").trim();
+                String description = rs.getString("description").trim();
+                mc = new MainCategory(id, name, description);
             }
         }catch(Exception ex){
             ex.printStackTrace();
@@ -103,6 +115,47 @@ public class CategoryDao {
         }
         return cate_shop;
     }
+
+    public static void addShopCategory(int mainct, String name, String Description, int shop_id) {
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(CREATESHOPCATEGORY);
+            ptm.setInt(1, mainct);
+            ptm.setInt(2, shop_id);
+            ptm.setString(3, name);
+            ptm.setString(4, Description);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void updateShopCategory(int shopct, int mainct, String name, String Description, int shop_id) {
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(UPDATESHOPCATEGORY);
+            ptm.setInt(1, mainct);
+            ptm.setInt(2, shop_id);
+            ptm.setString(3, name);
+            ptm.setString(4, Description);
+            ptm.setInt(5, shopct);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void deleteShopCategory(int shopct) {
+        PreparedStatement ptm = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement(DELETESHOPCATEGORY);
+            ptm.setInt(1, shopct);
+            ptm.executeUpdate();
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+ 
     public static void main(String[] args) {
         getMainCategories().forEach(System.out::println);
         //System.out.println(getMainCategoryById(2));

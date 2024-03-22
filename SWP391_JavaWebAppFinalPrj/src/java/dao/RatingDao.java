@@ -21,6 +21,10 @@ public class RatingDao {
     private static final String GETRATINGSBYPRODUCT = "Select r.id,r.orderdetail_id,[time_stamp],[score],[comment] from ratings r\n"
             + "join orderdetail o\n"
             + "on r.orderdetail_id = o.id and o.productID = ?";
+    
+    private static final String CREATERATING = "INSERT INTO [dbo].[ratings]([orderdetail_id], [score], [comment]) VALUES (?, ?, ?)";
+    
+    private static final String UPDATERATING = "UPDATE [dbo].[ratings] SET [orderdetail_id] = ?, [score] = ?, [comment] = ? WHERE [id] = ?";
 
     public static ArrayList<Ratings> getRatingsByProduct(int p_id) {
         PreparedStatement ptm = null;
@@ -35,7 +39,7 @@ public class RatingDao {
                 r = new Ratings();
                 r.setId(rs.getInt(1));
                 r.setOrderdetail(OrderDetailDao.getOrderDetailById(rs.getInt(2)));
-                r.setTime_stamp(Date.valueOf(rs.getDate(3).toString()));
+                r.setTime_stamp(rs.getDate(3));
                 r.setScore(rs.getInt(4));
                 r.setComment(rs.getString(5));
                 rating_by_product.add(r);

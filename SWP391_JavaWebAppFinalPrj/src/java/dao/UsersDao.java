@@ -24,7 +24,7 @@ public class UsersDao {
     private static final String GETUSERSINFOBYUSERNAME = "SELECT [id], [fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [username] = ?";
     private static final String GETUSERSINFOBYEMAIL = "SELECT [id], [username],[fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
-    private static final String GETUSERBYID = "SELECT [username],[address] FROM [users] WHERE [id]=?";
+    private static final String GETUSERBYID = "SELECT [username],[address],[img] FROM [users] WHERE [id]=?";
 
     public static boolean checkLogin(String username, String password) {
         //Login via usersname and password
@@ -195,6 +195,7 @@ public class UsersDao {
                 user.setId(id);
                 user.setUsername(rs.getNString("username").trim());
                 user.setAddress(rs.getNString("address") == null ? null : rs.getNString("address").trim());
+                user.setImg(rs.getNString("img"));
             }
         } catch (Exception e) {
             e.printStackTrace();
