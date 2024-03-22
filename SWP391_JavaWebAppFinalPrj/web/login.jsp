@@ -78,7 +78,7 @@
                                     <input id="pass" type="password" placeholder="Enter password..." name="password" oninput="checkTextField();" />
                                         <div class="login-action mb-20 fix">
                                             <span class="log-rem f-left">
-                                                <input id="remember" type="checkbox" />
+                                                <input id="remember" type="checkbox" name="rm"/>
                                                 <label for="remember">Remember me!</label>
                                             </span>
                                             <span class="forgot-login f-right">

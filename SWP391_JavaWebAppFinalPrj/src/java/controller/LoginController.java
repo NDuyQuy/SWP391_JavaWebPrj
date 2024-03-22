@@ -73,6 +73,7 @@ public class LoginController extends HttpServlet {
             throws ServletException, IOException {
         String url = "";
         String username = "", password="";
+        String rm = request.getParameter("rm");
         try {
             username = request.getParameter("username");
             password = request.getParameter("password");

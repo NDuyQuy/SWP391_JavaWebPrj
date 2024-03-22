@@ -14,6 +14,7 @@ public class OrderDetail {
     private int productID;
     private int quantity;
     private String cancel_reason;
+    private int totalPrice;
     private Orders order;
     private Products product;
 
@@ -76,6 +77,14 @@ public class OrderDetail {
         this.product = product;
     }
 
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+    
     @Override
     public String toString() {
         return "OrderDetail{" + "id=" + id + ", orderID=" + orderID + ", productID=" + productID + ", quantity=" + quantity + ", cancel_reason=" + cancel_reason + '}';

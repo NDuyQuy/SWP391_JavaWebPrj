@@ -16,8 +16,7 @@ import model.*;
 public class SellersDao {
    
     private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_name],[CCCD] FROM [shops] WHERE [shop_id]=?";
-    private static final String GETALLSHOP = "Select s.[shop_id],[shop_name],[shop_img],[shop_description] from [shops] s"
-            + " join [users] u on s.[shop_id] = u.[id] where u.[role] = 2";
+    private static final String GETALLSHOP = "Select [shop_id],[shop_name],[shop_img],[shop_description] from [shops]";
     private static final String UPDATESHOPINFO = "UPDATE [shops] SET [shop_name] = ?,[shop_description] = ?,[shop_img] = ? WHERE [shop_id] = ?";
     //SHOP CATEGORY RELATED SQL STATEMENT 
     private static final String GETSHOPCATEGORIES = "SELECT s.[id], s.[name],m.[name],m.[id] "
@@ -39,12 +38,24 @@ public class SellersDao {
     private static final String GETVOUCHERBYID = "SELECT [voucher_id],[code],[discount_amount],[start_date],[expire_date],[type],[min_require],[description],[shop_id],[product_id],[use_count] FROM [vouchers] WHERE [voucher_id] = ?";
     
     private static final String CREATEVOUCHER = "INSERT INTO [vouchers]([code],[discount_amount],"
-            + "[start_date],[expire_date],[type],[description],[shop_id],[use_count],[min_require]) VALUES(?,?,?,?,?,?,?,?,?)";
+            + "[start_date],[expire_date],[type],[description],[shop_id],[product_id],[use_count],[min_require]) VALUES(?,?,?,?,?,?,?,?,?,?)";
     private static final String EDITVOUCHER = "UPDATE [vouchers] SET [code]=?, [discount_amount]=?, [start_date]=?, [expire_date]=?, "
-            + "[type]=?, [description]=?,[shop_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
+            + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
     //CUSTOM ORDER REALTED SQL STATEMENt
-    
+    public static int getShopIdByName(String name){
+        int id = 0;
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement("SELECT [shop_id]FROM [shops]WHERE [shop_name] = ?");
+            statement.setNString(1, name);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()){
+                id = rs.getInt("shop_id");
+            }
+        } catch (Exception e) {
+        }
+        return id;
+    }
     public static void updateShopInfo(Shops shop){
         PreparedStatement ptm = null;
         try(Connection con=SQLConnection.getConnection()){
@@ -53,7 +64,6 @@ public class SellersDao {
             ptm.setNString(2,shop.getDescription());
             ptm.setNString(3,shop.getShop_img());
             ptm.setInt(4, shop.getShop_id());
-            ptm.executeUpdate();
         }catch(Exception ex){
             ex.printStackTrace();
         }
@@ -68,7 +78,6 @@ public class SellersDao {
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
             if(rs.next()){
-                shop.setShop_id(id);
                 shop.setUsers(user);
                 shop.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
                 shop.setShop_img(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
@@ -123,9 +132,6 @@ public class SellersDao {
                 String mname = rs.getString(3).trim();
                 int mcate_id = rs.getInt(4);
                 sc.setMaincategory(new MainCategory(mcate_id, mname));
-                sc.setId(id);   
-                sc.setName(sname);
-                sc.setShop(new Shops(shop_id));
                 sc.setId(id);   sc.setName(sname); sc.setMaincate_id(mcate_id);
                 shopCategories.add(sc);
             }
@@ -217,8 +223,8 @@ public class SellersDao {
                 int min_require = rs.getInt("min_require");
                 String description = rs.getString("description");
                 int shop_id = rs.getInt("shop_id") ;
+                int product_id = rs.getInt("product_id") ;
                 int use_count = rs.getInt("use_count");
-                int product_id = rs.getInt("product_id");
                 voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
                 voucher.setUse_count(use_count);
                 voucher.setShop_id(shop_id);
@@ -240,8 +246,9 @@ public class SellersDao {
             ptm.setInt(5, voucher.getType());
             ptm.setNString(6, voucher.getDescription());
             ptm.setInt(7, voucher.getShop_id());
-            ptm.setInt(8, voucher.getUse_count());
-            ptm.setInt(9, voucher.getMin_require());
+            ptm.setInt(8, voucher.getProduct_id());
+            ptm.setInt(9, voucher.getUse_count());
+            ptm.setInt(10, voucher.getMin_require());
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -258,9 +265,10 @@ public class SellersDao {
             ptm.setInt(5, voucher.getType());
             ptm.setNString(6, voucher.getDescription());
             ptm.setInt(7, voucher.getShop_id());
-            ptm.setInt(8, voucher.getUse_count());
-            ptm.setInt(9, voucher.getMin_require());
-            ptm.setInt(10, voucher.getVoucher_id());
+            ptm.setInt(8, voucher.getProduct_id());
+            ptm.setInt(9, voucher.getUse_count());
+            ptm.setInt(10, voucher.getMin_require());
+            ptm.setInt(11, voucher.getVoucher_id());
             ptm.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -329,10 +337,8 @@ public class SellersDao {
     public static void main(String[] args) {
         //getShopVouchers(1).forEach(System.out::println);
         //getShopProducts(1).forEach(System.out::println);
-        Vouchers vo = getVoucherByID(9);
-        vo.setDescription("Voucher giảm giá sốc chưa từng có.");
-        editShopVoucher(vo);
-        System.out.println(getVoucherByID(9));
+        
+        System.err.println(getShopIdByName("A Shop"));
     }
     
 }

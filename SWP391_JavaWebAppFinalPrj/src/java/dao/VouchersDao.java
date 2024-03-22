@@ -19,10 +19,7 @@ import model.Vouchers;
 public class VouchersDao {
     private static final String GET_SYSTEM_VOUCHERS_AND_SHOPVOUCHER_BY_SHOPNAME = "SELECT * FROM vouchers "
             + "WHERE shop_id IN (SELECT shop_id FROM shops WHERE shop_name = ?) "
-            + "OR (type = 0) AND [use_count] > 0";
-    
-    private static final String GET_SYSTEM_VOUCHER = "SELECT * FROM vouchers WHERE type = ?";
-    
+            + "OR (type = 0) AND [use_count] > 0 AND [min_require] <= ?";
     private static Vouchers extractVoucher(ResultSet rs) throws SQLException{
         int voucherId = rs.getInt("voucher_id");
         String code = rs.getString("code");
@@ -45,6 +42,24 @@ public class VouchersDao {
     public static Vouchers getVoucherByID(int id){
         return SellersDao.getVoucherByID(id);
     }
+    public static List<Vouchers> getVouchersByCondition(String shopName, double min_require) {
+        List<Vouchers> vouchers = new ArrayList<>();
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(GET_SYSTEM_VOUCHERS_AND_SHOPVOUCHER_BY_SHOPNAME)) {
+            ps.setString(1, shopName);
+            ps.setDouble(2, min_require);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Vouchers voucher = extractVoucher(rs);
+                    vouchers.add(voucher);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return vouchers;
+    }
+    private static final String GET_SYSTEM_VOUCHER = "SELECT * FROM vouchers WHERE type = ?";
     public static ArrayList<Vouchers> getSystemVouchers() throws ClassNotFoundException {
         ArrayList<Vouchers> vouchers = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
@@ -59,26 +74,8 @@ public class VouchersDao {
             e.printStackTrace();
         }
         return vouchers;
-    }
-    
-    public static List<Vouchers> getVouchersByCondition(String shopName) {
-        List<Vouchers> vouchers = new ArrayList<>();
-        try (Connection con = SQLConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement(GET_SYSTEM_VOUCHERS_AND_SHOPVOUCHER_BY_SHOPNAME)) {
-            ps.setString(1, shopName);
-           // ps.setInt(2, productId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Vouchers voucher = extractVoucher(rs);
-                    vouchers.add(voucher);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return vouchers;
-    }
+    } 
     public static void main(String[] args) {
-        getVouchersByCondition("A Shop").forEach(System.out::println);
+        getVouchersByCondition("A Shop", 299000).forEach(System.out::println);
     }
 }

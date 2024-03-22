@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.*;
 import model.*;
@@ -50,6 +51,148 @@ public class OrdersDao {
 
     private static final String CREATE_RETURN_ORDER = "INSERT INTO [orders]([customer_id],[shop_id],[status],[receiver_name],[receiver_phone],[receiver_address],[shippingunit_id],[type]) values (?,?,?,?,?,?,?,3)";
     
+    
+    private static final String UPDATE_ORDER_STATUS = "UPDATE orders SET status = ? WHERE order_id = ?";
+
+    // tao don hang va chi tiet don hang
+    public static  boolean addOrderAndDetails(Orders order, List<OrderDetail> orderDetails) throws Exception {
+        Connection con = null;
+        PreparedStatement addOrderStmt = null;
+        PreparedStatement addOrderDetailStmt = null;
+        ResultSet generatedKeys = null;
+
+        try {
+            con = SQLConnection.getConnection();
+            con.setAutoCommit(false); // Bắt đầu transaction
+
+            // Thêm đơn hàng vào bảng orders
+            addOrderStmt = con.prepareStatement(ADD_ORDER, Statement.RETURN_GENERATED_KEYS);
+            addOrderStmt.setInt(1, order.getCustomer_id());
+            addOrderStmt.setInt(2, order.getShop_id());
+            addOrderStmt.setInt(3, order.getShipping_cost());
+            addOrderStmt.setInt(4, order.getTotal());
+            addOrderStmt.setNString(5, order.getPayment_method());
+            addOrderStmt.setNString(6, "Chờ xác nhận");
+            addOrderStmt.setNString(7, order.getReceiver_name());
+            addOrderStmt.setNString(8, order.getReceiver_phone());
+            addOrderStmt.setNString(9, order.getReceiver_address());
+            addOrderStmt.setNString(10, order.getShipping_method());
+            addOrderStmt.setInt(11, 1);
+            addOrderStmt.setInt(12, order.getVoucher_id());
+            int affectedRows = addOrderStmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new Exception("Creating order failed, no rows affected.");
+            }
+
+            generatedKeys = addOrderStmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                order.setOrder_id(generatedKeys.getInt(1));
+            } else {
+                throw new Exception("Creating order failed, no ID obtained.");
+            }
+
+            // Thêm chi tiết đơn hàng vào bảng orderdetail
+            addOrderDetailStmt = con.prepareStatement(ADD_ORDER_DETAIL);
+            for (OrderDetail detail : orderDetails) {
+                addOrderDetailStmt.setInt(1, order.getOrder_id());
+                addOrderDetailStmt.setInt(2, detail.getProductID());
+                addOrderDetailStmt.setInt(3, detail.getQuantity());
+                addOrderDetailStmt.setDouble(4, detail.getTotalPrice());
+                addOrderDetailStmt.addBatch();
+            }
+            addOrderDetailStmt.executeBatch();
+
+            con.commit(); // Kết thúc transaction
+            return true;
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    con.rollback();
+                } catch (SQLException excep) {
+                    excep.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (generatedKeys != null) {
+                    generatedKeys.close();
+                }
+                if (addOrderStmt != null) {
+                    addOrderStmt.close();
+                }
+                if (addOrderDetailStmt != null) {
+                    addOrderDetailStmt.close();
+                }
+                if (con != null) {
+                    con.setAutoCommit(true); // Trả lại trạng thái ban đầu cho AutoCommit
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // lấy dữ liệu để hiển thị trong orderdetail.jsp
+    public Orders getOrderAndDetailsById(int orderId) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement getOrderAndDetailsStmt = con.prepareStatement(GET_ORDER_AND_DETAILS_BY_ID)) {
+            getOrderAndDetailsStmt.setInt(1, orderId);
+
+            try (ResultSet rs = getOrderAndDetailsStmt.executeQuery()) {
+                Orders order = null;
+                List<OrderDetail> orderDetails = new ArrayList<>();
+
+                while (rs.next()) {
+                    if (order == null) {
+                        order = extractOrderFromResultSet(rs);
+                    }
+
+                    OrderDetail orderDetail = new OrderDetail();
+                    orderDetail.setId(rs.getInt("id"));
+                    orderDetail.setQuantity(rs.getInt("quantity"));
+
+                    Products product = new Products();
+                    product.setProduct_id(rs.getInt("product_id"));
+                    product.setName(rs.getString("name"));
+                    // product.setMoney(rs.getInt("money"));
+                    product.setImg(rs.getString("img"));
+
+                    orderDetail.setProduct(product);
+                    orderDetails.add(orderDetail);
+                }
+
+                if (order != null) {
+                    order.setOrderDetails(orderDetails);
+                }
+
+                return order;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //day la customer update status 
+    public static boolean updateOrderStatus(int orderId, String newStatus) throws ClassNotFoundException {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement updateStatusStmt = con.prepareStatement(UPDATE_ORDER_STATUS)) {
+            updateStatusStmt.setNString(1, newStatus);
+            updateStatusStmt.setInt(2, orderId);
+
+            int affectedRows = updateStatusStmt.executeUpdate();
+
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public List<Orders> getOrdersByUserId(int userId) {
         List<Orders> orders = new ArrayList<>();
 
@@ -93,59 +236,6 @@ public class OrdersDao {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    public Orders getOrderAndDetailsById(int orderId) {
-        try ( Connection con = SQLConnection.getConnection();  PreparedStatement getOrderAndDetailsStmt = con.prepareStatement(GET_ORDER_AND_DETAILS_BY_ID)) {
-            getOrderAndDetailsStmt.setInt(1, orderId);
-
-            try ( ResultSet rs = getOrderAndDetailsStmt.executeQuery()) {
-                Orders order = null;
-                List<OrderDetail> orderDetails = new ArrayList<>();
-
-                while (rs.next()) {
-                    if (order == null) {
-                        order = extractOrderFromResultSet(rs);
-                    }
-
-                    OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.setId(rs.getInt("id"));
-                    orderDetail.setQuantity(rs.getInt("quantity"));
-
-                    Products product = new Products();
-                    product.setProduct_id(rs.getInt("product_id"));
-                    product.setName(rs.getString("name"));
-                    // product.setMoney(rs.getInt("money"));
-                    product.setImg(rs.getString("img"));
-
-                    orderDetail.setProduct(product);
-                    orderDetails.add(orderDetail);
-                }
-
-                if (order != null) {
-                    order.setOrderDetails(orderDetails);
-                }
-
-                return order;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static boolean updateOrderStatus(int orderId, String newStatus) throws ClassNotFoundException {
-        try ( Connection con = SQLConnection.getConnection();  PreparedStatement updateStatusStmt = con.prepareStatement(UPDATE_STATUS)) {
-            updateStatusStmt.setString(1, newStatus);
-            updateStatusStmt.setInt(2, orderId);
-
-            int affectedRows = updateStatusStmt.executeUpdate();
-
-            return affectedRows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
     

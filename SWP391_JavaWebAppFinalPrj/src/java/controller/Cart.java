@@ -42,7 +42,7 @@ public class Cart extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Cart</title>");            
+            out.println("<title>Servlet Cart</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet Cart at " + request.getContextPath() + "</h1>");
@@ -65,20 +65,19 @@ public class Cart extends HttpServlet {
             throws ServletException, IOException {
         // Lấy thông tin người dùng từ session
         Users user = (Users) request.getSession().getAttribute("user");
-        if(user==null){
+        if (user == null) {
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
-        }else{
+        } else {
             List<CartDetail> cart = CartDetailDao.GetCartOfUser(user.getId());
             // GROUP BY NAME
             Map<String, List<CartDetail>> cartGroup = cart.stream().collect(
-                    Collectors.groupingBy(c->c.getProduct().getShop().getShop_name())
+                    Collectors.groupingBy(c -> c.getProduct().getShop().getShop_name())
             );
             request.setAttribute("cartGroup", cartGroup);
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
         }
     }
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -112,15 +111,11 @@ public class Cart extends HttpServlet {
                         }
                     }
                 }
-
-                // Save selected items to session
                 request.getSession().setAttribute("selectedItems", selectedItems);
 
-                // Redirect to CheckoutServlet
                 response.sendRedirect("Checkout");
             } else {
-                // Handle the case when no items are selected
-                // You can redirect or show an error message
+
                 response.sendRedirect("cart.jsp");
             }
         } else {
