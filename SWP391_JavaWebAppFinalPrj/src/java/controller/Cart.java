@@ -5,16 +5,14 @@
  */
 package controller;
 
-import dao.CartDao;
+import dao.CartDetailDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +23,6 @@ import model.Users;
  *
  * @author LENOVO
  */
-@WebServlet(name = "Cart", urlPatterns = {"/Cart"})
 public class Cart extends HttpServlet {
 
     /**
@@ -66,21 +63,19 @@ public class Cart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        // Lấy thông tin người dùng từ session
         Users user = (Users) request.getSession().getAttribute("user");
-
-        if (user != null) {
-            List<CartDetail> cartItems = CartDao.getCartItems(user.getId());
-            Map<String, List<CartDetail>> groupedByShop = cartItems.stream()
-                    .collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShop_name()));
-            request.setAttribute("cartItems", cartItems);
-            request.setAttribute("cartGroup", groupedByShop);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cart.jsp");
-            dispatcher.forward(request, response);
+        if (user == null) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else {
-
-            response.sendRedirect("login.jsp");
+            List<CartDetail> cart = CartDetailDao.GetCartOfUser(user.getId());
+            // GROUP BY NAME
+            Map<String, List<CartDetail>> cartGroup = cart.stream().collect(
+                    Collectors.groupingBy(c -> c.getProduct().getShop().getShop_name())
+            );
+            request.setAttribute("cartGroup", cartGroup);
+            request.getRequestDispatcher("/cart.jsp").forward(request, response);
         }
     }
 
@@ -98,11 +93,10 @@ public class Cart extends HttpServlet {
         Users user = (Users) request.getSession().getAttribute("user");
 
         if (user != null) {
-            List<CartDetail> cartItems = CartDao.getCartItems(user.getId());
+            List<CartDetail> cartItems = CartDetailDao.GetCartOfUser(user.getId());
 
             // Process selected items
             String selectedProductIds = request.getParameter("selectedProductIds");
-
             if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
                 String[] selectedIdsArray = selectedProductIds.split(",");
                 List<CartDetail> selectedItems = new ArrayList<>();
@@ -117,19 +111,16 @@ public class Cart extends HttpServlet {
                         }
                     }
                 }
-
-                // Save selected items to session
                 request.getSession().setAttribute("selectedItems", selectedItems);
 
-                // Redirect to CheckoutServlet
                 response.sendRedirect("Checkout");
             } else {
-                // Handle the case when no items are selected
-                // You can redirect or show an error message
+
                 response.sendRedirect("cart.jsp");
             }
         } else {
-            response.sendRedirect("login.jsp");
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }
 

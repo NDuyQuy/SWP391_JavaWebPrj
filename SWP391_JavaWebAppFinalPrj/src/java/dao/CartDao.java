@@ -113,25 +113,7 @@ public class CartDao {
         }
     }
 
-    /*
-    public static List<CartItem> getCartItems(int userId) {
-        List<CartItem> cartItems = new ArrayList<>();
-        try (Connection con = SQLConnection.getConnection();
-                PreparedStatement ptm = con.prepareStatement(GET_CART_ITEMS)) {
-            ptm.setInt(1, userId);
-            ResultSet rs = ptm.executeQuery();
-            while (rs.next()) {
-                int productId = rs.getInt("product_id");
-                int quantity = rs.getInt("quantity");
-                Product product = getProductById(productId);
-                cartItems.add(new CartItem(product, quantity));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return cartItems;
-    }
-     */
+   
     public static List<CartDetail> getCartItems(int userId) {
         List<CartDetail> cartItems = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
@@ -150,11 +132,10 @@ public class CartDao {
                 product.setName(rs.getString("name"));
                 product.setMoney(rs.getInt("price"));
                 product.setImg(rs.getString("img"));
-                product.setQuantity(rs.getInt("quantity"));
-                // Tạo đối tượng CartDetail và thiết lập các thuộc tính của nó
+          
                 CartDetail cartDetail = new CartDetail(userId, productId, quantity, product);
-                cartDetail.setShop(shop); // Thiết lập đối tượng Shop cho CartDetail
-                cartItems.add(cartDetail); // Thêm CartDetail vào danh sách
+                cartDetail.setShop(shop); 
+                cartItems.add(cartDetail); 
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,41 +153,7 @@ public class CartDao {
         }
     }
 
-    public List<CartDetail> getCartItemsByProductIds(int userId, List<Integer> productIds) throws ClassNotFoundException {
-        List<CartDetail> cartItems = new ArrayList<>();
-
-        try (Connection connection = SQLConnection.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT * FROM cartdetail WHERE user_id = ? AND product_id IN (" + getQuestionMarks(productIds.size()) + ")")) {
-
-            preparedStatement.setInt(1, userId);
-
-            // Set productIds as parameters
-            int parameterIndex = 2;
-            for (int productId : productIds) {
-                preparedStatement.setInt(parameterIndex++, productId);
-            }
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    int productId = resultSet.getInt("productId");
-                    int quantity = resultSet.getInt("quantity");
-
-                    // Fetch the product details from the database (you may need to adjust this based on your schema)
-                    Products product = ProductDao.getProductById(productId);
-
-                    // Create CartItem object and add it to the list
-                    CartDetail cartItem = new CartDetail(product, quantity);
-                    cartItems.add(cartItem);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception properly in your application
-        }
-
-        return cartItems;
-    }
-
+    
     private String getQuestionMarks(int size) {
         StringBuilder questionMarks = new StringBuilder();
         for (int i = 0; i < size; i++) {

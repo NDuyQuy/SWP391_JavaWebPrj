@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.*;
 import model.*;
@@ -40,9 +41,12 @@ public class OrdersDao {
 
     private static final String UPDATE_STATUS = "UPDATE [orders] SET [status]=? WHERE [order_id]=?";
 
-    private static final String ADD_ORDER = "INSERT INTO orders (user_id, shippingunit_id, voucher_code, total, shipping_method, payment_method, status, receiver_name, receiver_phone, receiver_address, order_date, cancel_reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String ADD_ORDER_DETAIL = "INSERT INTO orderdetail (order_id, product_id, quantity) VALUES (?, ?, ?)";
+    
+    
+    //query cua tien
     private static final String GET_ORDER_DETAILS = "SELECT od.*, p.* FROM orderdetail od INNER JOIN products p ON od.product_id = p.product_id WHERE od.order_id = ?";
+    private static final String ADD_ORDER = "INSERT INTO orders (customer_id, shop_id, shipping_cost, total, payment_method, status, receiver_name, receiver_phone, receiver_address, shipping_method, type, voucher_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String ADD_ORDER_DETAIL = "INSERT INTO orderdetail (orderID, productID, quantity, cancel_reason, totalPrice) VALUES (?, ?, ?, NULL, ?)";
     private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE order_id = ?";
     private static final String GET_ORDERS_BY_USER_ID = "SELECT * FROM orders WHERE customer_id = ?";
     private static final String GET_ORDER_AND_DETAILS_BY_ID = "SELECT o.*,  p.product_id, p.img, p.name, p.price,  od.quantity, od.id FROM orders o "
@@ -51,6 +55,90 @@ public class OrdersDao {
             + "WHERE o.order_id = ?";
     private static final String UPDATE_ORDER_STATUS = "UPDATE orders SET status = ? WHERE order_id = ?";
 
+    // tao don hang va chi tiet don hang
+    public static  boolean addOrderAndDetails(Orders order, List<OrderDetail> orderDetails) throws Exception {
+        Connection con = null;
+        PreparedStatement addOrderStmt = null;
+        PreparedStatement addOrderDetailStmt = null;
+        ResultSet generatedKeys = null;
+
+        try {
+            con = SQLConnection.getConnection();
+            con.setAutoCommit(false); // Bắt đầu transaction
+
+            // Thêm đơn hàng vào bảng orders
+            addOrderStmt = con.prepareStatement(ADD_ORDER, Statement.RETURN_GENERATED_KEYS);
+            addOrderStmt.setInt(1, order.getCustomer_id());
+            addOrderStmt.setInt(2, order.getShop_id());
+            addOrderStmt.setInt(3, order.getShipping_cost());
+            addOrderStmt.setInt(4, order.getTotal());
+            addOrderStmt.setNString(5, order.getPayment_method());
+            addOrderStmt.setNString(6, "Chờ xác nhận");
+            addOrderStmt.setNString(7, order.getReceiver_name());
+            addOrderStmt.setNString(8, order.getReceiver_phone());
+            addOrderStmt.setNString(9, order.getReceiver_address());
+            addOrderStmt.setNString(10, order.getShipping_method());
+            addOrderStmt.setInt(11, 1);
+            addOrderStmt.setInt(12, order.getVoucher_id());
+            int affectedRows = addOrderStmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new Exception("Creating order failed, no rows affected.");
+            }
+
+            generatedKeys = addOrderStmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                order.setOrder_id(generatedKeys.getInt(1));
+            } else {
+                throw new Exception("Creating order failed, no ID obtained.");
+            }
+
+            // Thêm chi tiết đơn hàng vào bảng orderdetail
+            addOrderDetailStmt = con.prepareStatement(ADD_ORDER_DETAIL);
+            for (OrderDetail detail : orderDetails) {
+                addOrderDetailStmt.setInt(1, order.getOrder_id());
+                addOrderDetailStmt.setInt(2, detail.getProductID());
+                addOrderDetailStmt.setInt(3, detail.getQuantity());
+                addOrderDetailStmt.setDouble(4, detail.getTotalPrice());
+                addOrderDetailStmt.addBatch();
+            }
+            addOrderDetailStmt.executeBatch();
+
+            con.commit(); // Kết thúc transaction
+            return true;
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    con.rollback();
+                } catch (SQLException excep) {
+                    excep.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (generatedKeys != null) {
+                    generatedKeys.close();
+                }
+                if (addOrderStmt != null) {
+                    addOrderStmt.close();
+                }
+                if (addOrderDetailStmt != null) {
+                    addOrderDetailStmt.close();
+                }
+                if (con != null) {
+                    con.setAutoCommit(true); // Trả lại trạng thái ban đầu cho AutoCommit
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //lay danh sach don hang de hien trong orderlist.jsp
     public List<Orders> getOrdersByUserId(int userId) {
         List<Orders> orders = new ArrayList<>();
 
@@ -77,7 +165,7 @@ public class OrdersDao {
         try {
             Orders order = new Orders();
             order.setOrder_id(rs.getInt("order_id"));
-            // Bạn cần implement phương thức getUserById để lấy thông tin người dùng từ cơ sở dữ liệu
+           
             order.setCustomer(getUserById(rs.getInt("customer_id")));
             order.setShop_id(rs.getInt("shop_id"));
             order.setShipping_cost(rs.getInt("shipping_cost"));
@@ -97,8 +185,7 @@ public class OrdersDao {
             return null;
         }
     }
-
-    
+// lấy dữ liệu để hiển thị trong orderdetail.jsp
     public Orders getOrderAndDetailsById(int orderId) {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement getOrderAndDetailsStmt = con.prepareStatement(GET_ORDER_AND_DETAILS_BY_ID)) {
@@ -120,7 +207,7 @@ public class OrdersDao {
                     Products product = new Products();
                     product.setProduct_id(rs.getInt("product_id"));
                     product.setName(rs.getString("name"));
-                   // product.setMoney(rs.getInt("money"));
+                    // product.setMoney(rs.getInt("money"));
                     product.setImg(rs.getString("img"));
 
                     orderDetail.setProduct(product);
@@ -138,11 +225,12 @@ public class OrdersDao {
         }
         return null;
     }
-    
+
+    //day la customer update status 
     public static boolean updateOrderStatus(int orderId, String newStatus) throws ClassNotFoundException {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement updateStatusStmt = con.prepareStatement(UPDATE_ORDER_STATUS)) {
-            updateStatusStmt.setString(1, newStatus);
+            updateStatusStmt.setNString(1, newStatus);
             updateStatusStmt.setInt(2, orderId);
 
             int affectedRows = updateStatusStmt.executeUpdate();
@@ -153,10 +241,7 @@ public class OrdersDao {
             return false;
         }
     }
-    
-    
-    
-    
+
     private static Orders getOrderObject(ResultSet rs) throws SQLException {
         int order_id = rs.getInt("order_id");
         int customer_id = rs.getInt("customer_id");
@@ -446,56 +531,51 @@ public class OrdersDao {
         }
         return ods;
     }
+    
+    public static void main(String[] args) throws Exception {
 
-    public static void main(String[] args) {
-      
-        OrdersDao orderDAO = new OrdersDao();
+        OrdersDao ordersDao = new OrdersDao();
 
-        // Thay orderId bằng id của đơn hàng cần kiểm tra
-        int orderId = 11;
+        // Tạo một đơn hàng mới
+        Orders order = new Orders();
+        order.setCustomer_id(6);
+        order.setShop_id(2);
+        order.setShipping_cost(10);
+        order.setTotal(1000000000);
+        order.setShippingunit_id(1);
+        order.setVoucher_id(1);
+        order.setTotal(100000);
+        order.setShipping_method("1");
+        order.setPayment_method("COD");
+        //order.setStatus("Chờ xác nhận");
+        order.setReceiver_name("John Doe");
+        order.setReceiver_phone("1234567890");
+        order.setReceiver_address("123 Main St, City, Country");
+        order.setOrder_date(new Date());
+     //   order.setType(1);
+        order.setVoucher_id(1);
+        
+        
+        // Tạo danh sách chi tiết đơn hàng
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        OrderDetail detail1 = new OrderDetail();
+        detail1.setProductID(2);
+        detail1.setQuantity(2); 
+        detail1.setTotalPrice(300);
+        orderDetails.add(detail1);
 
-        Orders order = orderDAO.getOrderAndDetailsById(orderId);
+        OrderDetail detail2 = new OrderDetail();
+        detail2.setProductID(1);
+        detail2.setQuantity(1); 
+        detail2.setTotalPrice(200);
+        orderDetails.add(detail2);
 
-        if (order == null) {
-            System.out.println("Không tìm thấy đơn hàng có ID là " + orderId);
+        // Thêm đơn hàng và chi tiết đơn hàng vào cơ sở dữ liệu
+        boolean success = ordersDao.addOrderAndDetails(order, orderDetails);
+        if (success) {
+            System.out.println("Đã thêm đơn hàng và chi tiết đơn hàng thành công.");
         } else {
-            System.out.println("Thông tin đơn hàng:");
-            System.out.println("Order ID: " + order.getOrder_id());
-            System.out.println("Customer ID: " + order.getCustomer_id());
-            System.out.println("Shop ID: " + order.getShop_id());
-            System.out.println("Shipping Cost: " + order.getShipping_cost());
-            System.out.println("Total: " + order.getTotal());
-            System.out.println("Payment Method: " + order.getPayment_method());
-            System.out.println("Status: " + order.getStatus());
-            System.out.println("Receiver Name: " + order.getReceiver_name());
-            System.out.println("Receiver Phone: " + order.getReceiver_phone());
-            System.out.println("Receiver Address: " + order.getReceiver_address());
-            System.out.println("Shipping Method: " + order.getShipping_method());
-            System.out.println("Shipping Unit ID: " + order.getShippingunit_id());
-            System.out.println("Order Date: " + order.getOrder_date());
-            System.out.println("Type: " + order.getType());
-
-            // Kiểm tra danh sách chi tiết đơn hàng
-            List<OrderDetail> orderDetails = order.getOrderDetails();
-            if (orderDetails != null && !orderDetails.isEmpty()) {
-                System.out.println("Chi tiết đơn hàng:");
-                for (OrderDetail detail : orderDetails) {
-                    System.out.println("ID: " + detail.getId());
-                    System.out.println("Product ID: " + detail.getProductID());
-                    System.out.println("Quantity: " + detail.getQuantity());
-                    // In thông tin sản phẩm nếu cần
-                    Products product = detail.getProduct();
-                    if (product != null) {
-                        System.out.println("Product Name: " + product.getName());
-                        System.out.println("Price: " + product.getMoney());
-                        // In các thông tin khác của sản phẩm nếu cần
-                    }
-                    // In cancel reason nếu cần
-                    System.out.println("Cancel Reason: " + detail.getCancel_reason());
-                }
-            } else {
-                System.out.println("Không có chi tiết đơn hàng cho đơn hàng có ID là " + orderId);
-            }
+            System.out.println("Đã xảy ra lỗi khi thêm đơn hàng và chi tiết đơn hàng.");
         }
     }
 }

@@ -30,6 +30,7 @@ public class Orders {
     private Users customer;
     private Shops shop;
     private ShippingUnits shippingunit;
+    private int voucher_id;
 private List<OrderDetail> orderDetails;
 public List<OrderDetail> getOrderDetails() {
         return orderDetails;
@@ -198,5 +199,15 @@ public List<OrderDetail> getOrderDetails() {
     public String toString() {
         return "Orders{" + "order_id=" + order_id + ", customer_id=" + customer_id + ", shop_id=" + shop_id + ", shipping_cost=" + shipping_cost + ", total=" + total + ", payment_method=" + payment_method + ", status=" + status + ", receiver_name=" + receiver_name + ", receiver_phone=" + receiver_phone + ", receiver_address=" + receiver_address + ", shipping_method=" + shipping_method + ", shippingunit_id=" + shippingunit_id + ", order_date=" + order_date + ", type=" + type + '}';
     }
+
+    public int getVoucher_id() {
+        return voucher_id;
+    }
+
+    public void setVoucher_id(int voucher_id) {
+        this.voucher_id = voucher_id;
+    }
+
+   
     
 }

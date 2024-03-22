@@ -43,7 +43,19 @@ public class SellersDao {
             + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
     //CUSTOM ORDER REALTED SQL STATEMENt
-    
+    public static int getShopIdByName(String name){
+        int id = 0;
+        try(Connection con = SQLConnection.getConnection()){
+            PreparedStatement statement = con.prepareStatement("SELECT [shop_id]FROM [shops]WHERE [shop_name] = ?");
+            statement.setNString(1, name);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()){
+                id = rs.getInt("shop_id");
+            }
+        } catch (Exception e) {
+        }
+        return id;
+    }
     public static void updateShopInfo(Shops shop){
         PreparedStatement ptm = null;
         try(Connection con=SQLConnection.getConnection()){
@@ -325,10 +337,8 @@ public class SellersDao {
     public static void main(String[] args) {
         //getShopVouchers(1).forEach(System.out::println);
         //getShopProducts(1).forEach(System.out::println);
-        Vouchers vo = getVoucherByID(9);
-        vo.setDescription("Voucher giảm giá sốc chưa từng có.");
-        editShopVoucher(vo);
-        System.out.println(getVoucherByID(9));
+        
+        System.err.println(getShopIdByName("A Shop"));
     }
     
 }

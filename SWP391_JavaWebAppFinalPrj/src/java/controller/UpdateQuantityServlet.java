@@ -5,25 +5,19 @@
  */
 package controller;
 
-import dao.CartDao;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.CartDetail;
-import model.Users;
+import model.*;
+import dao.*;
 
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name = "UpdateQuantityServlet", urlPatterns = {"/UpdateQuantityServlet"})
 public class UpdateQuantityServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -66,35 +60,28 @@ public class UpdateQuantityServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         Users user = (Users) request.getSession().getAttribute("user");
-
-        int userId = user.getId();
-
-        int productId = Integer.parseInt(request.getParameter("id"));
-        String action = request.getParameter("action");
-        CartDao cartDao = new CartDao();
-// Kiểm tra nếu action là "decrease" và quantity đã là 0, thì xóa sản phẩm khỏi giỏ hàng
-        if ("decrease".equals(action)) {
-            int newQuantity = cartDao.getCartItemQuantity(userId, productId) - 1;
-            if (newQuantity <= 0) {
-                cartDao.removeFromCart(userId, productId);
+        if (user == null) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+        } else {
+            int userId = user.getId();
+            String action = request.getParameter("action");
+            if (action != null) {
+                if (action.equals("remove")) {
+                    int productId = Integer.parseInt(request.getParameter("id"));
+                    CartDetailDao.RemoveAProduct(userId, productId);
+                } else {
+                    CartDetailDao.ClearCartOfUser(userId);
+                }
             } else {
-                cartDao.updateCartItemQuantity(userId, productId, -1);
+                int productId = Integer.parseInt(request.getParameter("id"));
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                CartDetailDao.UpdateCartProductQuantity(quantity, userId, productId);
             }
-        } else if ("increase".equals(action)) {
-            cartDao.updateCartItemQuantity(userId, productId, 1);
-        } else if ("remove".equals(action)) {
-            cartDao.removeFromCart(userId, productId);
-        } else if ("update".equals(action)) {
-            int newQuantity = Integer.parseInt(request.getParameter("quantity"));
-            if (newQuantity <= 0) {
-                cartDao.removeFromCart(userId, productId);
-            } else {
-                cartDao.updateNewCartItemQuantity(userId, productId, newQuantity);
-            }
+            response.sendRedirect("Cart");
         }
-
-        response.sendRedirect("Cart");
 
     }
 

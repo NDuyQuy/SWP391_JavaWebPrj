@@ -5,36 +5,29 @@
  */
 package controller;
 
-import dao.CartDao;
-import dao.CartDao;
+import dao.ShippingUnitDao;
+import dao.VouchersDao;
+import dao.OrdersDao;
 import dao.SellersDao;
-import dao.VoucherDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.CartDetail;
-import model.Shops;
-import model.Users;
-import model.Vouchers;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.*;
+import java.util.stream.Collectors;
 
 /**
  *
- * @author LENOVO
+ * @author ASUS
  */
 @WebServlet(name = "Checkout", urlPatterns = {"/Checkout"})
 public class Checkout extends HttpServlet {
-
-    private final CartDao cartDao = new CartDao();
-    private final VoucherDao voucherDao = new VoucherDao();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -79,37 +72,44 @@ public class Checkout extends HttpServlet {
 
         if (selectedItems != null && !selectedItems.isEmpty()) {
 
-            //Map<String, List<CartDetail>> groupedByShop = selectedItems.stream().collect(Collectors.groupingBy(cartItem -> cartItem.getShop().getShop_name()));
+            Map<String, List<CartDetail>> cartGroup = selectedItems.stream().collect(
+                    Collectors.groupingBy(c -> c.getProduct().getShop().getShop_name())
+            );
 
-            /*for (Map.Entry<String, List<CartDetail>> entry : groupedByShop.entrySet()) {
-            String shopName = entry.getKey();
-            List<CartDetail> shopItems = entry.getValue();
-            
-            // Lấy danh sách voucher của cửa hàng
-            List<Vouchers> vouchers = VoucherDao.getVouchersByCondition(shopName);
-            if (!vouchers.isEmpty()) {
-            String voucherListName = "vouchers_" + shopName.substring(0, 1);
-            request.setAttribute("vouchers_" + shopName, vouchers);
+            Map<List<Vouchers>, List<CartDetail>> newCartGroup = new HashMap<>();
+            for (Map.Entry<String, List<CartDetail>> entry : cartGroup.entrySet()) {
+                String shopName = entry.getKey();
+                //GET THE SHOP ITEM
+                List<CartDetail> shopItems = entry.getValue();
+                double shopTotal = calculateShopTotal(shopItems);
+                // Lấy danh sách voucher của cửa hàng
+                List<Vouchers> vouchers = VouchersDao.getVouchersByCondition(shopName, shopTotal);
+
+                newCartGroup.put(vouchers, shopItems);
             }
-            
-            }
-            
+
             request.setAttribute("selectedItems", selectedItems);
-            request.setAttribute("cartGroup", groupedByShop);
-            
+
+            request.getSession().setAttribute("cartGroup", newCartGroup);
+
             // Tiếp tục xử lý trang Checkout
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/checkout.jsp");
-            dispatcher.forward(request, response);*/
-            Map<List<CartDetail>, List<Vouchers>> map = new HashMap<>();
+            request.getRequestDispatcher("/checkout.jsp").forward(request, response);
 
             // Iterate over the vouchers list
-            
-
         } else {
             // Xử lý trường hợp không có sản phẩm nào được chọn
             // Có thể điều hướng hoặc hiển thị thông báo lỗi
-            response.sendRedirect("cart.jsp");
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
+    }
+
+    private double calculateShopTotal(List<CartDetail> shopItems) {
+        double total = 0.0;
+        for (CartDetail item : shopItems) {
+            total += item.getQuantity() * item.getProduct().getMoney();
+        }
+        return total;
     }
 
     /**
@@ -123,24 +123,70 @@ public class Checkout extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /// Lấy danh sách sản phẩm đã chọn từ request parameter
-        /* String selectedProductIds = request.getParameter("selectedProductIds");
+        request.setCharacterEncoding("UTF-8");
+        Users user = (Users) request.getSession().getAttribute("user");
+        int customer_id = user.getId();
+        String payment_method = request.getParameter("paymentMethod");
+        String receiver_name = request.getParameter("receiver_name");
+        String receiver_phone = request.getParameter("receiver_phone");
+        String receiver_address = request.getParameter("receiver_addr");
+        String voucherIdString = request.getParameter("voucherIdStr");
+        String shippingStr = request.getParameter("shippingmethodStr");
+        Map<List<Vouchers>, List<CartDetail>> cartGroup = (Map<List<Vouchers>, List<CartDetail>>) request.getSession().getAttribute("cartGroup");
+        String[] vidArr = voucherIdString.split(",");
+        String ship[] = shippingStr.split(",");
+        if (cartGroup != null) {
+            int i = 0;
+            for (Map.Entry<List<Vouchers>, List<CartDetail>> entry : cartGroup.entrySet()) {
+                int voucherid = Integer.parseInt(vidArr[i]);
+                int ship_cost = Integer.parseInt(ship[i]);
+                i++;
+                Vouchers vouchers = SellersDao.getVoucherByID(voucherid);
+                String shipping_method = getShipMethod(ship_cost) ;
+                String shopName = entry.getValue().get(0).getProduct().getShop().getShop_name();
+                List<CartDetail> shopItems = entry.getValue();
+                double total = calculateShopTotal(shopItems);
+                Orders order = new Orders();
+                order.setShop_id(SellersDao.getShopIdByName(shopName));
+                order.setCustomer_id(customer_id);
+                order.setPayment_method(payment_method);
+                order.setReceiver_name(receiver_name);
+                order.setReceiver_phone(receiver_phone);
+                order.setReceiver_address(receiver_address);
+                order.setShipping_method(shipping_method);
+                order.setShipping_cost(ship_cost);
+                order.setTotal((int)total);
+                if(voucherid!=0){
+                    order.setVoucher_id(voucherid);
+                }
+                
 
-    if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
-        String[] selectedIdsArray = selectedProductIds.split(",");
-        
-        // Thực hiện các bước thanh toán với danh sách sản phẩm đã chọn
-        // (ví dụ: tạo đơn đặt hàng, giảm số lượng sản phẩm từ kho, v.v.)
-        
-        // Điều hướng hoặc hiển thị thông báo thanh toán thành công
-        response.sendRedirect("payment-success.jsp");
-    } else {
-        // Xử lý trường hợp khi không có sản phẩm nào được chọn
-        // Có thể điều hướng hoặc hiển thị thông báo lỗi
-        response.sendRedirect("cart.jsp");
-    }*/
-
-        // Lấy danh sách sản phẩm đã chọn từ session
+                // Tạo danh sách chi tiết đơn hàng cho cửa hàng hiện tại
+                List<OrderDetail> orderDetails = new ArrayList<>();
+                for (CartDetail cartItem : shopItems) {
+                    OrderDetail orderDetail = new OrderDetail();
+                    // Thiết lập thông tin cho orderDetail từ cartItem
+                    orderDetail.setOrderID(order.getOrder_id()); // Set ID của đơn hàng
+                    orderDetail.setProductID(cartItem.getProduct().getProduct_id()); // Set ID sản phẩm
+                    orderDetail.setQuantity(cartItem.getQuantity());
+                    if(vouchers==null){
+                        orderDetail.setTotalPrice(cartItem.getQuantity()*cartItem.getProduct().getMoney());
+                    }else{
+                        orderDetail.setTotalPrice(cartItem.getQuantity()*cartItem.getProduct().getMoney()-(vouchers.getDiscount_amount()/shopItems.size()));
+                    }
+                    orderDetails.add(orderDetail);
+                }
+                try {
+                    // Thêm đơn hàng và chi tiết đơn hàng vào cơ sở dữ liệu
+                    OrdersDao.addOrderAndDetails(order, orderDetails);
+                } catch (Exception ex) {
+                    Logger.getLogger(Checkout.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            response.getWriter().println("Đã thêm đơn hàng và chi tiết đơn hàng thành công!");
+        } else {
+            response.getWriter().println("Không thể thêm đơn hàng vì giỏ hàng trống!");
+        }
     }
 
     /**
@@ -152,5 +198,13 @@ public class Checkout extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    private String getShipMethod(int cost){
+        if(cost==10000){
+            return "nhanh";
+        }else if(cost==20000){
+            return "hỏa tốc";
+        }else{
+            return "tiết kiệm";
+        }
+    }
 }

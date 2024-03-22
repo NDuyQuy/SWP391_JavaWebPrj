@@ -14,6 +14,7 @@ public class OrderDetail {
     private int productID;
     private int quantity;
     private String cancel_reason;
+    private int totalPrice;
     private Orders order;
     private Products product;
 
@@ -74,6 +75,14 @@ public class OrderDetail {
 
     public void setProduct(Products product) {
         this.product = product;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     @Override
