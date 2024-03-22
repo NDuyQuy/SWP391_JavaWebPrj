@@ -18,6 +18,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     </head>
     <body>
+        <a href="Home">Home</a>
         <div class="row justify-content-between" style="margin: 10px;">
             <form action="ordercontroller">
                 <label for="month_year">Khung thời gian</label>

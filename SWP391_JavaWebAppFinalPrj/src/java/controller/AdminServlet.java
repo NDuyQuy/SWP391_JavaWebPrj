@@ -32,7 +32,6 @@ public class AdminServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /*
         response.setContentType("text/html;charset=UTF-8");
         String url = "/AdminMainpage.jsp";
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -70,7 +69,7 @@ public class AdminServlet extends HttpServlet {
                 url = "/AdminCategory.jsp";
             }
             else if(action.equals("ViewVoucher")) {
-                ArrayList<Vouchers> VoucherList = VoucherDao.getSystemVouchers();
+                ArrayList<Vouchers> VoucherList = VouchersDao.getSystemVouchers();
                 if (VoucherList != null) {
                     session.setAttribute("VL", VoucherList);
                 }
@@ -200,8 +199,7 @@ public class AdminServlet extends HttpServlet {
         finally {
             if (!Continue) httpResponse.sendRedirect(httpRequest.getContextPath() + url);
             System.out.println("Loading...");
-        }
-        */
+        }        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

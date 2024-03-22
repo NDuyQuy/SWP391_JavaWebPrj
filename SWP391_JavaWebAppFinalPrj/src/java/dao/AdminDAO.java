@@ -53,7 +53,7 @@ public class AdminDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String Name = rs.getString("name").trim();
-                String Description = rs.getString("description").trim();
+                String Description = rs.getNString("description");
                 MainCategory c = new MainCategory(id, Name, Description);
                 result.add(c);                
             }
@@ -108,7 +108,7 @@ public class AdminDAO {
             while (rs.next()) {
                 int id = rs.getInt("shop_id");
                 String Name = rs.getString("shop_name").trim();
-                String Description = rs.getString("shop_description").trim();
+                String Description = rs.getNString("shop_description");
                 Users u = UsersDao.getUserById(id);
                 ApproveRequest ar = new ApproveRequest(id, Name, Description);
                 ar.setUser(u);
@@ -155,7 +155,7 @@ public class AdminDAO {
                 int shop_id = rs.getInt("shop_id");
                 int reporter_id = rs.getInt("reporter_id");
                 Date created_date = rs.getDate("created_date");
-                String reason = rs.getString("reason").trim();
+                String reason = rs.getNString("reason");
                 Users u = UsersDao.getUserById(reporter_id);
                 Shops s = SellersDao.getShopById(shop_id);
                 ReportDetail ar = new ReportDetail(id, shop_id, reporter_id, created_date, reason);
@@ -203,8 +203,8 @@ public class AdminDAO {
                 int id = rs.getInt("id");
                 int orderdetail_id = rs.getInt("orderdetail_id");
                 int status = rs.getInt("status");
-                String reason = rs.getString("reason").trim();
-                String img = rs.getString("img").trim();
+                String reason = rs.getNString("reason");
+                String img = rs.getNString("img");
                 OrderDetail od = OrderDetailDao.getOrderDetailById(orderdetail_id);
                 RefundsnReturns ar = new RefundsnReturns(id, orderdetail_id, reason, status, img);
                 ar.setOrderdetail(od);

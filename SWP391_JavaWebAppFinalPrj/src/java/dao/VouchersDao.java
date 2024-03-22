@@ -20,6 +20,10 @@ public class VouchersDao {
     private static final String GET_SYSTEM_VOUCHERS_AND_SHOPVOUCHER_BY_SHOPNAME = "SELECT * FROM vouchers "
             + "WHERE shop_id IN (SELECT shop_id FROM shops WHERE shop_name = ?) "
             + "OR (type = 0) AND [use_count] > 0";
+    
+    private static final String GET_SYSTEM_VOUCHER = "SELECT * FROM vouchers WHERE type = ?";
+    
+    
     private static Vouchers extractVoucher(ResultSet rs) throws SQLException{
         int voucherId = rs.getInt("voucher_id");
         String code = rs.getString("code");
@@ -42,6 +46,23 @@ public class VouchersDao {
     public static Vouchers getVoucherByID(int id){
         return SellersDao.getVoucherByID(id);
     }
+    
+    public static ArrayList<Vouchers> getSystemVouchers() throws ClassNotFoundException {
+        ArrayList<Vouchers> vouchers = new ArrayList<>();
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement st = con.prepareStatement(GET_SYSTEM_VOUCHER)) {
+                    st.setInt(1, 0);
+                    ResultSet rs = st.executeQuery();
+                    while (rs.next()) {
+                        Vouchers voucher = extractVoucher(rs);
+                        vouchers.add(voucher);
+                    }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vouchers;
+    }
+    
     public static List<Vouchers> getVouchersByCondition(String shopName) {
         List<Vouchers> vouchers = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();

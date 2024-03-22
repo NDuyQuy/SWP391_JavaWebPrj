@@ -74,7 +74,7 @@
                                         <td><c:out value="${s.code}"/></td>
                                         <td><c:out value="${s.start_date}"/></td>
                                         <td><c:out value="${s.expire_date}"/></td>
-                                        <td><c:out value="${s.discount_amount}"/> <c:out value="${s.discount_unit}"/></td>
+                                        <td><c:out value="${s.discount_amount}"/> VND</td>
                                         <td><c:out value="${s.type}"/></td>
                                         <td>
                                             <!-- Edit link with data-id attribute -->
