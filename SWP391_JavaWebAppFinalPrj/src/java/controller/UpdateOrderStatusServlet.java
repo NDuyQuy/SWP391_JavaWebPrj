@@ -5,20 +5,21 @@
  */
 package controller;
 
-import dao.UsersDao;
+import dao.OrdersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import email.SendEmail;
-import model.*;
+
 /**
  *
- * @author ASUS
+ * @author LENOVO
  */
-public class VerifyEmailController extends HttpServlet {
+@WebServlet(name = "UpdateOrderStatusServlet", urlPatterns = {"/UpdateOrderStatusServlet"})
+public class UpdateOrderStatusServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,10 +38,10 @@ public class VerifyEmailController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet VerifyEmailController</title>");            
+            out.println("<title>Servlet UpdateOrderStatusServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet VerifyEmailController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateOrderStatusServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,24 +59,7 @@ public class VerifyEmailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        Users u = UsersDao.getUserInfoByEmail(email);
-        //CHECK IF USERS ENTER EMAIL THAT NOT THE EMAIL REGISTER
-        if(u==null){
-            request.setAttribute("error", "Your Email Is Not Correct");
-            request.getRequestDispatcher("/forgotpassword.jsp").forward(request, response);
-            return;
-        }
-        request.getSession().setAttribute("us",u);
-        String verifyCode = SendEmail.generateRandomNumber(6);
-        //PURPOSE 1 = FORGOT EMAIL CONTENT, 2 = REGISTER EMAIL CONTENT
-        SendEmail.sendEmail(email, verifyCode, (byte)1);
-        //CURENTTIME RETURN TIME IN MILISECOND, + 30 MIN IN MILISECOND -> EXPIRED TIME
-        long expiredTime = System.currentTimeMillis()+(30*60*1000);
-        VerifyCode code = new VerifyCode(verifyCode, expiredTime);
-        //STORE CODE IN SESSION
-        request.getSession().setAttribute("verifyCode", code);
-        request.getRequestDispatcher("/verifyemail.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -89,21 +73,39 @@ public class VerifyEmailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String verifyCode = request.getParameter("verify");
-        VerifyCode realCode = (VerifyCode) request.getSession().getAttribute("verifyCode");
-        String url = "/verifyemail.jsp";
-        if(verifyCode.equals(realCode.getCode())){
-            long currentTime = System.currentTimeMillis();
-            if(currentTime>=realCode.getExpiredTime()) request.setAttribute("error", "Your VerifyCode Is Expired");
-            else
-            {
-                url = "/changeforgotedpass.jsp";
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        try {
+            int orderId;
+            String newStatus;
+            
+            // Kiểm tra form được gửi từ nút Hủy đơn hàng
+            if (request.getParameter("cancelOrderId") != null) {
+                orderId = Integer.parseInt(request.getParameter("cancelOrderId"));
+                newStatus = request.getParameter("cancelNewStatus");
+            } 
+            // Kiểm tra form được gửi từ nút Đã nhận hàng
+            else if (request.getParameter("confirmOrderId") != null) {
+                orderId = Integer.parseInt(request.getParameter("confirmOrderId"));
+                newStatus = request.getParameter("confirmNewStatus");
+            } else {
+                throw new IllegalArgumentException("Invalid form data");
             }
-        }else{
-            request.setAttribute("error", "Your VerifyCode Is Not Correct");
-        }
-        request.getRequestDispatcher(url).forward(request, response);
-    }
+
+            boolean success = OrdersDao.updateOrderStatus(orderId, newStatus);
+
+            if (success) {
+                response.sendRedirect(request.getContextPath() + "/OrderListController");
+                return;
+            } else {
+                out.println("Failed to update order status");
+            }
+        } catch (Exception e) {
+            out.println("Error: " + e.getMessage());
+        } finally {
+            out.close();
+        }    }
 
     /**
      * Returns a short description of the servlet.

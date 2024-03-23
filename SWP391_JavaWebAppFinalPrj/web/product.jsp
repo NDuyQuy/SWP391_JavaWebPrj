@@ -122,7 +122,7 @@
                                                             <a href="ProductDetail?product=${pr.product_id}">
                                                                 <img src="${pr.img}" alt="">
                                                             </a>
-                                                            
+
                                                             <div class="product-action text-center">
                                                                 <a href="AddToCart?id=${pr.product_id}&quantity=1" title="Thêm vào giỏ hàng">
                                                                     <i class="flaticon-shopping-cart"></i>
@@ -131,6 +131,7 @@
                                                                     <i class="flaticon-eye"></i>
                                                                 </a>
                                                             </div>
+
 
                                                             <div class="sale-tag">
                                                                 <span class="new">new</span>
@@ -300,7 +301,18 @@
         </main>        
 
         <jsp:include page="footer.jsp"></jsp:include>
+            <script>
+                function addToCart(productId) {
+                    // Get the quantity from the input field
+                    var quantity = document.getElementById("quantityInput").value;
 
+                    // Construct the URL with productId and quantity
+                    var url = 'AddToCart?id=' + productId + '&quantity=' + quantity;
+
+                    // Redirect to the URL
+                    window.location.href = url;
+                }
+            </script>
             <script>
                 if ($("#slider-range").length) {
 

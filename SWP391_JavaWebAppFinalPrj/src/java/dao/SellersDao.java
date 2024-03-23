@@ -79,6 +79,7 @@ public class SellersDao {
             rs = ptm.executeQuery();
             if(rs.next()){
                 shop.setUsers(user);
+                shop.setShop_id(id);
                 shop.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
                 shop.setShop_img(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
                 shop.setShop_name(rs.getString("shop_name").trim());

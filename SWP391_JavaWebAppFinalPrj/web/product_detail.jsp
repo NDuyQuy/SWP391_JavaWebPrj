@@ -1,4 +1,4 @@
-<%-- 
++-<%-- 
     Document   : product_detail
     Created on : Feb 27, 2024, 12:48:56 PM
     Author     : hien
@@ -204,6 +204,7 @@
                                         </div>
                                     </div>
 
+
                                 </div>
                             </div>
                         </div>
@@ -389,6 +390,20 @@
                     window.location.href = url;
                 }
             </script>
+            
+            <script>
+    function addToCart(productId) {
+        // Get the quantity from the input field
+        var quantity = document.getElementById("quantityInput").value;
+
+        // Construct the URL with productId and quantity
+        var url = 'AddToCart?id=' + productId + '&quantity=' + quantity;
+
+        // Redirect to the URL
+        window.location.href = url;
+    }
+</script>
+
 
     </body>
 </html>

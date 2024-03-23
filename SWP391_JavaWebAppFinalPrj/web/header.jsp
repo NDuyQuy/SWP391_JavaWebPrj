@@ -97,7 +97,7 @@
                                         <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
                                         <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
                                         <li><a href="CustomOrderController"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
-                                        <li><a href="#"> Chat</a></li>
+                                        <li><a href="shopchat.jsp"> Chat</a></li>
                                         </c:if>
                                 </ul>
                                 <c:if test="${user.role != 2}">
@@ -150,7 +150,7 @@
                                                
                                                 <c:if test="${sessionScope.user.role eq 1}">
                                                     <li>
-                                                        <a href="#">Đơn mua</a>
+                                                        <a href="OrderListController">Đơn mua</a>
                                                     </li>
                                                 </c:if>
                                                 <li>

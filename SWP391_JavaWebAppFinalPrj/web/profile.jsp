@@ -117,7 +117,7 @@
                             <div id="fixed-sidebar" class="sidebar-fixed sidebar-bottom">
                                 <div class="widget-title-box mb-30">
                                     <div class="widget-posts-image">
-                                        <img src="https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg">
+                                        <img src="${user.img}">
                                     </div>
                                     <div class="widget-posts-body">
                                         <h6 class="widget-posts-title">${user.fullname}</h6>

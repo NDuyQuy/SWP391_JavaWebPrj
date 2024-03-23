@@ -18,28 +18,28 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="manifest" href="site.html">
-        <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
 
         <!-- CSS here -->
-        <link rel="stylesheet" href="../css/bootstrap.min.css">
-        <link rel="stylesheet" href="../css/owl.carousel.min.css">
-        <link rel="stylesheet" href="../css/animate.min.css">
-        <link rel="stylesheet" href="../css/magnific-popup.css">
-        <link rel="stylesheet" href="../css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="../css/flaticon.css">
-        <link rel="stylesheet" href="../css/meanmenu.css">
-        <link rel="stylesheet" href="../css/jquery-ui.css">
-        <link rel="stylesheet" href="../css/meanmenu.css">
-        <link rel="stylesheet" href="../css/slick.css">
-        <link rel="stylesheet" href="../css/default.css">
-        <link rel="stylesheet" href="../css/style.css">
-        <link rel="stylesheet" href="../css/responsive.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/owl.carousel.min.css">
+        <link rel="stylesheet" href="css/animate.min.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/flaticon.css">
+        <link rel="stylesheet" href="css/meanmenu.css">
+        <link rel="stylesheet" href="css/jquery-ui.css">
+        <link rel="stylesheet" href="css/meanmenu.css">
+        <link rel="stylesheet" href="css/slick.css">
+        <link rel="stylesheet" href="css/default.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/responsive.css">
     </head>
     <body>
+        <jsp:include page="admin_header.jsp"></jsp:include>
         <c:set var="V" value="${sessionScope.Vch}" />
         <!-- header start -->
-        <jsp:include page="../admin_header.jsp"></jsp:include>
             <!-- header end -->
             <main>
                 <div class="container mt-5">
@@ -77,7 +77,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="discount_amount">Mức giảm</label>
-                                <input type="number" class="form-control" id="discount_amount" name="discount_amount" value="${V.ediscount_amount}" required>
+                                <input type="number" class="form-control" id="discount_amount" name="discount_amount" value="${V.discount_amount}" required>
                             </div>
                         </div>
 
@@ -110,28 +110,25 @@
                 </div>
             </main>
 
-            <!-- footer start -->
-        <jsp:include page="../footer.jsp"></jsp:include>
-        <!-- footer end -->
+                            
 
-
-
+            <jsp:include page="footer.jsp"></jsp:include>
         <!-- JS here -->
-        <script src="../js/vendor/jquery-1.12.4.min.js"></script>
-        <script src="../js/jquery-ui.js"></script>
-        <script src="../js/popper.min.js"></script>
-        <script src="../js/bootstrap.min.js"></script>
-        <script src="../js/owl.carousel.min.js"></script>
-        <script src="../js/isotope.pkgd.min.js"></script>
-        <script src="../js/slick.min.js"></script>
-        <script src="../js/jquery.meanmenu.min.js"></script>
-        <script src="../js/ajax-form.js"></script>
-        <script src="../js/wow.min.js"></script>
-        <script src="../js/jquery.scrollUp.min.js"></script>
-        <script src="../js/jquery.final-countdown.min.js"></script>
-        <script src="../js/imagesloaded.pkgd.min.js"></script>
-        <script src="../js/jquery.magnific-popup.min.js"></script>
-        <script src="../js/plugins.js"></script>
-        <script src="../js/main.js"></script>
+        <script src="js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="js/jquery-ui.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/owl.carousel.min.js"></script>
+        <script src="js/isotope.pkgd.min.js"></script>
+        <script src="js/slick.min.js"></script>
+        <script src="js/jquery.meanmenu.min.js"></script>
+        <script src="js/ajax-form.js"></script>
+        <script src="js/wow.min.js"></script>
+        <script src="js/jquery.scrollUp.min.js"></script>
+        <script src="js/jquery.final-countdown.min.js"></script>
+        <script src="js/imagesloaded.pkgd.min.js"></script>
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
     </body>
 </html>

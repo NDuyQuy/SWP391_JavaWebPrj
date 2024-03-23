@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.*;
 import dao.*;
+import javax.servlet.http.HttpSession;
+
 /**
  *
  * @author ASUS
@@ -36,7 +38,7 @@ public class LoginController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginController</title>");            
+            out.println("<title>Servlet LoginController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet LoginController at " + request.getContextPath() + "</h1>");
@@ -72,22 +74,25 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "";
-        String username = "", password="";
+        String username = "", password = "";
         String rm = request.getParameter("rm");
-        
+        HttpSession session = request.getSession(true);
         try {
             username = request.getParameter("username");
             password = request.getParameter("password");
-            if(UsersDao.checkLogin(username, password)){
+            if (UsersDao.checkLogin(username, password)) {
                 // get full name, address, phone, email and role of the user
                 Users u = UsersDao.getUserInfoByUsername(username);
                 // set password
                 u.setPassword(password);
                 // add user into session scope
-                request.getSession().setAttribute("user", u);
-                if(rm.equals("on")){
-                    request.getSession().setMaxInactiveInterval(24 * 60 * 60);
+                session.setAttribute("user", u);
+                if (rm != null) {
+                    if (rm.equals("on")) {
+                        session.setMaxInactiveInterval(24 * 60 * 60);
+                    }
                 }
+
                 int role = u.getRole();
                 //switch the url 
                 switch (role) {
@@ -97,20 +102,20 @@ public class LoginController extends HttpServlet {
                     case 2:
                         url = "/home.jsp";
                         Shops shop = SellersDao.getShopById(u.getId());
-                        request.getSession().setAttribute("shop", shop);
+                        session.setAttribute("shop", shop);
                         int numberOfWaitingOrders = OrdersDao.getWaitingOrders(u.getId()).size();
-                        request.getSession().setAttribute("noti",OrdersDao.getWaitingOrders(u.getId()));
+                        session.setAttribute("noti", OrdersDao.getWaitingOrders(u.getId()));
                         break;
                     case 3:
-                        request.getSession().setAttribute("Admin", 1);
+                        session.setAttribute("Admin", 1);
                         url = "/AdminMainpage.jsp";
                         break;
                     case 4:
                         response.sendRedirect("ShippingUnit");
                     default:
                         url = "/home.jsp";
-                } 
-            }else{
+                }
+            } else {
                 request.setAttribute("login_error", "Tên tài khoản của bạn hoặc Mật khẩu không đúng, vui lòng thử lại.");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }

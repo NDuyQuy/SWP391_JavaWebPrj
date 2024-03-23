@@ -354,6 +354,6 @@
                 });
             }
             
-            var myVar = setInterval(checkUnseen, 2500);
+            var myVar = setInterval(checkUnseen, 3000);
         </script>
 </html>

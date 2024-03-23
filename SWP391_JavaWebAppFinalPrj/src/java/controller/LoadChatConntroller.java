@@ -41,6 +41,7 @@ public class LoadChatConntroller extends HttpServlet {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = request.getSession();
+        boolean Continue = true;
         try {
             PrintWriter out = response.getWriter();
             String action = request.getParameter("Action");
@@ -72,12 +73,21 @@ public class LoadChatConntroller extends HttpServlet {
                 String InfoDiv = loadChatInfo(shop_id);
                 out.println(InfoDiv);
             }
+            else if(action.equals("CheckFirstLoad")) {
+                Continue = false;
+                int shop_id = Integer.parseInt(request.getParameter("shop_id"));
+                ArrayList<Messages> mlist = MessageDao.GetMessageList(shop_id, userId);
+                
+                if (mlist.isEmpty()) {
+                    MessageDao.SendMessage(shop_id, userId, 0, "Chào mừng đến với shop của " + SellersDao.getShopById(shop_id).getShop_name() + ". Tôi có thể giúp được gì cho bạn?");
+                }
+            }
         }
         catch (Exception ex) {
             System.out.println("Error While Loading...");
         }
         finally {
-            //httpResponse.sendRedirect(httpRequest.getContextPath() + url);
+            if(!Continue) httpResponse.sendRedirect(httpRequest.getContextPath() + url);
             System.out.println("Loading...");
         }
         
@@ -178,7 +188,7 @@ public class LoadChatConntroller extends HttpServlet {
 "                                    [Content]\n" +
 "                                    \n" +
 "                                    <!--TIME RECEIVE MESSAGE-->\n" +
-"                                    <span class=\"msg_time\">[Time]</span>\n" +
+"                                    <span class=\"text-nowrap msg_time\">[Time]</span>\n" +
 "                                </div>\n" +
 "                            </div>";
                 member = member.replace("[img]", chat.get(i).getShop().getShop_img());
@@ -191,7 +201,7 @@ public class LoadChatConntroller extends HttpServlet {
 "                                    [Content]\n" +
 "                                    \n" +
 "                                    <!--TIME SEND MESSAGE-->\n" +
-"                                    <span class=\"msg_time_send\">[Time]</span>\n" +
+"                                    <span class=\"text-nowrap msg_time_send\">[Time]</span>\n" +
 "                                </div>\n" +
 "                                <!--IMAGE OF RECEIVER-->\n" +
 "                                <div class=\"img_cont_msg\">\n" +
@@ -232,7 +242,7 @@ public class LoadChatConntroller extends HttpServlet {
 "                                    [Content]\n" +
 "                                    \n" +
 "                                    <!--TIME RECEIVE MESSAGE-->\n" +
-"                                    <span class=\"msg_time\">[Time]</span>\n" +
+"                                    <span class=\"text-nowrap msg_time\">[Time]</span>\n" +
 "                                </div>\n" +
 "                            </div>";
                 member = member.replace("[img]", chat.get(i).getShop().getShop_img());

@@ -102,7 +102,7 @@
                                             <td onclick="redirectToOrderDetail(${order.getOrder_id()})" style="cursor: pointer;">${order.getStatus()}</td>
                                             <td>
 
-                                                <button>Liên hệ với người bán</button>
+                                                <a href="LoadChatConntroller?shop_id=${order.getShop_id()}&Action=CheckFirstLoad">Liên hệ với người bán</a>
                                             </td>
                                             <td>
                                                 <!-- Nút "Đã nhận hàng" - hiển thị nếu trạng thái là "da giao hang" -->

@@ -89,11 +89,7 @@
 
                                         </div>
                                     </li>
-                                    <li>
-                                        <div style="margin-top: -30px;">
-                                            <a class="logout" href="logout" style="color: #fe5245; text-decoration: underline;">Đăng xuất</a>
-                                        </div>
-                                    </li>
+                                    
                                 </ul>
 
                             </div>
@@ -106,6 +102,7 @@
                                     <li><a href="#"><i class="flaticon-list"></i> Khóa/Mở khóa người dùng</a></li>
                                     <li><a href="#"><i class="flaticon-list"></i> Phê duyệt đăng ký seller</a></li>
                                     <li><a href="#"><i class="flaticon-list"></i> Yêu cầu trả hàng/hoàn tiền</a></li>
+                                    <li><a class="logout" href="logout" style="color: #fe5245;"><i class="flaticon-list"></i>Đăng xuất</a></li>
                                 </ul>
 
                             </div>

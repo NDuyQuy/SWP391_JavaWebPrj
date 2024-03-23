@@ -87,7 +87,6 @@ public class UsersDao {
             e.printStackTrace();
         }
     }
-
     public static void updateProfile(Users users) {
         PreparedStatement ptm = null;
         //edit users profile which include fullname, phone, address

@@ -24,7 +24,7 @@ public class MessageDao {
     
     private static final String GETUNSEENMESSAGE = "SELECT * FROM [dbo].[messages] WHERE [shop_id] = ? AND [customer_id] = ? AND [message_status] = ?";
     
-    private static final String GETCHATLIST = "SELECT DISTINCT [shop_id] FROM [dbo].[messages] WHERE [customer_id] = ? ORDER BY [shop_id]";
+    private static final String GETCHATLIST = "SELECT DISTINCT [shop_id], [message_id] FROM [dbo].[messages] WHERE [customer_id] = ? ORDER BY [message_id] DESC";
     
     private static final String GETUSERCHATLIST = "SELECT DISTINCT [customer_id] FROM [dbo].[messages] WHERE [shop_id] = ? ORDER BY [customer_id]";
     
@@ -128,6 +128,7 @@ public class MessageDao {
     
     public static ArrayList<Shops> GetChatList(int id) {
         ArrayList<Shops> result = new ArrayList<Shops>();
+        ArrayList<Integer> existShop = new ArrayList<>();
         PreparedStatement ptm = null;
         ResultSet rs = null;
         try (Connection con = SQLConnection.getConnection()) {
@@ -136,8 +137,11 @@ public class MessageDao {
             rs = ptm.executeQuery();
             while (rs.next()) {
                 int shopid = rs.getInt("shop_id");
-                Shops shop = SellersDao.getShopById(shopid);
-                result.add(shop);
+                if (!existShop.contains(shopid)) {
+                    Shops shop = SellersDao.getShopById(shopid);
+                    result.add(shop);
+                    existShop.add(shopid);
+                }
             }
             SQLConnection.closeConnection(con);
         } catch (Exception e) {
