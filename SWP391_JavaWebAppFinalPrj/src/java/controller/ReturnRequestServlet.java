@@ -5,9 +5,11 @@
  */
 package controller;
 
+import dao.OrdersDao;
 import dao.RefundsAndReturnsDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -59,7 +61,16 @@ public class ReturnRequestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        int orderDetailId = Integer.parseInt(request.getParameter("orderDetailId"));
+
+        // Truyền orderId và productId sang refundreturnrequest.jsp
+        request.setAttribute("orderDetailId", orderDetailId);
+
+        // Chuyển hướng sang refundreturnrequest.jsp
+        RequestDispatcher dispatcher = request.getRequestDispatcher("refundreturnrequest.jsp");
+        dispatcher.forward(request, response);
+
     }
 
     /**
@@ -73,56 +84,28 @@ public class ReturnRequestServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        request.setCharacterEncoding("UTF-8");
+        int orderDetailId = Integer.parseInt(request.getParameter("orderDetailId"));
+        String cancelReason = request.getParameter("cancelReason");
 
-        try {
-            // Lấy thông tin từ form
-            String[] returnProducts = request.getParameterValues("returnProduct");
-            String reason = request.getParameter("reason");
-            int orderId = Integer.parseInt(request.getParameter("orderId"));
+        boolean success = OrdersDao.requestReturn(orderDetailId, cancelReason);
 
-            // Tính tổng tiền hoàn lại
-            int totalRefundAmount = 0;
-            if (returnProducts != null) {
-                for (String productId : returnProducts) {
-                    // Số tiền hoàn lại sẽ được tính dựa trên giá của sản phẩm
-                    int productPrice = RefundsAndReturnsDao.getProductPrice(Integer.parseInt(productId));
-                    totalRefundAmount += productPrice;
-                }
-            }
+        if (success) {
 
-            // Tạo đối tượng ReturnRequest
-            ReturnRequest returnRequest = new ReturnRequest();
-            returnRequest.setOrderId(orderId);
-            returnRequest.setReturnProducts(returnProducts);
-            returnRequest.setReason(reason);
-            returnRequest.setRefundAmount(totalRefundAmount);
+            response.sendRedirect("return_success.jsp");
+        } else {
 
-            // Lưu yêu cầu trả hàng/hoàn tiền vào cơ sở dữ liệu
-            boolean success = ReturnRequestDao.saveReturnRequest(returnRequest);
-
-            if (success) {
-                // Chuyển hướng người dùng đến trang thông báo thành công
-                response.sendRedirect("ReturnSuccess.jsp");
-            } else {
-                out.println("Failed to submit return request");
-            }
-        } catch (Exception e) {
-            out.println("Error: " + e.getMessage());
-        } finally {
-            out.close();
+            response.sendRedirect("return_error.jsp");
         }
     }
 
-
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */
-@Override
-        public String getServletInfo() {
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 

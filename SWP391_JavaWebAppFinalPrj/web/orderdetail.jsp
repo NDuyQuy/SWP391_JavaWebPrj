@@ -123,6 +123,7 @@
                                             <th>Product Name</th>
 
                                             <th>Quantity</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -133,6 +134,14 @@
                                                 <td>${orderDetail.product.getName()}</td>
 
                                                 <td>${orderDetail.quantity}</td>
+                                                <td><c:if test="${order.status.trim() eq 'đã giao hàng'}">
+                                                        <form action="ReturnRequestServlet" method="get">
+                                                            <input type="hidden" name="orderDetailId" value="${orderDetail.id}">
+                                                            <button type="submit">Yêu cầu trả hàng/hoàn tiền</button>
+                                                        </form>
+
+
+                                                    </c:if></td>
                                             </tr>
 
                                         </c:forEach>
@@ -163,7 +172,7 @@
 
                             <c:if test="${order.status.trim() eq 'đã giao hàng'}">
                                 <button type="button" class="btn theme-btn" onclick="openConfirmModal(${order.getOrder_id()})">Đã nhận hàng</button>
-                                <button type="button" class="btn theme-btn" > Yêu cầu trả hàng/hoàn tiền</button>
+
                             </c:if>
 
 

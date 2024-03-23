@@ -102,7 +102,7 @@ public class CartDao {
         return quantity;
     }
 
-    public void removeFromCart(int userId, int productId) {
+    public static void removeFromCart(int userId, int productId) {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement ptm = con.prepareStatement(REMOVE_FROM_CART)) {
             ptm.setInt(1, userId);
@@ -113,7 +113,6 @@ public class CartDao {
         }
     }
 
-   
     public static List<CartDetail> getCartItems(int userId) {
         List<CartDetail> cartItems = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection();
@@ -132,10 +131,10 @@ public class CartDao {
                 product.setName(rs.getString("name"));
                 product.setMoney(rs.getInt("price"));
                 product.setImg(rs.getString("img"));
-          
+
                 CartDetail cartDetail = new CartDetail(userId, productId, quantity, product);
-                cartDetail.setShop(shop); 
-                cartItems.add(cartDetail); 
+                cartDetail.setShop(shop);
+                cartItems.add(cartDetail);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +152,6 @@ public class CartDao {
         }
     }
 
-    
     private String getQuestionMarks(int size) {
         StringBuilder questionMarks = new StringBuilder();
         for (int i = 0; i < size; i++) {
@@ -166,43 +164,16 @@ public class CartDao {
     }
 
     public static void main(String[] args) {
-        int userId = 6;
+        CartDao test = new CartDao();
 
-        CartDao cartDao = new CartDao();
-        List<CartDetail> cartItems = cartDao.getCartItems(userId);
+        // Thay đổi userId và productId theo nhu cầu của bạn
+        int userId = 4; // Thay đổi userId thành userId thích hợp
+        int productId = 4; // Thay đổi productId thành productId thích hợp
 
-        if (cartItems.isEmpty()) {
-            System.out.println("No items found in the cart for user ID: " + userId);
-        } else {
-            System.out.println("Cart items for user ID " + userId + ":");
-            for (CartDetail cartItem : cartItems) {
-                System.out.println("User ID: " + cartItem.getUser_id());
-                System.out.println("Product ID: " + cartItem.getProduct_id());
-                System.out.println("Quantity: " + cartItem.getQuantity());
+        // Gọi phương thức removeFromCart để xóa sản phẩm khỏi giỏ hàng của người dùng
+        test.removeFromCart(userId, productId);
 
-                // Kiểm tra xem sản phẩm có thuộc tính shop đã được thiết lập chưa
-                if (cartItem.getShop() != null) {
-                    System.out.println("Shop Name: " + cartItem.getShop().getShop_name());
-                    // In thêm thông tin khác của cửa hàng nếu cần
-                } else {
-                    System.out.println("Shop: null");
-                }
-
-                // Kiểm tra xem sản phẩm có thuộc tính user đã được thiết lập chưa
-                if (cartItem.getUser() != null) {
-                    System.out.println("User Name: " + cartItem.getUser().getUsername());
-                    // In thêm thông tin khác của người dùng nếu cần
-                } else {
-                    System.out.println("User: null");
-                }
-
-                // In thông tin sản phẩm
-                System.out.println("Product Name: " + cartItem.getProduct().getName());
-                System.out.println("Product Price: " + cartItem.getProduct().getMoney());
-                // In thêm thông tin khác của sản phẩm nếu cần
-
-                System.out.println("------------------------------------");
-            }
-        }
+        // Thông báo khi xóa sản phẩm thành công
+        System.out.println("Sản phẩm với productId = " + productId + " đã được xóa khỏi giỏ hàng của người dùng có userId = " + userId);
     }
 }

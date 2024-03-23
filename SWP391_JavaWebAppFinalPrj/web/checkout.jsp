@@ -189,7 +189,7 @@
                             <td>
 
                                 <select id="vouchers" name="shopVoucher" onchange="removeSelectedVoucherFromBelow(this)">
-                                    <option data-voucher-id="0">-- Chọn voucher --</option>
+                                    <option data-voucher-id="0" value="0">-- Chọn voucher --</option>
 
                                     <c:forEach var="voucher" items="${entry.key}">
                                         <option class="shop-voucher" value="${voucher.discount_amount}" data-voucher-id="${voucher.voucher_id}">${voucher.code}</option>
@@ -318,8 +318,13 @@
 
                                     function removeSelectedVoucherFromBelow(selectElement) {
                                         var selectedVoucherId = selectElement.value;
-// Kiểm tra nếu đã chọn lựa chọn mặc định
-                                        if (selectedVoucherId === "") {
+                                        var voucherDataId = selectElement.options[selectElement.selectedIndex].getAttribute('data-voucher-id');
+
+
+                                        if (selectedVoucherId === "0") {
+                                            // Gán giá trị data-voucher-id thành 0
+                                            //selectElement.options[selectElement.selectedIndex].setAttribute('data-voucher-id', '0');
+
                                             // Đặt giá trị của cột selectedVoucherAmount thành 0
                                             var row = selectElement.closest('tr');
                                             var voucherAmountElement = row.querySelector('.selectedVoucherAmount');

@@ -41,8 +41,6 @@ public class OrdersDao {
 
     private static final String UPDATE_STATUS = "UPDATE [orders] SET [status]=? WHERE [order_id]=?";
 
-    
-    
     //query cua tien
     private static final String GET_ORDER_DETAILS = "SELECT od.*, p.* FROM orderdetail od INNER JOIN products p ON od.product_id = p.product_id WHERE od.order_id = ?";
     private static final String ADD_ORDER = "INSERT INTO orders (customer_id, shop_id, shipping_cost, total, payment_method, status, receiver_name, receiver_phone, receiver_address, shipping_method, type, voucher_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -54,9 +52,52 @@ public class OrdersDao {
             + "   JOIN products p ON od.productID = p.product_id "
             + "WHERE o.order_id = ?";
     private static final String UPDATE_ORDER_STATUS = "UPDATE orders SET status = ? WHERE order_id = ?";
+    private static final String REQUEST_RETURN = "UPDATE orderdetail SET cancel_reason = ? WHERE id = ?";
+    private static final String GET_ORDER_DETAIL_BY_ID = "SELECT * FROM orderdetail WHERE id = ?";
+
+    public static OrderDetail getOrderDetailById(int orderDetailId) {
+        OrderDetail orderDetail = null;
+        
+
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement pstmt = con.prepareStatement(GET_ORDER_DETAIL_BY_ID)) {
+            pstmt.setInt(1, orderDetailId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    orderDetail = new OrderDetail();
+                    orderDetail.setId(rs.getInt("id"));
+                    orderDetail.setOrderID(rs.getInt("orderID"));
+                    orderDetail.setProductID(rs.getInt("productID"));
+                    orderDetail.setQuantity(rs.getInt("quantity"));
+                    orderDetail.setCancel_reason(rs.getString("cancel_reason"));
+                    orderDetail.setTotalPrice(rs.getInt("totalPrice"));
+                    // Set other properties if needed
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orderDetail;
+    }
+
+    public static boolean requestReturn(int orderDetailId, String cancelReason) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement pstmt = con.prepareStatement(REQUEST_RETURN)) {
+            pstmt.setString(1, cancelReason);
+            pstmt.setInt(2, orderDetailId);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     // tao don hang va chi tiet don hang
-    public static  boolean addOrderAndDetails(Orders order, List<OrderDetail> orderDetails) throws Exception {
+    public static boolean addOrderAndDetails(Orders order, List<OrderDetail> orderDetails) throws Exception {
         Connection con = null;
         PreparedStatement addOrderStmt = null;
         PreparedStatement addOrderDetailStmt = null;
@@ -165,7 +206,7 @@ public class OrdersDao {
         try {
             Orders order = new Orders();
             order.setOrder_id(rs.getInt("order_id"));
-           
+
             order.setCustomer(getUserById(rs.getInt("customer_id")));
             order.setShop_id(rs.getInt("shop_id"));
             order.setShipping_cost(rs.getInt("shipping_cost"));
@@ -186,6 +227,7 @@ public class OrdersDao {
         }
     }
 // lấy dữ liệu để hiển thị trong orderdetail.jsp
+
     public Orders getOrderAndDetailsById(int orderId) {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement getOrderAndDetailsStmt = con.prepareStatement(GET_ORDER_AND_DETAILS_BY_ID)) {
@@ -531,7 +573,7 @@ public class OrdersDao {
         }
         return ods;
     }
-    
+
     public static void main(String[] args) throws Exception {
 
         OrdersDao ordersDao = new OrdersDao();
@@ -552,21 +594,20 @@ public class OrdersDao {
         order.setReceiver_phone("1234567890");
         order.setReceiver_address("123 Main St, City, Country");
         order.setOrder_date(new Date());
-     //   order.setType(1);
+        //   order.setType(1);
         order.setVoucher_id(1);
-        
-        
+
         // Tạo danh sách chi tiết đơn hàng
         List<OrderDetail> orderDetails = new ArrayList<>();
         OrderDetail detail1 = new OrderDetail();
         detail1.setProductID(2);
-        detail1.setQuantity(2); 
+        detail1.setQuantity(2);
         detail1.setTotalPrice(300);
         orderDetails.add(detail1);
 
         OrderDetail detail2 = new OrderDetail();
         detail2.setProductID(1);
-        detail2.setQuantity(1); 
+        detail2.setQuantity(1);
         detail2.setTotalPrice(200);
         orderDetails.add(detail2);
 
