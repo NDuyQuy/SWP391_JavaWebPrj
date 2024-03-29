@@ -11,13 +11,12 @@ package model;
 public class OrderDetail {
     private int id;
     private int orderID;
-    private int productID;
+    private int p_detail_id;
     private int quantity;
     private String cancel_reason;
-    private int totalPrice;
+    private double totalPrice;
     private Orders order;
-    private Products product;
-
+    private ProductDetail productDetail;
     public OrderDetail() {
     }
 
@@ -37,12 +36,12 @@ public class OrderDetail {
         this.orderID = orderID;
     }
 
-    public int getProductID() {
-        return productID;
+    public int getP_detail_id() {
+        return p_detail_id;
     }
 
-    public void setProductID(int productID) {
-        this.productID = productID;
+    public void setP_detail_id(int p_detail_id) {
+        this.p_detail_id = p_detail_id;
     }
 
     public int getQuantity() {
@@ -69,25 +68,25 @@ public class OrderDetail {
         this.order = order;
     }
 
-    public Products getProduct() {
-        return product;
+    public ProductDetail getProductDetail() {
+        return productDetail;
     }
 
-    public void setProduct(Products product) {
-        this.product = product;
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
     }
 
-    public int getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(int totalPrice) {
+    public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
     
     @Override
     public String toString() {
-        return "OrderDetail{" + "id=" + id + ", orderID=" + orderID + ", productID=" + productID + ", quantity=" + quantity + ", cancel_reason=" + cancel_reason + '}';
+        return "OrderDetail{" + "id=" + id + ", orderID=" + orderID + ", productID=" + p_detail_id + ", quantity=" + quantity + ", cancel_reason=" + cancel_reason + '}';
     }
     
 }

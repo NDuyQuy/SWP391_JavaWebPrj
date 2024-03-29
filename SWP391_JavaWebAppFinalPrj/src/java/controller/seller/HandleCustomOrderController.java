@@ -5,6 +5,7 @@
  */
 package controller.seller;
 
+import dao.OrdersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -61,11 +62,13 @@ public class HandleCustomOrderController extends HttpServlet {
             throws ServletException, IOException {
         Users u = (Users) request.getSession().getAttribute("user");
         if(u==null){
-            response.sendRedirect("Home");
+            response.sendRedirect("login");
         }else if(u.getRole()!=1){
-            response.sendRedirect("Home");
+            response.sendRedirect("login");
         }else{
-            int id = Integer.parseInt(request.getParameter("id"));
+            int order_id = Integer.parseInt(request.getParameter("id"));
+            //int user_id = u.getId();
+            //CustomOrders co = OrdersDao.get
             
         }
     }

@@ -17,7 +17,7 @@ public class Orders {
     private int customer_id;
     private int shop_id;
     private int shipping_cost;
-    private int total;
+    private double total;
     private String payment_method;
     private String status;
     private String receiver_name;
@@ -31,9 +31,10 @@ public class Orders {
     private Shops shop;
     private ShippingUnits shippingunit;
     private int voucher_id;
-private List<OrderDetail> orderDetails;
-public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
+    private List<OrderDetail> orderDetails;
+    
+    public List<OrderDetail> getOrderDetails() {
+            return orderDetails;
     }
 
     public void setOrderDetails(List<OrderDetail> orderDetails) {
@@ -83,11 +84,11 @@ public List<OrderDetail> getOrderDetails() {
         this.shipping_cost = shipping_cost;
     }
 
-    public int getTotal() {
+    public double getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(double total) {
         this.total = total;
     }
 
@@ -197,7 +198,7 @@ public List<OrderDetail> getOrderDetails() {
     
     @Override
     public String toString() {
-        return "Orders{" + "order_id=" + order_id + ", customer_id=" + customer_id + ", shop_id=" + shop_id + ", shipping_cost=" + shipping_cost + ", total=" + total + ", payment_method=" + payment_method + ", status=" + status + ", receiver_name=" + receiver_name + ", receiver_phone=" + receiver_phone + ", receiver_address=" + receiver_address + ", shipping_method=" + shipping_method + ", shippingunit_id=" + shippingunit_id + ", order_date=" + order_date + ", type=" + type + '}';
+        return "Orders{" + "order_id=" + order_id + ", customer_id=" + customer_id + ", shop_id=" + shop_id + ", shipping_cost=" + shipping_cost + ", total=" + getTotal() + ", payment_method=" + payment_method + ", status=" + status + ", receiver_name=" + receiver_name + ", receiver_phone=" + receiver_phone + ", receiver_address=" + receiver_address + ", shipping_method=" + shipping_method + ", shippingunit_id=" + shippingunit_id + ", order_date=" + order_date + ", type=" + type + '}';
     }
 
     public int getVoucher_id() {

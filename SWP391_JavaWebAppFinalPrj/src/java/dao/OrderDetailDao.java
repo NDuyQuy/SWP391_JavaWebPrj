@@ -32,7 +32,7 @@ public class OrderDetailDao {
             if (rs.next()) {
                 od.setId(id);
                 od.setOrderID(rs.getInt(1));
-                od.setProductID(rs.getInt(2));
+                od.setP_detail_id(rs.getInt(2));
                 od.setQuantity(rs.getInt(3));
                 od.setCancel_reason(rs.getString(4));
             }
@@ -55,7 +55,7 @@ public class OrderDetailDao {
                 od = new OrderDetail();
                 od.setId(rs.getInt(1));
                 od.setOrderID(ord_id);
-                od.setProductID(rs.getInt(2));
+                od.setP_detail_id(rs.getInt(2));
                 od.setQuantity(rs.getInt(3));
                 od.setCancel_reason(rs.getString(4));
                 order_details.add(od);

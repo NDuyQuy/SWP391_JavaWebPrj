@@ -72,7 +72,7 @@ public class OrdersDao {
                     orderDetail = new OrderDetail();
                     orderDetail.setId(rs.getInt("id"));
                     orderDetail.setOrderID(rs.getInt("orderID"));
-                    orderDetail.setProductID(rs.getInt("productID"));
+                    orderDetail.setP_detail_id(rs.getInt("productID"));
                     orderDetail.setQuantity(rs.getInt("quantity"));
                     orderDetail.setCancel_reason(rs.getString("cancel_reason"));
                     orderDetail.setTotalPrice(rs.getInt("totalPrice"));
@@ -116,7 +116,7 @@ public class OrdersDao {
             addOrderStmt.setInt(1, order.getCustomer_id());
             addOrderStmt.setInt(2, order.getShop_id());
             addOrderStmt.setInt(3, order.getShipping_cost());
-            addOrderStmt.setInt(4, order.getTotal());
+            addOrderStmt.setDouble(4, order.getTotal());
             addOrderStmt.setNString(5, order.getPayment_method());
             addOrderStmt.setNString(6, "Chờ xác nhận");
             addOrderStmt.setNString(7, order.getReceiver_name());
@@ -146,7 +146,7 @@ public class OrdersDao {
             addOrderDetailStmt = con.prepareStatement(ADD_ORDER_DETAIL);
             for (OrderDetail detail : orderDetails) {
                 addOrderDetailStmt.setInt(1, order.getOrder_id());
-                addOrderDetailStmt.setInt(2, detail.getProductID());
+                addOrderDetailStmt.setInt(2, detail.getP_detail_id());
                 addOrderDetailStmt.setInt(3, detail.getQuantity());
                 addOrderDetailStmt.setDouble(4, detail.getTotalPrice());
                 addOrderDetailStmt.addBatch();
@@ -670,11 +670,28 @@ public class OrdersDao {
             ex.printStackTrace();
         }
     }
-
+    public static CustomOrder getCustomOrderById(int id){
+        PreparedStatement ptm = null;
+        CustomOrder co = null;
+        try(Connection con = SQLConnection.getConnection()){
+            ptm = con.prepareStatement("SELECT * FROM [custom_order] WHERE [id]=?");
+            ptm.setInt(1, id);
+            ResultSet rs = ptm.executeQuery();
+            if(rs.next()){
+                String name = rs.getNString("product_name");
+                Date deadline = rs.getDate("expected_complete_date");
+                co = new CustomOrder(id, name, deadline);
+                co.setOrder(getOrderByID(id));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return co;
+    }
     public static void main(String[] args) {
-        cancelOrders(1, "hết hàng");
+        //cancelOrders(1, "hết hàng");
         LocalDate date = LocalDate.of(2024, 3, 17);
-
+        System.err.println(getCustomOrderById(37).getOrder());
         //getOrderDetail(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);
         //getWaitingOrders(1).forEach(System.out::println);

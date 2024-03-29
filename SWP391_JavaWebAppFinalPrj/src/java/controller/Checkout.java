@@ -166,7 +166,7 @@ public class Checkout extends HttpServlet {
                     OrderDetail orderDetail = new OrderDetail();
                     // Thiết lập thông tin cho orderDetail từ cartItem
                     orderDetail.setOrderID(order.getOrder_id()); // Set ID của đơn hàng
-                    orderDetail.setProductID(cartItem.getProduct().getProduct_id()); // Set ID sản phẩm
+                    orderDetail.setP_detail_id(cartItem.getProduct().getProduct_id()); // Set ID sản phẩm
                     orderDetail.setQuantity(cartItem.getQuantity());
                     if (vouchers == null) {
                         orderDetail.setTotalPrice(cartItem.getQuantity() * cartItem.getProduct().getMoney());

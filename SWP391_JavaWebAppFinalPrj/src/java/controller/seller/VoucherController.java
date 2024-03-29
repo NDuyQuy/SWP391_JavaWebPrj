@@ -64,21 +64,26 @@ public class VoucherController extends HttpServlet {
             int id = ((Users) request.getSession().getAttribute("user")).getId();
             String open = request.getParameter("open");
             if (open != null) {
-                url = (open.equals("create")) ? "/seller/seller_createvoucher.jsp" : "/seller/seller_editvoucher.jsp";
-                request.setAttribute("productList",SellersDao.getShopProducts(id));
-                try {
-                    int voucher_id = Integer.parseInt(request.getParameter("v_id"));
-                    Vouchers v = SellersDao.getVoucherByID(voucher_id);
-                    request.setAttribute("voucher", v);
-                } catch (Exception e) {
-
+                switch(open){
+                    case "create":
+                        url = "/seller/seller_createvoucher.jsp";
+                        break;
+                    case "edit":
+                        url = "/seller/seller_editvoucher.jsp";
+                        int voucher_id = Integer.parseInt(request.getParameter("v_id"));
+                        Vouchers v = SellersDao.getVoucherByID(voucher_id);
+                        request.setAttribute("voucher", v);
+                        break;
+                    default:
+                        break;
                 }
             } else {
                 //Get the list of shop categories
-                request.getSession().setAttribute("vouchers", SellersDao.getShopVouchers(id));
+                request.setAttribute("vouchers", SellersDao.getShopVouchers(id));
             }
             request.getRequestDispatcher(url).forward(request, response);
-        } catch (Exception e) {
+            
+        } catch (NullPointerException e) {
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }

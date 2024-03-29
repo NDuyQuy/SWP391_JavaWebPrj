@@ -292,6 +292,7 @@ public class SellersDao {
     public static Products getProductById(int product_id){
         return ProductDao.getProductById(product_id);
     }
+    /*
     public static void createShopProducts(Products product, int shop_id){
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
@@ -334,7 +335,7 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    
+    */
     public static void main(String[] args) {
         //getShopVouchers(1).forEach(System.out::println);
         //getShopProducts(1).forEach(System.out::println);

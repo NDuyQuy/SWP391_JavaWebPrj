@@ -11,7 +11,8 @@ package model;
  */
 public class CartDetail {
     private int user_id;
-    private int product_id;
+    //PRODUCT DETAIL ID 
+    private int p_detail_id;
     private int quantity;
     private Users user;
     private Products product;
@@ -19,14 +20,14 @@ public class CartDetail {
     public CartDetail() {
     }
 
-    public CartDetail(int user_id, int product_id, int quantity) {
+    public CartDetail(int user_id, int p_detail_id, int quantity) {
         this.user_id = user_id;
-        this.product_id = product_id;
+        this.p_detail_id = p_detail_id;
         this.quantity = quantity;
     }
-    public CartDetail(int user_id, int product_id, int quantity, Users user, Products product) {
+    public CartDetail(int user_id, int p_detail_id, int quantity, Users user, Products product) {
         this.user_id = user_id;
-        this.product_id = product_id;
+        this.p_detail_id = p_detail_id;
         this.quantity = quantity;
         this.user = user;
         this.product = product;
@@ -40,12 +41,12 @@ public class CartDetail {
         this.user_id = user_id;
     }
 
-    public int getProduct_id() {
-        return product_id;
+    public int getP_detail_id() {
+        return p_detail_id;
     }
 
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
+    public void setP_detail_id(int p_detail_id) {
+        this.p_detail_id = p_detail_id;
     }
 
     public int getQuantity() {
@@ -72,8 +73,11 @@ public class CartDetail {
         this.product = product;
     }
     
+    
+   
+    
     @Override
     public String toString() {
-        return "Cartdetail{" + "user_id=" + user_id + ", product_id=" + product_id + ", quantity=" + quantity + '}';
+        return "Cartdetail{" + "user_id=" + user_id + ", product_id=" + p_detail_id + ", quantity=" + quantity + '}';
     }
 }
