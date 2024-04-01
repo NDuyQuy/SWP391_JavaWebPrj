@@ -18,8 +18,9 @@ import model.Products;
  */
 public class OrderDetailDao {
 
-    private static final String GETORDERDETAILSBYORDERID = "Select [id],[productID],[quantity],[cancel_reason] from [orderdetail] where [orderID] = ?";
-    private static final String GETORDERDETAILBYID = "Select [orderID],[productID],[quantity],[cancel_reason] from [orderdetail] where [id] = ?";
+    private static final String GETORDERDETAILSBYORDERID = "Select [id],[p_detail_id],[quantity],[cancel_reason] from [orderdetail] where [orderID] = ?";
+    
+    private static final String GETORDERDETAILBYID = "Select [orderID],[p_detail_id],[quantity],[cancel_reason] from [orderdetail] where [id] = ?";
 
     public static OrderDetail getOrderDetailById(int id) {
         PreparedStatement ptm = null;

@@ -18,15 +18,22 @@ import model.CartDetail;
  */
 public class CartDetailDao {
 
-    private static final String CHECK_CART = "SELECT * FROM cartdetail WHERE user_id = ? AND product_id = ?";
-    private static final String INSERT_CART = "INSERT INTO cartdetail (user_id, product_id, quantity) VALUES (?, ?, ?)";
-    private static final String UPDATE_CART = "UPDATE cartdetail SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?";
+    private static final String CHECK_CART = "SELECT * FROM cartdetail WHERE user_id = ? AND p_detail_id = ?";
+    
+    private static final String INSERT_CART = "INSERT INTO cartdetail (user_id, p_detail_id, quantity) VALUES (?, ?, ?)";
+    
+    private static final String UPDATE_CART = "UPDATE cartdetail SET quantity = quantity + ? WHERE user_id = ? AND p_detail_id = ?";
 
-    private static final String UPDATE_CART_ITEM_QUANTITY = "UPDATE cartdetail SET quantity = ? WHERE user_id = ? AND product_id = ?";
-    private static final String REMOVE_FROM_CART = "DELETE FROM cartdetail WHERE user_id = ? AND product_id = ?";
+    private static final String UPDATE_CART_ITEM_QUANTITY = "UPDATE cartdetail SET quantity = ? WHERE user_id = ? AND p_detail_id = ?";
+    
+    private static final String REMOVE_FROM_CART = "DELETE FROM cartdetail WHERE user_id = ? AND p_detail_id = ?";
+    
     private static final String GET_CART_ITEMS = "SELECT * FROM [cartdetail] WHERE [user_id] = ?";
+    
     private static final String CLEAR_CART = "DELETE FROM cartdetail WHERE user_id = ?";
-    private static final String REMOVE_PRODUCT_FROM_CART = "DELETE FROM [cartdetail] WHERE [user_id]=? AND [product_id]=?";
+    
+    private static final String REMOVE_PRODUCT_FROM_CART = "DELETE FROM [cartdetail] WHERE [user_id]=? AND [p_detail_id]=?";
+    
 
     public static void addToCart(int userId, int productId, int quantity) {
         try (Connection con = SQLConnection.getConnection();
@@ -92,7 +99,7 @@ public class CartDetailDao {
             statement.setInt(1, user_id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                int product_id = resultSet.getInt("product_id");
+                int product_id = resultSet.getInt("p_detail_id");
                 int quantity = resultSet.getInt("quantity");
                 CartDetail cartDetail = new CartDetail(user_id, product_id, quantity);
                 cartDetail.setProduct(SellersDao.getProductById(product_id));

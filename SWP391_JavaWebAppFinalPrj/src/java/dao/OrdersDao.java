@@ -19,22 +19,32 @@ import model.*;
  * @author ASUS
  */
 public class OrdersDao {
-
-    private static final String GET_ORDERS_BY_UNIT_ID = "Select [order_id],[customer_id],[shop_id],[receiver_name],[receiver_phone],[receiver_address],[order_date] from [orders] where [shippingunit_id] = ? and [status] like ?";
+    //change 'like' to '=' 
+    private static final String GET_ORDERS_BY_UNIT_ID = "Select [order_id],[customer_id],[shop_id],[receiver_name],[receiver_phone],[receiver_address],[order_date] from [orders] where [shippingunit_id] = ? and [status] = ?";
+    
     private static final String GETORDERSBYSHOP = "SELECT * FROM [orders] WHERE [shop_id]=? AND status=N'đã nhận'";
+    
     private static final String GETORDERSBYSHOPANDDATE = "SELECT * FROM [orders] WHERE CONVERT(date, order_date) = ? AND [shop_id]=?";
+    
     private static final String GETORDERSCOUNTBYHOUR = "SELECT DATEPART(HOUR, order_date) AS hour, COUNT(*) AS count FROM [orders] "
             + "WHERE CONVERT(date, order_date) = ? AND [shop_id] = ? AND status=N'đã nhận' GROUP BY DATEPART(HOUR, order_date)";
+    
     private static final String GETORDERSCOUNTBYMONTH = "SELECT DAY(order_date) AS day, COUNT(*) AS count FROM [orders] "
             + "WHERE MONTH(order_date) = ? AND YEAR(order_date) = ? AND [shop_id] = ? AND status=N'đã nhận' GROUP BY DAY(order_date)";
+    
     private static final String CALTOTALREVENUEINAMOTH = "EXEC CalculateTotalRevenueForShopAndMonth @ShopID = ?, @Month = ?, @Year = ?";
+    
     private static final String GETCOMPLETEORDERCOUNTINMONTHOFSHOP = "SELECT COUNT(order_id) as [count] FROM [orders] "
             + "WHERE [shop_id] = ? AND MONTH(order_date) = ? AND YEAR(order_date) = ? AND [status] = N'đã nhận'";
+    
     private static final String GETTOTALPRODUCTSELL = "EXEC GetTotalProductSell @ShopId = ?, @Month = ?, @Year = ?";
+    
     private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status] LIKE N'%chờ người bán xác nhận%'";
 
     private static final String GETCUSTOMORDERS = "SELECT co.*,o.status,total FROM [custom_order] co join [orders] o on co.id = o.order_id WHERE o.shop_id = ?";
+    
     private static final String CREATECUSTOMORDER = "EXEC CREATECUSTOMORDERS @ShopId = ?, @Price=?,@ProductName=?, @Deadline = ?";
+    
     private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='' ";
 
     private static final String UPDATE_PROCESS = "INSERT INTO [custom_order_detail]([customorder_id],[process_img],[process_video],[description]) VALUES (?,?,?,?)";
@@ -46,18 +56,24 @@ public class OrdersDao {
     private static final String ADD_ORDER_DETAIL = "INSERT INTO orderdetail (orderID, productID, quantity,totalPrice) VALUES (?, ?, ?,?)";
    
     private static final String GET_ORDER_DETAILS = "SELECT od.*, p.* FROM orderdetail od INNER JOIN products p ON od.product_id = p.product_id WHERE od.order_id = ?";
+    
     private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE order_id = ?";
+    
     private static final String GET_ORDERS_BY_USER_ID = "SELECT * FROM orders WHERE customer_id = ?";
+    
     private static final String GET_ORDER_AND_DETAILS_BY_ID = "SELECT o.*,  p.product_id, p.img, p.name, p.price,  od.quantity, od.id FROM orders o "
             + "  JOIN orderdetail od ON o.order_id = od.orderID "
             + "   JOIN products p ON od.productID = p.product_id "
             + "WHERE o.order_id = ?";
+    
     private static final String GETORDERIDBYREF_RETID = "Select od.orderID from refundsnreturns rnr join orderdetail od on rnr.orderdetail_id = od.id where rnr.id = ?";
 
     private static final String CREATE_RETURN_ORDER = "INSERT INTO [orders]([customer_id],[shop_id],[status],[receiver_name],[receiver_phone],[receiver_address],[shippingunit_id],[type]) values (?,?,?,?,?,?,?,3)";
 
     private static final String UPDATE_ORDER_STATUS = "UPDATE orders SET status = ? WHERE order_id = ?";
+    
     private static final String REQUEST_RETURN = "UPDATE orderdetail SET cancel_reason = ? WHERE id = ?";
+    
     private static final String GET_ORDER_DETAIL_BY_ID = "SELECT * FROM orderdetail WHERE id = ?";
 
     public static OrderDetail getOrderDetailById(int orderDetailId) {
