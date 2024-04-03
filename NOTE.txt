@@ -1,0 +1,30 @@
+Những thứ đã update bao gồm: 
+
+	model(Products,ProductDetail,Orders,OrderDetail) có thể có hơn 
+	cụ thể xin check log của tôi
+
+	toàn bộ seller dao
+
+	toàn bộ controller.seller
+
+	toàn bộ file jsp trong web/seller
+
+	file custom_checkout.jsp trong check 
+
+	Sửa một chút tại productDAO
+
+	Sửa các hàm liên quan đến seller_func tại OrdersDao
+
+
+Những thứ còn thiếu(đối với seller)
+	Data cho shipping unit 
+	Data cho orders và orders detail của shop
+	Data cho messages 
+
+	Trang product detail của seller
+
+Các vấn đề liên quan
+	Ảnh(cực kì quan trọng)
+	Lưu đường dẫn cho các data có sẵn(Data mới k cần lo), phải xác minh đc tính unique
+	Test các chức nẵng cũ : Sửa profile(include user_avatar và shop_logo), 
+	ChangePassword(đã xác minh hoạt động nhưng vẫn cần test lại), đăng ký qua mail(chưa xác minh)
