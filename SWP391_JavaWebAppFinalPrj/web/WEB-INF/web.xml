@@ -124,6 +124,10 @@
         <servlet-name>BecomeSellerServlet</servlet-name>
         <servlet-class>controller.BecomeSellerServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>NotificationController</servlet-name>
+        <servlet-class>controller.NotificationController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -251,6 +255,10 @@
     <servlet-mapping>
         <servlet-name>BecomeSellerServlet</servlet-name>
         <url-pattern>/becomeseller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NotificationController</servlet-name>
+        <url-pattern>/NotificationController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
