@@ -43,7 +43,7 @@
         <jsp:include page="header.jsp"></jsp:include>
             <!-- header end -->
 
-            
+
             <main>
                 <!-- breadcrumb-area-start -->
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
@@ -63,47 +63,46 @@
                 </section>
                 <!-- breadcrumb-area-end -->
                 <h5 style="color:red;" class="text-center">${requestScope.session_out}</h5>
-                <!-- login Area Strat-->
-                <section class="login-area pt-100 pb-100">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-8 offset-lg-2">
-                                <div class="basic-login">
-                                    <h3 class="text-center mb-60">Login From Here</h3>
-                                    <p style="color: red;">${requestScope.login_error}</p>
-                                    <form method="post" action="login">
-                                        <label for="name">Username|Email <span>**</span></label>
-                                        <input id="name" type="text" placeholder="Enter Username or Email address..." name="username" oninput="checkTextField();" />
+            <!-- login Area Strat-->
+            <section class="login-area pt-100 pb-100">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <div class="basic-login">
+                                <h3 class="text-center mb-60">Login From Here</h3>
+                                <p style="color: red;">${requestScope.login_error}</p>
+                                <form method="post" action="login">
+                                    <label for="name">Username|Email <span>**</span></label>
+                                    <input id="name" type="text" placeholder="Enter Username or Email address..." name="username" oninput="checkTextField();" />
                                     <label for="pass">Password <span>**</span></label>
                                     <input id="pass" type="password" placeholder="Enter password..." name="password" oninput="checkTextField();" />
-                                        <div class="login-action mb-20 fix">
-                                            <span class="log-rem f-left">
-                                                <input id="remember" type="checkbox" name="rm"/>
-                                                <label for="remember">Remember me!</label>
-                                            </span>
-                                            <span class="forgot-login f-right">
-                                                <a href="forgotpassword.jsp">Forgot password?</a>
-                                            </span>
-                                        </div>
-                                        <button id="btn-login" class="btn theme-btn-2 w-100" disabled="">Login Now</button>
-                                        <div class="or-divide"><span>or</span></div>
-                                        <button class="btn theme-btn w-100 white-btn" style="color: black; border-style: solid;"><div class="Bq4Bra"><div class="_1a550J social-white-background social-white-google-png"></div></div><div href="https://accounts.google.com/o/oauth2/auth?scope=email profile&redirect_uri=&response_type=code
+                                    <div class="login-action mb-20 fix">
+                                        <span class="log-rem f-left">
+                                            <input id="remember" type="checkbox" name="rm"/>
+                                            <label for="remember">Remember me!</label>
+                                        </span>
+                                        <span class="forgot-login f-right">
+                                            <a href="forgotpassword.jsp">Forgot password?</a>
+                                        </span>
+                                    </div>
+                                    <button id="btn-login" class="btn theme-btn-2 w-100" disabled="">Login Now</button>
+                                    <div class="or-divide"><span>or</span></div>
+                                    <button class="btn theme-btn w-100 white-btn" style="color: black; border-style: solid;"><div class="Bq4Bra"><div class="_1a550J social-white-background social-white-google-png"></div></div><div href="https://accounts.google.com/o/oauth2/auth?scope=email profile&redirect_uri=&response_type=code
                                                                                                                                                                                                         &client_id=&approval_prompt=force"class=""><i class="fab fa-google"></i> <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile&redirect_uri=http://localhost:8080/SWP391_JavaWebAppFinalPrj/GoogleLoginServlet&response_type=code
-                                                                                                                        &client_id=499463704763-03misrvo3p2d4f08tsr3c430k921auk9.apps.googleusercontent.com&approval_prompt=force">Login with Google</a></div></button>
-                                        <div class="text-center mt-30">New to us? <a href="register.jsp" style="text-decoration: underline;">Create Account</a></div>
-                                    </form>
-                                </div>
+                                                                                                                    &client_id=499463704763-03misrvo3p2d4f08tsr3c430k921auk9.apps.googleusercontent.com&approval_prompt=force">Login with Google</a></div></button>
+                                    <div class="text-center mt-30">New to us? <a href="register.jsp" style="text-decoration: underline;">Create Account</a></div>
+                                </form>
                             </div>
                         </div>
                     </div>
-                </section>
-                <!-- login Area End-->
+                </div>
+            </section>
+            <!-- login Area End-->
 
 
-            </main>
+        </main>
 
         <jsp:include page="footer.jsp"></jsp:include>
-
         <!-- Fullscreen search -->
         <div class="search-wrap">
             <div class="search-inner">
@@ -118,7 +117,7 @@
             </div>
         </div> <!-- end fullscreen search -->
 
-<script>
+        <script>
             function checkTextField() {
                 if ($.trim($('#name').val()) != "" &&
                         $('#pass').val() != "")
@@ -129,7 +128,6 @@
                 }
             }
         </script>
-
 
     </body>
 

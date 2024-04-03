@@ -67,15 +67,6 @@
                                             <span id="username">${username}&nbsp;&nbsp;</span>
                                             <i class="far fa-user" style=""></i>
                                         </a>
-                                        <!--                                        <ul class="submenu">
-                                                                                    <li  style="font-size: 16px;">Chào ${user.username}<b></b>!</li>
-                                                                                    <li>
-                                                                                        <a href="profile.jsp">Hồ sơ Shop</a>
-                                                                                    </li>
-                                                                                    <li>
-                                                                                        <a href="logout">Đăng xuất</a>
-                                                                                    </li>
-                                                                                </ul>-->
 
                                     </li>
 
@@ -88,10 +79,8 @@
                                             </div>
 
                                         </div>
-                                    </li>
-                                    
+                                    </li>                                    
                                 </ul>
-
                             </div>
                             <div class="category-menu" style="top: 70px; left: 600px; width: 300px; padding-left: 40px;">
 

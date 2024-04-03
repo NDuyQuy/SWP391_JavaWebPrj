@@ -11,8 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,8 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 /**
  *
  * @author ASUS
@@ -73,44 +72,43 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = "seller/shopproduct_management.jsp";
-        try {
-            int user_id = ((Users) request.getSession().getAttribute("user")).getId();
-            String open = request.getParameter("open");
-            if (open != null) {
-                request.getSession().setAttribute("SCategoryList", CategoryDao.getShopCategoryByShop(user_id));
-                if (open.equals("create")) {
-                    url = "seller/addnew_product.jsp";
-                    //request.getRequestDispatcher(url).forward(request, response);
-                    response.sendRedirect(url);
-                }else{
-                    url = "seller/edit_product.jsp";
-                    int product_id = Integer.parseInt(request.getParameter("p_id"));
-                    Products p = SellersDao.getProductById(product_id);
-                    String realPath = request.getServletContext().getRealPath(p.getImg());
-                    String prefix = p.getImg().replaceAll("\\\\", "/");
-                    request.getSession().setAttribute("product", p);
-                    
-                    Stream<Path> ps = Files.list(Paths.get(realPath));
-                    List<String> imgPaths;
-                    imgPaths = ps.map(Path::getFileName).map(Path::toString).collect(Collectors.toList());
-                    for (int i = 0; i < imgPaths.size(); i++) {
-                        imgPaths.set(i,prefix+File.separator+imgPaths.get(i));
-                    }
-                    request.getSession().setAttribute("imgs", imgPaths);
-                    
-                    response.sendRedirect(url);
-                    //request.getRequestDispatcher(url).forward(request, response);
-                }
-            } else {
-                //Get the list of shop categories
-                request.getSession().setAttribute("products", SellersDao.getShopProducts(user_id));
-                //response.sendRedirect(url);
-                request.getRequestDispatcher(url).forward(request, response);
-            }
-        } catch (NullPointerException e) {
+
+        Users users = (Users) request.getSession().getAttribute("user");
+        if (users == null) {
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
+        try {
+            int user_id = users.getId();
+            String open = request.getParameter("open");
+            if (open != null) {
+                if (open.equals("create")) {
+                    url = "seller/addnew_product.jsp";
+                    request.setAttribute("SCategoryList", CategoryDao.getShopCategoryByShop(user_id));
+
+                } else if (open.equals("edit")) {
+                    url = "seller/edit_product.jsp";
+                    int productId = Integer.parseInt(request.getParameter("p_id"));
+                    request.setAttribute("SCategoryList", CategoryDao.getShopCategoryByShop(user_id));
+                    request.setAttribute("product", SellersDao.getProductById(productId));
+                    request.setAttribute("pdl", SellersDao.getProductDetailByProductId(productId));
+                    //request.getRequestDispatcher(url).forward(request, response);
+                } else {
+                    url = "seller/product_detail.jsp";
+
+                }
+
+                request.getRequestDispatcher(url).forward(request, response);
+            } else {
+                //Get the list of shop categories
+                request.setAttribute("products", SellersDao.getShopProducts(user_id));
+                //response.sendRedirect(url);
+                request.getRequestDispatcher(url).forward(request, response);
+            }
+        } catch (Exception e) {
+
+        }
+
     }
 
     /**
@@ -127,52 +125,53 @@ public class ProductController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String url = "/seller/shopproduct_management.jsp";
         Users user = (Users) request.getSession().getAttribute("user");
-        if(user==null){
+        if (user == null) {
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             url = "/login.jsp";
-        }
-        int user_id = user.getId();
-        String act = request.getParameter("act");
-        String uploadPath = null ;        Products p = null;
-        String serverContextPath = request.getServletContext().getRealPath("");
-        if (act!=null) {
-            try {
-                switch(act){
-                    case "create":
-                        uploadPath = getNewDir(user_id);
-                        //UPLOAD IMG FILE INTO uploadPath(dir)
-                        uploadImageFile(request, uploadPath);
-                        p = getProduct(request);
-                        uploadPath = uploadPath.replace(serverContextPath, "");
-                        uploadPath = uploadPath.replaceAll("\\\\", "/");
-                        p.setImg(uploadPath);
-                        SellersDao.createShopProducts(p, user_id);
-                        break;
-                    case "edit":
-                        p = getProduct(request);
-                        Products _p = SellersDao.getProductById(p.getProduct_id());
-                        uploadPath = Paths.get(serverContextPath, _p.getImg()).toString();
-                        if(isUploadNewImg(request)){
-                            //DELETE OLD FILE IN FOLDER THEN UPLOAD THE NEW FILE INTO IT
-                            delOldFile(uploadPath); 
-                            uploadImageFile(request, uploadPath);
-                        }
-                        SellersDao.editShopProducts(p);
-                        break;
-                    case "delete":
-                        int product_id = Integer.parseInt(request.getParameter("productID"));
-                        SellersDao.deleteShopProducts(product_id);
-                        break;
-                    default:    break;
+        } else {
+            int user_id = user.getId();
+            String act = request.getParameter("act");
+            String uploadPath = null;
+            Products p = null;
+            ArrayList<ProductDetail> productDetails = null;
+            String serverContextPath = request.getServletContext().getRealPath("");
+            if (act != null) {
+                try {
+                    switch (act) {
+                        case "create":
+                            uploadPath = getNewDir(user_id);
+                            //UPLOAD IMG FILE INTO uploadPath(dir)
+                            List<String> imgs = uploadImageFile(request, uploadPath);
+                            //GET THE PRODUCT AND THEN PRODUCT DETAIL 
+                            p = extractProduct(request);
+                            productDetails = extractProductDetail(request);
+                            //UPDATE IMG PATH
+                            int index = 0;
+                            for (ProductDetail productDetail : productDetails) {
+                                productDetail.setImg(imgs.get(index));
+                                productDetails.set(index, productDetail);
+                                index++;
+                            }
+                            // CREATE PRODUCT
+                            SellersDao.createShopProducts(p, user_id, productDetails);
+                            break;
+                        case "edit":
+                            p = extractProduct(request);
+                            productDetails = extractProductDetail(request);
+                            updateImg(request);
+                            SellersDao.editShopProducts(p, productDetails);
+                            addNewProductDetail(request, p.getProduct_id());
+                            break;
+                        default:
+                            break;
+                    }
+                    request.setAttribute("products", SellersDao.getShopProducts(user_id));
+                } catch (Exception ex) {
+                    Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                request.getSession().setAttribute("products", SellersDao.getShopProducts(user_id));
-                request.getRequestDispatcher(url).forward(request, response);
-            } catch (Exception ex) {
-                Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        else{
-            request.getRequestDispatcher(url).forward(request, response);
+            response.sendRedirect("productcontroller");
+            //request.getRequestDispatcher(url).forward(request, response);
         }
     }
 
@@ -185,100 +184,189 @@ public class ProductController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-    private String getNewDir(int user_id) throws IOException{
+
+    private String getNewDir(int user_id) throws IOException {
         // Generate a unique product ID using UUID
-        String productId = UUID.randomUUID().toString().substring(0,7);
+        String productId = UUID.randomUUID().toString().substring(0, 7);
         // Create the directory structure if it doesn't exist
-        String uploadPath = getServletContext().getRealPath("") + "img" 
-                + File.separator + "seller"+ File.separator + String.valueOf(user_id)+File.separator+String.valueOf(productId);
+        String uploadPath = getServletContext().getRealPath("") + "img"
+                + File.separator + "seller" + File.separator + String.valueOf(user_id) + File.separator + String.valueOf(productId);
         // IF DIR EXISTS RANDOM AGAIN TO UNTIL DIR DONT EXISTS
-        while(Files.exists(Paths.get(uploadPath))) {
-            productId = UUID.randomUUID().toString().substring(0,7);
-            uploadPath = getServletContext().getRealPath("") + "img" 
-                + File.separator + "seller"+ File.separator + String.valueOf(user_id)+File.separator+String.valueOf(productId);
+        while (Files.exists(Paths.get(uploadPath))) {
+            productId = UUID.randomUUID().toString().substring(0, 7);
+            uploadPath = getServletContext().getRealPath("") + "img"
+                    + File.separator + "seller" + File.separator + String.valueOf(user_id) + File.separator + String.valueOf(productId);
         }
         // IF DIR EXISTS = OUT LOOP -> CREATE NEW DIR
         Files.createDirectories(Paths.get(uploadPath));
         return uploadPath;
     }
-    private boolean isUploadNewImg(HttpServletRequest request) throws IOException, ServletException{
+
+    private boolean isUploadNewImg(HttpServletRequest request) throws IOException, ServletException {
         boolean check = false;
         Collection<Part> parts = request.getParts();
         for (Part part : parts) {
-            if(part.getName().equals("images")){
-                if(part.getSize()>0){
+            if (part.getName().equals("images")) {
+                if (part.getSize() > 0) {
                     check = true;
                 }
             }
         }
         return check;
     }
-    private void uploadImageFile(HttpServletRequest request, String uploadPath) throws IOException, ServletException, Exception{
+
+    private List<String> uploadImageFile(HttpServletRequest request, String uploadPath) throws IOException, ServletException, Exception {
         // Process file uploads
         Collection<Part> parts = request.getParts();
+        List<String> imgPaths = new ArrayList<>();
         int count = 0;
         for (Part part : parts) {
             // Check if the part is the file input with the name "images"
             if (part.getName().equals("images")) {
-                count++;
-                String fileName = String.valueOf(count)+".png";
-                String finalPath = Paths.get(uploadPath,fileName).toString();
+
                 if (part.getSize() > 0) {
+                    count++;
+                    // GET THE FILE NAME 
+                    String fileName = String.valueOf(count) + ".png";
+                    // GET THE FINAL PATH(INCLUDE FILE) TO WRITE
+                    String finalPath = Paths.get(uploadPath, fileName).toString();
                     part.write(finalPath);
-                }
-                boolean isExists = Files.exists(Paths.get(finalPath));
-                if(!isExists){
-                    throw new Exception("Lưu hình ảnh thất bại");
+
+                    //CHECK IF STORE IMG SUCCESS -> finalPath EXIST ELSE STORE IMG FAILED
+                    boolean isExists = Files.exists(Paths.get(finalPath));
+                    if (!isExists) {
+                        throw new Exception("Lưu hình ảnh thất bại");
+                    }
+
+                    // REMOVE THE REAL PATH OF SERVLET CONTEXT
+                    finalPath = finalPath.replace(request.getServletContext().getRealPath(""), "");
+                    // CHANGE CHARACTER \ -> /
+                    finalPath = finalPath.replaceAll("\\\\", "/");
+
+                    imgPaths.add(finalPath);
+
                 }
             }
         }
+        return imgPaths;
     }
-    private String extractFileName(Part part) {
-        String contentDisp = part.getHeader("content-disposition");
-        String[] items = contentDisp.split(";");
-        for (String s : items) {
-            if (s.trim().startsWith("filename")) {
-                return s.substring(s.indexOf("=") + 2, s.length() - 1);
-            }
-        }
-        return "";
-    }
-    private Products getProduct(HttpServletRequest request) throws ServletException{
+
+    private Products extractProduct(HttpServletRequest request) throws ServletException {
         Products product = null;
-        try {
-            int product_id = (request.getParameter("productId")!= null)?Integer.parseInt(request.getParameter("productId")):0;
-            String name = request.getParameter("productName");
-            String description = request.getParameter("description");
-            int scate_id = Integer.parseInt(request.getParameter("category"));
-            int price = Integer.parseInt(request.getParameter("price"));
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
-            product = new Products(scate_id, description, name, price, quantity);
-            product.setProduct_id(product_id);
-        } catch (Exception e) {
-            
-        }
+        int product_id = (request.getParameter("productId") != null) ? Integer.parseInt(request.getParameter("productId")) : 0;
+        String name = request.getParameter("productName");
+        String description = request.getParameter("description");
+        int scate_id = Integer.parseInt(request.getParameter("category"));
+        product = new Products(product_id, scate_id, scate_id, null, description, name);
+
         return product;
     }
-    private void delOldFile(String directoryPath){
-        try {
-            // List all files in the directory
-            Files.list(Paths.get(directoryPath))
-                 // Filter out directories
-                 .filter(Files::isRegularFile)
-                 // Delete each file
-                 .forEach(file -> {
-                     try {
-                         Files.delete(file);
-                         System.out.println("Deleted file: " + file.getFileName());
-                     } catch (IOException e) {
-                         System.err.println("Failed to delete file: " + file.getFileName());
-                         e.printStackTrace();
-                     }
-                 });
-        } catch (IOException e) {
-            System.err.println("Failed to list files in directory: " + directoryPath);
-            e.printStackTrace();
+
+    //DELETE OLD FIELD
+    private boolean delOldFile(String imgFilePath) throws IOException {
+        return Files.deleteIfExists(Paths.get(imgFilePath));
+    }
+
+    // UPDATE IMG
+    private void updateImg(HttpServletRequest request) throws IOException, ServletException {
+        String[] filePath = request.getParameterValues("imgs");
+        for (int i = 0; i < filePath.length; i++) {
+            String img = request.getServletContext().getRealPath("") + filePath[i];
+            Part part = request.getPart("image_" + i);
+            if (!part.getSubmittedFileName().isEmpty()) {
+                delOldFile(img);
+                part.write(img);
+            }
         }
     }
+
+    private ArrayList<ProductDetail> extractProductDetail(HttpServletRequest request) {
+        ArrayList<ProductDetail> pds = new ArrayList<>();
+        String[] ids = request.getParameterValues("ids");
+        String[] names = request.getParameterValues("names");
+        String[] prices = request.getParameterValues("prices");
+        String[] quantities = request.getParameterValues("quantities");
+        for (int i = 0; i < quantities.length; i++) {
+            int id = 0;
+            if (ids != null) {
+                if (!ids[i].isEmpty()) {
+                    id = Integer.parseInt(ids[i]);
+                }
+            }
+            String name = names[i];
+            double price = Double.parseDouble(prices[i]);
+            int quantity = Integer.parseInt(quantities[i]);
+            ProductDetail pd = new ProductDetail(id, 0, price, quantity, null, name);
+            pds.add(pd);
+        }
+        return pds;
+    }
+
+    private ArrayList<ProductDetail> extractNewProductDetail(HttpServletRequest request, int product_id) {
+        ArrayList<ProductDetail> pds = new ArrayList<>();
+        String[] names = request.getParameterValues("new_names");
+        String[] prices = request.getParameterValues("new_prices");
+        String[] quantities = request.getParameterValues("new_quantities");
+        if (names != null && prices != null && quantities != null) {
+            for (int i = 0; i < quantities.length; i++) {
+                int id = 0;
+                String name = names[i];
+                double price = Double.parseDouble(prices[i]);
+                int quantity = Integer.parseInt(quantities[i]);
+                ProductDetail pd = new ProductDetail(id, product_id, price, quantity, null, name);
+                pds.add(pd);
+            }
+        }
+        return pds;
+    }
+
+    private List<String> uploadNewImg(HttpServletRequest request) throws IOException, Exception {
+        String[] filePath = request.getParameterValues("imgs");
+        List<String> imgPaths = new ArrayList<>();
+        int count = filePath.length;
+        String uploadDir = request.getServletContext().getRealPath("") + filePath[0].substring(0, 20);
+        for (Part part : request.getParts()) {
+            // Check if the part is the file input with the name "images"
+            if (part.getName().equals("new_imgs")) {
+
+                if (!part.getSubmittedFileName().isEmpty()) {
+                    count++;
+                    // GET THE FILE NAME 
+                    String fileName = String.valueOf(count) + ".png";
+                    // GET THE FINAL PATH(INCLUDE FILE) TO WRITE
+                    String finalPath = Paths.get(uploadDir, fileName).toString();
+                    part.write(finalPath);
+
+                    //CHECK IF STORE IMG SUCCESS -> finalPath EXIST ELSE STORE IMG FAILED
+                    boolean isExists = Files.exists(Paths.get(finalPath));
+                    if (!isExists) {
+                        throw new Exception("Lưu hình ảnh thất bại");
+                    }
+                    // REMOVE THE REAL PATH OF SERVLET CONTEXT
+                    finalPath = finalPath.replace(request.getServletContext().getRealPath(""), "");
+                    // CHANGE CHARACTER \ -> /
+                    finalPath = finalPath.replaceAll("\\\\", "/");
+
+                    imgPaths.add(finalPath);
+
+                }
+            }
+        }
+        return imgPaths;
+    }
+
+    private void addNewProductDetail(HttpServletRequest request, int product_id) throws Exception {
+        ArrayList<ProductDetail> productDetails = extractNewProductDetail(request, product_id);
+        List<String> list = uploadNewImg(request);
+        if (productDetails != null && !productDetails.isEmpty()) {
+            int index = 0;
+            for (ProductDetail p : productDetails) {
+                p.setImg(list.get(index));
+                productDetails.set(index, p);
+                index++;
+            }
+            SellersDao.createProductDetails(productDetails);
+        }
+    }
+
 }

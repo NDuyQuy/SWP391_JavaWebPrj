@@ -98,12 +98,13 @@ public class CustomOrderController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String url = "/seller/custom_order_management.jsp";
+        String url = "CustomOrderController";
         String act = request.getParameter("act");
         Users users = (Users) request.getSession().getAttribute("user");
         if(users==null){
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             url = "/login.jsp";
+            request.getRequestDispatcher(url).forward(request, response);
         }else{
             int user_id = users.getId();
             request.setAttribute("c_o_l", OrdersDao.getCustomOrderOfShop(user_id));
@@ -112,8 +113,8 @@ public class CustomOrderController extends HttpServlet {
             } else {
                 updateProcess(request, user_id);
             }
+            response.sendRedirect(url);
         }
-        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**

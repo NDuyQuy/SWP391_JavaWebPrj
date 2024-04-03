@@ -20,6 +20,14 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
+    public OrderDetail(int id, int orderID, int quantity, String cancel_reason, double totalPrice) {
+        this.id = id;
+        this.orderID = orderID;
+        this.quantity = quantity;
+        this.cancel_reason = cancel_reason;
+        this.totalPrice = totalPrice;
+    }
+    
     public int getId() {
         return id;
     }

@@ -20,6 +20,15 @@ public class ProductDetail {
     public ProductDetail() {
     }
 
+    public ProductDetail(int id, int product_id, double price, int quantity, String img, String name) {
+        this.id = id;
+        this.product_id = product_id;
+        this.price = price;
+        this.quantity = quantity;
+        this.img = img;
+        this.name = name;
+    }
+    
     public int getId() {
         return id;
     }

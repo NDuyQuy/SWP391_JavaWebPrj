@@ -7,12 +7,15 @@ package controller.seller;
 
 import dao.OrdersDao;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.CustomOrder;
+import model.Orders;
 import model.Users;
 
 /**
@@ -33,19 +36,7 @@ public class HandleCustomOrderController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet HandleCustomOrderController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet HandleCustomOrderController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -60,15 +51,29 @@ public class HandleCustomOrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String url = "custom_checkout.jsp";
         Users u = (Users) request.getSession().getAttribute("user");
-        if(u==null){
-            response.sendRedirect("login");
-        }else if(u.getRole()!=1){
-            response.sendRedirect("login");
-        }else{
+        if (u == null) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        } else if (u.getRole() != 1) {
+            response.sendRedirect("login.jsp");
+        } else {
             int order_id = Integer.parseInt(request.getParameter("id"));
-            //int user_id = u.getId();
-            //CustomOrders co = OrdersDao.get
+            CustomOrder co = OrdersDao.getCustomOrderById(order_id);
+            String act = request.getParameter("act");
+            if (act == null) {
+                // act = null -> go to check out page
+                if (co.getOrder().getCustomer_id() == 0) {
+                    request.setAttribute("orderInfo", co);
+                    request.getRequestDispatcher(url).forward(request, response);
+                } else {
+                    // if custom order has been 
+                    response.sendRedirect("Home");
+                }
+            }else{
+                // DO SOME THING IF REQUEST HAS PARAMETER NAME 'act'
+            }
             
         }
     }
@@ -84,7 +89,18 @@ public class HandleCustomOrderController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.setCharacterEncoding("UTF-8");
+        Users u = (Users) request.getSession().getAttribute("user");
+        if (u == null) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        } else {
+            try {
+                OrdersDao.acceptCustomOrder(extractOrders(request));
+            } catch (Exception ex) {
+                Logger.getLogger(HandleCustomOrderController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**
@@ -97,4 +113,32 @@ public class HandleCustomOrderController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private Orders extractOrders(HttpServletRequest request) {
+        Orders o = null;
+        int c_id = Integer.parseInt(request.getParameter("c_id"));
+        int order_id = Integer.parseInt(request.getParameter("o_id"));
+        String name = request.getParameter("name");
+        String phone = request.getParameter("phone");
+        String addr = request.getParameter("addr");
+        String paymentMethod = request.getParameter("paymentMethod");
+        int shipping_cost = Integer.parseInt(request.getParameter("shipCost"));
+        String shippingMethod = getShippingMethod(shipping_cost);
+        int total = Integer.parseInt(request.getParameter("totalPrice"));
+        o = new Orders(order_id, shipping_cost, total, paymentMethod, name, phone, addr, shippingMethod);
+        o.setCustomer_id(c_id);
+        return o;
+    }
+
+    private String getShippingMethod(int cost) {
+        switch (cost) {
+            case 10000:
+                return "nhanh";
+            case 20000:
+                return "hỏa tốc";
+            case 5000:
+                return "tiết kiệm";
+            default:
+                return null;
+        }
+    }
 }

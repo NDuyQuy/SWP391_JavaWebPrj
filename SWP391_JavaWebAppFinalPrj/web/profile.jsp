@@ -175,15 +175,15 @@
                                             </tr>
                                             <tr>
                                                 <td>Name</td>
-                                                <td><input type="text" size="40" name="fname" value="${user.fullname}"></td>
+                                                <td><input type="text" size="40" name="fname" value="${user.fullname}" maxlength="50"></td>
                                             </tr>
                                             <tr>
                                                 <td>Phone number</td>
-                                                <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}"></td>
+                                                <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}" placeholder="0000000000" maxlength="10"></td>
                                             </tr>
                                             <tr>
                                                 <td>Address</td>
-                                                <td><input type="text" size="40" name="addr" value="${user.address}"></td>
+                                                <td><input type="text" size="40" name="addr" value="${user.address}" maxlength="200"></td>
                                             </tr>
                                             <tr>
                                                 <td></td>

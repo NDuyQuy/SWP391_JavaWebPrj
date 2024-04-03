@@ -60,7 +60,8 @@ public class ShopCategoryController extends HttpServlet {
             throws ServletException, IOException {
         int id = ((Users)request.getSession().getAttribute("user")).getId();
         //Get the list of shop categories
-        request.getSession().setAttribute("shop_categories", SellersDao.getShopCategories(id));
+        request.setAttribute("shop_categories", SellersDao.getShopCategories(id));
+        request.setAttribute("main_categories", CategoryDao.getMainCategories());
         request.getRequestDispatcher("/seller/shopcategory_management.jsp").forward(request, response);
     }
 
@@ -75,8 +76,9 @@ public class ShopCategoryController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //sc stand for shop category        ;           mc stand for main category
-        String url = "/shopcategory_management.jsp";
+        request.setCharacterEncoding("UTF-8");
+        //sc stand for shop category        ;          mc stand for main category
+        String url = "/seller/shopcategory_management.jsp";
         HttpSession session = request.getSession();
         //get the action string
         String action = request.getParameter("act");
@@ -94,9 +96,8 @@ public class ShopCategoryController extends HttpServlet {
             int sc_id = Integer.parseInt(request.getParameter("categoryId"));
             SellersDao.deleteShopCategory(sc_id);
         }
-        //add the new list into session
-        request.getSession().setAttribute("shop_categories", SellersDao.getShopCategories(shop_id));
-        request.getRequestDispatcher(url).forward(request, response);
+        //go back to do get method
+        response.sendRedirect("shopcategorycontroller");
     }
 
     /**

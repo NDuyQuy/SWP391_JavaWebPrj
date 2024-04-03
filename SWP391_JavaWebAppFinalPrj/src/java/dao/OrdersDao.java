@@ -13,6 +13,13 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.*;
 import model.*;
+import java.sql.DriverManager;
+import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import org.apache.poi.ss.usermodel.*;
 
 /**
  *
@@ -33,7 +40,7 @@ public class OrdersDao {
     private static final String GETTOTALPRODUCTSELL = "EXEC GetTotalProductSell @ShopId = ?, @Month = ?, @Year = ?";
     private static final String GETWAITINGORDERS = "SELECT * FROM [orders] WHERE [shop_id]=? AND [status] LIKE N'%chờ người bán xác nhận%'";
 
-    private static final String GETCUSTOMORDERS = "SELECT co.*,o.status,total FROM [custom_order] co join [orders] o on co.id = o.order_id WHERE o.shop_id = ?";
+    private static final String GETCUSTOMORDERS = "SELECT co.*,o.status,total,o.shipping_cost FROM [custom_order] co join [orders] o on co.id = o.order_id WHERE o.shop_id = ?";
     private static final String CREATECUSTOMORDER = "EXEC CREATECUSTOMORDERS @ShopId = ?, @Price=?,@ProductName=?, @Deadline = ?";
     private static final String ACCEPTCUSTOMORDER = "UPDATE [orders] set [status]='' ";
 
@@ -42,9 +49,9 @@ public class OrdersDao {
     private static final String UPDATE_STATUS = "UPDATE [orders] SET [status]=? WHERE [order_id]=?";
 
     private static final String ADD_ORDER = "INSERT INTO orders (customer_id, shop_id, shipping_cost, total, payment_method, status, receiver_name, receiver_phone, receiver_address, shipping_method, type, voucher_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
+
     private static final String ADD_ORDER_DETAIL = "INSERT INTO orderdetail (orderID, productID, quantity,totalPrice) VALUES (?, ?, ?,?)";
-   
+
     private static final String GET_ORDER_DETAILS = "SELECT od.*, p.* FROM orderdetail od INNER JOIN products p ON od.product_id = p.product_id WHERE od.order_id = ?";
     private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE order_id = ?";
     private static final String GET_ORDERS_BY_USER_ID = "SELECT * FROM orders WHERE customer_id = ?";
@@ -124,9 +131,9 @@ public class OrdersDao {
             addOrderStmt.setNString(9, order.getReceiver_address());
             addOrderStmt.setNString(10, order.getShipping_method());
             addOrderStmt.setInt(11, 1);
-            if(order.getVoucher_id()==0){
+            if (order.getVoucher_id() == 0) {
                 addOrderStmt.setNull(12, java.sql.Types.INTEGER);
-            }else{
+            } else {
                 addOrderStmt.setInt(12, order.getVoucher_id());
             }
             int affectedRows = addOrderStmt.executeUpdate();
@@ -262,31 +269,6 @@ public class OrdersDao {
         }
 
         return orders;
-    }
-
-    private Orders extractOrderFromResultSet(ResultSet rs) {
-        try {
-            Orders order = new Orders();
-            order.setOrder_id(rs.getInt("order_id"));
-            // Bạn cần implement phương thức getUserById để lấy thông tin người dùng từ cơ sở dữ liệu
-            order.setCustomer(UsersDao.getUserById(rs.getInt("customer_id")));
-            order.setShop_id(rs.getInt("shop_id"));
-            order.setShipping_cost(rs.getInt("shipping_cost"));
-            order.setTotal(rs.getInt("total"));
-            order.setPayment_method(rs.getString("payment_method"));
-            order.setStatus(rs.getString("status"));
-            order.setReceiver_name(rs.getString("receiver_name"));
-            order.setReceiver_phone(rs.getString("receiver_phone"));
-            order.setReceiver_address(rs.getString("receiver_address"));
-            order.setShipping_method(rs.getString("shipping_method"));
-            order.setShippingunit_id(rs.getInt("shippingunit_id"));
-            order.setOrder_date(rs.getDate("order_date"));
-            order.setType(rs.getInt("type"));
-            return order;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public static Orders getOrderObject(ResultSet rs) throws SQLException {
@@ -496,10 +478,12 @@ public class OrdersDao {
                 String productName = rs.getString("product_name");
                 String status = rs.getString("status");
                 Date deadline = rs.getDate("expected_complete_date");
+                int ship_cost = rs.getInt("shipping_cost");
                 CustomOrder co = new CustomOrder(order_id, productName, deadline);
                 Orders o = new Orders();
                 o.setTotal(price);
                 o.setStatus(status);
+                o.setShipping_cost(ship_cost);
                 co.setOrder(o);
                 list.add(co);
             }
@@ -562,16 +546,23 @@ public class OrdersDao {
     public static List<OrderDetail> getOrderDetail(int order_id) {
         List<OrderDetail> ods = new ArrayList<>();
         try (Connection con = SQLConnection.getConnection()) {
-            PreparedStatement statement = con.prepareStatement("SELECT od.*,p.name FROM [orderdetail] od join [products] p on p.product_id = od.productID WHERE od.orderID = ?");
+            PreparedStatement statement = con.prepareStatement("EXEC GetOrderDetailsByOrderID @orderID = ?");
             statement.setInt(1, order_id);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                // DATA GET GO AS FOLLOW order_detail_id -> orderID -> cancel_reason -> orderdetail_totalprice ->product_price -> productdetail_name -> product_name
                 OrderDetail od = new OrderDetail();
                 Products p = new Products();
-                p.setName(resultSet.getString("name"));
-                od.setOrderID(resultSet.getInt("orderID"));
-                od.setQuantity(resultSet.getInt("quantity"));
-                od.setProduct(p);
+                ProductDetail pd = new ProductDetail();
+                //GET DATA FOR Order Detail 
+                od = new OrderDetail(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getNString(4), rs.getDouble(5));
+                // GET DATA FOR PRODUCT DETAIL
+                pd.setPrice(rs.getDouble(6));
+                pd.setName(rs.getNString(7));
+                // GET PRODUCT NAME
+                p.setName(rs.getNString(8));
+                pd.setProduct(p);
+                od.setProductDetail(pd);
                 od.setOrder(getOrderByID(order_id));
                 ods.add(od);
             }
@@ -670,33 +661,100 @@ public class OrdersDao {
             ex.printStackTrace();
         }
     }
-    public static CustomOrder getCustomOrderById(int id){
+
+    public static CustomOrder getCustomOrderById(int id) {
         PreparedStatement ptm = null;
         CustomOrder co = null;
-        try(Connection con = SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement("SELECT * FROM [custom_order] WHERE [id]=?");
             ptm.setInt(1, id);
             ResultSet rs = ptm.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 String name = rs.getNString("product_name");
                 Date deadline = rs.getDate("expected_complete_date");
                 co = new CustomOrder(id, name, deadline);
                 co.setOrder(getOrderByID(id));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return co;
     }
+
+    private static final String ACCEPT_CUSTOM_ORDERS = "UPDATE [orders] SET [customer_id]  = ?,[shipping_cost] = ?,[total] = ?,[payment_method] = ?,"
+            + "[status] = ?,[receiver_name] = ?,[receiver_phone] = ?,[receiver_address] = ?,[shipping_method] = ? WHERE [order_id] = ?";
+
+    public static void acceptCustomOrder(Orders orders) throws Exception {
+        try (Connection con = SQLConnection.getConnection()) {
+            PreparedStatement ptm = con.prepareStatement(ACCEPT_CUSTOM_ORDERS);
+            ptm.setInt(1, orders.getCustomer_id());
+            ptm.setDouble(2, orders.getShipping_cost());
+            ptm.setDouble(3, orders.getTotal());
+            ptm.setNString(4, orders.getPayment_method());
+            ptm.setNString(5, "Chưa hoàn thành");
+            ptm.setNString(6, orders.getReceiver_name());
+            ptm.setNString(7, orders.getReceiver_phone());
+            ptm.setNString(8, orders.getReceiver_address());
+            ptm.setNString(9, orders.getShipping_method());
+            ptm.setInt(10, orders.getOrder_id());
+            ptm.execute();
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
+    }
+
+    private static final String CAL_DAILY_REVENUE_A_MONTH_OF_SHOP = "EXEC [CalculateDailyRevenueAndProductCountForShopAndMonth] @ShopID = ?, @Month = ?, @Year=?";
+
+    public static void exportExcelDailyRevAMonth(int shop_id, int month, int year) throws Exception {
+        try (Connection con = SQLConnection.getConnection()) {
+            PreparedStatement ptm = con.prepareStatement(CAL_DAILY_REVENUE_A_MONTH_OF_SHOP);
+            ptm.setInt(1, shop_id);
+            ptm.setInt(2, month);
+            ptm.setInt(3, year);
+            ResultSet rs = ptm.executeQuery();
+            Workbook workbook = new HSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Sheet1");
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Ngày");
+            headerRow.createCell(1).setCellValue("Tổng doanh thu");
+            headerRow.createCell(2).setCellValue("Tổng số lượng sản phẩm bán được");
+            headerRow.createCell(3).setCellValue("Tổng số loại sản phẩm bán được");
+            int rowNumber = 1;
+            while (rs.next()) {
+                Row row = sheet.createRow(rowNumber++);
+                for (int i = 0; i < 4; i++) {
+                    String cellVal = rs.getString(i+1) == null ? "0":rs.getString(i+1);
+                    row.createCell(i).setCellValue(cellVal);
+                }
+            }
+            FileOutputStream fileOut = new FileOutputStream("data.xls");
+            workbook.write(fileOut);
+            
+            fileOut.close();
+            workbook.close();
+            
+            System.out.println("Excel file has been generated successfully!");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //throw new Exception(ex.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
-        //cancelOrders(1, "hết hàng");
-        LocalDate date = LocalDate.of(2024, 3, 17);
-        System.err.println(getCustomOrderById(37).getOrder());
-        //getOrderDetail(1).forEach(System.out::println);
-        //getWaitingOrders(1).forEach(System.out::println);
-        //getWaitingOrders(1).forEach(System.out::println);
-        //getOrdersCountByHour(1, date).entrySet().forEach(System.out::println);
-        //getOrdersCountADateInMonth(1, 3, 2024).entrySet().forEach(System.out::println);
-        //System.out.println(getOrdersCountInAMonthOfShop(1, 2, 2024));
+        try {
+            //cancelOrders(1, "hết hàng");
+            //LocalDate date = LocalDate.of(2024, 3, 17);
+            //System.err.println(getCustomOrderById(37).getOrder());
+            //getOrderDetail(1).forEach(System.out::println);
+            //getWaitingOrders(1).forEach(System.out::println);
+            //getWaitingOrders(1).forEach(System.out::println);
+            //getOrdersCountByHour(1, date).entrySet().forEach(System.out::println);
+            //getOrdersCountADateInMonth(1, 3, 2024).entrySet().forEach(System.out::println);
+            //System.out.println(getOrdersCountInAMonthOfShop(1, 2, 2024));
+            exportExcelDailyRevAMonth(1,2,2024);
+        } catch (Exception ex) {
+            Logger.getLogger(OrdersDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

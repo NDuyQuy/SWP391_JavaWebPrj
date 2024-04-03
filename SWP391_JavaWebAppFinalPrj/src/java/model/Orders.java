@@ -59,6 +59,17 @@ public class Orders {
         this.order_date = order_date;
         this.type = type;
     }
+
+    public Orders(int order_id, int shipping_cost, double total, String payment_method, String receiver_name, String receiver_phone, String receiver_address, String shipping_method) {
+        this.order_id = order_id;
+        this.shipping_cost = shipping_cost;
+        this.total = total;
+        this.payment_method = payment_method;
+        this.receiver_name = receiver_name;
+        this.receiver_phone = receiver_phone;
+        this.receiver_address = receiver_address;
+        this.shipping_method = shipping_method;
+    }
     
     public int getOrder_id() {
         return order_id;

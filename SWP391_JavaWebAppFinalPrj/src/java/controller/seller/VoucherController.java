@@ -9,6 +9,8 @@ import dao.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +79,7 @@ public class VoucherController extends HttpServlet {
                     default:
                         break;
                 }
+                request.setAttribute("productList", SellersDao.getShopProducts(id));
             } else {
                 //Get the list of shop categories
                 request.setAttribute("vouchers", SellersDao.getShopVouchers(id));
@@ -86,6 +89,8 @@ public class VoucherController extends HttpServlet {
         } catch (NullPointerException e) {
             request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(VoucherController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -100,6 +105,7 @@ public class VoucherController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String url = "/seller/seller_voucher_management.jsp";
         Users users = (Users) request.getSession().getAttribute("user");
         if(users==null){
@@ -131,8 +137,7 @@ public class VoucherController extends HttpServlet {
             String v = "";
         }
         //ReGet the list of shop categories
-        request.getSession().setAttribute("vouchers", SellersDao.getShopVouchers(id));
-        request.getRequestDispatcher(url).forward(request, response);
+        response.sendRedirect("sellersvouchercontroller");
     }
 
     /**
@@ -150,7 +155,7 @@ public class VoucherController extends HttpServlet {
         Vouchers voucher = null;
         try {
             String voucher_id = request.getParameter("voucher_id");
-            int id = (voucher_id == null || voucher_id.isEmpty()) ? 0 : Integer.parseInt(voucher_id);
+            int id = (voucher_id == null) ? 0 : Integer.parseInt(voucher_id);
             int type = Integer.parseInt(request.getParameter("voucher_type"));
             String code = request.getParameter("voucher_code");
             Date start_date = Date.valueOf(request.getParameter("start_date"));
@@ -161,8 +166,8 @@ public class VoucherController extends HttpServlet {
             int min_require = Integer.parseInt(request.getParameter("min_require"));
             int use_count = Integer.parseInt(request.getParameter("use_count"));
             String description = request.getParameter("description");
-            int productId = Integer.parseInt(request.getParameter("product_applied"));
             voucher = new Vouchers(id, code, discount_amount, start_date, expire_date, type, min_require, description, use_count);
+            int productId = Integer.parseInt(request.getParameter("product_applied"));
             if(productId!=0) voucher.setProduct_id(productId);
         } catch (Exception e) {
             System.out.println(e.getMessage());

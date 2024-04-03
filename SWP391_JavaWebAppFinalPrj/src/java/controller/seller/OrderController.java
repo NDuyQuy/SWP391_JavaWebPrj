@@ -6,12 +6,17 @@
 package controller.seller;
 
 import dao.OrdersDao;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -87,8 +92,7 @@ public class OrderController extends HttpServlet {
             //GO TO JSP TO DISPLAY CHART
             request.getRequestDispatcher("seller/order_chart_demo.jsp").forward(request, response);
         } catch (NullPointerException e) {
-            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+
         }
     }
 
@@ -103,7 +107,23 @@ public class OrderController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Users u = (Users) request.getSession().getAttribute("user");
+        if (u == null) {
+            request.setAttribute("session_out", "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+        } else {
+            String month_year = request.getParameter("month_year");
+            String time[] = month_year.split("-");
+            int year = Integer.parseInt(time[0]);
+            int month = Integer.parseInt(time[1]);
+            int shop_id = u.getId();
+            try {
+                sendFile(response, shop_id, month, year);
+            } catch (Exception ex) {
+                request.setAttribute("error", "Xuất file excel thất bại\n" + ex.getMessage());
+            }
+            request.getRequestDispatcher("seller/order_chart_demo.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -130,8 +150,8 @@ public class OrderController extends HttpServlet {
         json.append("]");
         return json.toString();
     }
-    
-    private ArrayList<Integer> getStatistic(LocalDate date, int shop_id){
+
+    private ArrayList<Integer> getStatistic(LocalDate date, int shop_id) {
         ArrayList<Integer> statisticList = new ArrayList<>();
         //ADD TOTAL REVENUE
         int ttRev = OrdersDao.getTotalRevenueInAMonthOfShop(shop_id, date.getMonthValue(), date.getYear());
@@ -142,12 +162,38 @@ public class OrderController extends HttpServlet {
         //ADD AVERAGE REVENUE
         Integer avg = 0;
         try {
-            avg = ttRev/ttOrd;
+            avg = ttRev / ttOrd;
         } catch (Exception e) {
         }
         statisticList.add(avg);
         //ADD TOTAL COUNT OF SELLED PRODUCT
         statisticList.add(OrdersDao.getTotalProductSell(shop_id, date.getMonthValue(), date.getYear()));
         return statisticList;
+    }
+
+    private void sendFile(HttpServletResponse response, int shop_id, int month, int year) throws FileNotFoundException, IOException, Exception {
+        // Set response headers
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=filename.xls");
+        OrdersDao.exportExcelDailyRevAMonth(shop_id, month, year);
+        // Get the file to be sent
+        File file = new File("data.xls");
+
+        // Create input stream to read the file
+        FileInputStream fis = new FileInputStream(file);
+
+        // Create output stream to write the file content to the response
+        OutputStream os = response.getOutputStream();
+
+        // Write file content to response output stream
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = fis.read(buffer)) != -1) {
+            os.write(buffer, 0, bytesRead);
+        }
+        // Close streams
+        os.flush();
+        os.close();
+        fis.close();
     }
 }
