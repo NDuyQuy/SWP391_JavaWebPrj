@@ -70,15 +70,15 @@ public class UpdateQuantityServlet extends HttpServlet {
             String action = request.getParameter("action");
             if (action != null) {
                 if (action.equals("remove")) {
-                    int productId = Integer.parseInt(request.getParameter("id"));
-                    CartDetailDao.RemoveAProduct(userId, productId);
+                    int p_detail_id = Integer.parseInt(request.getParameter("id"));
+                    CartDetailDao.RemoveAProduct(userId, p_detail_id);
                 } else {
                     CartDetailDao.ClearCartOfUser(userId);
                 }
             } else {
-                int productId = Integer.parseInt(request.getParameter("id"));
+                int p_detail_id = Integer.parseInt(request.getParameter("id"));
                 int quantity = Integer.parseInt(request.getParameter("quantity"));
-                CartDetailDao.UpdateCartProductQuantity(quantity, userId, productId);
+                CartDetailDao.UpdateCartProductQuantity(quantity, userId, p_detail_id);
             }
             response.sendRedirect("Cart");
         }

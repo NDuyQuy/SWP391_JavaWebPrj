@@ -141,7 +141,7 @@
                     <c:forEach var="entry" items="${cartGroup}">
 
                         <tr>
-                            <td colspan="7" class="shop-name">${entry.value.get(0).product.shop.shop_name}</td>
+                            <td colspan="7" class="shop-name">${entry.value.get(0).productDetail.product.shop.shop_name}</td>
                         </tr>
 
                         <tr>
@@ -158,22 +158,25 @@
                         <c:forEach var="value" items="${entry.value}">
                             <tr>
                                 <td class="product-thumbnail">
-                                    <a href="#"><img src="${value.product.img}" alt=""></a>
+                                    <a href="#"><img src="${value.productDetail.img}" alt=""></a>
                                 </td>
                                 <td class="product-name">
-                                    <a href="#">${value.product.name}</a>
+                                    <a href="#">${value.productDetail.product.name}</a></br>
+                                    <c:if test="${value.productDetail.name != null}">
+                                        <a>Phân loại: ${value.productDetail.name}</a>
+                                    </c:if>
                                 </td>
                                 <td class="product-price">
-                                    <span class="amount">${value.product.money}</span>
+                                    <span class="amount">${value.productDetail.price}</span>
                                 </td>
                                 <td class="product-quantity">
                                     <span class="quantityInput">${value.quantity}</span>
                                 </td>
                                 <td class="product-subtotal">
-                                    <span class="amount">${value.product.money * value.quantity}</span>
+                                    <span class="amount">${value.productDetail.price * value.quantity}</span>
                                 </td>
                             </tr>
-                            <c:set var="totalShopAmount" value="${totalShopAmount + (value.product.money * value.quantity)}" />
+                            <c:set var="totalShopAmount" value="${totalShopAmount + (value.productDetail.price * value.quantity)}" />
                         </c:forEach>
                         <tr>
                             <td colspan="2"></td>

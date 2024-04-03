@@ -73,7 +73,7 @@ public class Checkout extends HttpServlet {
         if (selectedItems != null && !selectedItems.isEmpty()) {
 
             Map<String, List<CartDetail>> cartGroup = selectedItems.stream().collect(
-                    Collectors.groupingBy(c -> c.getProduct().getShop().getShop_name())
+                    Collectors.groupingBy(c -> SellersDao.getShopNameByShopId(c.getProductDetail().getProduct().getShop_id()))
             );
 
             Map<List<Vouchers>, List<CartDetail>> newCartGroup = new HashMap<>();
@@ -107,7 +107,7 @@ public class Checkout extends HttpServlet {
     private double calculateShopTotal(List<CartDetail> shopItems) {
         double total = 0.0;
         for (CartDetail item : shopItems) {
-            total += item.getQuantity() * item.getProduct().getMoney();
+            total += item.getQuantity() * item.getProductDetail().getPrice();
         }
         return total;
     }
@@ -143,7 +143,8 @@ public class Checkout extends HttpServlet {
                 i++;
                 Vouchers vouchers = SellersDao.getVoucherByID(voucherid);
                 String shipping_method = getShipMethod(ship_cost);
-                String shopName = entry.getValue().get(0).getProduct().getShop().getShop_name();
+                String shopName = SellersDao.getShopNameByShopId(entry.getValue().get(0).getProductDetail().getProduct().getShop_id());
+
                 List<CartDetail> shopItems = entry.getValue();
                 double total = calculateShopTotal(shopItems);
                 Orders order = new Orders();
@@ -166,12 +167,12 @@ public class Checkout extends HttpServlet {
                     OrderDetail orderDetail = new OrderDetail();
                     // Thiết lập thông tin cho orderDetail từ cartItem
                     orderDetail.setOrderID(order.getOrder_id()); // Set ID của đơn hàng
-                    orderDetail.setP_detail_id(cartItem.getProduct().getProduct_id()); // Set ID sản phẩm
+                    orderDetail.setP_detail_id(cartItem.getProductDetail().getId()); // Set ID sản phẩm
                     orderDetail.setQuantity(cartItem.getQuantity());
                     if (vouchers == null) {
-                        orderDetail.setTotalPrice(cartItem.getQuantity() * cartItem.getProduct().getMoney());
+                        orderDetail.setTotalPrice(cartItem.getQuantity() * cartItem.getProductDetail().getPrice());
                     } else {
-                        orderDetail.setTotalPrice(cartItem.getQuantity() * cartItem.getProduct().getMoney() - (vouchers.getDiscount_amount() / shopItems.size()));
+                        orderDetail.setTotalPrice(cartItem.getQuantity() * cartItem.getProductDetail().getPrice() * (1 - (vouchers.getDiscount_amount() / order.getTotal())));
                     }
                     orderDetails.add(orderDetail);
                 }
@@ -180,7 +181,7 @@ public class Checkout extends HttpServlet {
                     OrdersDao.addOrderAndDetails(order, orderDetails);
                     // Sau khi thêm thành công, xóa sản phẩm khỏi giỏ hàng
                     for (CartDetail cartItem : shopItems) {
-                        CartDetailDao.RemoveAProduct(user.getId(), cartItem.getProduct().getProduct_id());
+                        CartDetailDao.RemoveAProduct(user.getId(), cartItem.getProductDetail().getId());
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(Checkout.class.getName()).log(Level.SEVERE, null, ex);

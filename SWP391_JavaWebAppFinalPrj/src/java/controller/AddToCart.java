@@ -32,13 +32,13 @@ public class AddToCart extends HttpServlet {
             throws ServletException, IOException {
          response.setContentType("text/html;charset=UTF-8");
         String quantityStr = request.getParameter("quantity");
-        int productId = Integer.parseInt(request.getParameter("id"));
+        int p_detail_id = Integer.parseInt(request.getParameter("id"));
         Users user = (Users) request.getSession().getAttribute("user");
         int quantity =  quantityStr==null? 1:Integer.parseInt(quantityStr);
         if(user==null){
             
         }else{
-            CartDetailDao.addToCart(user.getId(), productId, quantity);
+            CartDetailDao.addToCart(user.getId(), p_detail_id, quantity);
         }
         
         response.sendRedirect("Cart");

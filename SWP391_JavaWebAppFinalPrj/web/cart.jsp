@@ -38,35 +38,35 @@
     <body>
 
         <jsp:include page="header.jsp"></jsp:include>
-        <main>
-            <!-- breadcrumb-area-start -->
-            <section class="breadcrumb-area" data-background="img/bg/page-title.png">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="breadcrumb-text text-center">
-                                <h1>Shoping Cart</h1>
-                                <ul class="breadcrumb-menu">
-                                    <li><a href="Home">home</a></li>
-                                    <li><span>Cart</span></li>
-                                </ul>
+            <main>
+                <!-- breadcrumb-area-start -->
+                <section class="breadcrumb-area" data-background="img/bg/page-title.png">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="breadcrumb-text text-center">
+                                    <h1>Shoping Cart</h1>
+                                    <ul class="breadcrumb-menu">
+                                        <li><a href="Home">home</a></li>
+                                        <li><span>Cart</span></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            <!-- breadcrumb-area-end -->
-            
-            <!-- Cart Area Start -->
-            <section class="cart-area pt-100 pb-100">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <form id="checkoutForm" action="Cart" method="post">
-                                <input type="hidden" id="selectedItemsInput" name="selectedProductIds" />
-                                <div class="table-content table-responsive">
-                                    <table class="table table-bordered" >
-                                        <tbody>
+                </section>
+                <!-- breadcrumb-area-end -->
+
+                <!-- Cart Area Start -->
+                <section class="cart-area pt-100 pb-100">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <form id="checkoutForm" action="Cart" method="post">
+                                    <input type="hidden" id="selectedItemsInput" name="selectedProductIds" />
+                                    <div class="table-content table-responsive">
+                                        <table class="table table-bordered" >
+                                            <tbody>
                                             <jsp:useBean id="cartGroup" class="java.util.HashMap" scope="request" />
                                             <c:forEach var="entry" items="${cartGroup}">
                                                 <tr>
@@ -84,36 +84,41 @@
                                                 <c:set var="totalPrice" value="0" /> 
                                                 <!-- Iterate over the ArrayList values for the current key -->
                                                 <c:forEach var="value" items="${entry.value}">
+
                                                     <tr onclick="chooseProduct()">
-                                                        <!-- Display the values in each row -->
+                                                        <!--                                                         Display the values in each row -->
                                                         <td class="product-checkbox">
-                                                            <input type="checkbox" class="itemCheckbox" data-product-id="${value.product.product_id}"/>
+                                                            <input type="checkbox" class="itemCheckbox" data-product-id="${value.productDetail.id}"/>
                                                         </td>
                                                         <td class="product-thumbnail">
-                                                            <a href="ProductDetail?product=${value.product.product_id}"><img src="${value.product.img}/1.png" alt=""></a>
+                                                            <a href="ProductDetail?product=${value.productDetail.id}"><img src="${value.productDetail.img}/1.png" alt=""></a>
                                                         </td>
                                                         <td class="product-name">
-                                                            <a href="ProductDetail?product=${value.product.product_id}">${value.product.name}</a>
+                                                            <a href="ProductDetail?product=${value.productDetail.id}">${value.productDetail.product.name}</a></br>
+                                                            <c:if test="${value.productDetail.name != null}">
+                                                                <a>Phân loại: ${value.productDetail.name}</a>
+                                                            </c:if>
+
                                                         </td>
                                                         <td class="product-price">
-                                                            <span class="amount">${value.product.money}</span>
+                                                            <span class="amount">${value.productDetail.price}</span>
                                                         </td>
                                                         <td class="product-quantity">
-                                                            <a href="UpdateQuantityServlet?id=${value.product.product_id}&quantity=${value.quantity + 1}"><b style="color: blue">+</b></a>
-                                                            <input class="text-center"type="text" name="quantity" value="${value.quantity}" data-product-id="${value.product.product_id}"
-                                                                   min="0" max="${value.product.quantity}" onkeypress="updateQuantityOnEnter(event)">
-                                                            <buton><a href="UpdateQuantityServlet?id=${value.product.product_id}&quantity=${value.quantity - 1}"><b style="color: blue">-</b></a>
+                                                            <a href="UpdateQuantityServlet?id=${value.productDetail.id}&quantity=${value.quantity - 1}"><b style="color: blue">-</b></a>
+                                                            <input class="text-center"type="text" name="quantity" value="${value.quantity}" data-product-id="${value.productDetail.id}"
+                                                                   min="0" max="${value.productDetail.quantity}" onkeypress="updateQuantityOnEnter(event)">
+                                                            <a href="UpdateQuantityServlet?id=${value.productDetail.id}&quantity=${value.quantity + 1}"><b style="color: blue">+</b></a>
                                                         </td>
-                                                    <td class="product-subtotal">
-                                                        <span class="amount">${value.product.money * value.quantity}</span>
-                                                    </td>
-                                                    <td class="product-remove">
-                                                        <a class="btn btn-danger btn-sm"href="UpdateQuantityServlet?id=${value.product.product_id}&action=remove">X</a>
-                                                    </td>
+                                                        <td class="product-subtotal">
+                                                            <span class="amount">${value.productDetail.price * value.quantity}</span>
+                                                        </td>
+                                                        <td class="product-remove">
+                                                            <a class="btn btn-danger btn-sm"href="UpdateQuantityServlet?id=${value.productDetail.id}&action=remove">X</a>
+                                                        </td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:forEach>
-                                            </tbody>
+                                        </tbody>
 
                                     </table>
                                 </div>
@@ -142,7 +147,7 @@
         </main>
         <jsp:include page="footer.jsp"></jsp:include>
         <script>
-            function chooseProduct(){
+            function chooseProduct() {
                 var checkbox = document.getElementById("");
             }
             function updateTotal() {
@@ -189,14 +194,14 @@
                 if (event.key === 'Enter') {
                     event.preventDefault();
 
-                    var productId = event.target.getAttribute('data-product-id');
+                    var p_detail_id = event.target.getAttribute('data-product-id');
                     var newQuantity = event.target.value;
 
                     // Gửi yêu cầu cập nhật số lượng mới đến servlet
-                    window.location.href = "UpdateQuantityServlet?id=" + productId + "&quantity=" + newQuantity;
+                    window.location.href = "UpdateQuantityServlet?id=" + p_detail_id + "&quantity=" + newQuantity;
                 }
             }
-        </script>
+        </script>-->
         <!-- JS here -->
         <script src="js/vendor/jquery-1.12.4.min.js"></script>
         <script src="js/jquery-ui.js"></script>

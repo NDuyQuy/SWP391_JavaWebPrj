@@ -15,7 +15,7 @@ public class CartDetail {
     private int p_detail_id;
     private int quantity;
     private Users user;
-    private Products product;
+    private ProductDetail productDetail;
 
     public CartDetail() {
     }
@@ -25,12 +25,12 @@ public class CartDetail {
         this.p_detail_id = p_detail_id;
         this.quantity = quantity;
     }
-    public CartDetail(int user_id, int p_detail_id, int quantity, Users user, Products product) {
+    public CartDetail(int user_id, int p_detail_id, int quantity, Users user, ProductDetail productDetail) {
         this.user_id = user_id;
         this.p_detail_id = p_detail_id;
         this.quantity = quantity;
         this.user = user;
-        this.product = product;
+        this.productDetail = productDetail;
     }
 
     public int getUser_id() {
@@ -65,13 +65,17 @@ public class CartDetail {
         this.user = user;
     }
 
-    public Products getProduct() {
-        return product;
+    public ProductDetail getProductDetail() {
+        return productDetail;
     }
 
-    public void setProduct(Products product) {
-        this.product = product;
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
     }
+
+   
+
+   
     
     
    
@@ -80,4 +84,5 @@ public class CartDetail {
     public String toString() {
         return "Cartdetail{" + "user_id=" + user_id + ", product_id=" + p_detail_id + ", quantity=" + quantity + '}';
     }
+
 }

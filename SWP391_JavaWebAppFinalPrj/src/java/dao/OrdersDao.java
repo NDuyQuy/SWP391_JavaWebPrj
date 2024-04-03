@@ -42,56 +42,114 @@ public class OrdersDao {
     private static final String UPDATE_STATUS = "UPDATE [orders] SET [status]=? WHERE [order_id]=?";
 
     private static final String ADD_ORDER = "INSERT INTO orders (customer_id, shop_id, shipping_cost, total, payment_method, status, receiver_name, receiver_phone, receiver_address, shipping_method, type, voucher_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
-    private static final String ADD_ORDER_DETAIL = "INSERT INTO orderdetail (orderID, productID, quantity,totalPrice) VALUES (?, ?, ?,?)";
-   
+
+    private static final String ADD_ORDER_DETAIL = "INSERT INTO orderdetail (orderID, p_detail_id, quantity,totalPrice) VALUES (?, ?, ?,?)";
+
     private static final String GET_ORDER_DETAILS = "SELECT od.*, p.* FROM orderdetail od INNER JOIN products p ON od.product_id = p.product_id WHERE od.order_id = ?";
     private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE order_id = ?";
     private static final String GET_ORDERS_BY_USER_ID = "SELECT * FROM orders WHERE customer_id = ?";
-    private static final String GET_ORDER_AND_DETAILS_BY_ID = "SELECT o.*,  p.product_id, p.img, p.name, p.price,  od.quantity, od.id FROM orders o "
-            + "  JOIN orderdetail od ON o.order_id = od.orderID "
-            + "   JOIN products p ON od.productID = p.product_id "
-            + "WHERE o.order_id = ?";
+    private static final String GET_ORDER_AND_DETAILS_BY_ID = "SELECT o.*, p.product_id, pd.id AS p_detail_id, pd.img AS pd_img, pd.name AS pd_name, p.name AS p_name, od.quantity, od.totalPrice, od.cancel_reason, od.id AS od_id\n"
+            + "FROM orders o\n"
+            + "JOIN orderdetail od ON o.order_id = od.orderID\n"
+            + "JOIN product_detail pd ON od.p_detail_id = pd.id\n"
+            + "JOIN products p ON pd.product_id = p.product_id\n"
+            + "WHERE o.order_id = ?;";
     private static final String GETORDERIDBYREF_RETID = "Select od.orderID from refundsnreturns rnr join orderdetail od on rnr.orderdetail_id = od.id where rnr.id = ?";
 
     private static final String CREATE_RETURN_ORDER = "INSERT INTO [orders]([customer_id],[shop_id],[status],[receiver_name],[receiver_phone],[receiver_address],[shippingunit_id],[type]) values (?,?,?,?,?,?,?,3)";
 
     private static final String UPDATE_ORDER_STATUS = "UPDATE orders SET status = ? WHERE order_id = ?";
-    private static final String REQUEST_RETURN = "UPDATE orderdetail SET cancel_reason = ? WHERE id = ?";
-    private static final String GET_ORDER_DETAIL_BY_ID = "SELECT * FROM orderdetail WHERE id = ?";
+    private static final String REQUEST_RETURN = "EXEC  InsertAndUpdateRefund @order_detail_id = ?, @cancel_reason = ?, @img_path = ?";
+    private static final String GET_ORDER_DETAIL_BY_ID = "SELECT od.id AS order_detail_id, "
+            + "pd.img AS product_detail_img, "
+            + "pd.name AS product_detail_name, "
+            + "p.name AS product_name, "
+            + "od.quantity, "
+            + "od.totalPrice, "
+            + "od.cancel_reason "
+            + "FROM orderdetail od "
+            + "JOIN product_detail pd ON od.p_detail_id = pd.id "
+            + "JOIN products p ON pd.product_id = p.product_id "
+            + "WHERE od.id = ?";
 
-    public static OrderDetail getOrderDetailById(int orderDetailId) {
-        OrderDetail orderDetail = null;
+    private static final String DELETE_REFUNDS_N_RETURNS = "DELETE FROM refundsnreturns WHERE orderdetail_id = ?";
+    private static final String UPDATE_ORDER_DETAIL_CANCEL_REASON = "UPDATE orderdetail SET cancel_reason = NULL WHERE id = ?";
+    private static final String GET_IMG_BY_ORDER_DETAIL_ID = "SELECT img FROM refundsnreturns WHERE orderdetail_id = ?";
 
+    public String getImgByOrderDetailId(int orderDetailId) {
         try (Connection con = SQLConnection.getConnection();
-                PreparedStatement pstmt = con.prepareStatement(GET_ORDER_DETAIL_BY_ID)) {
+                PreparedStatement pstmt = con.prepareStatement(GET_IMG_BY_ORDER_DETAIL_ID)) {
             pstmt.setInt(1, orderDetailId);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    orderDetail = new OrderDetail();
-                    orderDetail.setId(rs.getInt("id"));
-                    orderDetail.setOrderID(rs.getInt("orderID"));
-                    orderDetail.setP_detail_id(rs.getInt("productID"));
-                    orderDetail.setQuantity(rs.getInt("quantity"));
-                    orderDetail.setCancel_reason(rs.getString("cancel_reason"));
-                    orderDetail.setTotalPrice(rs.getInt("totalPrice"));
-                    // Set other properties if needed
+                    return rs.getString("img");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return orderDetail;
+        return null;
     }
 
-    public static boolean requestReturn(int orderDetailId, String cancelReason) {
+    public static boolean cancelReturnRequest(int orderDetailId) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement deleteRefundsNReturnsStmt = con.prepareStatement(DELETE_REFUNDS_N_RETURNS);
+                PreparedStatement updateOrderDetailCancelReasonStmt = con.prepareStatement(UPDATE_ORDER_DETAIL_CANCEL_REASON)) {
+
+            // Xóa thông tin từ bảng refundsnreturns
+            deleteRefundsNReturnsStmt.setInt(1, orderDetailId);
+            deleteRefundsNReturnsStmt.executeUpdate();
+
+            // Cập nhật cột cancel_reason trong bảng orderdetail
+            updateOrderDetailCancelReasonStmt.setInt(1, orderDetailId);
+            updateOrderDetailCancelReasonStmt.executeUpdate();
+
+            return true; // Trả về true nếu thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
+        }
+    }
+
+    public OrderDetail getOrderDetailById(int orderDetailId) {
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement getOrderDetailStmt = con.prepareStatement(GET_ORDER_DETAIL_BY_ID)) {
+            getOrderDetailStmt.setInt(1, orderDetailId);
+
+            try (ResultSet rs = getOrderDetailStmt.executeQuery()) {
+                if (rs.next()) {
+                    OrderDetail orderDetail = new OrderDetail();
+                    orderDetail.setId(rs.getInt("order_detail_id"));
+                    orderDetail.setQuantity(rs.getInt("quantity"));
+                    orderDetail.setTotalPrice(rs.getDouble("totalPrice"));
+                    orderDetail.setCancel_reason(rs.getString("cancel_reason"));
+
+                    ProductDetail productDetail = new ProductDetail();
+                    productDetail.setId(orderDetailId);
+                    productDetail.setName(rs.getString("product_detail_name"));
+                    productDetail.setImg(rs.getString("product_detail_img"));
+
+                    Products product = new Products();
+                    product.setName(rs.getString("product_name"));
+
+                    productDetail.setProduct(product);
+                    orderDetail.setProductDetail(productDetail);
+
+                    return orderDetail;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean requestReturn(int orderDetailId, String cancelReason, String img) {
         try (Connection con = SQLConnection.getConnection();
                 PreparedStatement pstmt = con.prepareStatement(REQUEST_RETURN)) {
-            pstmt.setString(1, cancelReason);
-            pstmt.setInt(2, orderDetailId);
-
+            pstmt.setInt(1, orderDetailId);
+            pstmt.setString(2, cancelReason);
+            pstmt.setString(3, img);
             int rowsUpdated = pstmt.executeUpdate();
             return rowsUpdated > 0;
         } catch (Exception e) {
@@ -124,9 +182,9 @@ public class OrdersDao {
             addOrderStmt.setNString(9, order.getReceiver_address());
             addOrderStmt.setNString(10, order.getShipping_method());
             addOrderStmt.setInt(11, 1);
-            if(order.getVoucher_id()==0){
+            if (order.getVoucher_id() == 0) {
                 addOrderStmt.setNull(12, java.sql.Types.INTEGER);
-            }else{
+            } else {
                 addOrderStmt.setInt(12, order.getVoucher_id());
             }
             int affectedRows = addOrderStmt.executeUpdate();
@@ -202,16 +260,22 @@ public class OrdersDao {
                     }
 
                     OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.setId(rs.getInt("id"));
+                    orderDetail.setId(rs.getInt("od_id"));
                     orderDetail.setQuantity(rs.getInt("quantity"));
+                    orderDetail.setTotalPrice(rs.getDouble("totalPrice"));
+                    orderDetail.setCancel_reason(rs.getString("cancel_reason"));
+
+                    ProductDetail productDetail = new ProductDetail();
+                    productDetail.setId(rs.getInt("p_detail_id"));
+                    productDetail.setName(rs.getString("pd_name"));
+                    productDetail.setImg(rs.getString("pd_img"));
 
                     Products product = new Products();
                     product.setProduct_id(rs.getInt("product_id"));
-                    product.setName(rs.getString("name"));
-                    // product.setMoney(rs.getInt("money"));
-                    product.setImg(rs.getString("img"));
+                    product.setName(rs.getString("p_name"));
 
-                    orderDetail.setProduct(product);
+                    productDetail.setProduct(product);
+                    orderDetail.setProductDetail(productDetail);
                     orderDetails.add(orderDetail);
                 }
 
@@ -670,33 +734,42 @@ public class OrdersDao {
             ex.printStackTrace();
         }
     }
-    public static CustomOrder getCustomOrderById(int id){
+
+    public static CustomOrder getCustomOrderById(int id) {
         PreparedStatement ptm = null;
         CustomOrder co = null;
-        try(Connection con = SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement("SELECT * FROM [custom_order] WHERE [id]=?");
             ptm.setInt(1, id);
             ResultSet rs = ptm.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 String name = rs.getNString("product_name");
                 Date deadline = rs.getDate("expected_complete_date");
                 co = new CustomOrder(id, name, deadline);
                 co.setOrder(getOrderByID(id));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return co;
     }
+
     public static void main(String[] args) {
-        //cancelOrders(1, "hết hàng");
-        LocalDate date = LocalDate.of(2024, 3, 17);
-        System.err.println(getCustomOrderById(37).getOrder());
-        //getOrderDetail(1).forEach(System.out::println);
-        //getWaitingOrders(1).forEach(System.out::println);
-        //getWaitingOrders(1).forEach(System.out::println);
-        //getOrdersCountByHour(1, date).entrySet().forEach(System.out::println);
-        //getOrdersCountADateInMonth(1, 3, 2024).entrySet().forEach(System.out::println);
-        //System.out.println(getOrdersCountInAMonthOfShop(1, 2, 2024));
+
+        int orderDetailIdToCheck = 61;
+
+        // Tạo một đối tượng của lớp chứa phương thức getImgByOrderDetailId
+        OrdersDao ordersDao = new OrdersDao();
+
+        // Gọi phương thức getImgByOrderDetailId để lấy img từ bảng refundsnreturns
+        String img = ordersDao.getImgByOrderDetailId(orderDetailIdToCheck);
+
+        // In ra img hoặc thông báo nếu img không tồn tại
+        if (img != null) {
+            System.out.println("Đã tìm thấy img cho order detail id " + orderDetailIdToCheck + ": " + img);
+        } else {
+            System.out.println("Không tìm thấy img cho order detail id " + orderDetailIdToCheck);
+        }
     }
+
 }

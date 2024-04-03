@@ -4,126 +4,183 @@
  * and open the template in the editor.
  */
 package dao;
+
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import model.*;
+
 /**
  *
  * @author ASUS
  */
 public class SellersDao {
-   
+
     private static final String GETSHOPBYID = "SELECT [shop_description],[shop_img],[shop_name],[CCCD] FROM [shops] WHERE [shop_id]=?";
     private static final String GETALLSHOP = "Select [shop_id],[shop_name],[shop_img],[shop_description] from [shops]";
     private static final String UPDATESHOPINFO = "UPDATE [shops] SET [shop_name] = ?,[shop_description] = ?,[shop_img] = ? WHERE [shop_id] = ?";
     //SHOP CATEGORY RELATED SQL STATEMENT 
     private static final String GETSHOPCATEGORIES = "SELECT s.[id], s.[name],m.[name],m.[id] "
             + "FROM [shopcategory] s inner join [maincategory] m on s.[maincate_id] = m.[id] WHERE [shop_id]=?";
-    private static final String CREATESHOPCATEGORY ="INSERT INTO [shopcategory](maincate_id,shop_id,name)VALUES(?,?,?)";
+    private static final String CREATESHOPCATEGORY = "INSERT INTO [shopcategory](maincate_id,shop_id,name)VALUES(?,?,?)";
     private static final String EDITSHOPCATEGORY = "UPDATE [shopcategory] SET [name] = ?, [maincate_id]=? WHERE [id] = ?";
     private static final String DELETESHOPCATEGORY = "DELETE [shopcategory] WHERE [id]=?";
-    
+
     //PRODUCTS RELATED SQL STATEMENT
     private static final String CREATEPRODUCT = "INSERT [products](shop_id,[scate_id],description,name,price,"
             + "img,quantity) VALUES (?,?,?,?,?,?,?)";
     private static final String EDITPRODUCT = "UPDATE [products] SET  [scate_id]=?, [description]=?, [name]=?, [price]=?, "
             + "[img]=?, quantity=? WHERE [product_id]=?";
     private static final String DELETEPRODUCT = "DELETE [products] WHERE [product_id] = ?";
-    
+
     //SHOP VOUCHERS RELATED SQL STATEMENT
     private static final String GETVOUCHERS = "SELECT [voucher_id],[code],[discount_amount],[type],[min_require],[use_count],[start_date],[expire_date],[description] FROM [vouchers] WHERE [shop_id] = ?";
-    
+
     private static final String GETVOUCHERBYID = "SELECT [voucher_id],[code],[discount_amount],[start_date],[expire_date],[type],[min_require],[description],[shop_id],[product_id],[use_count] FROM [vouchers] WHERE [voucher_id] = ?";
-    
+
     private static final String CREATEVOUCHER = "INSERT INTO [vouchers]([code],[discount_amount],"
             + "[start_date],[expire_date],[type],[description],[shop_id],[product_id],[use_count],[min_require]) VALUES(?,?,?,?,?,?,?,?,?,?)";
     private static final String EDITVOUCHER = "UPDATE [vouchers] SET [code]=?, [discount_amount]=?, [start_date]=?, [expire_date]=?, "
             + "[type]=?, [description]=?,[shop_id]=?,[product_id]=?,[use_count]=?,[min_require]=? WHERE [voucher_id]=?";
     private static final String DELETEVOUCHER = "DELETE [vouchers] WHERE [voucher_id]=?";
-    //CUSTOM ORDER REALTED SQL STATEMENt
-    public static int getShopIdByName(String name){
+
+    private static final String GET_PRODUCT_BY_P_DETAIL_ID = "SELECT pd.id, pd.product_id, pd.price, pd.quantity, pd.img, pd.name as detail_name, p.product_id, p.shop_id, p.scate_id, p.created_date, p.description, p.name "
+            + "FROM product_detail pd "
+            + "JOIN products p ON pd.product_id = p.product_id "
+            + "WHERE pd.id = ?";
+    private static final String GET_SHOP_NAME_BY_ID = "SELECT shop_name FROM shops WHERE shop_id = ?";
+
+    public static ProductDetail getProductDetailById(int p_detail_id) {
+        ProductDetail productDetail = null;
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement statement = con.prepareStatement(GET_PRODUCT_BY_P_DETAIL_ID)) {
+            statement.setInt(1, p_detail_id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int product_id = resultSet.getInt("product_id");
+                double price = resultSet.getDouble("price");
+                int quantity = resultSet.getInt("quantity");
+                String img = resultSet.getString("img");
+                String name = resultSet.getString("detail_name");
+
+                int products_product_id = resultSet.getInt("product_id");
+                int shop_id = resultSet.getInt("shop_id");
+                int scate_id = resultSet.getInt("scate_id");
+                java.sql.Date created_date = resultSet.getDate("created_date");
+                String description = resultSet.getString("description");
+                String products_name = resultSet.getString("name");
+
+                Products product = new Products(products_product_id, shop_id, scate_id, created_date, description, products_name);
+
+                productDetail = new ProductDetail(id, product_id, price, quantity, img, name, product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productDetail;
+    }
+
+    public static String getShopNameByShopId(int shopId) {
+        String shopName = null;
+        try (Connection con = SQLConnection.getConnection();
+                PreparedStatement statement = con.prepareStatement(GET_SHOP_NAME_BY_ID)) {
+            statement.setInt(1, shopId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                shopName = resultSet.getString("shop_name");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return shopName;
+    }
+//CUSTOM ORDER REALTED SQL STATEMENt
+
+    public static int getShopIdByName(String name) {
         int id = 0;
-        try(Connection con = SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             PreparedStatement statement = con.prepareStatement("SELECT [shop_id]FROM [shops]WHERE [shop_name] = ?");
             statement.setNString(1, name);
             ResultSet rs = statement.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 id = rs.getInt("shop_id");
             }
         } catch (Exception e) {
         }
         return id;
     }
-    public static void updateShopInfo(Shops shop){
+
+    public static void updateShopInfo(Shops shop) {
         PreparedStatement ptm = null;
-        try(Connection con=SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(UPDATESHOPINFO);
-            ptm.setNString(1,shop.getShop_name());
-            ptm.setNString(2,shop.getDescription());
-            ptm.setNString(3,shop.getShop_img());
+            ptm.setNString(1, shop.getShop_name());
+            ptm.setNString(2, shop.getDescription());
+            ptm.setNString(3, shop.getShop_img());
             ptm.setInt(4, shop.getShop_id());
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    public static Shops getShopById(int id){
+
+    public static Shops getShopById(int id) {
         PreparedStatement ptm = null;
         ResultSet rs = null;
         Users user = UsersDao.getUserById(id);
         Shops shop = new Shops();
-        try(Connection con=SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(GETSHOPBYID);
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 shop.setUsers(user);
                 shop.setShop_id(id);
-                shop.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
-                shop.setShop_img(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
+                shop.setDescription(rs.getString("shop_description") == null ? null : rs.getString("shop_description").trim());
+                shop.setShop_img(rs.getString("shop_img") == null ? null : rs.getString("shop_img").trim());
                 shop.setShop_name(rs.getString("shop_name").trim());
                 shop.setCCCD(rs.getString("CCCD"));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return shop;
     }
-    
-    public static ArrayList<Shops> getAllShop(){
+
+    public static ArrayList<Shops> getAllShop() {
         PreparedStatement ptm = null;
         ResultSet rs = null;
         Shops s = null;
         ArrayList<Shops> shop_list = new ArrayList<>();
-        try(Connection con = SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(GETALLSHOP);
             rs = ptm.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 s = new Shops();
                 s.setShop_id(rs.getInt("shop_id"));
                 s.setUsers(UsersDao.getUserById(rs.getInt("shop_id")));
                 s.setShop_name(rs.getString("shop_name").trim());
-                s.setShop_img(rs.getString("shop_img")==null?null:rs.getString("shop_img").trim());
-                s.setDescription(rs.getString("shop_description")==null?null:rs.getString("shop_description").trim());
+                s.setShop_img(rs.getString("shop_img") == null ? null : rs.getString("shop_img").trim());
+                s.setDescription(rs.getString("shop_description") == null ? null : rs.getString("shop_description").trim());
                 shop_list.add(s);
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return shop_list;
     }
-    
-    public static ArrayList<ShopCategory> getShopCategories(int shop_id){
+
+    public static ArrayList<ShopCategory> getShopCategories(int shop_id) {
         ArrayList<ShopCategory> shopCategories = new ArrayList<>();
         PreparedStatement ptm = null;
         ResultSet rs = null;
         ShopCategory sc = null;
-        try(Connection con=SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(GETSHOPCATEGORIES);
             ptm.setInt(1, shop_id);
             rs = ptm.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 sc = new ShopCategory();
                 sc.setShop_id(shop_id);
                 //GET SHOP CATEGORY ID & NAME
@@ -133,15 +190,18 @@ public class SellersDao {
                 String mname = rs.getString(3).trim();
                 int mcate_id = rs.getInt(4);
                 sc.setMaincategory(new MainCategory(mcate_id, mname));
-                sc.setId(id);   sc.setName(sname); sc.setMaincate_id(mcate_id);
+                sc.setId(id);
+                sc.setName(sname);
+                sc.setMaincate_id(mcate_id);
                 shopCategories.add(sc);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return shopCategories;
     }
-    public static void createShopCategory(int maincate_id, int shop_id, String name){
+
+    public static void createShopCategory(int maincate_id, int shop_id, String name) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CREATESHOPCATEGORY);
@@ -153,7 +213,8 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    public static void editShopCategory(int maincate_id, int id, String name){
+
+    public static void editShopCategory(int maincate_id, int id, String name) {
         //id in here is shop_cate_id
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
@@ -166,7 +227,8 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    public static void deleteShopCategory(int id){
+
+    public static void deleteShopCategory(int id) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(DELETESHOPCATEGORY);
@@ -176,16 +238,17 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    public static ArrayList<Vouchers> getShopVouchers(int shop_id){
+
+    public static ArrayList<Vouchers> getShopVouchers(int shop_id) {
         ArrayList<Vouchers> vouchers = new ArrayList<>();
         PreparedStatement ptm = null;
         ResultSet rs = null;
         Vouchers voucher = null;
-        try(Connection con=SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(GETVOUCHERS);
             ptm.setInt(1, shop_id);
             rs = ptm.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int voucher_id = rs.getInt("voucher_id");
                 String code = rs.getString("code").trim();
                 int discount_amount = rs.getInt("discount_amount");
@@ -200,43 +263,44 @@ public class SellersDao {
                 voucher.setShop_id(shop_id);
                 vouchers.add(voucher);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return vouchers;
     }
-    
-    public static Vouchers getVoucherByID(int id){
+
+    public static Vouchers getVoucherByID(int id) {
         PreparedStatement ptm = null;
         ResultSet rs = null;
         Vouchers voucher = null;
-        try(Connection con=SQLConnection.getConnection()){
+        try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(GETVOUCHERBYID);
             ptm.setInt(1, id);
             rs = ptm.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 int voucher_id = rs.getInt("voucher_id");
                 String code = rs.getString("code").trim();
                 int discount_amount = rs.getInt("discount_amount");
-                Date start_date = (Date)rs.getDate("start_date");
-                Date expire_date = (Date)rs.getDate("expire_date");
+                Date start_date = (Date) rs.getDate("start_date");
+                Date expire_date = (Date) rs.getDate("expire_date");
                 int type = rs.getInt("type");
                 int min_require = rs.getInt("min_require");
                 String description = rs.getString("description");
-                int shop_id = rs.getInt("shop_id") ;
-                int product_id = rs.getInt("product_id") ;
+                int shop_id = rs.getInt("shop_id");
+                int product_id = rs.getInt("product_id");
                 int use_count = rs.getInt("use_count");
                 voucher = new Vouchers(voucher_id, code, discount_amount, start_date, expire_date, type, min_require, description);
                 voucher.setUse_count(use_count);
                 voucher.setShop_id(shop_id);
                 voucher.setProduct_id(product_id);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return voucher;
     }
-    public static void createShopVoucher(Vouchers voucher){
+
+    public static void createShopVoucher(Vouchers voucher) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(CREATEVOUCHER);
@@ -255,7 +319,8 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    public static void editShopVoucher(Vouchers voucher){
+
+    public static void editShopVoucher(Vouchers voucher) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(EDITVOUCHER);
@@ -275,7 +340,8 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    public static void deleteVoucher(int id){
+
+    public static void deleteVoucher(int id) {
         PreparedStatement ptm = null;
         try (Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(DELETEVOUCHER);
@@ -285,13 +351,15 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    
+
     public static ArrayList<Products> getShopProducts(int shop_id) {
         return ProductDao.getProductsByShop(shop_id);
     }
-    public static Products getProductById(int product_id){
+
+    public static Products getProductById(int product_id) {
         return ProductDao.getProductById(product_id);
     }
+
     /*
     public static void createShopProducts(Products product, int shop_id){
         PreparedStatement ptm = null;
@@ -335,12 +403,44 @@ public class SellersDao {
             e.printStackTrace();
         }
     }
-    */
+     */
     public static void main(String[] args) {
         //getShopVouchers(1).forEach(System.out::println);
         //getShopProducts(1).forEach(System.out::println);
-        
-        System.err.println(getShopIdByName("A Shop"));
+
+        //System.err.println(getShopIdByName("A Shop"));
+//       int p_detail_id = 5;
+//
+//        ProductDetail productDetail = getProductDetailById(p_detail_id);
+//
+//        // Kiểm tra nếu sản phẩm tồn tại
+//        if (productDetail != null) {
+//            System.out.println("Thông tin sản phẩm:");
+//            System.out.println("ID: " + productDetail.getId());
+//            System.out.println("ID sản phẩm: " + productDetail.getProduct_id());
+//            System.out.println("Giá: " + productDetail.getPrice());
+//            System.out.println("Số lượng: " + productDetail.getQuantity());
+//            System.out.println("Ảnh: " + productDetail.getImg());
+//            System.out.println("Tên chi tiết: " + productDetail.getName());
+//            System.out.println("ID cửa hàng: " + productDetail.getProduct().getShop_id());
+//            System.out.println("ID danh mục sản phẩm: " + productDetail.getProduct().getScate_id());
+//            System.out.println("Ngày tạo: " + productDetail.getProduct().getCreated_date());
+//            System.out.println("Mô tả: " + productDetail.getProduct().getDescription());
+//            System.out.println("Tên sản phẩm: " + productDetail.getProduct().getName());
+//        } else {
+//            System.out.println("Không tìm thấy sản phẩm có ID " + p_detail_id);
+//        }
+int shopId = 1;
+
+        // Gọi phương thức để lấy tên cửa hàng
+        String shopName = SellersDao.getShopNameByShopId(shopId);
+
+        // Kiểm tra nếu cửa hàng tồn tại
+        if (shopName != null) {
+            System.out.println("Tên cửa hàng có shop_id " + shopId + ": " + shopName);
+        } else {
+            System.out.println("Không tìm thấy cửa hàng có shop_id " + shopId);
+        }
     }
-    
+
 }

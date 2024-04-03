@@ -18,8 +18,18 @@ public class Products {
     private Date created_date;
     private String description;
     private String name;
+ 
 
     public Products() {
+    }
+
+    public Products(int product_id, int shop_id, int scate_id, Date created_date, String description, String name) {
+        this.product_id = product_id;
+        this.shop_id = shop_id;
+        this.scate_id = scate_id;
+        this.created_date = created_date;
+        this.description = description;
+        this.name = name;
     }
     
     public int getProduct_id() {
@@ -69,5 +79,7 @@ public class Products {
     public void setName(String name) {
         this.name = name;
     }
+    
+ 
     
 }

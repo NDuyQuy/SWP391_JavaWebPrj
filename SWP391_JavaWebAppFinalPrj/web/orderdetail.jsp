@@ -139,6 +139,9 @@
             .rate > label:hover ~ input:checked ~ label {
                 color: #c59b08;
             }
+            
+            
+            
         </style>
 
 
@@ -204,8 +207,8 @@
                                                     <tr>
                                                         <th>Product Img</th>
                                                         <th>Product Name</th>
-
                                                         <th>Quantity</th>
+                                                        <th>Price</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -213,21 +216,37 @@
                                                     <c:forEach var="orderDetail" items="${order.orderDetails}">
 
                                                         <tr>
-                                                            <td><img src="${orderDetail.product.getImg()}\1.png" alt="">
+                                                            <td>
+                                                                <img src="${orderDetail.productDetail.getImg()}" alt="">
                                                             </td>
-                                                            <td>${orderDetail.product.getName()}</td>
+                                                            <td>${orderDetail.productDetail.product.getName()}
+                                                                <c:if test="${orderDetail.productDetail.name != null}">
+                                                                    <a>Phân loại: ${orderDetail.productDetail.name}</a>
+                                                                </c:if>
+
+                                                            </td>
 
                                                             <td>${orderDetail.quantity}</td>
+                                                            <td>${orderDetail.totalPrice}</td>
                                                             <td>
-
                                                                 <c:if test="${order.status.trim() eq 'đã giao hàng'}">
-                                                                    <form action="ReturnRequestServlet" method="get">
-                                                                        <input type="hidden" name="orderDetailId" value="${orderDetail.id}">
-                                                                        <button type="submit">Yêu cầu trả hàng/hoàn tiền</button>
-                                                                    </form>
-
-
+                                                                    <c:choose>
+                                                                        <c:when test="${not empty orderDetail.cancel_reason}">
+                                                                            <form action="DetailReturn " method="get">
+                                                                                <input type="hidden" name="orderDetailId" value="${orderDetail.id}">
+                                                                                <button type="submit">Đã gửi yêu cầu trả hàng</button>
+                                                                            </form>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <form action="ReturnRequestServlet" method="get">
+                                                                                <input type="hidden" name="orderDetailId" value="${orderDetail.id}">
+                                                                                <button type="submit">Yêu cầu trả hàng/hoàn tiền</button>
+                                                                            </form>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </c:if>
+
+
                                                             </td>
                                                         </tr>
 
@@ -258,7 +277,7 @@
 
                                         <c:if test="${order.status.trim() eq 'đã giao hàng'}">
                                             <button type="button" class="btn theme-btn" onclick="openConfirmModal(${order.getOrder_id()})">Đã nhận hàng</button>
-                                            <button type="button" class="btn theme-btn" > Yêu cầu trả hàng/hoàn tiền</button>
+
                                         </c:if>
 
 
