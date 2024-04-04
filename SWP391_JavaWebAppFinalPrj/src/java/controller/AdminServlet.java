@@ -153,9 +153,9 @@ public class AdminServlet extends HttpServlet {
                 Continue = false;
                 int id = Integer.parseInt(request.getParameter("userId"));
                 String banAction = request.getParameter("banAction");
-                int bandays = 0, status = 0;
+                int bandays = 0, status = 1;
                 if (banAction.equals("0")) {
-                    status = -1;
+                    status = 1;
                     bandays = 0;
                 }
                 else if (banAction.equals("7")) {

@@ -20,6 +20,8 @@ public class Shops{
     private String shop_name;
     private Date ban_time;
     private int ban_status;
+    //1: active; 2: temp ban (have duration); 3: ban unlimited time
+    
     private Users users;
 
     public Shops() {
