@@ -173,7 +173,7 @@
                                     <span class="quantityInput">${value.quantity}</span>
                                 </td>
                                 <td class="product-subtotal">
-                                    <span class="amount">${value.productDetail.price * value.quantity}</span>
+                                    <span class="amount">${value.productDetail.price.intValue() * value.quantity}</span>
                                 </td>
                             </tr>
                             <c:set var="totalShopAmount" value="${totalShopAmount + (value.productDetail.price * value.quantity)}" />
@@ -182,7 +182,7 @@
                             <td colspan="2"></td>
                             <td>Tổng tiền hàng: </td>
                             <td></td>
-                            <td class="total-shop-amount">${totalShopAmount}</td> 
+                            <td class="total-shop-amount">${totalShopAmount.intValue()}</td> 
                         </tr>
 
                         <tr>

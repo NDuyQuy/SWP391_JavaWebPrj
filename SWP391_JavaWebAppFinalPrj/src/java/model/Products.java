@@ -18,6 +18,15 @@ public class Products {
     private Date created_date;
     private String description;
     private String name;
+ private Shops shop;
+
+    public Shops getShop() {
+        return shop;
+    }
+
+    public void setShop(Shops shop) {
+        this.shop = shop;
+    }
  
 
     public Products() {
