@@ -35,7 +35,7 @@ public class SellersDao {
 
     private static final String EDITPRODUCT = "UPDATE [products] SET  [scate_id]=?, [description]=?, [name]=? WHERE [product_id]=?";
 
-    private static final String EDITPRODUCTDETAIL = "UPDATE [product_detail] SET price = ?, quantity = ?, name = ? WHERE id = ?";
+    private static final String EDITPRODUCTDETAIL = "UPDATE [product_detail] SET price = ?, quantity = ?, name = ?, [img] = ? WHERE id = ?";
 
     private static final String DELETEPRODUCT = "DELETE [products] WHERE [product_id] = ?";
     private static final String DELETEPRODUCTDETAIL = "DELETE [product_detail] WHERE [product_id] = ?";
@@ -487,7 +487,8 @@ public class SellersDao {
                 ptm.setDouble(1, item.getPrice());
                 ptm.setInt(2, item.getQuantity());
                 ptm.setNString(3, item.getName());
-                ptm.setInt(4, item.getId());
+                ptm.setNString(4, item.getImg());
+                ptm.setInt(5, item.getId());
                 ptm.addBatch();
             }
             ptm.executeBatch();

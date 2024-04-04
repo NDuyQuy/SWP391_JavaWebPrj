@@ -16,8 +16,8 @@ import java.util.Random;
  */
 public class SendEmail {
 
-    private static final String SENDER_EMAIL = "swp391c02rt02@gmail.com";
-    private static final String SENDER_APP_PASSWORD = "ilwv uizd snci cysb";
+    private static final String SENDER_EMAIL = "quyndde170660@fpt.edu.vn";
+    private static final String SENDER_APP_PASSWORD = "zbol hzhv gdds npvw";
 
     private static Session getAuthenticatedMailSession(String email, String password) {
         Properties properties = new Properties();
