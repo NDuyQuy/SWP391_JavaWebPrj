@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.NotificationDao;
 import dao.OrderDetailDao;
 import dao.OrdersDao;
 import dao.ProductDao;
@@ -107,18 +108,23 @@ public class ShippingUnitController extends HttpServlet {
             Users su = (Users) session.getAttribute("user");
             int id = Integer.parseInt(request.getParameter("id"));
             String action = request.getParameter("action");
+            int customerId = OrdersDao.getOrderByID(id).getCustomer_id();
             switch (action) {
                 case "accept":
                     OrdersDao.updateOrderStatus(id, "đơn hàng đang được chuyển cho shippingunit");
+                    NotificationDao.orderUpdate(customerId, id, "đang được chuyển cho shippingunit");
                     break;
                 case "refuse":
                     OrdersDao.updateOrderStatus(id, "chờ người bán xác nhận-shipping unit từ chối");
+                    NotificationDao.orderUpdate(customerId, id, "chờ người bán xác nhận-shipping unit từ chối");
                     break;
                 case "update":
                     OrdersDao.updateOrderStatus(id, "đang vận chuyển");
+                    NotificationDao.orderUpdate(customerId, id, "đang được vận chuyển");
                     break;
                 case "complete":
                     OrdersDao.updateOrderStatus(id, "đã giao hàng");
+                    NotificationDao.orderSuccess(customerId, id);
                     break;
             }
             

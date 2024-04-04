@@ -249,7 +249,7 @@ public class OrdersDao {
                 PreparedStatement updateStatusStmt = con.prepareStatement(UPDATE_ORDER_STATUS)) {
             updateStatusStmt.setNString(1, newStatus);
             updateStatusStmt.setInt(2, orderId);
-
+            
             int affectedRows = updateStatusStmt.executeUpdate();
 
             return affectedRows > 0;
@@ -538,6 +538,7 @@ public class OrdersDao {
             ptm.setNString(3, cod.getProcess_video());
             ptm.setNString(4, cod.getDescription());
             ptm.execute();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

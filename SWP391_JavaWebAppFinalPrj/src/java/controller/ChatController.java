@@ -5,6 +5,7 @@
 package controller;
 
 import dao.MessageDao;
+import dao.NotificationDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -51,6 +52,7 @@ public class ChatController extends HttpServlet {
                 int shop_id = Integer.parseInt(request.getParameter("shop_id"));
                 String message = request.getParameter("messageText");
                 MessageDao.SendMessage(shop_id, userId, 2, message);
+                NotificationDao.messageFromUser(shop_id, u.getUsername());
                 String chatDiv = ShowSendChat(message, shop_id, userId);
                 out.println(chatDiv);
             }

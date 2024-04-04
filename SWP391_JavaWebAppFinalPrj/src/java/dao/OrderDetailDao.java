@@ -36,6 +36,7 @@ public class OrderDetailDao {
                 od.setProductID(rs.getInt(2));
                 od.setQuantity(rs.getInt(3));
                 od.setCancel_reason(rs.getString(4));
+                od.setOrder(OrdersDao.getOrderByID(od.getOrderID()));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
