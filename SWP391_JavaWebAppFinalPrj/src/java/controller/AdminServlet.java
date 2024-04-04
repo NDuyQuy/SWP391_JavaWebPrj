@@ -137,6 +137,10 @@ public class AdminServlet extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("requestId"));
                 String status = request.getParameter("status");
                 AdminDAO.Update_Refund(status, id);
+                int orderId = AdminDAO.Get_Refund(id).getOrderdetail().getOrder().getOrder_id();
+                int userId = AdminDAO.Get_Refund(id).getOrderdetail().getOrder().getCustomer_id();
+                if(status.equals("Accept")) NotificationDao.refundSuccess(userId, orderId);
+                else if(status.equals("Decline")) NotificationDao.refundDecline(userId, orderId);
                 url = "/AdminRefund.jsp";
             }
             else if(action.equals("ViewBan")) {
@@ -151,7 +155,7 @@ public class AdminServlet extends HttpServlet {
                 String banAction = request.getParameter("banAction");
                 int bandays = 0, status = 0;
                 if (banAction.equals("0")) {
-                    status = -1;
+                    status = 0;
                     bandays = 0;
                 }
                 else if (banAction.equals("7")) {

@@ -6,6 +6,7 @@
 package controller;
 
 import dao.CartDetailDao;
+import dao.SellersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.CartDetail;
-import model.Users;
+import model.*;
 
 /**
  *
@@ -72,7 +73,7 @@ public class Cart extends HttpServlet {
             List<CartDetail> cart = CartDetailDao.GetCartOfUser(user.getId());
             // GROUP BY NAME
             Map<String, List<CartDetail>> cartGroup = cart.stream().collect(
-                    Collectors.groupingBy(c -> c.getProduct().getShop().getShop_name())
+                    Collectors.groupingBy(c -> SellersDao.getShopNameByShopId(c.getProductDetail().getProduct().getShop_id()))
             );
             request.setAttribute("cartGroup", cartGroup);
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
@@ -102,10 +103,10 @@ public class Cart extends HttpServlet {
                 List<CartDetail> selectedItems = new ArrayList<>();
 
                 for (String selectedId : selectedIdsArray) {
-                    int productId = Integer.parseInt(selectedId);
+                    int p_detail_id = Integer.parseInt(selectedId);
 
                     for (CartDetail cartItem : cartItems) {
-                        if (cartItem.getProduct().getProduct_id() == productId) {
+                        if (cartItem.getP_detail_id() == p_detail_id) {
                             selectedItems.add(cartItem);
                             break;
                         }

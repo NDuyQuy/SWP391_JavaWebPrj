@@ -70,7 +70,6 @@ public class ProductDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String path = getServletContext().getRealPath("");
             String product = request.getParameter("product");
             Products pro = ProductDao.getProductById(Integer.parseInt(product));
             ArrayList<Products> product_by_shop = ProductDao.getProductsByShop(pro.getShop_id());
@@ -95,7 +94,6 @@ public class ProductDetailController extends HttpServlet {
             session.setAttribute("aver_rate", aver_rate);
             session.setAttribute("ratings_by_product", ratings_by_product);
             session.setAttribute("pr", pro);
-            session.setAttribute("pr_img", getImagePath(pro.getImg()));
             session.setAttribute("product_by_shop", product_by_shop);
             request.getRequestDispatcher("product_detail.jsp").forward(request, response);
         } catch (Exception ex) {
@@ -127,21 +125,4 @@ public class ProductDetailController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private ArrayList<String> getImagePath(String folder) {
-        ArrayList<String> res = new ArrayList<>();
-        List<File> all_img = new ArrayList<>();
-        String fpath = getServletContext().getRealPath("") + folder;
-        try {
-            all_img = Files.walk(Paths.get(fpath))
-                    .filter(Files::isRegularFile)
-                    .map(Path::toFile)
-                    .collect(Collectors.toList());
-            for(File f : all_img){
-                res.add(f.getPath().replace(getServletContext().getRealPath(""), ""));
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return res;
-    }
 }

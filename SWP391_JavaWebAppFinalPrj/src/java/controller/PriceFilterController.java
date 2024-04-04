@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.ProductDetail;
 import model.Products;
 
 /**
@@ -81,18 +82,21 @@ public class PriceFilterController extends HttpServlet {
             String[] prices = price_range.split("đ");
             int min = Integer.parseInt(prices[0]);
             int max = Integer.parseInt(prices[1].substring(3));
-            
+
             HttpSession session = request.getSession();
             ArrayList<Products> product_list = (ArrayList<Products>) session.getAttribute("product_list");
             ArrayList<Products> result = new ArrayList<>();
-            for(Products p : product_list){
-                if(p.getMoney() >= min && p.getMoney() <= max){
-                    result.add(p);
+            for (Products p : product_list) {
+                for (ProductDetail pr : p.getProductdetails()) {
+                    if (pr.getPrice() >= min && pr.getPrice() <= max) {
+                        result.add(p);
+                        break;
+                    }
                 }
+
             }
-            
-            
-            int page, perPage = 24;
+
+            int page, perPage = 15;
             int numPage = result.size() % perPage == 0 ? result.size() / perPage : result.size() / perPage + 1;
             String pageid = request.getParameter("page");
             if (pageid == null) {
@@ -103,7 +107,7 @@ public class PriceFilterController extends HttpServlet {
             int first = (page - 1) * perPage;
             int last = Math.min(page * perPage, result.size()) - 1;
 
-            float max_price = ProductDao.getHighestPrice().getMoney();
+            double max_price = ProductDao.getHighestPrice();
 
             request.setAttribute("first", first);
             request.setAttribute("last", last);

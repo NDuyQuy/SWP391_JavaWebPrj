@@ -20,25 +20,14 @@
         <!-- Place favicon.ico in the root directory -->
 
         <!-- CSS here -->
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/owl.carousel.min.css">
-        <link rel="stylesheet" href="css/animate.min.css">
-        <link rel="stylesheet" href="css/magnific-popup.css">
-        <link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/flaticon.css">
-        <link rel="stylesheet" href="css/meanmenu.css">
-        <link rel="stylesheet" href="css/jquery-ui.css">
-        <link rel="stylesheet" href="css/meanmenu.css">
-        <link rel="stylesheet" href="css/slick.css">
-        <link rel="stylesheet" href="css/default.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/responsive.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     </head>
     <body>
-        <jsp:include page="../header.jsp"></jsp:include>
+        <jsp:include page="header.jsp"></jsp:include>
 
-            <main>
-                
+            <main style="width: 90%; margin: auto;">
+
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
                     <div class="container">
                         <div class="row">
@@ -50,125 +39,112 @@
                         </div>
                     </div>
                 </section>
-                <section class="login-area pt-100 pb-100">
-                    <jsp:useBean id="c_o_l" scope="request" class="java.util.ArrayList" />
-                    <div>
-                        <table class="table table-bordered">
-                            <thead>
+                <section class="login-area pt-100 pb-100" >
+                <jsp:useBean id="c_o_l" scope="request" class="java.util.ArrayList" />
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr> 
+                                <th>Tên sản phẩm</th> 
+                                <th>Trạng thái</th>
+                                <th>Giá</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            <c:forEach var="c" items="${c_o_l}">
                                 <tr> 
-                                    <th>Tên sản phẩm</th> 
-                                    <th>Trạng thái</th>
-                                    <th>Giá</th>
-                                    <th>Thao tác</th>
+                                    <td><c:out value="${c.product_name}"/></td>
+                                    <td><c:out value="${c.order.status}"/></td>
+                                    <td><c:out value="${c.order.total - c.order.shipping_cost}"/></td>
+                                    <c:if test="${c.order.status eq 'WAC'}">
+                                        <td>
+                                            <a class="text-decoration-none blue"name="copyLink" id="copyLink" data-suffix="${c.id}">Lấy link</a>
+                                        </td>
+                                    </c:if>
+                                    <c:if test="${c.order.status eq 'Chưa hoàn thành'}">
+                                        <td>
+                                            <a class="text-decoration-none green" href="CustomOrderController?open=up&o_id=${c.id}">Cập nhật quá trình</a>
+                                        </td>
+                                    </c:if>
+                                    <c:if test="${c.order.status eq 'Đã hoàn thành'}">
+                                        <td>
+                                            <a class="text-decoration-none orange"href="#">Chọn vận chuyển</a>
+                                        </td>
+                                    </c:if>    
                                 </tr>
-                            </thead>
-                            <tbody> 
-                                <c:forEach var="c" items="${c_o_l}">
-                                    <tr> 
-                                        <td><c:out value="${c.product_name}"/></td>
-                                        <td><c:out value="${c.order.status}"/></td>
-                                        <td><c:out value="${c.order.total}"/></td>
-                                        <c:if test="${c.order.status eq 'WAC'}">
-                                            <td>
-                                                <a id="copyLink" data-suffix="${c.id}">Lấy link</a>
-                                            </td>
-                                        </c:if>
-                                        <c:if test="${c.order.status != 'WAC'}">
-                                            <td>
-                                                <a href="CustomOrderController?open=up&o_id=${c.id}">Cập nhật quá trình</a>
-                                            </td>
-                                        </c:if>
-                                        
-                                    </tr>
-                                </c:forEach>
-                            </tbody> 
-                        </table>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="openPopup('add')">Tạo đơn mới</button>
-                    <!-- Add Category Popup -->
-                    <div class="modal" id="addPopup">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
+                            </c:forEach>
+                        </tbody> 
+                    </table>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="openPopup('add')">Tạo đơn mới</button>
+                <!-- Add Category Popup -->
+                <div class="modal" id="addPopup">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Tạo order</h4>
-                                    <button type="button" class="close" data-dismiss="modal" onclick="closePopup('add')">&times;</button>
-                                </div>
-                                <!-- Modal Body -->
-                                <div class="modal-body">
-                                    <form action="CustomOrderController" method="post">
-                                        <div class="form-group">
-                                            <input type="hidden" name="act" value ="add">
-                                            <label for="productName">Tên sản phẩm</label>
-                                            <input type="text" id="productName" name="productName" class="form-control" required> <br>
-                                            <label for="price">Giá</label>
-                                            <input type="number" id="price" name="price" class="form-control" required> <br>
-                                            <label for="ecd">Thời gian hoàn thành dự kiến</label>
-                                            <input type="date" id="ecd" name="ecd" class="form-control" required> <br>
-                                        </div>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closePopup('add')">Hủy</button>
-                                        <button type="submit" class="btn btn-success">Xác nhận</button>
-                                    </form>
-                                </div>
-
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Tạo order</h4>
+                                <button type="button" class="close" data-dismiss="modal" onclick="closePopup('add')">&times;</button>
                             </div>
+                            <!-- Modal Body -->
+                            <div class="modal-body">
+                                <form action="CustomOrderController" method="post">
+                                    <div class="form-group">
+                                        <input type="hidden" name="act" value ="add">
+                                        <label for="productName">Tên sản phẩm</label>
+                                        <input type="text" id="productName" name="productName" class="form-control" required> <br>
+                                        <label for="price">Giá</label>
+                                        <input type="number" id="price" name="price" class="form-control" required> <br>
+                                        <label for="ecd">Thời gian hoàn thành dự kiến</label>
+                                        <input type="date" id="ecd" name="ecd" class="form-control" required> <br>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closePopup('add')">Hủy</button>
+                                    <button type="submit" class="btn btn-success">Xác nhận</button>
+                                </form>
+                            </div>
+
                         </div>
                     </div>
+                </div>
 
             </section>
 
         </main>
-
-        <jsp:include page="../footer.jsp"></jsp:include>
-        <!-- JavaScript to control the display of the popups -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
             function openPopup(type, categoryId) {
-                
+
                 $('#' + type + 'Popup').modal('show');
             }
 
             function closePopup(type) {
                 $('#' + type + 'Popup').modal('hide');
             }
-            document.getElementById('copyLink').addEventListener('click', function(event) {
+
+            $('[name="copyLink"]').click(function (event) {
                 // Prevent the default behavior of the <a> tag
                 event.preventDefault();
-                
-                // Get the link you want to copy
-                var linkToCopy = window.location.href; // You can replace this with the actual link you want to copy
-                var suffix = this.getAttribute('data-suffix');
+
+                // Get the suffix from the data attribute
+                var suffix = $(this).data('suffix');
+
+                // Construct the full URL
                 var fullURL = window.location.protocol + '//' + window.location.host + '${pageContext.request.contextPath}/' + 'CustomOrderAcc?id=' + suffix;
-            
+
                 // Copy the link to the clipboard
                 navigator.clipboard.writeText(fullURL)
-                    .then(function() {
-                        // If successful, display a message
-                        alert('Link is saved to the clipboard: ' + fullURL);
-                    })
-                    .catch(function(err) {
-                        // If unable to copy, display an error message
-                        console.error('Could not copy text: ', err);
-                        alert('Error: Unable to copy link to clipboard.');
-                    });
+                        .then(function () {
+                            // If successful, display a message
+                            alert('Link is saved to the clipboard: ' + fullURL);
+                        })
+                        .catch(function (err) {
+                            // If unable to copy, display an error message
+                            console.error('Could not copy text: ', err);
+                            alert('Error: Unable to copy link to clipboard.');
+                        });
             });
         </script>
-        <!-- JS here -->
-        <script src="js/vendor/jquery-1.12.4.min.js"></script>
-        <script src="js/jquery-ui.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/owl.carousel.min.js"></script>
-        <script src="js/isotope.pkgd.min.js"></script>
-        <script src="js/slick.min.js"></script>
-        <script src="js/jquery.meanmenu.min.js"></script>
-        <script src="js/ajax-form.js"></script>
-        <script src="js/wow.min.js"></script>
-        <script src="js/jquery.scrollUp.min.js"></script>
-        <script src="js/jquery.final-countdown.min.js"></script>
-        <script src="js/imagesloaded.pkgd.min.js"></script>
-        <script src="js/jquery.magnific-popup.min.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
     </body>
 </html>

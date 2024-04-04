@@ -41,6 +41,8 @@ public class AdminDAO {
     
     private static final String GETREFUNDLIST = "SELECT [id], [orderdetail_id], [reason], [status], [img] FROM [dbo].[refundsnreturns]";
     
+    private static final String GETREFUND = "SELECT [id], [orderdetail_id], [reason], [status], [img] FROM [dbo].[refundsnreturns] WHERE [id] = ?";
+    
     private static final String UPDATEREFUND = "UPDATE [dbo].[refundsnreturns] SET [status] = ? WHERE [id] = ?";
     
     public static ArrayList<MainCategory> Get_Category_List() {
@@ -127,6 +129,7 @@ public class AdminDAO {
             ptm = con.prepareStatement(ACCEPTSELLER);
             ptm.setInt(1, id);
             ptm.executeUpdate();
+            NotificationDao.AcceptSeller(id, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,6 +141,7 @@ public class AdminDAO {
             ptm = con.prepareStatement(DECLINESELLER);
             ptm.setInt(1, id);
             ptm.executeUpdate();
+            NotificationDao.AcceptSeller(id, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -180,6 +184,12 @@ public class AdminDAO {
             ptm.setTimestamp(2, bantime);
             ptm.setInt(3, id);
             ptm.executeUpdate();
+            if (status == 0) {
+                NotificationDao.BanRemove(id);
+            }
+            else {
+                NotificationDao.BanApply(id, "Vi phạm chính sách của nền tảng");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -205,10 +215,34 @@ public class AdminDAO {
                 int status = rs.getInt("status");
                 String reason = rs.getNString("reason");
                 String img = rs.getNString("img");
-                OrderDetail od = OrderDetailDao.getOrderDetailById(orderdetail_id);
+                OrderDetail od = OrdersDao.getOrderDetailById(orderdetail_id);
                 RefundsnReturns ar = new RefundsnReturns(id, orderdetail_id, reason, status, img);
                 ar.setOrderdetail(od);
                 result.add(ar);                
+            }
+            SQLConnection.closeConnection(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public static RefundsnReturns Get_Refund(int id) {
+        RefundsnReturns result = new RefundsnReturns();
+        PreparedStatement ptm = null;
+        ResultSet rs = null;
+        try (Connection con = SQLConnection.getConnection()) {
+            ptm = con.prepareStatement(GETREFUND);
+            rs = ptm.executeQuery();
+            while (rs.next()) {
+                int orderdetail_id = rs.getInt("orderdetail_id");
+                int status = rs.getInt("status");
+                String reason = rs.getNString("reason");
+                String img = rs.getNString("img");
+                OrderDetail od = OrdersDao.getOrderDetailById(orderdetail_id);
+                RefundsnReturns ar = new RefundsnReturns(id, orderdetail_id, reason, status, img);
+                ar.setOrderdetail(od);
+                result = ar;                
             }
             SQLConnection.closeConnection(con);
         } catch (Exception e) {

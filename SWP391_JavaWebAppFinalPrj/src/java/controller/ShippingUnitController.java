@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.OrderDetailDao;
+import dao.NotificationDao;
 import dao.OrdersDao;
 import dao.ProductDao;
 import dao.UsersDao;
@@ -78,12 +78,6 @@ public class ShippingUnitController extends HttpServlet {
             if(ship_list.isEmpty())session.setAttribute("ship_list", null);
             else session.setAttribute("ship_list", ship_list);
             
-            UsersDao ud = new UsersDao();
-            ProductDao pd = new ProductDao();
-            OrderDetailDao odd = new OrderDetailDao();
-            session.setAttribute("usersDao", ud);
-            session.setAttribute("productDao", pd);
-            session.setAttribute("orderDetailDao", odd);
             request.getRequestDispatcher("sh_unit_order.jsp").forward(request, response);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -107,18 +101,23 @@ public class ShippingUnitController extends HttpServlet {
             Users su = (Users) session.getAttribute("user");
             int id = Integer.parseInt(request.getParameter("id"));
             String action = request.getParameter("action");
+            int customerId = OrdersDao.getOrderByID(id).getCustomer_id();
             switch (action) {
                 case "accept":
                     OrdersDao.updateOrderStatus(id, "đơn hàng đang được chuyển cho shippingunit");
+                    NotificationDao.orderUpdate(customerId, id, "đang được chuyển cho shippingunit");
                     break;
                 case "refuse":
                     OrdersDao.updateOrderStatus(id, "chờ người bán xác nhận-shipping unit từ chối");
+                    NotificationDao.orderUpdate(customerId, id, "chờ người bán xác nhận-shipping unit từ chối");
                     break;
                 case "update":
                     OrdersDao.updateOrderStatus(id, "đang vận chuyển");
+                    NotificationDao.orderUpdate(customerId, id, "đang được vận chuyển");
                     break;
                 case "complete":
                     OrdersDao.updateOrderStatus(id, "đã giao hàng");
+                    NotificationDao.orderSuccess(customerId, id);
                     break;
             }
             

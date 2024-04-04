@@ -4,6 +4,7 @@
     Author     : hien
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="user" scope="session" class="model.Users" />
 <!DOCTYPE html>
@@ -117,7 +118,7 @@
                             <div id="fixed-sidebar" class="sidebar-fixed sidebar-bottom">
                                 <div class="widget-title-box mb-30">
                                     <div class="widget-posts-image">
-                                        <img src="${user.img}">
+                                        <img src="${user.img}" style="object-fit: cover">
                                     </div>
                                     <div class="widget-posts-body">
                                         <h6 class="widget-posts-title">${user.fullname}</h6>
@@ -169,21 +170,23 @@
 
                                             <tr>
                                                 <td>Email</td>
-                                                <td> 
-                                                    <input type="email" size="40" name="email" value="${user.email}" disabled>
+                                                <td>
+                                                    <c:set var="mail" value="${user.email}"/>
+                                                    <c:set var="bf_mail" value="${fn:substringBefore(mail, '@')}"/>
+                                                    <input type="email" size="40" name="email" value="${fn:length(bf_mail) <= 2 ? "" : mail.subSequence(0,2)}${fn:length(bf_mail) <= 2 ? bf_mail : fn:substring(bf_mail, 2, fn:length(bf_mail)).replaceAll("[\\W\\w]","*")}@${fn:substringAfter(mail,'@')}" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>Name</td>
-                                                <td><input type="text" size="40" name="fname" value="${user.fullname}"></td>
+                                                <td><input type="text" size="40" name="fname" value="${user.fullname}" maxlength="50"></td>
                                             </tr>
                                             <tr>
                                                 <td>Phone number</td>
-                                                <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}"></td>
+                                                <td><input type="tel" size="40" name="phone" value="${user.phone}" pattern="[0-9]{10}" placeholder="0000000000" maxlength="10"></td>
                                             </tr>
                                             <tr>
                                                 <td>Address</td>
-                                                <td><input type="text" size="40" name="addr" value="${user.address}"></td>
+                                                <td><input type="text" size="40" name="addr" value="${user.address}" maxlength="200"></td>
                                             </tr>
                                             <tr>
                                                 <td></td>
@@ -205,8 +208,8 @@
                                     <div class="profile-avatar">
                                         <div class="avatar">
                                             <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
-                                                <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="${user.img}">
-                                                <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upUImg" name="avatar" >
+                                                <img class="avatar-img" id="show-user-avatar" style="border-radius: 50%; width: 100px; height: 100px;; object-fit: cover" src="${user.img}">
+                                                <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upUImg" name="avatar" onchange="readURL1()">
                                             </span>
                                             <button id="uBtn" style="color: #000;
                                                     position: relative;
@@ -252,7 +255,9 @@
                                                 <tr>
                                                     <td>CCCD</td>
                                                     <td> 
-                                                        <input type="text" size="40" name="CCCD" value="${sessionScope.shop.CCCD}" disabled>
+                                                        <c:set var="ic" value="${sessionScope.shop.CCCD}"/>
+                                                        <span name="cccd">${fn:substring(ic, 0, fn:length(ic) - 4).replaceAll("[\\W\\w]","*")}${ic.subSequence(fn:length(ic)-4,fn:length(ic))}</span></td>
+
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -283,8 +288,8 @@
                                         <div class="profile-avatar">
                                             <div class="avatar">
                                                 <span style="position: relative; justify-content: center; align-items: center; display: flex; margin: 1.25rem 0;">
-                                                    <img class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px;" src="${sessionScope.shop.shop_img}">
-                                                    <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upLogo" name="logo">
+                                                    <img class="avatar-img" id="show-shop-avatar" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover" src="${sessionScope.shop.shop_img}">
+                                                    <input type="file" accept=".jpg,.jpeg,.png" style="display: none" id="upLogo" name="logo" onchange="readURL2()">
                                                 </span>
                                                 <button id="lBtn" style="color: #000;
                                                         position: relative;
@@ -323,6 +328,16 @@
                 // Trigger the click event of the hidden file input
                 document.getElementById('upLogo').click();
             });
+
+            function readURL1() {
+                var output = document.getElementById('show-user-avatar');
+                output.src = URL.createObjectURL(event.target.files[0]);
+            }
+            
+            function readURL2(){
+                var output = document.getElementById('show-shop-avatar');
+                output.src = URL.createObjectURL(event.target.files[0]);
+            }
         </script>
     </body>
 </html>

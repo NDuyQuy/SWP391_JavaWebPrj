@@ -1,10 +1,12 @@
-+-<%-- 
+<%-- 
     Document   : product_detail
     Created on : Feb 27, 2024, 12:48:56 PM
     Author     : hien
 --%>
+<%@ page import="dao.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -63,7 +65,7 @@
 
         </style>
     </head>
-    <body>
+    <body onload="checkShow('${fn:replace(pr.productdetails[0].img, '\\', '/')}', '${pr.productdetails[0].price}', '${pr.productdetails[0].quantity}')">
         <!-- header start -->
         <jsp:include page="header.jsp"></jsp:include>
             <!-- header end -->
@@ -97,30 +99,48 @@
                                 <div class="product-details-img mb-10">
                                     <div class="tab-content" id="myTabContentpro">
                                         <div class="tab-pane fade show active" id="img0" role="tabpanel">
-                                            <div class="product-large-img">
-                                                <img src="${pr_img[0]}" alt="" style="height: 100%; object-fit: cover">
+                                            <div class="product-large-img" style="height: 670px">
+                                                <img id="show-img0" src="${pr.productdetails[0].img}" alt="" style="height: 100%; object-fit: contain">
                                         </div>
                                     </div>
-                                    <c:forEach var="img" items="${pr_img}" begin="1" end="2" varStatus="loop">
-                                        <div class="tab-pane fade" id="img${loop.count}" role="tabpanel">
-                                            <div class="product-large-img">
-                                                <img src="${img}" alt="" style="height: 100%; object-fit: cover">
+                                    <c:if test="${pr.productdetails.size() > 1}">
+                                        <c:forEach var="prd" items="${pr.productdetails}" begin="1" end="${pr.productdetails.size() - 1}" varStatus="loop">
+                                            <div class="tab-pane fade" id="img${loop.count}" role="tabpanel">
+                                                <div class="product-large-img" style="height: 670px">
+                                                    <img src="${prd.img}" alt="" style="height: 100%; object-fit: contain">
+                                                </div>
                                             </div>
-                                        </div>
-                                    </c:forEach>
+                                        </c:forEach>
+                                    </c:if>
                                 </div>
                             </div>
-                            <c:if test="${pr_img.size() > 1}">
+                            <c:if test="${pr.productdetails.size() == 2}">
                                 <div class="shop-thumb-tab mb-30">
                                     <ul class="nav" id="myTab2" role="tablist">
-                                        <li class="nav-item">
+                                        <li class="nav-item" style="width: 50%">
                                             <a class="nav-link active" id="img0-tab" data-toggle="tab" href="#img0" role="tab" aria-selected="true" style="height: 200px">
-                                                <img src="${pr_img[0]}" alt="" style="width: 100%; height: 100%; object-fit: cover"> </a>
+                                                <img src="${pr.productdetails[0].img}" alt="" style="width: 100%; height: 100%; object-fit: contain"> </a>
                                         </li>
-                                        <c:forEach var="img" items="${pr_img}" begin="1" end="2" varStatus="loop">
+
+                                        <li class="nav-item" style="width: 50%">
+                                            <a class="nav-link" id="img1-tab" data-toggle="tab" href="#img1" role="tab" aria-selected="false" style="height: 200px"><img
+                                                    src="${pr.productdetails[1].img}" alt="" style="width: 100%; height: 100%; object-fit: contain"></a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </c:if>            
+                            <c:if test="${pr.productdetails.size() > 2}">
+                                <div class="shop-thumb-tab mb-30">
+                                    <ul class="nav product-slider-2 owl-carousel" id="myTab2" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="img0-tab" data-toggle="tab" role="tab" aria-selected="true" onclick="document.getElementById('show-img0').src = '${fn:replace(pr.productdetails[0].img, '\\', '/')}'" style="height: 200px">
+                                                <img src="${pr.productdetails[0].img}" alt="" style="width: 100%; height: 100%; object-fit: contain"> </a>
+                                        </li>
+                                        <c:forEach var="prd" items="${pr.productdetails}" begin="1" end="${pr.productdetails.size() - 1}" varStatus="loop">
                                             <li class="nav-item">
-                                                <a class="nav-link" id="img${loop.count}-tab" data-toggle="tab" href="#img${loop.count}" role="tab" aria-selected="false" style="height: 200px"><img
-                                                        src="${img}" alt="" style="width: 100%; height: 100%; object-fit: cover"></a>
+                                                <a class="nav-link" id="img${loop.count}-tab" data-toggle="tab" role="tab" aria-selected="false" onclick="document.getElementById('show-img0').src = '${fn:replace(prd.img, '\\', '/')}'" style="height: 200px"><img
+                                                        src="${prd.img}" alt="" style="width: 100%; height: 100%; object-fit: contain"></a>
                                             </li>
                                         </c:forEach>
                                     </ul>
@@ -135,7 +155,7 @@
                                 </div>
                                 <h2 class="pro-details-title mb-15">${pr.name}</h2>
                                 <div class="details-price mb-20">
-                                    <span><fmt:formatNumber value="${pr.money}"/>đ</span>
+
                                     <!--<span class="old-price">$246.00</span>-->
                                 </div>
                                 <div class="product-variant" >
@@ -172,7 +192,7 @@
                                                     background: #fff;
                                                     height: 30px;
                                                     width: 100px;
-                                                    border: 2px solid #ecedff;">View Shop</button>
+                                                    border: 2px solid #ecedff;">Xem Shop</button>
                                         </div>
 
                                     </div>
@@ -183,11 +203,24 @@
                                                     <b style="font-size: 18px;"> ${sessionScope.aver_rate/100}</b> - (${sessionScope.ratings_by_product.size()} đánh giá)
                                                 </div>
                                             </li>
-                                            <li><span>Stock:</span> <span class="in-stock">${pr.quantity} có sẵn</span></li>
+                                            <li><span>Stock:</span> <span class="in-stock"></span></li>
                                         </ul>
                                     </div>
 
                                     <div class="product-action-details variant-item">
+                                        <div class="mb-20" style="display: flex;">
+                                            <div class="variant-name" style="width: 21%;">
+                                                <span style="font-family: 'Montserrat', sans-serif;">phân loại</span>
+                                            </div>
+                                            <ul class="shop-link shop-size">
+                                                <li class="classes active" id="${pr.productdetails[0].id}"><input type="button" value="${pr.productdetails[0].name}" onclick="changeType(this);checkShow('${fn:replace(pr.productdetails[0].img, '\\', '/')}', '${pr.productdetails[0].price}', '${pr.productdetails[0].quantity}')" style="word-wrap: break-word"> </li>
+                                                    <c:if test="${pr.productdetails.size() > 1}">
+                                                        <c:forEach var="pl" items="${pr.productdetails}" begin="1" end="${pr.productdetails.size() - 1}">
+                                                        <li class="classes" id="${pl.id}"><input type="button" value="${pl.name}" onclick="changeType(this);checkShow('${fn:replace(pl.img, '\\', '/')}', '${pl.price}', '${pl.quantity}')" style="word-wrap: break-word"></li>
+                                                        </c:forEach>
+                                                    </c:if>
+                                            </ul>
+                                        </div>
                                         <div class="product-details-action">
 
                                             <div class="plus-minus">
@@ -198,7 +231,7 @@
                                             </div>
                                             <div class="details-cart mt-40" style="font-family: 'Montserrat', sans-serif;">
                                                 <!-- Button to add to cart -->
-                                                <button class="btn theme-btn" onclick="addToCart(${pr.product_id})">Thêm vào giỏ hàng</button>
+                                                <button class="btn theme-btn" onclick="addToCart(document.getElementsByClassName('classes active')[0].id)">Thêm vào giỏ hàng</button>
                                                 <button class="btn theme-btn" onclick="location.href = '#'">Mua ngay</button>
                                             </div>
                                         </div>
@@ -237,10 +270,10 @@
                                                 <c:forEach var="rating" items="${sessionScope.ratings_by_product}">
                                                     <div class="product-commnets-list mb-25 pb-15" style="border-bottom: 2px solid #eaedff;">
                                                         <div class="pro-comments-img">
-                                                            <img src="${sessionScope.usersDao.getUserById(sessionScope.ordersDao.getOrderByID(sessionScope.orderDetailDao.getOrderDetailById(rating.orderdetail_id).orderID).customer_id).img}" alt="" style="border-radius: 50%;">
+                                                            <img src="${rating.orderdetail.order.customer.img}" alt="" style="border-radius: 50%; height: 80px; width: 80px; ; object-fit: cover">
                                                         </div>
                                                         <div class="pro-commnets-text">
-                                                            <h4 style="font-size: 17px; font-weight: bold;">${sessionScope.usersDao.getUserById(sessionScope.ordersDao.getOrderByID(sessionScope.orderDetailDao.getOrderDetailById(rating.orderdetail_id).orderID).customer_id).username} -
+                                                            <h4 style="font-size: 17px; font-weight: bold;">${rating.orderdetail.order.customer.username} -
                                                                 <span style="font-size: 14px;"><fmt:formatDate type = "date" value = "${rating.time_stamp}" /></span>
                                                             </h4>
                                                             <div class="pro-rating">
@@ -293,10 +326,10 @@
                                                         <div class="product-wrapper mb-50">
                                                             <div class="product-img mb-25" style="height: 350px;">
                                                                 <a href="ProductDetail?product=${pr.product_id}">
-                                                                    <img src="${pr.img}\1.png" alt="">
+                                                                    <img src="${pr.productdetails[0].img}" alt="">
                                                                 </a>
                                                                 <div class="product-action text-center">
-                                                                    <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
+                                                                    <a href="AddToCart?id=${pr.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                                         <i class="flaticon-shopping-cart"></i>
                                                                     </a>
                                                                     <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
@@ -317,8 +350,13 @@
                                                                 </h4>
                                                                 <div class="product-meta">
                                                                     <div class="pro-price">
-                                                                        <span><fmt:formatNumber value="${pr.money}"/>đ</span>
-                                                                        <!--<span class="old-price">$230.00 USD</span>-->
+                                                                        <c:set var="max" value="${pr.productdetails[pr.productdetails.size() - 1].price}"/>
+                                                                        <c:if test="${(pr.productdetails.size() == 1) || (pr.productdetails.size() > 1 && pr.productdetails[0].price == pr.productdetails[pr.productdetails.size() - 1].price)}">
+                                                                            <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ</span>
+                                                                        </c:if>
+                                                                        <c:if test="${pr.productdetails.size() > 1 && pr.productdetails[0].price != pr.productdetails[pr.productdetails.size() - 1].price}">
+                                                                            <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ - <fmt:formatNumber value="${max}"/>đ</span>
+                                                                        </c:if>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -339,10 +377,10 @@
                                         <div class="product-wrapper">
                                             <div class="product-img mb-25" style="height: 350px;">
                                                 <a href="ProductDetail?product=${prs.product_id}">
-                                                    <img src="${prs.img}\1.png" alt="">
+                                                    <img src="${prs.productdetails[0].img}" alt="">
                                                 </a>
                                                 <div class="product-action text-center">
-                                                    <a href="AddToCart?id=${prs.product_id}" title="Thêm vào giỏ hàng">
+                                                    <a href="AddToCart?id=${prs.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                         <i class="flaticon-shopping-cart"></i>
                                                     </a>
                                                     <a href="ProductDetail?product=${prs.product_id}" title="Xem chi tiết">
@@ -360,8 +398,13 @@
                                                 </h4>
                                                 <div class="product-meta">
                                                     <div class="pro-price">
-                                                        <span><fmt:formatNumber value="${prs.money}"/>đ</span>
-                                                        <!--<span class="old-price">$230.00 USD</span>-->
+                                                        <c:set var="max" value="${prs.productdetails[prs.productdetails.size() - 1].price}"/>
+                                                        <c:if test="${(prs.productdetails.size() == 1) || (prs.productdetails.size() > 1 && prs.productdetails[0].price == prs.productdetails[prs.productdetails.size() - 1].price)}">
+                                                            <span><fmt:formatNumber value="${prs.productdetails[0].price}"/>đ</span>
+                                                        </c:if>
+                                                        <c:if test="${prs.productdetails.size() > 1 && prs.productdetails[0].price != prs.productdetails[prs.productdetails.size() - 1].price}">
+                                                            <span><fmt:formatNumber value="${prs.productdetails[0].price}"/>đ - <fmt:formatNumber value="${max}"/>đ</span>
+                                                        </c:if>
                                                     </div>
                                                 </div>
                                             </div>
@@ -375,34 +418,43 @@
                 </section>
             </c:if>
             <!-- product-area end -->
+        </main>
+        <jsp:include page="footer.jsp"></jsp:include>
 
-            <jsp:include page="footer.jsp"></jsp:include>
 
-            <script>
-                function addToCart(productId) {
-                    // Get the quantity from the input field
-                    var quantity = document.getElementById("quantityInput").value;
+        <script>
+            function addToCart(productId) {
+                // Get the quantity from the input field
+                var quantity = document.getElementById("quantityInput").value;
 
-                    // Construct the URL with productId and quantity
-                    var url = 'AddToCart?id=' + productId + '&quantity=' + quantity;
+                // Construct the URL with productId and quantity
+                var url = 'AddToCart?id=' + productId + '&quantity=' + quantity;
 
-                    // Redirect to the URL
-                    window.location.href = url;
-                }
-            </script>
+                // Redirect to the URL
+                window.location.href = url;
+            }
             
-            <script>
-    function addToCart(productId) {
-        // Get the quantity from the input field
-        var quantity = document.getElementById("quantityInput").value;
+            var gid;
 
-        // Construct the URL with productId and quantity
-        var url = 'AddToCart?id=' + productId + '&quantity=' + quantity;
+            function changeType(pl) {
+                gid = $(pl).closest('li').attr('id');
+                if (!$("#" + gid).hasClass("active")) {
+                    $("#" + gid).addClass("active");
+                    $(".classes:not(#" + gid + ")").removeClass("active");
+                }
+            }
 
-        // Redirect to the URL
-        window.location.href = url;
-    }
-</script>
+            function checkShow(img, prce, qtt) {
+                let rimg = img.replace("\\", "/");
+                var pri = new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                });
+                document.getElementById("show-img0").src = rimg;
+                document.getElementsByClassName("details-price")[0].innerHTML = "<span>" + pri.format(prce) + "</span>";
+                document.getElementsByClassName("in-stock")[0].innerHTML = qtt + " có sẵn";
+            }
+        </script>
 
 
     </body>

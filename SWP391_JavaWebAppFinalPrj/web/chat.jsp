@@ -65,12 +65,12 @@
             }
 
         </style>
-        
+
     </head>
-    
+
     <body onload="loadChatList()">
-        
-<!--HEADER, skip this-->
+
+        <!--HEADER, skip this-->
         <header>
             <div id="header-sticky" class="header-area box-90 pt-1 pb-1">
                 <div class="container-fluid">
@@ -88,27 +88,23 @@
                             <div class="category-menu">
                                 <h4>Kênh bán hàng</h4>
                                 <ul style="margin-bottom: 0;">
-                                <c:if test="${user.role != 2}">
-                                    <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
+                                    <c:if test="${user.role != 2}">
+                                        <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
+                                        </c:if>
+                                        <c:if test="${user.role == 2}">
+                                        <li><a href="sellerMainpage.jsp"><i class="flaticon-employee"></i> Quản lý bán hàng</a></li>
+                                        </c:if>
                                     <h4>Danh mục</h4>
-                                <ul>
-                                    <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                        <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
-                                    </c:forEach>
+
+                                    <ul>
+                                        <c:forEach var="cate" items="${sessionScope.main_category_list}">
+                                            <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
+                                            </c:forEach>
+
+                                    </ul>
 
                                 </ul>
-                                </c:if>
-                                <c:if test="${user.role == 2}">
-                                    <li><a href="SellerCentre"><i class="flaticon-employee"></i> Shop của tôi</a></li>
-                                    <li><a href="ordercontroller"> Xem tổng quan phân tích bán hàng</a></li>
-                                    <li><a href="productcontroller"> Quản lý sản phẩm của shop</a></li>
-                                    <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
-                                    <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
-                                    <li><a href="CustomOrderController"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
-                                    <li><a href=""> Chat</a></li>
-                                </c:if>
-                                </ul>
-                                
+
                             </div>
                         </div>
                         <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
@@ -125,36 +121,24 @@
                                         </form>
                                     </li>
                                     <li class="login-btn">
-                                        <c:if test="${sessionScope.user == null}">
-                                            <a href="login.jsp"><i class="far fa-user"></i></a>
-                                            <ul class="submenu" style="margin-left: -150px;">
+                                        
+                                        <a href="profile.jsp"><img class="avatar-img" id="show-user-avatar" style="border-radius: 50%; width: 50px; height: 50px; object-fit: cover" src="${user.img}"></a>
+                                        <ul class="submenu" style="margin-left: -150px;">
+                                            <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
+                                            <li>
+                                                <a href="profile.jsp">Tài khoản</a>
+                                            </li>
 
-                                                <li >
-                                                    <a href="login.jsp">Login</a>
-                                                </li>
-                                                <li>
-                                                    <a href="register.jsp">Register</a>
-                                                </li>
-
-                                            </ul>
-                                        </c:if>
-                                            <a href="profile.jsp"><i class="far fa-user"></i></a>
-                                            <ul class="submenu" style="margin-left: -150px;">
-                                                <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
-                                                <li>
-                                                    <a href="profile.jsp">Tài khoản</a>
-                                                </li>
-                                                
-                                        <c:if test="${sessionScope.user.role eq 1}">
+                                            <c:if test="${sessionScope.user.role eq 1}">
                                                 <li>
                                                     <a href="#">Đơn mua</a>
                                                 </li>
-                                        </c:if>
-                                                
-                                                <li>
-                                                    <a href="logout">Đăng xuất</a>
-                                                </li>
-                                            </ul>
+                                            </c:if>
+
+                                            <li>
+                                                <a href="logout">Đăng xuất</a>
+                                            </li>
+                                        </ul>
                                     </li>
 
                                 </ul>
@@ -167,14 +151,14 @@
                 </div>
             </div>
         </header>
-                                            
 
-    <!--CHAT SCREEN START FROM HERE-->
+
+        <!--CHAT SCREEN START FROM HERE-->
 
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-3 col-xl-3 chat" style="padding-right: 0; padding-left: 0;"><div class="card mb-sm-3 mb-md-0 contacts_card">
-                        
+
                         <!--SEARCH BAR: Cancelled-->
                         <!--
                         <div class="card-header" style="background: #fff">
@@ -186,47 +170,47 @@
                             </div>
                         </div>
                         -->
-<!--DISPLAY SENDER LIST-->
-                        
+                        <!--DISPLAY SENDER LIST-->
+
                         <div class="card-body contacts_body">
                             <ui class="contacts" id="chatlist">
-                                
+
                                 <!-- CHAT LIST HERE -->
-                                
-                                
+
+
                             </ui>
                         </div>
                         <div class="card-footer"></div>
                     </div></div>
-                
-<!--MAIN CHAT BOX-->
+
+                <!--MAIN CHAT BOX-->
                 <div class="col-lg-9 col-xl-9 chat" style="padding-right: 0; padding-left: 0;">
                     <div class="card">
-                        
+
                         <!--INFO OF SENDER WHOSE CHAT MESSAGES ARE DISPLAYED-->
                         <div class="card-header" id="msg_head" style="background: #fff">
-                            
-                            
+
+
                         </div>
-                        
-<!--DISPLAY MESSAGE-->
+
+                        <!--DISPLAY MESSAGE-->
                         <div class="card-body" id="msg_card_body">
                             <div id="endOfChatBox"></div>
                         </div>
-                        
-                        
-<!--MESSAGE INPUT BOX-->
+
+
+                        <!--MESSAGE INPUT BOX-->
                         <div class="card-footer">
                             <div class="input-group">
-                                
+
                                 <!--IF NEED, ADD INPUT FILE-->
                                 <div class="input-group-append">
                                     <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
                                 </div>
-                                
+
                                 <!--TYPE MESSAGE HERE-->
                                 <textarea name="" class="form-control" id="type_msg" placeholder="Nhập nội dung tin nhắn..."></textarea>
-                                
+
                                 <!--SEND BUTTON-->
                                 <div class="input-group-append" onclick="send_msg()">
                                     <span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
@@ -239,121 +223,121 @@
         </div>
     </body>
     <!-- JS here -->
-        <script src="js/vendor/jquery-1.12.4.min.js"></script>
-        <script src="js/jquery-ui.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/owl.carousel.min.js"></script>
-        <script src="js/isotope.pkgd.min.js"></script>
-        <script src="js/slick.min.js"></script>
-        <script src="js/jquery.meanmenu.min.js"></script>
-        <script src="js/ajax-form.js"></script>
-        <script src="js/wow.min.js"></script>
-        <script src="js/jquery.scrollUp.min.js"></script>
-        <script src="js/jquery.final-countdown.min.js"></script>
-        <script src="js/imagesloaded.pkgd.min.js"></script>
-        <script src="js/jquery.magnific-popup.min.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-        <script>
-            let thisShopID = -1;
+    <script src="js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/jquery.meanmenu.min.js"></script>
+    <script src="js/ajax-form.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/jquery.scrollUp.min.js"></script>
+    <script src="js/jquery.final-countdown.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+                                    let thisShopID = -1;
 
-            function loadChatList() {
-                $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
-                    type: "POST",
-                    data: {
-                        Action: "LoadChatList"
-                    },
-                    success: function(result){
-                        document.getElementById("chatlist").innerHTML = result;
-                    },
-                    error: function (xhr) {
-                        //Do Something to handle error
-                    }
-                });
-            }
+                                    function loadChatList() {
+                                        $.ajax({
+                                            url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                                            type: "POST",
+                                            data: {
+                                                Action: "LoadChatList"
+                                            },
+                                            success: function (result) {
+                                                document.getElementById("chatlist").innerHTML = result;
+                                            },
+                                            error: function (xhr) {
+                                                //Do Something to handle error
+                                            }
+                                        });
+                                    }
 
-            function send_msg() {
-                var message = document.getElementById("type_msg").value;
-                $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/ChatController",
-                    type: "POST",
-                    data: {
-                        Action: "SendChat",
-                        shop_id: thisShopID,
-                        messageText: message
-                    },
-                    success: function(result){
-                        var endBox = document.getElementById("endOfChatBox");
-                        endBox.outerHTML = result;
-                        document.getElementById("type_msg").value = "";
-                    },
-                    error: function (xhr) {
-                        //Do Something to handle error
-                    }
-                });
-            }
+                                    function send_msg() {
+                                        var message = document.getElementById("type_msg").value;
+                                        $.ajax({
+                                            url: "/SWP391_JavaWebAppFinalPrj/ChatController",
+                                            type: "POST",
+                                            data: {
+                                                Action: "SendChat",
+                                                shop_id: thisShopID,
+                                                messageText: message
+                                            },
+                                            success: function (result) {
+                                                var endBox = document.getElementById("endOfChatBox");
+                                                endBox.outerHTML = result;
+                                                document.getElementById("type_msg").value = "";
+                                            },
+                                            error: function (xhr) {
+                                                //Do Something to handle error
+                                            }
+                                        });
+                                    }
 
-            function changeChat(shopId) {
-                thisShopID = shopId;
-                $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
-                    type: "POST",
-                    data: {
-                        Action: "LoadChat",
-                        shop_id: thisShopID
-                    },
-                    success: function(result){
-                        var messageBox = document.getElementById("msg_card_body");
-                        messageBox.innerHTML = result;
-                    },
-                    error: function (xhr) {
-                        //Do Something to handle error
-                    }
-                });
-                loadChatInfo();
-            }
+                                    function changeChat(shopId) {
+                                        thisShopID = shopId;
+                                        $.ajax({
+                                            url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                                            type: "POST",
+                                            data: {
+                                                Action: "LoadChat",
+                                                shop_id: thisShopID
+                                            },
+                                            success: function (result) {
+                                                var messageBox = document.getElementById("msg_card_body");
+                                                messageBox.innerHTML = result;
+                                            },
+                                            error: function (xhr) {
+                                                //Do Something to handle error
+                                            }
+                                        });
+                                        loadChatInfo();
+                                    }
 
-            function checkUnseen() {
-                loadChatList();
-                if (thisShopID !== -1) {
-                    $.ajax({
-                        url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
-                        type: "POST",
-                        data: {
-                            Action: "LoadChatUnseen",
-                            shop_id: thisShopID
-                        },
-                        success: function(result){
-                            var endBox = document.getElementById("endOfChatBox");
-                            endBox.outerHTML = result;
-                        },
-                        error: function (xhr) {
-                            //Do Something to handle error
-                        }
-                    });
-                }
-            }
-            
-            function loadChatInfo() {
-                $.ajax({
-                    url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
-                    type: "POST",
-                    data: {
-                        Action: "LoadChatInfo",
-                        shop_id: thisShopID
-                    },
-                    success: function(result){
-                        var infoBox = document.getElementById("msg_head");
-                        infoBox.innerHTML = result;
-                    },
-                    error: function (xhr) {
-                        //Do Something to handle error
-                    }
-                });
-            }
-            
-            var myVar = setInterval(checkUnseen, 3000);
-        </script>
+                                    function checkUnseen() {
+                                        loadChatList();
+                                        if (thisShopID !== -1) {
+                                            $.ajax({
+                                                url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                                                type: "POST",
+                                                data: {
+                                                    Action: "LoadChatUnseen",
+                                                    shop_id: thisShopID
+                                                },
+                                                success: function (result) {
+                                                    var endBox = document.getElementById("endOfChatBox");
+                                                    endBox.outerHTML = result;
+                                                },
+                                                error: function (xhr) {
+                                                    //Do Something to handle error
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    function loadChatInfo() {
+                                        $.ajax({
+                                            url: "/SWP391_JavaWebAppFinalPrj/LoadChatConntroller",
+                                            type: "POST",
+                                            data: {
+                                                Action: "LoadChatInfo",
+                                                shop_id: thisShopID
+                                            },
+                                            success: function (result) {
+                                                var infoBox = document.getElementById("msg_head");
+                                                infoBox.innerHTML = result;
+                                            },
+                                            error: function (xhr) {
+                                                //Do Something to handle error
+                                            }
+                                        });
+                                    }
+
+                                    var myVar = setInterval(checkUnseen, 3000);
+    </script>
 </html>

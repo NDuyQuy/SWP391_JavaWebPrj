@@ -15,27 +15,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="manifest" href="site.html">
-        <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
 
         <!-- CSS here -->
-        <link rel="stylesheet" href="../css/bootstrap.min.css">
-        <link rel="stylesheet" href="../css/owl.carousel.min.css">
-        <link rel="stylesheet" href="../css/animate.min.css">
-        <link rel="stylesheet" href="../css/magnific-popup.css">
-        <link rel="stylesheet" href="../css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="../css/flaticon.css">
-        <link rel="stylesheet" href="../css/meanmenu.css">
-        <link rel="stylesheet" href="../css/jquery-ui.css">
-        <link rel="stylesheet" href="../css/meanmenu.css">
-        <link rel="stylesheet" href="../css/slick.css">
-        <link rel="stylesheet" href="../css/default.css">
-        <link rel="stylesheet" href="../css/style.css">
-        <link rel="stylesheet" href="../css/responsive.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     </head>
     <body>
-        <jsp:include page="../header.jsp"></jsp:include>
-            <main>
+        <jsp:include page="header.jsp"></jsp:include>
+            <main class="width-100 align-items-center">
                 <section>
                     <div class="container">
                         <div class="row">
@@ -47,7 +36,7 @@
                 </section>
                 <section>
                     <div>
-                        <div class="d-flex bg-light p-3">
+                        <div class="d-flex bg-light p-3" style="width: 90%; margin: auto">
                             <div class="card" style="width: 20%; margin-right: 50px;" onclick="location.href = 'sellersvouchercontroller?open=create'">
                                 <div class="card-body">
                                     <h5 class="card-title">Voucher toàn shop</h5>
@@ -64,54 +53,57 @@
                                 </div>
                             </div>
                         </div>
-                        <h3>Danh sách mã giảm giá</h3>
-                        <nav class="navbar navbar-expand-sm bg-light navbar-light">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="#">Tất cả</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Đang diễn ra</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Đã kết thúc</a>
-                                </li>
-                            </ul>
-                        </nav>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr> 
-                                    <th>Mã Voucher</th>
-                                    <th>Loại voucher</th>
-                                    <th>Giảm giá</th>
-                                    <th>Giá trị áp dụng tối thiểu</th>
-                                    <th>Số lượt còn sử dụng tối đa</th>
-                                    <th>Sửa</th>
-                                    <th>Xóa</th>
-                                </tr>
-                            </thead>
-                            <tbody> 
-                            <c:forEach var="s" items="${sessionScope.vouchers}">
-                                <tr> 
-                                    <td><c:out value="${s.code.substring(2)}"/></td>
-                                    <td><c:out value="${(s.type eq 2) ? 'Voucher sản phẩm' : 'Voucher toàn shop'}"/></td>
-                                    <td><c:out value="${s.discount_amount}"/></td>
-                                    <td><c:out value="${s.min_require}"/></td>
-                                    <td><c:out value="${s.use_count}"/></td>
-                                    <td>
-                                        <a href="sellersvouchercontroller?open=edit&v_id=${s.voucher_id}" class="edit-link" style="color: blue; cursor: pointer;">Edit</a>
-                                    </td>
-                                    <td>
-                                        <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${s.voucher_id})">Delete</a>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody> 
-                    </table>
+
+                        <div style="width: 90%; margin: auto">
+                            <h3>Danh sách mã giảm giá</h3>
+                            <nav class="navbar navbar-expand-sm bg-light navbar-light">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="allLink">Tất cả</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"  id="ongoingLink">Đang diễn ra</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="expiredLink">Đã kết thúc</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <table class="table table-bordered " id="voucherTable" style="width: 100%; margin: auto">
+                                <thead >
+                                    <tr> 
+                                        <th>Mã Voucher</th>
+                                        <th>Loại voucher</th>
+                                        <th>Giảm giá</th>
+                                        <th>Giá trị áp dụng tối thiểu</th>
+                                        <th>Số lượt còn sử dụng tối đa</th>
+                                        <th>Sửa</th>
+                                        <th>Xóa</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                <c:forEach var="s" items="${requestScope.vouchers}">
+                                    <tr> 
+                                        <td><c:out value="${s.code.substring(2)}"/></td>
+                                        <td><c:out value="${(s.type eq 2) ? 'Voucher sản phẩm' : 'Voucher toàn shop'}"/></td>
+                                        <td><c:out value="${s.discount_amount}"/></td>
+                                        <td><c:out value="${s.min_require}"/></td>
+                                        <td><c:out value="${s.use_count}"/></td>
+                                        <td>
+                                            <a href="sellersvouchercontroller?open=edit&v_id=${s.voucher_id}" class="edit-link" style="color: blue; cursor: pointer;">Edit</a>
+                                        </td>
+                                        <td>
+                                            <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${s.voucher_id})">Delete</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody> 
+                        </table>
+                    </div>
+
                 </div>
             </section>
         </main>
-        <jsp:include page="../footer.jsp"></jsp:include>
         <!-- Delete Category Popup-->
         <div class="modal" id="deletePopup">
             <div class="modal-dialog">
@@ -121,7 +113,6 @@
                         <h4 class="modal-title">Delete Voucher</h4>
                         <button type="button" class="close" data-dismiss="modal" onclick="closePopup('delete')">&times;</button>
                     </div>
-
                     <div class="modal-body">
                         <form action="sellersvouchercontroller" method="post">
                             <div class="form-group">
@@ -149,12 +140,10 @@
         function closePopup(type) {
             $('#' + type + 'Popup').modal('hide');
         }
-    </script>
-    <script>
+
         document.addEventListener('DOMContentLoaded', function () {
             // Get all nav links
             var navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-
             // Add click event listener to each nav link
             navLinks.forEach(function (link) {
                 link.addEventListener('click', function () {
@@ -162,31 +151,26 @@
                     navLinks.forEach(function (navLink) {
                         navLink.classList.remove('active');
                     });
-
                     // Add the 'active' class to the clicked link
                     link.classList.add('active');
                 });
             });
         });
+
     </script>
-
     <!-- JS here -->
-    <script src="../js/vendor/jquery-1.12.4.min.js"></script>
-    <script src="../js/jquery-ui.js"></script>
-    <script src="../js/popper.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/owl.carousel.min.js"></script>
-    <script src="../js/isotope.pkgd.min.js"></script>
-    <script src="../js/slick.min.js"></script>
-    <script src="../js/jquery.meanmenu.min.js"></script>
-    <script src="../js/ajax-form.js"></script>
-    <script src="../js/wow.min.js"></script>
-    <script src="../js/jquery.scrollUp.min.js"></script>
-    <script src="../js/jquery.final-countdown.min.js"></script>
-    <script src="../js/imagesloaded.pkgd.min.js"></script>
-    <script src="../js/jquery.magnific-popup.min.js"></script>
-    <script src="../js/plugins.js"></script>
-    <script src="../js/main.js"></script>
+    <script src="js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/jquery.meanmenu.min.js"></script>
+    <script src="js/ajax-form.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/jquery.scrollUp.min.js"></script>
+    <script src="js/jquery.final-countdown.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
 </html>
-
-

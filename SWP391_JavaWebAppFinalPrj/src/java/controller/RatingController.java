@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.OrdersDao;
 import dao.RatingDao;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -74,9 +75,9 @@ public class RatingController extends HttpServlet {
         try{
             request.setCharacterEncoding("utf-8");
             int rate = Integer.parseInt(request.getParameter("rate"));
-            String id = request.getParameter("orderId");
             String comment = request.getParameter("comment");
             int orderdetail_id = Integer.parseInt(request.getParameter("id"));
+            int id = OrdersDao.getOrderDetailById(orderdetail_id).getOrder().getOrder_id();
             
             RatingDao.newRating(orderdetail_id, rate, comment);
             response.sendRedirect("OrderDetailServlet?orderId=" + id);

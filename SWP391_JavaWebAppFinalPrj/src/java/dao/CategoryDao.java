@@ -42,7 +42,7 @@ public class CategoryDao {
             rs = ptm.executeQuery();
             if(rs.next()){
                 String name = rs.getString("name").trim();
-                String description = rs.getString("description").trim();
+                String description = rs.getString("description")==null?null:rs.getString("description").trim();
                 mc = new MainCategory(id, name, description);
             }
         }catch(Exception ex){
@@ -181,5 +181,6 @@ public class CategoryDao {
     public static void main(String[] args) {
         getMainCategories().forEach(System.out::println);
         //System.out.println(getMainCategoryById(2));
+        System.out.println(getMainCategoryById(1).getName());
     }
 }

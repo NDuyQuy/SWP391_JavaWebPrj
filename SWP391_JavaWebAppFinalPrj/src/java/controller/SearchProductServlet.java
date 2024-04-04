@@ -58,20 +58,15 @@ public class SearchProductServlet extends HttpServlet {
                         if(p.getName().toLowerCase().contains(keyword.toLowerCase())){
                             result.add(p);
                             break;
-                        } else if (p.getShopCategory().getMaincategory().getName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getMaincategory().getName().toLowerCase().contains(kw[i].toLowerCase())) {
                             result.add(p);
                             break;
-                        } else if (p.getShopCategory().getName().contains(kw[i])) {
+                        } else if (p.getShopCategory().getName().toLowerCase().contains(kw[i].toLowerCase())) {
                             result.add(p);
                             break;
                         }
                     }
                 }
-            }
-            
-            for(Products p : result){
-                String folder = p.getImg();
-                p.setImg(getImagePath(folder));
             }
 
             int page, perPage = 15;
@@ -85,7 +80,7 @@ public class SearchProductServlet extends HttpServlet {
             int first = (page - 1) * perPage;
             int last = Math.min(page * perPage, result.size()) - 1;
 
-            float max_price = ProductDao.getHighestPrice().getMoney();
+            double max_price = ProductDao.getHighestPrice();
                 
             request.setAttribute("first", first);
             request.setAttribute("last", last);
@@ -142,19 +137,4 @@ public class SearchProductServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private String getImagePath(String folder){
-        String res = null;
-        List<File> all_img = new ArrayList<>();
-        String fpath = getServletContext().getRealPath("") + folder;
-        try{
-            all_img = Files.walk(Paths.get(fpath))
-                .filter(Files::isRegularFile)
-                .map(Path::toFile)
-                .collect(Collectors.toList());
-            res = all_img.get(0).getPath().replace(getServletContext().getRealPath(""), "");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return res;
-    }
 }

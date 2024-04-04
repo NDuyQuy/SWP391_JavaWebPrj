@@ -66,35 +66,18 @@ public class Home extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String path = getServletContext().getRealPath("");
+            throws ServletException, IOException {        
         HttpSession session = request.getSession();
         ArrayList<MainCategory> mcate_list = CategoryDao.getMainCategories();
         ArrayList<ShopCategory> scate_list = CategoryDao.getShopCategories();
+        //PROBLEM START
         ArrayList<Products> newest_products = ProductDao.getNewestProducts();
         ArrayList<Products> top_sellers = ProductDao.getTopSellers();
-        newest_products.forEach((p) -> {
-            String folder = p.getImg();
-            p.setImg(getImagePath(folder));
-        });
-
-        top_sellers.forEach((p) -> {
-            String folder = p.getImg();
-            p.setImg(getImagePath(folder));
-        });
+        //PROBLEM END
         session.setAttribute("main_category_list", mcate_list);
         session.setAttribute("shop_category_list", scate_list);
-        session.setAttribute("newest_products", newest_products);
-        session.setAttribute("topsellers", top_sellers);
-
-        session.setAttribute("productDao", new ProductDao());
-        session.setAttribute("sellersDao", new SellersDao());
-        session.setAttribute("categoryDao", new CategoryDao());
-        session.setAttribute("usersDao", new UsersDao());
-        session.setAttribute("orderDetailDao", new OrderDetailDao());
-        session.setAttribute("ordersDao", new OrdersDao());
-        session.setAttribute("fpath", path);
+        request.setAttribute("newest_products", newest_products);
+        request.setAttribute("topsellers", top_sellers);
         session.removeAttribute("kw");
         
         request.getRequestDispatcher("home.jsp").forward(request, response);
@@ -124,19 +107,4 @@ public class Home extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private String getImagePath(String folder) {
-        String res = null;
-        List<File> all_img = new ArrayList<>();
-        String fpath = getServletContext().getRealPath("") + folder;
-        try {
-            all_img = Files.walk(Paths.get(fpath))
-                    .filter(Files::isRegularFile)
-                    .map(Path::toFile)
-                    .collect(Collectors.toList());
-            res = all_img.get(0).getPath().replace(getServletContext().getRealPath(""), "");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return res;
-    }
 }

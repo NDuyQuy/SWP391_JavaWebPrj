@@ -16,7 +16,7 @@
         <link rel="manifest" href="site.html">
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" media="all">
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,900,900i&amp;subset=vietnamese" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,900,900i&amp;subset=vietnamese" rel="stylesheet">
         <!-- CSS here -->
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/owl.carousel.min.css">
@@ -92,22 +92,23 @@
                                         <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
                                         </c:if>
                                         <c:if test="${user.role eq 2}">
-                                        <li><a href="ordercontroller"> Xem tổng quan phân tích bán hàng</a></li>
-                                        <li><a href="productcontroller"> Quản lý sản phẩm của shop</a></li>
-                                        <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
-                                        <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
-                                        <li><a href="CustomOrderController"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
-                                        <li><a href="shopchat.jsp"> Chat</a></li>
-                                        </c:if>
+                                        <li><a href="sellerMainpage.jsp"><i class="flaticon-employee"></i> Quản lý bán hàng</a></li>
+                                        <!--                                        <li><a href="ordercontroller"> Xem tổng quan phân tích bán hàng</a></li>
+                                                                                <li><a href="productcontroller"> Quản lý sản phẩm của shop</a></li>
+                                                                                <li><a href="sellersvouchercontroller"> Quản lý voucher của shop</a></li>
+                                                                                <li><a href="shopcategorycontroller"> Quản lý danh mục của shop</a></li>
+                                                                                <li><a href="CustomOrderController"> Quản lý đơn hàng sản phẩm theo yêu cầu của shop</a></li>
+                                                                                <li><a href="shopchat.jsp"> Chat</a></li>-->
+                                    </c:if>
                                 </ul>
-                                <c:if test="${user.role != 2}">
-                                    <h4>Danh mục</h4>
-                                    <ul>
-                                        <c:forEach var="cate" items="${sessionScope.main_category_list}">
-                                            <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
+
+                                <h4>Danh mục</h4>
+                                <ul>
+                                    <c:forEach var="cate" items="${main_category_list}">
+                                        <li><a href="SearchProduct?cate=${cate.id}"><i class="flaticon-shopping-cart-1"></i> ${cate.name}</a></li>
                                         </c:forEach>
-                                    </ul>
-                                </c:if>
+                                </ul>
+
                             </div>
                         </div>
                         <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
@@ -141,13 +142,13 @@
                                             </ul>
                                         </c:if>
                                         <c:if test="${sessionScope.user != null}">
-                                            <a href="profile.jsp"><i class="far fa-user"></i></a>
+                                            <a href="profile.jsp"><img class="avatar-img" style="border-radius: 50%; width: 50px; height: 50px; object-fit: cover" src="${user.img}"></a>
                                             <ul class="submenu">
                                                 <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
                                                 <li>
                                                     <a href="profile.jsp">Tài khoản</a>
                                                 </li>
-                                               
+
                                                 <c:if test="${sessionScope.user.role eq 1}">
                                                     <li>
                                                         <a href="OrderListController">Đơn mua</a>
@@ -160,7 +161,13 @@
                                         </c:if>
 
                                     </li>
-                                    <c:if test="${sessionScope.user.role == 1}">
+                                    <c:if test="${sessionScope.user eq null}">
+                                        <li>&nbsp;</li>
+                                        <li>&nbsp;</li>
+                                        <li>&nbsp;</li>
+                                        <li>&nbsp;</li>
+                                        </c:if>
+                                        <c:if test="${sessionScope.user.role == 1}">
                                         <li class="d-shop-cart">
                                             <a href="Cart">
                                                 <i class="flaticon-shopping-cart"></i>
@@ -191,6 +198,14 @@
                                                     </div>
                                                 </li>
                                             </ul>
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${sessionScope.user.role == 1}">
+                                        <li class="d-notification-icon">
+                                            <a href="NotificationController?Action=GetAllNotification" class="text-decoration-none">
+                                                <i class="fas fa-bell"></i>
+                                                <span class="badge badge-pill badge-danger position-absolute top-0 end-0">${sessionScope.noti.size()}</span>
+                                            </a>
                                         </li>
                                     </c:if>
                                     <c:if test="${sessionScope.user.role == 2}">

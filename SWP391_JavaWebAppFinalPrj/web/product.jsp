@@ -3,6 +3,7 @@
     Created on : Feb 27, 2024, 8:17:03 AM
     Author     : hien
 --%>
+<%@ page import="dao.CategoryDao" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
@@ -120,11 +121,11 @@
                                                     <div class="product-wrapper mb-50">
                                                         <div class="product-img mb-25">
                                                             <a href="ProductDetail?product=${pr.product_id}">
-                                                                <img src="${pr.img}" alt="">
+                                                                <img src="${pr.productdetails[0].img}" alt="">
                                                             </a>
 
                                                             <div class="product-action text-center">
-                                                                <a href="AddToCart?id=${pr.product_id}&quantity=1" title="Thêm vào giỏ hàng">
+                                                                <a href="AddToCart?id=${pr.productdetails[0].id}&quantity=1" title="Thêm vào giỏ hàng">
                                                                     <i class="flaticon-shopping-cart"></i>
                                                                 </a>
                                                                 <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
@@ -147,8 +148,13 @@
                                                             </h4>
                                                             <div class="product-meta">
                                                                 <div class="pro-price">
-                                                                    <span><fmt:formatNumber value="${pr.money}"/>đ</span>
-                                                                    <!--<span class="old-price">$230.00 USD</span>-->
+                                                                    <c:set var="max" value="${pr.productdetails[pr.productdetails.size() - 1].price}"/>
+                                                                    <c:if test="${(pr.productdetails.size() == 1) || (pr.productdetails.size() > 1 && pr.productdetails[0].price == pr.productdetails[pr.productdetails.size() - 1].price)}">
+                                                                        <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ</span>
+                                                                    </c:if>
+                                                                    <c:if test="${pr.productdetails.size() > 1 && pr.productdetails[0].price != pr.productdetails[pr.productdetails.size() - 1].price}">
+                                                                        <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ - <fmt:formatNumber value="${max}"/>đ</span>
+                                                                    </c:if>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -164,7 +170,7 @@
                                                     <div class="product-wrapper mb-30">
                                                         <div class="product-img">
                                                             <a href="ProductDetail?product=${pr.product_id}">
-                                                                <img src="${pr.img}" alt="">
+                                                                <img src="${pr.productdetails[0].img}" alt="">
                                                             </a>
                                                             <div class="sale-tag">
                                                                 <span class="new">new</span>
@@ -175,21 +181,26 @@
                                                 <div class="col-xl-7">
                                                     <div class="product-content pro-list-content pr-0 mb-50">
                                                         <div class="pro-cat mb-10">
-                                                            <a href="SearchProduct?cate=${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id}">${sessionScope.categoryDao.getMainCategoryById(sessionScope.categoryDao.getShopCategoryById(pr.scate_id).maincate_id).name} > </a>
-                                                            <a href="#">${sessionScope.categoryDao.getShopCategoryById(pr.scate_id).name}</a>
+                                                            <a href="SearchProduct?cate=${pr.shopCategory.maincategory}">${pr.shopCategory.maincategory.name} > </a>
+                                                            <a href="#">${pr.shopCategory.name}</a>
                                                         </div>
                                                         <h4>
                                                             <a href="ProductDetail?product=${pr.product_id}">${pr.name}</a>
                                                         </h4>
                                                         <div class="product-meta mb-10">
                                                             <div class="pro-price">
-                                                                <span><fmt:formatNumber value="${pr.money}"/>đ</span>
-                                                                <!--<span class="old-price">$230.00 USD</span>-->
+                                                                <c:set var="max" value="${pr.productdetails[pr.productdetails.size() - 1].price}"/>
+                                                                <c:if test="${(pr.productdetails.size() == 1) || (pr.productdetails.size() > 1 && pr.productdetails[0].price == pr.productdetails[pr.productdetails.size() - 1].price)}">
+                                                                    <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ</span>
+                                                                </c:if>
+                                                                <c:if test="${pr.productdetails.size() > 1 && pr.productdetails[0].price != pr.productdetails[pr.productdetails.size() - 1].price}">
+                                                                    <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ - <fmt:formatNumber value="${max}"/>đ</span>
+                                                                </c:if>
                                                             </div>
                                                         </div>
-                                                        <p>${pr.description}</p>
+                                                        <p>${fn:length(pr.description) > 255 ? fn:substring(pr.description, 0, 254).trim().concat("...") : pr.description}</p>
                                                         <div class="product-action">
-                                                            <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
+                                                            <a href="AddToCart?id=${pr.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                                 <i class="flaticon-shopping-cart"></i>
                                                             </a>
                                                             <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
@@ -267,7 +278,7 @@
                                 <c:forEach var="pr" items="${sessionScope.recent_list}">
                                     <li>
                                         <div class="side-pro-img">
-                                            <a href="ProductDetail?product=${pr.product_id}"><img src="${pr.img}" alt=""></a>
+                                            <a href="ProductDetail?product=${pr.product_id}"><img src="${pr.productdetails[0].img}" alt=""></a>
                                         </div>
                                         <div class="side-pro-content">
                                             <div class="side-pro-rating">

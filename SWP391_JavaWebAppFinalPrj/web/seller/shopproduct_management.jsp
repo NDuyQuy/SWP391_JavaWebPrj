@@ -7,7 +7,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="zxx">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -16,30 +16,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="manifest" href="site.html">
-        <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
 
         <!-- CSS here -->
-        <link rel="stylesheet" href="../css/bootstrap.min.css">
-        <link rel="stylesheet" href="../css/owl.carousel.min.css">
-        <link rel="stylesheet" href="../css/animate.min.css">
-        <link rel="stylesheet" href="../css/magnific-popup.css">
-        <link rel="stylesheet" href="../css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="../css/flaticon.css">
-        <link rel="stylesheet" href="../css/meanmenu.css">
-        <link rel="stylesheet" href="../css/jquery-ui.css">
-        <link rel="stylesheet" href="../css/meanmenu.css">
-        <link rel="stylesheet" href="../css/slick.css">
-        <link rel="stylesheet" href="../css/default.css">
-        <link rel="stylesheet" href="../css/style.css">
-        <link rel="stylesheet" href="../css/responsive.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     </head>
     <body>
         <!-- header start -->
-        <jsp:include page="../header.jsp"></jsp:include>
-            <!-- header end -->
+        <jsp:include page="header.jsp"></jsp:include>
+        <!-- header end -->
             <main>
-                <section>
+                <section style="margin: 10px;">
                     <div class="container">
                         <div class="row d-flex justify-content-between align-items-center">
                             <div>
@@ -51,41 +41,34 @@
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="width: 95%;margin: auto">
                     <table class="table table-bordered">
                         <thead>
                             <tr> 
-                                <th>Tên sản phẩm</th>
-                                <th>Kho hàng</th>
-                                <th>Giá</th>
-                                <th>Danh mục</th>
-                                <th>Sửa</th>
-                                <th>Xóa</th>
+                                <th class="text-center">No</th>
+                                <th class="text-center">Tên sản phẩm</th>
+                                <th class="text-center">Danh mục</th>
+                                <th class="text-center">Chi tiết sản phẩm</th>
+                                <th class="text-center">Sửa thông tin sản phẩm</th>
                             </tr>
                         </thead>
                         <tbody> 
-                        <jsp:useBean id="products" scope="session" class="java.util.ArrayList" />
-                        <c:forEach var="p" items="${products}">
+                        <jsp:useBean id="products" scope="request" class="java.util.ArrayList" />
+                        <c:forEach var="p" items="${products}" varStatus="loop">
                             <tr> 
-                                <td><c:out value="${p.name}"/></td>
-                                <td><c:out value="${p.quantity}"/></td>
-                                <td><c:out value="${p.money}"/></td>
-                                <td><c:out value="${p.shopCategory.name}"/></td>
-                                <td>
-                                    <a href="productcontroller?open=edit&p_id=${p.product_id}" class="edit-link" style="color: blue; cursor: pointer;">Edit</a>
-                                </td>
-                                <td>
-                                    <a class="delete-link" style="color: red; cursor: pointer;" onclick="openPopup('delete',${p.product_id})">Delete</a>
+                                <td class="text-center"><c:out value="${loop.index + 1}"/></td>
+                                <td class="text-left"><c:out value="${p.name}"/></td>
+                                <td class="text-left"><c:out value="${p.shopCategory.name}"/></td>
+                                <td class="text-center"><a class="text-decoration-none" href="productcontroller?open=detail&p_id=${p.product_id}" style="color: orange; cursor: pointer;">Detail</a></td>
+                                <td class="text-center">
+                                    <a class="text-decoration-none" href="productcontroller?open=edit&p_id=${p.product_id}" style="color: blue; cursor: pointer;">Edit</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody> 
-                </table>
+                </table> 
             </section>
-        </main>              
-        <!-- footer start -->
-        <jsp:include page="../footer.jsp"></jsp:include>
-        <!-- footer end -->
+        </main>            
 
         <!-- Delete Category Popup-->
         <div class="modal" id="deletePopup">
@@ -123,21 +106,19 @@
             }
         </script>
         <!-- JS here -->
-        <script src="../js/vendor/jquery-1.12.4.min.js"></script>
-        <script src="../js/jquery-ui.js"></script>
-        <script src="../js/popper.min.js"></script>
-        <script src="../js/bootstrap.min.js"></script>
-        <script src="../js/owl.carousel.min.js"></script>
-        <script src="../js/isotope.pkgd.min.js"></script>
-        <script src="../js/slick.min.js"></script>
-        <script src="../js/jquery.meanmenu.min.js"></script>
-        <script src="../js/ajax-form.js"></script>
-        <script src="../js/wow.min.js"></script>
-        <script src="../js/jquery.scrollUp.min.js"></script>
-        <script src="../js/jquery.final-countdown.min.js"></script>
-        <script src="../js/imagesloaded.pkgd.min.js"></script>
-        <script src="../js/jquery.magnific-popup.min.js"></script>
-        <script src="../js/plugins.js"></script>
-        <script src="../js/main.js"></script>
+        <script src="js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="js/jquery-ui.js"></script>
+        <script src="js/owl.carousel.min.js"></script>
+        <script src="js/isotope.pkgd.min.js"></script>
+        <script src="js/slick.min.js"></script>
+        <script src="js/jquery.meanmenu.min.js"></script>
+        <script src="js/ajax-form.js"></script>
+        <script src="js/wow.min.js"></script>
+        <script src="js/jquery.scrollUp.min.js"></script>
+        <script src="js/jquery.final-countdown.min.js"></script>
+        <script src="js/imagesloaded.pkgd.min.js"></script>
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
     </body>
 </html>

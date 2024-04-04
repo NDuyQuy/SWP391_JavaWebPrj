@@ -3,7 +3,7 @@
     Created on : Feb 28, 2024, 7:12:33 AM
     Author     : hien
 --%>
-
+<%@ page import="dao.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -65,13 +65,13 @@
                                                 </div>
                                                 <div class="widget-posts-body" style="">
                                                     <a href="ShopDetail?id=${shop.shop_id}"><h5 class="widget-posts-title" style="margin-top: 25px; font-size: 20px;">${shop.shop_name}</h5></a>
-                                                    <h6 style="margin-top: 20px;">Địa chỉ:<span style="color: #fe4536;"> ${sessionScope.usersDao.getUserById(shop.shop_id).address}</span></h6>
+                                                    <h6 style="margin-top: 20px;">Địa chỉ:<span style="color: #fe4536;"> ${UsersDao.getUserById(shop.shop_id).address}</span></h6>
                                                 </div>
                                             </li>
                                         </ul>
                                         <div class="f-mid" style="width: 20%; margin: auto 0; padding-top: 14px">
                                             <p style="color: #fe4536; text-align: center; line-height: 20px">
-                                                <i class="fas fa-hand-peace"></i> ${sessionScope.productDao.getProductsByShop(shop.shop_id).size()}
+                                                <i class="fas fa-hand-peace"></i> ${ProductDao.getProductsByShop(shop.shop_id).size()}
                                             </p>
                                             <p style="text-align: center; line-height: 18px">
                                                 sản phẩm

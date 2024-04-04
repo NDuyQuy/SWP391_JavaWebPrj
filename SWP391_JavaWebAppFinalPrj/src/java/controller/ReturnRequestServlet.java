@@ -8,18 +8,25 @@ package controller;
 import dao.OrdersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
  * @author LENOVO
  */
 @WebServlet(name = "ReturnRequestServlet", urlPatterns = {"/ReturnRequestServlet"})
+
+@MultipartConfig
 public class ReturnRequestServlet extends HttpServlet {
 
     /**
@@ -65,7 +72,6 @@ public class ReturnRequestServlet extends HttpServlet {
 
         request.setAttribute("orderDetailId", orderDetailId);
 
-
         RequestDispatcher dispatcher = request.getRequestDispatcher("refundreturnrequest.jsp");
         dispatcher.forward(request, response);
 
@@ -85,8 +91,18 @@ public class ReturnRequestServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         int orderDetailId = Integer.parseInt(request.getParameter("orderDetailId"));
         String cancelReason = request.getParameter("cancelReason");
+        String upLoadDir = getUploadDir(orderDetailId);
+        String imgPath = null;
+        Part img_part = request.getPart("productImg");
+        try {
+            img_part.write(upLoadDir + "\\" + "img.png");
+            imgPath = upLoadDir.replace(getServletContext().getRealPath(""), "") + "\\" + "img.png";
+            imgPath = imgPath.replace("\\", "/");
 
-        boolean success = OrdersDao.requestReturn(orderDetailId, cancelReason);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        boolean success = OrdersDao.requestReturn(orderDetailId, cancelReason, imgPath);
 
         if (success) {
 
@@ -95,6 +111,24 @@ public class ReturnRequestServlet extends HttpServlet {
 
             response.sendRedirect("return_error.jsp");
         }
+    }
+
+    private String getUploadDir(int order_id) throws IOException {
+        String id = UUID.randomUUID().toString();
+        // Create the directory structure if it doesn't exist
+        String uploadPath = Paths.get(getServletContext().getRealPath(""), "img",
+                String.valueOf(order_id), id.substring(0, 6))
+                .toString();
+        while (Files.exists(Paths.get(uploadPath))) {
+            id = UUID.randomUUID().toString();
+            uploadPath = Paths.get(getServletContext().getRealPath(""), "img",
+                    String.valueOf(order_id), id.substring(0, 6))
+                    .toString();
+        }
+        if (!Files.exists(Paths.get(uploadPath))) {
+            Files.createDirectories(Paths.get(uploadPath));
+        }
+        return uploadPath;
     }
 
     /**

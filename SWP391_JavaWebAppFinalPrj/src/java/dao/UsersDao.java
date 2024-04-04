@@ -8,6 +8,7 @@ package dao;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import model.Shops;
 import model.Users;
 
@@ -25,7 +26,7 @@ public class UsersDao {
     private static final String GETUSERSINFOBYUSERNAME = "SELECT [id], [fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [username] = ?";
     private static final String GETUSERSINFOBYEMAIL = "SELECT [id], [username],[fullname],[role],[address],[phone],[email],[img] FROM [users] WHERE [email] = ?";
     private static final String CHANGEPASSWORD = "UPDATE [users] SET password = ? WHERE username = ?";
-    private static final String GETUSERBYID = "SELECT [username],[address],[img] FROM [users] WHERE [id]=?";
+    private static final String GETUSERBYID = "SELECT [username],[fullname],[address],[img],[phone] FROM [users] WHERE [id]=?";
     private static final String NEWREPORT = "Insert into [report_detail]([shop_id],[reporter_id],[reason]) values (?,?,?)";
     private static final String UPDATE_REPORTED_COUNT = "Update [shops] set [shop_reported_count] = ? where [shop_id] = ?";
     private static final String NEWSHOP = "Insert into [shops]([shop_id],[shop_name],[CCCD]) values(?,?,?)";
@@ -212,7 +213,8 @@ public class UsersDao {
                 user.setUsername(rs.getNString("username").trim());
                 user.setAddress(rs.getNString("address") == null ? null : rs.getNString("address").trim());
                 user.setImg(rs.getNString("img"));
-                user.setFullname(rs.getNString("fullname").trim() == null ? null : rs.getNString("fullname").trim());
+                user.setPhone(rs.getString("phone") == null ? null : rs.getString("phone").trim());
+                user.setFullname(rs.getNString("fullname") == null ? null : rs.getNString("fullname").trim());
                 user.setAddress(rs.getNString("address") == null ? null : rs.getNString("address").trim());
             }
         } catch (Exception e) {
@@ -244,6 +246,13 @@ public class UsersDao {
             ptm.setInt(1, count);
             ptm.setInt(2, id);
             ptm.executeUpdate();
+            if(count == 10){
+                PreparedStatement ptm1 = null;
+                ptm1 = con.prepareStatement("Update shops set ban_status = 2, ban_time = ? where shop_id = ?");
+                ptm1.setDate(1, Date.valueOf(LocalDate.now().plusDays(7)));
+                ptm1.setInt(2, id);
+                ptm1.executeUpdate();
+            }
         } catch(Exception ex){
             ex.printStackTrace();
         }

@@ -3,6 +3,7 @@
     Created on : Mar 19, 2024, 8:33:55 AM
     Author     : hien
 --%>
+<%@ page import="dao.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -87,8 +88,8 @@
                                             <div class="bottom" style="border-bottom: 1px solid #eaedff; padding-bottom: 10px">
                                                 <div class="profile-table" style="width: 50%; border-right: 1px solid #eaedff;">
                                                     <h5>Từ:</h5>
-                                                    ${usersDao.getUserById(order.shop_id).fullname} | ${usersDao.getUserById(order.shop_id).phone}<br>
-                                                    ${usersDao.getUserById(order.shop_id).address}
+                                                    ${order.shop.users.fullname} | ${order.shop.users.phone}<br>
+                                                    ${order.shop.users.address}
                                                 </div>
                                                 <div class="profile-table" style="padding-left: 20px;">
                                                     <h5>Đến:</h5>
@@ -100,9 +101,9 @@
                                                 <div class="profile-table">
                                                     <h5>Nội dung đơn hàng:</h5>
                                                     <ul>
-                                                        <c:set var="prod_list" value="${sessionScope.orderDetailDao.getOrderDetailsByOrderId(order.order_id)}"/>
+                                                        <c:set var="prod_list" value="${order.orderDetails}"/>
                                                         <c:forEach var="pr" items="${prod_list}">
-                                                            <li>${sessionScope.productDao.getProductById(pr.productID).name} - SL: ${pr.quantity}</li>
+                                                            <li>${pr.productDetail.product.name}. PL: ${pr.productDetail.name} - SL: ${pr.quantity}</li>
                                                             </c:forEach>
                                                     </ul>
                                                 </div>
@@ -145,17 +146,17 @@
                                                 </div>
                                                 <div class="profile-table" style="padding-left: 20px;">
                                                     <h5>Đến:</h5>
-                                                    ${sessionScope.usersDao.getUserById(order.shop_id).fullname} | ${sessionScope.usersDao.getUserById(order.shop_id).phone}<br>
-                                                    ${sessionScope.usersDao.getUserById(order.shop_id).address}
+                                                    ${order.shop.users.fullname} | ${order.shop.users.phone}<br>
+                                                    ${order.shop.users.address}
                                                 </div>
                                             </div>
                                             <div class="bottom">
                                                 <div class="profile-table">
                                                     <h5>Nội dung đơn hàng:</h5>
                                                     <ul>
-                                                        <c:set var="prod_list" value="${sessionScope.orderDetailDao.getOrderDetailsByOrderId(order.order_id)}"/>
+                                                        <c:set var="prod_list" value="${order.orderDetails}"/>
                                                         <c:forEach var="pr" items="${prod_list}">
-                                                            <li>${sessionScope.productDao.getProductById(pr.productID).name}</li>
+                                                            <li>${pr.productDetail.product.name}</li>
                                                             </c:forEach>
                                                     </ul>
                                                         <h5>Ghi chú: Đơn trả hàng</h5>
@@ -181,8 +182,8 @@
                                             <div class="bottom" style="border-bottom: 1px solid #eaedff; padding-bottom: 10px">
                                                 <div class="profile-table" style="width: 50%; border-right: 1px solid #eaedff;">
                                                     <h5>Từ:</h5>
-                                                    ${sessionScope.usersDao.getUserById(order.shop_id).fullname} | ${sessionScope.usersDao.getUserById(order.shop_id).phone}<br>
-                                                    ${sessionScope.usersDao.getUserById(order.shop_id).address}
+                                                    ${order.shop.users.fullname} | ${order.shop.users.phone}<br>
+                                                    ${order.shop.users.address}
                                                 </div>
                                                 <div class="profile-table" style="padding-left: 20px;">
                                                     <h5>Đến:</h5>
@@ -194,9 +195,9 @@
                                                 <div class="profile-table">
                                                     <h5>Nội dung đơn hàng:</h5>
                                                     <ul>
-                                                        <c:set var="prod_list" value="${sessionScope.orderDetailDao.getOrderDetailsByOrderId(order.order_id)}"/>
+                                                        <c:set var="prod_list" value="${order.orderDetails}"/>
                                                         <c:forEach var="pr" items="${prod_list}">
-                                                            <li>${sessionScope.productDao.getProductById(pr.productID).name} - SL: ${pr.quantity}</li>
+                                                            <li>${pr.productDetail.product.name}. PL: ${pr.productDetail.name} - SL: ${pr.quantity}</li>
                                                             </c:forEach>
                                                     </ul>
                                                 </div>
@@ -231,8 +232,8 @@
                                             <div class="bottom" style="border-bottom: 1px solid #eaedff; padding-bottom: 10px">
                                                 <div class="profile-table" style="width: 50%; border-right: 1px solid #eaedff;">
                                                     <h5>Từ:</h5>
-                                                    ${usersDao.getUserById(order.shop_id).fullname} | ${usersDao.getUserById(order.shop_id).phone}<br>
-                                                    ${usersDao.getUserById(order.shop_id).address}
+                                                    ${order.shop.users.fullname} | ${order.shop.users.phone}<br>
+                                                    ${order.shop.users.address}
                                                 </div>
                                                 <div class="profile-table" style="padding-left: 20px;">
                                                     <h5>Đến:</h5>
@@ -244,9 +245,9 @@
                                                 <div class="profile-table">
                                                     <h5>Nội dung đơn hàng:</h5>
                                                     <ul>
-                                                        <c:set var="prod_list" value="${sessionScope.orderDetailDao.getOrderDetailsByOrderId(order.order_id)}"/>
+                                                        <c:set var="prod_list" value="${order.orderDetails}"/>
                                                         <c:forEach var="pr" items="${prod_list}">
-                                                            <li>${sessionScope.productDao.getProductById(pr.productID).name} - SL: ${pr.quantity}</li>
+                                                            <li>${pr.productDetail.product.name}. PL: ${pr.productDetail.name} - SL: ${pr.quantity}</li>
                                                             </c:forEach>
                                                     </ul>
                                                 </div>

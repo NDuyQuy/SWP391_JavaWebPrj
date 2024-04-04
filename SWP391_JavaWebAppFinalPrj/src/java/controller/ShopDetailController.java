@@ -46,11 +46,7 @@ public class ShopDetailController extends HttpServlet {
         int s_id = Integer.parseInt(request.getParameter("id"));
         Shops shop = SellersDao.getShopById(s_id);
         ArrayList<Products> plist = ProductDao.getProductsByShop(s_id);
-        
-        for(Products p : plist){
-            String folder = p.getImg();
-            p.setImg(getImagePath(folder));
-        }
+    
         
         ArrayList<ShopCategory> cate_shop = CategoryDao.getShopCategoryByShop(s_id);
         HttpSession session = request.getSession();
@@ -101,19 +97,4 @@ public class ShopDetailController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private String getImagePath(String folder){
-        String res = null;
-        List<File> all_img = new ArrayList<>();
-        String fpath = getServletContext().getRealPath("") + folder;
-        try{
-            all_img = Files.walk(Paths.get(fpath))
-                .filter(Files::isRegularFile)
-                .map(Path::toFile)
-                .collect(Collectors.toList());
-            res = all_img.get(0).getPath().replace(getServletContext().getRealPath(""), "");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return res;
-    }
 }

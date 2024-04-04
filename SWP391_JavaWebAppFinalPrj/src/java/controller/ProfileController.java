@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -88,9 +89,10 @@ public class ProfileController extends HttpServlet {
             u.setFullname(fname);u.setAddress(addr);u.setPhone(phone);
             Part p = request.getPart("avatar");
             String uploadDir = null;
+            String uuid = UUID.randomUUID().toString().substring(0, 6)+".png";
             if(p!=null){  
                 if(p.getSize()>0){
-                    uploadDir = getDir(u.getId())+"\\avatar.jpg";
+                    uploadDir = Paths.get(getDir(u.getId()),uuid).toString();
                     p.write(uploadDir);
                 }
             }

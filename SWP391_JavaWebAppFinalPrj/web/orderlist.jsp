@@ -33,10 +33,27 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
         <link rel="stylesheet" href="css/png.css">
-        <<script>
+        <script>
             function redirectToOrderDetail(orderId) {
                 console.log('Redirecting to OrderDetailServlet with orderId:', orderId);
                 window.location.href = 'OrderDetailServlet?orderId=' + orderId;
+            }
+
+            function openCancelModal(orderId) {
+                currentOrderId = orderId;
+                $('#cancelModal').modal('show');
+
+            }
+            function comfirmCancel() {
+                // Set the form action and orderId input value
+                $('#cancelForm').attr('action', 'UpdateOrderStatusServlet');
+                $('#cancelOrderIdInput').val(currentOrderId);
+
+                // Submit the form
+                $('#cancelForm').submit();
+
+                // Close the modal
+                $('#cancelModal').modal('hide');
             }
 
             function openConfirmModal(orderId) {
@@ -46,8 +63,8 @@
 
             function confirmReceived() {
                 // Set the form action and orderId input value
-                $('#confirmForm').attr('action', 'UpdateOrderStatusServlet'); 
-                $('#orderIdInput').val(currentOrderId);
+                $('#confirmForm').attr('action', 'UpdateOrderStatusServlet');
+                $('#confirmOrderIdInput').val(currentOrderId);
 
                 // Submit the form
                 $('#confirmForm').submit();
@@ -61,8 +78,13 @@
     <body>
         <jsp:include page="header.jsp"></jsp:include>
             <form id="confirmForm" method="post" style="display: none;">
-                <input type="hidden" name="orderId" id="orderIdInput" />
-                <input type="hidden" name="newStatus" value="đã nhận" />
+                <input type="hidden" name="confirmOrderId" id="confirmOrderIdInput" />
+                <input type="hidden" name="confirmNewStatus" value="đã nhận" />
+            </form>
+
+            <form id="cancelForm" method="post" style="display: none;">
+                <input type="hidden" name="cancelOrderId" id="cancelOrderIdInput" />
+                <input type="hidden" name="cancelNewStatus" value="đã hủy" />
             </form>
             <main>
                 <!-- breadcrumb-area-start -->
@@ -115,6 +137,9 @@
                                                     <button>Đánh giá</button>
                                                 </c:if>
 
+                                                <c:if test="${order.status.trim() eq 'chờ người bán xác nhận'}">
+                                                    <button onclick="openCancelModal(${order.getOrder_id()})">Hủy đơn hàng</button>
+                                                </c:if>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -152,7 +177,25 @@
                     </div>
                 </div>
             </div>
-
+            <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelModalLabel">Xác nhận Hủy đơn hàng</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Bạn có chắc chắn muốn hủy đơn hàng này?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy bỏ</button>
+                            <button type="button" class="btn btn-danger" onclick="comfirmCancel()">Hủy đơn hàng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <jsp:include page="footer.jsp"></jsp:include>

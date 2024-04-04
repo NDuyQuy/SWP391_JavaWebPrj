@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -40,12 +41,12 @@ public class ShopProfileController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ShopProfileController</title>");            
+            out.println("<title>Servlet ShopProfileController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ShopProfileController at " + request.getContextPath() + "</h1>");
@@ -84,31 +85,33 @@ public class ShopProfileController extends HttpServlet {
         String shop_name = request.getParameter("sname");
         String description = request.getParameter("des");
         try {
-            int shop_id = ((Users)request.getSession().getAttribute("user")).getId();
+            int shop_id = ((Users) request.getSession().getAttribute("user")).getId();
+
+            Shops shops = (Shops) request.getSession().getAttribute("shop");
             Part p = request.getPart("logo");
             String upLoadDir = null;
-            if(p!=null){
-                if(p.getSize()>0){
-                    upLoadDir = getDir(shop_id) + "\\logo.jpg";
+            if (p != null) {
+                if (p.getSize() > 0) {
+                    String fileName = UUID.randomUUID().toString().substring(0, 6) + ".png";
+                    upLoadDir = Paths.get(getDir(shop_id, shops.getShop_img()), fileName).toString();
                     p.write(upLoadDir);
                 }
             }
-            if(upLoadDir!=null){
-                Shops shops = (Shops) request.getSession().getAttribute("shop");
+            if (upLoadDir != null) {
                 upLoadDir = upLoadDir.replace(getServletContext().getRealPath(""), "");
                 upLoadDir = upLoadDir.replaceAll("\\\\", "/");
                 shops.setShop_img(upLoadDir);
                 shops.setDescription(description);
                 shops.setShop_name(shop_name);
                 SellersDao.updateShopInfo(shops);
-            }else{
+            } else {
                 Shops shop = (Shops) request.getSession().getAttribute("shop");
                 shop.setDescription(description);
                 shop.setShop_name(shop_name);
                 SellersDao.updateShopInfo(shop);
             }
             request.getRequestDispatcher("profile.jsp").forward(request, response);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,12 +126,16 @@ public class ShopProfileController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    private String getDir(int user_id) throws IOException{
-        String uploadPath = Paths.get(getServletContext().getRealPath(""),"img", "users","shop_logo",String.valueOf(user_id)).toString();
+
+    private String getDir(int user_id, String oldImgPath) throws IOException {
+        String uploadPath = Paths.get(getServletContext().getRealPath(""), "img", "users", "shop_logo", String.valueOf(user_id)).toString();
         // IF DIR EXISTS RANDOM AGAIN TO UNTIL DIR DONT EXISTS
-        if(!Files.exists(Paths.get(uploadPath))) Files.createDirectories(Paths.get(uploadPath));
-        else Files.delete(Paths.get(uploadPath,"logo.jpg"));
+        if (!Files.exists(Paths.get(uploadPath))) {
+            Files.createDirectories(Paths.get(uploadPath));
+        } else {
+            Files.deleteIfExists(Paths.get(getServletContext().getRealPath(""), oldImgPath));
+        }
         return uploadPath;
     }
-    
+
 }

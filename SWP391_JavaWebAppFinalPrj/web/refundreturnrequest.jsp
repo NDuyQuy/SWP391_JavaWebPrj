@@ -41,18 +41,23 @@
         <jsp:include page="header.jsp"></jsp:include>
         <% int orderDetailId = (int) request.getAttribute("orderDetailId"); %>
 
-        <%-- Tạo một đối tượng OrderDetailDAO và sử dụng nó để lấy chi tiết đơn hàng --%>
+
         <% OrdersDao orderDetailDAO = new OrdersDao(); %>
         <% OrderDetail orderDetail = orderDetailDAO.getOrderDetailById(orderDetailId);%>
         <h2>Thông tin sản phẩm trả hàng/hoàn tiền</h2>
         <div>
-            <p><strong>ID sản phẩm:</strong> <%= orderDetail.getProductID()%></p>
+            <p><strong>ID sản phẩm:</strong> <%= orderDetail.getId()%></p>
+            <div>
+                <img src="<%= orderDetail.getProductDetail().getImg()%>" alt="Ảnh sản phẩm">
+            </div>
+
+            <p><strong>Tên sản phẩm:</strong> <%= orderDetail.getProductDetail().getProduct().getName()%></p>
             <p><strong>Số lượng:</strong> <%= orderDetail.getQuantity()%></p>
             <p><strong>Giá:</strong> <%= orderDetail.getTotalPrice()%></p>
         </div>
 
         <h2>Lý do trả hàng/hoàn tiền</h2>
-        <form action="ReturnRequestServlet" method="post">
+        <form action="ReturnRequestServlet" method="post" enctype="multipart/form-data">
             <input type="hidden" name="orderDetailId" value="<%= request.getAttribute("orderDetailId")%>">
             <div>
                 <label for="cancelReason">Chọn lý do:</label>
@@ -64,28 +69,15 @@
                     <option value="Sản phẩm không phù hợp với nhu cầu">Sản phẩm không phù hợp với nhu cầu</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="productImg">Hình ảnh sản phẩm</label>
+                <input accept="image/*" type="file" class="form-control" id="productImg" name="productImg" required>
+            </div>
             <button type="submit">Gửi yêu cầu</button>
         </form>
     </main>
     <jsp:include page="footer.jsp"></jsp:include>
-</script>
-<!-- JS here -->
-<script src="js/vendor/jquery-1.12.4.min.js"></script>
-<script src="js/jquery-ui.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/isotope.pkgd.min.js"></script>
-<script src="js/slick.min.js"></script>
-<script src="js/jquery.meanmenu.min.js"></script>
-<script src="js/ajax-form.js"></script>
-<script src="js/wow.min.js"></script>
-<script src="js/jquery.scrollUp.min.js"></script>
-<script src="js/jquery.final-countdown.min.js"></script>
-<script src="js/imagesloaded.pkgd.min.js"></script>
-<script src="js/jquery.magnific-popup.min.js"></script>
-<script src="js/plugins.js"></script>
-<script src="js/main.js"></script>
+
 
 </body>
 

@@ -5,6 +5,8 @@
 package controller;
 
 import dao.MessageDao;
+import dao.NotificationDao;
+import dao.SellersDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -49,6 +51,7 @@ public class ShopChatController extends HttpServlet {
                 int user_id = Integer.parseInt(request.getParameter("user_id"));
                 String message = request.getParameter("messageText");
                 MessageDao.SendMessage(shopId, user_id, 0, message);
+                NotificationDao.messageFromShop(user_id, SellersDao.getShopById(shopId).getShop_name());
                 String chatDiv = ShowSendChat(message, shopId, user_id);
                 out.println(chatDiv);
             }

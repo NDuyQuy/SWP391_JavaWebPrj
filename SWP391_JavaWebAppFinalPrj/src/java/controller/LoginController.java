@@ -97,14 +97,14 @@ public class LoginController extends HttpServlet {
                 //switch the url 
                 switch (role) {
                     case 1:
-                        url = "/home.jsp";
+                        response.sendRedirect("Home");
                         break;
                     case 2:
-                        url = "/home.jsp";
                         Shops shop = SellersDao.getShopById(u.getId());
                         session.setAttribute("shop", shop);
                         int numberOfWaitingOrders = OrdersDao.getWaitingOrders(u.getId()).size();
                         session.setAttribute("noti", OrdersDao.getWaitingOrders(u.getId()));
+                        response.sendRedirect("Home");
                         break;
                     case 3:
                         session.setAttribute("Admin", 1);

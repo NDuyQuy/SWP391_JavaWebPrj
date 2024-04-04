@@ -17,23 +17,12 @@
 
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
-
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/owl.carousel.min.css">
-        <link rel="stylesheet" href="css/animate.min.css">
-        <link rel="stylesheet" href="css/magnific-popup.css">
-        <link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/flaticon.css">
-        <link rel="stylesheet" href="css/meanmenu.css">
-        <link rel="stylesheet" href="css/jquery-ui.css">
-        <link rel="stylesheet" href="css/meanmenu.css">
-        <link rel="stylesheet" href="css/slick.css">
-        <link rel="stylesheet" href="css/default.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/responsive.css">
+        <!-- CSS here -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     </head>
     <body>
-        <jsp:include page="../header.jsp"></jsp:include>
+        <jsp:include page="header.jsp"></jsp:include>
 
             <main>
                 <section class="breadcrumb-area" data-background="img/bg/page-title.png">
@@ -47,7 +36,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="login-area pt-100 pb-100">
+                <section class="login-area pt-100 pb-100" style="width: 80%; margin: auto;">
                 <jsp:useBean id="noti" scope="session" class="java.util.ArrayList" />
                 <div>
                     <table class="table table-bordered">
@@ -76,23 +65,10 @@
             </section>
         </main>
 
-        <jsp:include page="../footer.jsp"></jsp:include>     
-        <!-- JS here -->
-        <script src="js/vendor/jquery-1.12.4.min.js"></script>
-        <script src="js/jquery-ui.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/owl.carousel.min.js"></script>
-        <script src="js/isotope.pkgd.min.js"></script>
-        <script src="js/slick.min.js"></script>
-        <script src="js/jquery.meanmenu.min.js"></script>
-        <script src="js/ajax-form.js"></script>
-        <script src="js/wow.min.js"></script>
-        <script src="js/jquery.scrollUp.min.js"></script>
-        <script src="js/jquery.final-countdown.min.js"></script>
-        <script src="js/imagesloaded.pkgd.min.js"></script>
-        <script src="js/jquery.magnific-popup.min.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+        <!-- JS here-->
+        <script src="${pageContext.request.contextPath}/js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
+        <script src="${pageContext.request.contextPath}/js/popper.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
     </body>
 </html>

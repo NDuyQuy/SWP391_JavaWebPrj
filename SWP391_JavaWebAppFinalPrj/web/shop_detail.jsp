@@ -3,8 +3,10 @@
     Created on : Mar 5, 2024, 11:23:40 AM
     Author     : hien
 --%>
+<%@ page import="dao.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -35,7 +37,7 @@
                 color: #fff;
                 margin-left: 23%;
             }
-            
+
             .product-img{
                 height: 294px;
             }
@@ -69,7 +71,7 @@
                                     <div class="tab-content" id="myTabContentpro">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel">
                                             <div class="product-large-img">
-                                                <img src="${sh.shop_img}" style="border-radius: 50%;" alt="">
+                                                <img src="${sh.shop_img}" style="border-radius: 50%; width: 270px; height: 270px; object-fit: cover" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -129,10 +131,10 @@
                                                             <div class="product-wrapper mb-50">
                                                                 <div class="product-img mb-25">
                                                                     <a href="ProductDetail?product=${pr.product_id}">
-                                                                        <img src="${pr.img}" alt="">
+                                                                        <img src="${pr.productdetails[0].img}" alt="">
                                                                     </a>
                                                                     <div class="product-action text-center">
-                                                                        <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
+                                                                        <a href="AddToCart?id=${pr.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                                             <i class="flaticon-shopping-cart"></i>
                                                                         </a>
                                                                         <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
@@ -153,8 +155,13 @@
                                                                     </h4>
                                                                     <div class="product-meta">
                                                                         <div class="pro-price">
-                                                                            <span><fmt:formatNumber value="${pr.money}"/>đ</span>
-                                                                            <!--<span class="old-price">$230.00 USD</span>-->
+                                                                            <c:set var="max" value="${pr.productdetails[pr.productdetails.size() - 1].price}"/>
+                                                                            <c:if test="${(pr.productdetails.size() == 1) || (pr.productdetails.size() > 1 && pr.productdetails[0].price == pr.productdetails[pr.productdetails.size() - 1].price)}">
+                                                                                <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ</span>
+                                                                            </c:if>
+                                                                            <c:if test="${pr.productdetails.size() > 1 && pr.productdetails[0].price != pr.productdetails[pr.productdetails.size() - 1].price}">
+                                                                                <span><fmt:formatNumber value="${pr.productdetails[0].price}"/>đ - <fmt:formatNumber value="${max}"/>đ</span>
+                                                                            </c:if>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -167,7 +174,7 @@
                                     </div>
                                     <c:forEach var="cate" items="${sessionScope.cate_shop}">
                                         <div class="tab-pane fade" id="cate${cate.id}" role="tabpanel" aria-labelledby="cate-tab${cate.id}">
-                                            <c:set var="sclist" value="${productDao.getProductsByShopCateId(cate.id)}"/>
+                                            <c:set var="sclist" value="${ProductDao.getProductsByShopCateId(cate.id)}"/>
                                             <c:if test="${sclist == null || sclist.isEmpty()}">
                                                 <div>
                                                     <h5>Chưa có sản phẩm nào.</h5>
@@ -181,10 +188,10 @@
                                                                 <div class="product-wrapper mb-50">
                                                                     <div class="product-img mb-25">
                                                                         <a href="ProductDetail?product=${sc.product_id}">
-                                                                            <img src="${sc.img}\1.png" alt="">
+                                                                            <img src="${sc.productdetails[0].img}" alt="">
                                                                         </a>
                                                                         <div class="product-action text-center">
-                                                                            <a href="AddToCart?id=${sc.product_id}" title="Thêm vào giỏ hàng">
+                                                                            <a href="AddToCart?id=${sc.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                                                 <i class="flaticon-shopping-cart"></i>
                                                                             </a>
                                                                             <a href="ProductDetail?product=${sc.product_id}" title="Xem chi tiết">
@@ -205,8 +212,13 @@
                                                                         </h4>
                                                                         <div class="product-meta">
                                                                             <div class="pro-price">
-                                                                                <span><fmt:formatNumber value="${sc.money}"/>đ</span>
-                                                                                <!--<span class="old-price">$230.00 USD</span>-->
+                                                                                <c:set var="max" value="${sc.productdetails[sc.productdetails.size() - 1].price}"/>
+                                                                                <c:if test="${(sc.productdetails.size() == 1) || (sc.productdetails.size() > 1 && sc.productdetails[0].price == sc.productdetails[sc.productdetails.size() - 1].price)}">
+                                                                                    <span><fmt:formatNumber value="${sc.productdetails[0].price}"/>đ</span>
+                                                                                </c:if>
+                                                                                <c:if test="${sc.productdetails.size() > 1 && sc.productdetails[0].price != sc.productdetails[sc.productdetails.size() - 1].price}">
+                                                                                    <span><fmt:formatNumber value="${sc.productdetails[0].price}"/>đ - <fmt:formatNumber value="${max}"/>đ</span>
+                                                                                </c:if>
                                                                             </div>
                                                                         </div>
                                                                     </div>
