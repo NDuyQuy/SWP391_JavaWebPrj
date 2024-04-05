@@ -50,7 +50,7 @@
         <div>
             <p><strong>ID sản phẩm:</strong> <%= orderDetail.getId()%></p>
             <div>
-                <img src="<%= orderDetail.getProductDetail().getImg()%>" alt="Ảnh sản phẩm">
+                <img width="100" src="<%= orderDetail.getProductDetail().getImg()%>" alt="Ảnh sản phẩm">
             </div>
 
             <p><strong>Tên sản phẩm:</strong> <%= orderDetail.getProductDetail().getProduct().getName()%></p>
@@ -58,7 +58,7 @@
             <p><strong>Giá:</strong> <%= orderDetail.getTotalPrice()%></p>
             <p><strong>Lý do trả hàng/hoàn tiền: </strong> <%= orderDetail.getCancel_reason()%></p>
             <div>
-                <img src="<%= img%>" alt="Ảnh sản phẩm">
+                <img width="300" src="<%= img%>" alt="Ảnh sản phẩm">
             </div>
 
         </div>

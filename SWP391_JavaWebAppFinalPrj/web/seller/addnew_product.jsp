@@ -67,7 +67,7 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <img style="width: 90px; height: 90px; object-fit: contain" id="img-1" src="default/default.jpg" onclick="$('#detail-img-1').click()">
+                                                <img style="width: 90px; height: 90px; object-fit: contain" id="img-1" src="seller/default/default.jpg" onclick="$('#detail-img-1').click()">
                                                 <input type="file" accept="image/*" id="detail-img-1" name="images" style="display: none;" class="form-control" onchange="readURL(this)" required="">
                                             </td>
                                             <td width="280"><input value="Default" type="text" class="form-control" id="detail-name-1" name="names" required=""></td>

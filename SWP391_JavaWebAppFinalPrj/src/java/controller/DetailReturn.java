@@ -81,10 +81,10 @@ public class DetailReturn extends HttpServlet {
         
         boolean success = OrdersDao.cancelReturnRequest(orderDetailId);
         if (success) {
-            // Redirect về trang chi tiết đơn hàng hoặc trang chính
-            response.sendRedirect("orderdetal.jsp");
+           
+            response.sendRedirect("OrderListController");
         } else {
-            // Xử lý khi hủy yêu cầu không thành công (có thể redirect về trang thông báo lỗi)
+         
             response.sendRedirect("error.jsp");
         }
     }

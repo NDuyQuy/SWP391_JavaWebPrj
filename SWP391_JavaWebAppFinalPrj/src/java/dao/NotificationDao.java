@@ -335,5 +335,7 @@ public class NotificationDao {
         SendNotification(content, shopId);
     }
     
-    
+    public static void main(String[] args) {
+        System.out.println(getNotificationList(2));
+    }
 }

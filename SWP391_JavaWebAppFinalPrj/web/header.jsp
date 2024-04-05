@@ -153,6 +153,9 @@
                                                     <li>
                                                         <a href="OrderListController">Đơn mua</a>
                                                     </li>
+                                                    <li>
+                                                        <a href="chat.jsp">Chat</a>
+                                                    </li>
                                                 </c:if>
                                                 <li>
                                                     <a href="logout">Đăng xuất</a>
@@ -171,33 +174,8 @@
                                         <li class="d-shop-cart">
                                             <a href="Cart">
                                                 <i class="flaticon-shopping-cart"></i>
-                                                <span class="cart-count">3</span>
                                             </a>
-                                            <ul class="minicart">
-                                                <li>
-                                                    <div class="cart-img">
-                                                        <a href="product-details.html">
-                                                            <img src="img/product/pro1.jpg" alt="" />
-                                                        </a>
-                                                    </div>
-                                                    <div class="cart-content">
-                                                        <h3>
-                                                            <a href="product-details.html">Black & White Shoes</a>
-                                                        </h3>
-                                                        <div class="cart-price">
-                                                            <span class="new">$ 229.9</span>
-                                                            <span>
-                                                                <del>$239.9</del>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="del-icon">
-                                                        <a href="#">
-                                                            <i class="far fa-trash-alt"></i>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                            </ul>
+                                           
                                         </li>
                                     </c:if>
                                     <c:if test="${sessionScope.user.role == 1}">

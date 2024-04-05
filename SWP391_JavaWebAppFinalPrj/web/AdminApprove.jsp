@@ -65,17 +65,16 @@
                                     <th>Username</th> 
                                     <th>Full name</th>
                                     <th>Shop name</th>
-                                    <th>Create Date</th>
-                                    <th>Request Date</th>
-                                    <th></th>
+                                    <th>Mô tả</th>
+                                    <th>Action</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody> 
                                 <c:forEach var="s" items="${sessionScope.SL}">
                                     <tr> 
-                                        <td><c:out value="${s.user_id}"/></td>
                                         <td><c:out value="${s.user.username}"/></td>
+                                        <td><c:out value="${s.user.fullname}"/></td>
                                         <td><c:out value="${s.shopname}"/></td>
                                         <td><c:out value="${s.description}"/></td>
                                         <td>

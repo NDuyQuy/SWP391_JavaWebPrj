@@ -78,7 +78,7 @@
                                             </p>
                                         </div>
                                         <div class="f-right" style="width: 20%; margin: auto 0; padding-left: 4%;">
-                                            <button onclick="location.href = 'Chat'" 
+                                            <button onclick="location.href = 'LoadChatConntroller?shop_id=${shop.shop_id}&Action=CheckFirstLoad'" 
                                                     style="color: black;
                                                     position: relative;
                                                     overflow: visible;

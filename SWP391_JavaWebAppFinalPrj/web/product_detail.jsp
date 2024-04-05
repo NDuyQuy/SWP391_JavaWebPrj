@@ -118,12 +118,12 @@
                                 <div class="shop-thumb-tab mb-30">
                                     <ul class="nav" id="myTab2" role="tablist">
                                         <li class="nav-item" style="width: 50%">
-                                            <a class="nav-link active" id="img0-tab" data-toggle="tab" href="#img0" role="tab" aria-selected="true" style="height: 200px">
+                                            <a class="nav-link active" id="img0-tab" data-toggle="tab" role="tab" aria-selected="true" onclick="document.getElementById('show-img0').src = '${fn:replace(pr.productdetails[0].img, '\\', '/')}';" style="height: 200px">
                                                 <img src="${pr.productdetails[0].img}" alt="" style="width: 100%; height: 100%; object-fit: contain"> </a>
                                         </li>
 
                                         <li class="nav-item" style="width: 50%">
-                                            <a class="nav-link" id="img1-tab" data-toggle="tab" href="#img1" role="tab" aria-selected="false" style="height: 200px"><img
+                                            <a class="nav-link" id="img1-tab" data-toggle="tab" role="tab" aria-selected="false" onclick="document.getElementById('show-img0').src = '${fn:replace(pr.productdetails[1].img, '\\', '/')}';" style="height: 200px"><img
                                                     src="${pr.productdetails[1].img}" alt="" style="width: 100%; height: 100%; object-fit: contain"></a>
                                         </li>
 
@@ -134,7 +134,7 @@
                                 <div class="shop-thumb-tab mb-30">
                                     <ul class="nav product-slider-2 owl-carousel" id="myTab2" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="img0-tab" data-toggle="tab" role="tab" aria-selected="true" onclick="document.getElementById('show-img0').src = '${fn:replace(pr.productdetails[0].img, '\\', '/')}'" style="height: 200px">
+                                            <a class="nav-link active" id="img0-tab" data-toggle="tab" role="tab" aria-selected="true" onclick="document.getElementById('show-img0').src = '${fn:replace(pr.productdetails[0].img, '\\', '/')}';" style="height: 200px">
                                                 <img src="${pr.productdetails[0].img}" alt="" style="width: 100%; height: 100%; object-fit: contain"> </a>
                                         </li>
                                         <c:forEach var="prd" items="${pr.productdetails}" begin="1" end="${pr.productdetails.size() - 1}" varStatus="loop">
@@ -174,7 +174,7 @@
                                             </li>
                                         </ul>
                                         <div class="f-right" style="width: 30%; padding-left: 6%;">
-                                            <button onclick="location.href = 'Chat'" 
+                                            <button onclick="location.href = 'LoadChatConntroller?shop_id=${pr.shop_id}&Action=CheckFirstLoad'" 
                                                     style="color: black;
                                                     position: relative;
                                                     overflow: visible;
@@ -213,7 +213,7 @@
                                                 <span style="font-family: 'Montserrat', sans-serif;">phân loại</span>
                                             </div>
                                             <ul class="shop-link shop-size">
-                                                <li class="classes active" id="${pr.productdetails[0].id}"><input type="button" value="${pr.productdetails[0].name}" onclick="changeType(this);checkShow('${fn:replace(pr.productdetails[0].img, '\\', '/')}', '${pr.productdetails[0].price}', '${pr.productdetails[0].quantity}')" style="word-wrap: break-word"> </li>
+                                                <li class="classes active" id="${pr.productdetails[0].id}"><input type="button" value="${pr.productdetails[0].name}" onclick="changeType(this);checkShow('${fn:replace(pr.productdetails[0].img, '\\', '/')}', '${pr.productdetails[0].price}', '${pr.productdetails[0].quantity}');" style="word-wrap: break-word"> </li>
                                                     <c:if test="${pr.productdetails.size() > 1}">
                                                         <c:forEach var="pl" items="${pr.productdetails}" begin="1" end="${pr.productdetails.size() - 1}">
                                                         <li class="classes" id="${pl.id}"><input type="button" value="${pl.name}" onclick="changeType(this);checkShow('${fn:replace(pl.img, '\\', '/')}', '${pl.price}', '${pl.quantity}')" style="word-wrap: break-word"></li>

@@ -86,11 +86,11 @@
 
                                 <ul style="border-left: 0; padding-left: 0px;">
                                     <h4 style="padding-top: 10px; margin-bottom: 10px;"></h4>
-                                    <li><a href="#"><i class="flaticon-list"></i> Quản lý danh mục</a></li>
-                                    <li><a href="#"><i class="flaticon-list"></i> Quản lý Voucher</a></li>
-                                    <li><a href="#"><i class="flaticon-list"></i> Khóa/Mở khóa người dùng</a></li>
-                                    <li><a href="#"><i class="flaticon-list"></i> Phê duyệt đăng ký seller</a></li>
-                                    <li><a href="#"><i class="flaticon-list"></i> Yêu cầu trả hàng/hoàn tiền</a></li>
+                                    <li><a href="AdminCategory.jsp"><i class="flaticon-list"></i> Quản lý danh mục</a></li>
+                                    <li><a href="AdminVoucher.jsp"><i class="flaticon-list"></i> Quản lý Voucher</a></li>
+                                    <li><a href="AdminBan.jsp"><i class="flaticon-list"></i> Khóa/Mở khóa người dùng</a></li>
+                                    <li><a href="AdminApprove.jsp"><i class="flaticon-list"></i> Phê duyệt đăng ký seller</a></li>
+                                    <li><a href="AdminRefund.jsp"><i class="flaticon-list"></i> Yêu cầu trả hàng/hoàn tiền</a></li>
                                     <li><a class="logout" href="logout" style="color: #fe5245;"><i class="flaticon-list"></i>Đăng xuất</a></li>
                                 </ul>
 

@@ -52,7 +52,7 @@ public class OrdersDao {
 
     private static final String GET_ORDER_DETAILS = "SELECT od.*, p.* FROM orderdetail od INNER JOIN products p ON od.product_id = p.product_id WHERE od.order_id = ?";
     private static final String GET_ORDER_BY_ID = "SELECT * FROM orders WHERE order_id = ?";
-    private static final String GET_ORDERS_BY_USER_ID = "SELECT * FROM orders WHERE customer_id = ?";
+    private static final String GET_ORDERS_BY_USER_ID = "SELECT * FROM orders WHERE customer_id = ? ORDER BY order_id DESC";
     private static final String GET_ORDER_AND_DETAILS_BY_ID = "SELECT o.*, p.product_id, pd.id AS p_detail_id, pd.img AS pd_img, pd.name AS pd_name, p.name AS p_name, od.quantity, od.totalPrice, od.cancel_reason, od.id AS od_id\n"
             + "FROM orders o\n"
             + "JOIN orderdetail od ON o.order_id = od.orderID\n"
@@ -828,22 +828,7 @@ public class OrdersDao {
 
     public static void main(String[] args) {
 
-        int orderDetailIdToCheck = 61;
-
-        // Tạo một đối tượng của lớp chứa phương thức getImgByOrderDetailId
-        OrdersDao ordersDao = new OrdersDao();
-
-        // Gọi phương thức getImgByOrderDetailId để lấy img từ bảng refundsnreturns
-        String img = ordersDao.getImgByOrderDetailId(orderDetailIdToCheck);
-
-        // In ra img hoặc thông báo nếu img không tồn tại
-        if (img != null) {
-            System.out.println("Đã tìm thấy img cho order detail id " + orderDetailIdToCheck + ": " + img);
-        } else {
-            System.out.println("Không tìm thấy img cho order detail id " + orderDetailIdToCheck);
-        }
-        
-        System.out.println(getOrdersByUnitId(15, "chờ shipping unit xác nhận").get(0).getCustomer());
+        getLocalShippingUnits("đà nẵng").forEach(System.out::println);
     }
 
 }

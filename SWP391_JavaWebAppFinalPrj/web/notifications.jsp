@@ -61,11 +61,15 @@
 
                             </c:if>
                             <c:if test="${allNotifications != null}">
-                                <div class="list-group">
+                                <table>
                                     <c:forEach var="noti" items="${allNotifications}">
-
+                                        <tr>
+                                            <td>
+                                                ${noti.content}
+                                            </td>
+                                        </tr>
                                     </c:forEach>
-                                </div>
+                                </table>
                             </c:if>
 
                         </div>

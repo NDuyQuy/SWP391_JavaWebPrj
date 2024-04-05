@@ -44,7 +44,7 @@
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="breadcrumb-text text-center">
-                                <h1>Welcome back, Admin</h1>
+                                <h1>Seller centre</h1>
                             </div>
                         </div>
                     </div>

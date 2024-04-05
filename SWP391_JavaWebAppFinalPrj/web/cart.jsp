@@ -91,10 +91,10 @@
                                                             <input type="checkbox" class="itemCheckbox" data-product-id="${value.productDetail.id}"/>
                                                         </td>
                                                         <td class="product-thumbnail">
-                                                            <a href="ProductDetail?product=${value.productDetail.id}"><img src="${value.productDetail.img}" alt=""></a>
+                                                            <a href="ProductDetail?product=${value.productDetail.product.product_id}"><img src="${value.productDetail.img}" alt=""></a>
                                                         </td>
                                                         <td class="product-name">
-                                                            <a href="ProductDetail?product=${value.productDetail.id}">${value.productDetail.product.name}</a></br>
+                                                            <a href="ProductDetail?product=${value.productDetail.product_id}">${value.productDetail.product.name}</a></br>
                                                             <c:if test="${value.productDetail.name != null}">
                                                                 <a>Phân loại: ${value.productDetail.name}</a>
                                                             </c:if>
@@ -104,13 +104,13 @@
                                                             <span class="amount">${value.productDetail.price}</span>
                                                         </td>
                                                         <td class="product-quantity">
-                                                            <a href="UpdateQuantityServlet?id=${value.productDetail.id}&quantity=${value.quantity - 1}"><b style="color: blue">-</b></a>
+                                                            <a href="#" onclick="updateQuantity(${value.productDetail.id}, ${value.quantity - 1}, ${value.productDetail.quantity})"><b style="color: blue">-</b></a>
                                                             <input class="text-center"type="text" name="quantity" value="${value.quantity}" data-product-id="${value.productDetail.id}"
                                                                    min="0" max="${value.productDetail.quantity}" onkeypress="updateQuantityOnEnter(event)">
-                                                            <a href="UpdateQuantityServlet?id=${value.productDetail.id}&quantity=${value.quantity + 1}"><b style="color: blue">+</b></a>
+                                                            <a href="#" onclick="updateQuantity(${value.productDetail.id}, ${value.quantity + 1}, ${value.productDetail.quantity})"><b style="color: blue">+</b></a>
                                                         </td>
                                                         <td class="product-subtotal">
-                                                            <span class="amount">${value.productDetail.price * value.quantity}</span>
+                                                            <span class="amount">${value.productDetail.price.intValue() * value.quantity}</span>
                                                         </td>
                                                         <td class="product-remove">
                                                             <a class="btn btn-danger btn-sm"href="UpdateQuantityServlet?id=${value.productDetail.id}&action=remove">X</a>
@@ -195,10 +195,25 @@
                     event.preventDefault();
 
                     var p_detail_id = event.target.getAttribute('data-product-id');
-                    var newQuantity = event.target.value;
+                    var newQuantity = parseInt(event.target.value); // Lấy giá trị mới và chuyển về kiểu số nguyên
 
+                    // Kiểm tra nếu giá trị mới nhập vào lớn hơn hoặc bằng 0 và nhỏ hơn hoặc bằng giá trị tối đa của sản phẩm
+                    if (newQuantity >= 0 && newQuantity <= parseInt(event.target.getAttribute('max'))) {
+                        // Gửi yêu cầu cập nhật số lượng mới đến servlet
+                        window.location.href = "UpdateQuantityServlet?id=" + p_detail_id + "&quantity=" + newQuantity;
+                    } else {
+                        alert("Vui lòng chọn số lượng từ 0 đến " + event.target.getAttribute('max'));
+                    }
+                }
+            }
+
+
+            function updateQuantity(productId, newQuantity, maxQuantity) {
+                if (newQuantity > 0 && newQuantity <= maxQuantity) {
                     // Gửi yêu cầu cập nhật số lượng mới đến servlet
-                    window.location.href = "UpdateQuantityServlet?id=" + p_detail_id + "&quantity=" + newQuantity;
+                    window.location.href = "UpdateQuantityServlet?id=" + productId + "&quantity=" + newQuantity;
+                } else {
+                    alert("Vui lòng chọn số lượng từ 1 đến " + maxQuantity);
                 }
             }
         </script>-->

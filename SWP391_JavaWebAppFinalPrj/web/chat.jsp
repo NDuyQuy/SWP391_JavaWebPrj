@@ -64,6 +64,11 @@
                 color: #ffffff;
             }
 
+            .empty{
+                padding-top: 17%;
+                text-align: center;
+            }
+
         </style>
 
     </head>
@@ -91,9 +96,6 @@
                                     <c:if test="${user.role != 2}">
                                         <li><a href="becomeseller.jsp"><i class="flaticon-employee"></i> Bắt đầu bán hàng</a></li>
                                         </c:if>
-                                        <c:if test="${user.role == 2}">
-                                        <li><a href="sellerMainpage.jsp"><i class="flaticon-employee"></i> Quản lý bán hàng</a></li>
-                                        </c:if>
                                     <h4>Danh mục</h4>
 
                                     <ul>
@@ -110,30 +112,24 @@
                         <div class="col-xl-7 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
                             <div class="header-right f-right">
                                 <ul>
-                                    <li class="search-btn">
-                                        <form autocomplete="off" action="SearchProduct" class="shop-search">
-                                            <div class="autocomplete" style="width: 500px;">
-                                                <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${sessionScope.kw}" oninput="checkTextField()">
-                                            </div>
-                                            <button id="btn-search" type="submit" style="height: 50px; width: 50px" disabled="">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </form>
-                                    </li>
+                                    <!--                                    <li class="search-btn">
+                                                                            <form autocomplete="off" action="SearchProduct" class="shop-search">
+                                                                                <div class="autocomplete" style="width: 500px;">
+                                                                                    <input id="myInput" type="text" name='kw' placeholder="Tìm kiếm..." style="width: 500px;height: 50px" value="${sessionScope.kw}" oninput="checkTextField()">
+                                                                                </div>
+                                                                                <button id="btn-search" type="submit" style="height: 50px; width: 50px" disabled="">
+                                                                                    <i class="fa fa-search"></i>
+                                                                                </button>
+                                                                            </form>
+                                                                        </li>-->
                                     <li class="login-btn">
-                                        
-                                        <a href="profile.jsp"><img class="avatar-img" id="show-user-avatar" style="border-radius: 50%; width: 50px; height: 50px; object-fit: cover" src="${user.img}"></a>
+
+                                        <a href="profile.jsp"><img class="avatar-img" style="border-radius: 50%; width: 50px; height: 50px; object-fit: cover" src="${user.img}"></a>
                                         <ul class="submenu" style="margin-left: -150px;">
                                             <li  style="font-size: 16px;">Chào <b>${sessionScope.user.username}</b>!</li>
                                             <li>
                                                 <a href="profile.jsp">Tài khoản</a>
                                             </li>
-
-                                            <c:if test="${sessionScope.user.role eq 1}">
-                                                <li>
-                                                    <a href="#">Đơn mua</a>
-                                                </li>
-                                            </c:if>
 
                                             <li>
                                                 <a href="logout">Đăng xuất</a>
@@ -185,6 +181,7 @@
 
                 <!--MAIN CHAT BOX-->
                 <div class="col-lg-9 col-xl-9 chat" style="padding-right: 0; padding-left: 0;">
+               
                     <div class="card">
 
                         <!--INFO OF SENDER WHOSE CHAT MESSAGES ARE DISPLAYED-->

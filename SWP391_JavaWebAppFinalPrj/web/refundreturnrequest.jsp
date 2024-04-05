@@ -13,7 +13,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title> My Shopping Cart</title>
+        <title> Yêu cầu trả hàng/hoàn tiền</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -48,7 +48,7 @@
         <div>
             <p><strong>ID sản phẩm:</strong> <%= orderDetail.getId()%></p>
             <div>
-                <img src="<%= orderDetail.getProductDetail().getImg()%>" alt="Ảnh sản phẩm">
+                <img width="100" src="<%= orderDetail.getProductDetail().getImg()%>" alt="Ảnh sản phẩm">
             </div>
 
             <p><strong>Tên sản phẩm:</strong> <%= orderDetail.getProductDetail().getProduct().getName()%></p>

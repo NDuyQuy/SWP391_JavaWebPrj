@@ -90,7 +90,7 @@
                                         <li>Địa chỉ: ${sh_address}</li>
                                         <li>
                                             <i class="fa fa-hand-peace" style="color:#FE4536;"></i> ${psize} sản phẩm<span style="width: 70px"></span>
-                                            <span style="width: 250px"><i class="fa fa-comment-alt" style="color:#FE4536;"></i><a href="Chat"> Chat với Shop</a></span>
+                                            <span style="width: 250px"><i class="fa fa-comment-alt" style="color:#FE4536;"></i><a href="LoadChatConntroller?shop_id=${sh.shop_id}&Action=CheckFirstLoad"> Chat với Shop</a></span>
                                         </li>
                                     </ul>
                                 </div>

@@ -95,9 +95,10 @@ public class ProductController extends HttpServlet {
                     //request.getRequestDispatcher(url).forward(request, response);
                 } else {
                     url = "seller/product_detail.jsp";
-
+                    int productId = Integer.parseInt(request.getParameter("p_id"));
+                    request.setAttribute("product", SellersDao.getProductById(productId));
+                    request.setAttribute("pdl", SellersDao.getProductDetailByProductId(productId));
                 }
-
                 request.getRequestDispatcher(url).forward(request, response);
             } else {
                 //Get the list of shop categories
@@ -156,9 +157,16 @@ public class ProductController extends HttpServlet {
                             SellersDao.createShopProducts(p, user_id, productDetails);
                             break;
                         case "edit":
+                            String img[] = request.getParameterValues("imgs") ;
                             p = extractProduct(request);
                             productDetails = extractProductDetail(request);
-                            updateImg(request);
+                            updateImg(request, img);
+                            int i = 0;
+                            for (String string : img) {
+                                ProductDetail pd = productDetails.get(i);
+                                pd.setImg(string);
+                                i++;
+                            }
                             SellersDao.editShopProducts(p, productDetails);
                             addNewProductDetail(request, p.getProduct_id());
                             break;
@@ -167,7 +175,8 @@ public class ProductController extends HttpServlet {
                     }
                     request.setAttribute("products", SellersDao.getShopProducts(user_id));
                 } catch (Exception ex) {
-                    Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
+                    //request.setAttribute("products", SellersDao.getShopProducts(user_id));
+                    request.setAttribute("error", ex.getMessage());
                 }
             }
             response.sendRedirect("productcontroller");
@@ -219,15 +228,15 @@ public class ProductController extends HttpServlet {
         // Process file uploads
         Collection<Part> parts = request.getParts();
         List<String> imgPaths = new ArrayList<>();
-        int count = 0;
         for (Part part : parts) {
             // Check if the part is the file input with the name "images"
             if (part.getName().equals("images")) {
-
                 if (part.getSize() > 0) {
-                    count++;
                     // GET THE FILE NAME 
-                    String fileName = String.valueOf(count) + ".png";
+                    String fileName = UUID.randomUUID().toString().substring(0, 6) + ".png";
+                    while (Files.exists(Paths.get(uploadPath, fileName))) {
+                        fileName = UUID.randomUUID().toString().substring(0, 6) + ".png";
+                    }
                     // GET THE FINAL PATH(INCLUDE FILE) TO WRITE
                     String finalPath = Paths.get(uploadPath, fileName).toString();
                     part.write(finalPath);
@@ -237,7 +246,6 @@ public class ProductController extends HttpServlet {
                     if (!isExists) {
                         throw new Exception("Lưu hình ảnh thất bại");
                     }
-
                     // REMOVE THE REAL PATH OF SERVLET CONTEXT
                     finalPath = finalPath.replace(request.getServletContext().getRealPath(""), "");
                     // CHANGE CHARACTER \ -> /
@@ -268,14 +276,22 @@ public class ProductController extends HttpServlet {
     }
 
     // UPDATE IMG
-    private void updateImg(HttpServletRequest request) throws IOException, ServletException {
-        String[] filePath = request.getParameterValues("imgs");
+    private void updateImg(HttpServletRequest request, String[] filePath) throws IOException, ServletException {
         for (int i = 0; i < filePath.length; i++) {
             String img = request.getServletContext().getRealPath("") + filePath[i];
+            File file = Paths.get(img).toFile();
+            String parrentDir = file.getParentFile().getAbsolutePath();
             Part part = request.getPart("image_" + i);
             if (!part.getSubmittedFileName().isEmpty()) {
                 delOldFile(img);
-                part.write(img);
+                String fileName = UUID.randomUUID().toString().substring(0, 6) + ".png";
+                while (Files.exists(Paths.get(parrentDir, fileName))) {
+                    fileName = UUID.randomUUID().toString().substring(0, 6) + ".png";
+                }
+                filePath[i] = Paths.get(parrentDir, fileName).toString();
+                part.write(filePath[i]);
+                filePath[i] = filePath[i].replace(request.getServletContext().getRealPath(""), "");
+                filePath[i] = filePath[i].replaceAll("\\\\", "/");
             }
         }
     }

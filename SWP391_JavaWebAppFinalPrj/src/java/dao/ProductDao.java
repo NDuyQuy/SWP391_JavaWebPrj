@@ -49,7 +49,7 @@ public class ProductDao {
             + "inner join [shops] tb2 on tb1.[shop_id] = tb2.[shop_id] "
             + "where tb2.[ban_status] = 0 "
             + "order by [created_date] desc";
-    private static final String GETTOPSELLERS = "Select t1.product_id, t1.shop_id, t1.total\n"
+    private static final String GETTOPSELLERS = "Select top(8) t1.product_id, t1.shop_id, t1.total\n"
             + "from\n"
             + "	(Select tb1.product_id, tb1.shop_id, sum(tb2.sales) as total\n"
             + "	from\n"
@@ -67,7 +67,7 @@ public class ProductDao {
             + "on t1.shop_id = t2.shop_id\n"
             + "where t2.ban_status = 0\n"
             + "order by total desc";
-    private static final String GETTOPSELLERSBYMAINCATEID = "Select t1.product_id, t1.shop_id, t1.total\n"
+    private static final String GETTOPSELLERSBYMAINCATEID = "Select top(8) t1.product_id, t1.shop_id, t1.total\n"
             + "from\n"
             + "	(Select tb1.product_id, tb1.shop_id, sum(tb2.sales) as total\n"
             + "	from\n"
@@ -447,8 +447,8 @@ public class ProductDao {
 //        pr.forEach(pro -> System.out.println(pro.getShopCategory()));
 //        Products p = getProductById(7);
 //        System.out.println(p.getName());
-    for(Products p : getNewestProducts())
-        System.out.println(p.getProductdetails());
+    for(Products p : getProductsByShop(12))
+        System.out.println(p.getProductdetails().get(0).getImg());
 //        ArrayList<Products> pp = getTopSellersByMainCate(9);
 //        pp.forEach(pro->System.out.println(pro.getShopCategory()));
     }

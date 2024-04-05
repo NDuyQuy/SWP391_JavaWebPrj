@@ -163,6 +163,23 @@
 
                         <script>
                             var currentOrderId;
+                            function openCancelModal(orderId) {
+                                currentOrderId = orderId;
+                                $('#cancelModal').modal('show');
+
+                            }
+                            function comfirmCancel() {
+                                // Set the form action and orderId input value
+                                $('#cancelForm').attr('action', 'UpdateOrderStatusServlet');
+                                $('#cancelOrderIdInput').val(currentOrderId);
+
+                                // Submit the form
+                                $('#cancelForm').submit();
+
+                                // Close the modal
+                                $('#cancelModal').modal('hide');
+                            }
+
                             function openConfirmModal(orderId) {
                                 currentOrderId = orderId;
                                 $('#confirmModal').modal('show');
@@ -171,7 +188,7 @@
                             function confirmReceived() {
                                 // Set the form action and orderId input value
                                 $('#confirmForm').attr('action', 'UpdateOrderStatusServlet');
-                                $('#orderIdInput').val(currentOrderId);
+                                $('#confirmOrderIdInput').val(currentOrderId);
 
                                 // Submit the form
                                 $('#confirmForm').submit();
@@ -366,6 +383,26 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelModalLabel">Xác nhận Hủy đơn hàng</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Bạn có chắc chắn muốn hủy đơn hàng này?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy bỏ</button>
+                            <button type="button" class="btn btn-danger" onclick="comfirmCancel()">Hủy đơn hàng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </main>
         <jsp:include page="footer.jsp"></jsp:include>
@@ -399,7 +436,7 @@
                         "</div>" +
                         "<p style='font-size: 15px;'>" + cmt + "</p>" +
                         "</div></div>";
-                
+
                 $("#rated").removeAttr("hidden");
                 $("#unrated").prop("hidden", true);
             }

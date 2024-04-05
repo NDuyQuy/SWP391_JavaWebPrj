@@ -239,7 +239,7 @@
                                                                             <img src="${sc.productdetails[0].img}" alt="">
                                                                         </a>
                                                                         <div class="product-action text-center">
-                                                                            <a href="AddToCart?id=${sc.product_id}" title="Thêm vào giỏ hàng">
+                                                                            <a href="AddToCart?id=${sc.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                                                 <i class="flaticon-shopping-cart"></i>
                                                                             </a>
                                                                             <a href="ProductDetail?product=${sc.product_id}" title="Xem chi tiết">
@@ -406,7 +406,7 @@
                                                                         <img src="${pr.productdetails[0].img}" alt="">
                                                                     </a>
                                                                     <div class="product-action text-center">
-                                                                        <a href="AddToCart?id=${pr.product_id}" title="Thêm vào giỏ hàng">
+                                                                        <a href="AddToCart?id=${pr.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                                             <i class="flaticon-shopping-cart"></i>
                                                                         </a>
                                                                         <a href="ProductDetail?product=${pr.product_id}" title="Xem chi tiết">
@@ -463,7 +463,7 @@
                                                                             <img src="${sc.productdetails[0].img}" alt="">
                                                                         </a>
                                                                         <div class="product-action text-center">
-                                                                            <a href="AddToCart?id=${sc.product_id}" title="Thêm vào giỏ hàng">
+                                                                            <a href="AddToCart?id=${sc.productdetails[0].id}" title="Thêm vào giỏ hàng">
                                                                                 <i class="flaticon-shopping-cart"></i>
                                                                             </a>
                                                                             <a href="ProductDetail?product=${sc.product_id}" title="Xem chi tiết">
