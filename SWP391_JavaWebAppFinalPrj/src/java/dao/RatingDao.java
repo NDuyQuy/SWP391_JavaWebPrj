@@ -20,12 +20,15 @@ import model.Ratings;
 public class RatingDao {
 
     private static final String GETRATINGSBYPRODUCT = "Select r.id,r.orderdetail_id,[time_stamp],[score],[comment] from ratings r\n"
-            + "join orderdetail o\n"
-            + "on r.orderdetail_id = o.id and o.productID = ?";
+            + "join (select pd.product_id, od.id from product_detail pd\n"
+            + "inner join orderdetail od\n"
+            + "on pd.id = od.p_detail_id) t\n"
+            + "on r.orderdetail_id = t.id\n"
+            + "where t.product_id = ?";
     private static final String NEWRATING = "Insert into [ratings]([orderdetail_id],[score],[comment]) values(?,?,?)";
     private static final String GETRATINGBYORDERDETAIL = "Select id,time_stamp,score,comment from ratings where orderdetail_id = ?";
-    
-    public static Ratings getRatingByOrderDetail(int orderdetail_id){
+
+    public static Ratings getRatingByOrderDetail(int orderdetail_id) {
         PreparedStatement ptm = null;
         ResultSet rs = null;
         Ratings rating = null;
@@ -33,7 +36,7 @@ public class RatingDao {
             ptm = con.prepareStatement(GETRATINGBYORDERDETAIL);
             ptm.setInt(1, orderdetail_id);
             rs = ptm.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 rating = new Ratings();
                 rating.setId(rs.getInt(1));
                 OrderDetail orderdetail = OrdersDao.getOrderDetailById(orderdetail_id);
@@ -71,20 +74,20 @@ public class RatingDao {
         }
         return rating_by_product;
     }
-    
-    public static void newRating(int ordde_id, int score, String comment){
+
+    public static void newRating(int ordde_id, int score, String comment) {
         PreparedStatement ptm = null;
-        try(Connection con = SQLConnection.getConnection()){
+        try ( Connection con = SQLConnection.getConnection()) {
             ptm = con.prepareStatement(NEWRATING);
             ptm.setInt(1, ordde_id);
             ptm.setInt(2, score);
             ptm.setString(3, comment);
             ptm.executeUpdate();
-        } catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+
     public static void main(String[] args) {
         System.out.println(getRatingByOrderDetail(3).getComment());
     }
